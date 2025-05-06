@@ -456,7 +456,7 @@
                                                 <span class="input-group-text" id="receipt-currency-symbol">ر.س</span>
                                             </div>
                                         </div>
-                                        <small class="text-muted" id="receipt-amount-in-words"></small>
+                                        <small class="text-muted" id="receipt-amount-in-words">المبلغ بالحروف: </small>
                                     </div>
                                 </div>
                             </div>
@@ -465,14 +465,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="receipt-reference-type">نوع المرجع</label>
-                                        <select class="form-control" id="receipt-reference-type" name="receipt-reference-type">
-                                            <option value="">بدون مرجع</option>
-                                            <option value="invoice">فاتورة مبيعات</option>
-                                            <option value="purchase">فاتورة مشتريات</option>
-                                            <option value="entry">قيد محاسبي</option>
-                                            <option value="contract">عقد</option>
-                                            <option value="other">آخر</option>
-                                        </select>
+                                        <input type="text" class="form-control" id="receipt-reference-type" name="receipt-reference-type" placeholder="أدخل نوع المرجع (مثلاً: قيد داخلي، استرجاع دفعة)">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -914,7 +907,7 @@
             }
         });
         
-        // تحديث رمز العملة لسند القبض
+        // تحديث رمز العملة وتحديث المبلغ بالحروف لسند القبض
         document.getElementById('receipt-currency-type').addEventListener('change', function() {
             const currencyType = this.value;
             const currencySymbol = document.getElementById('receipt-currency-symbol');
@@ -938,6 +931,14 @@
                 default:
                     currencySymbol.textContent = 'ر.س';
             }
+            
+            // تحديث المبلغ بالحروف
+            updateReceiptAmountInWords();
+        });
+        
+        // تحديث المبلغ بالحروف عند تغيير قيمة المبلغ
+        document.getElementById('receipt-amount').addEventListener('input', function() {
+            updateReceiptAmountInWords();
         });
         
         document.getElementById('receipt-voucher-form').addEventListener('submit', function(e) {
@@ -1211,6 +1212,167 @@
         }
     }
     
+    // وظيفة لتحويل المبلغ إلى كلمات عربية
+    function convertNumberToArabicWords(number, currency = 'SAR') {
+        if (!number || isNaN(number)) {
+            return '';
+        }
+        
+        // تقريب الرقم إلى رقمين عشريين
+        number = parseFloat(parseFloat(number).toFixed(2));
+        
+        // كتابة الأرقام بالحروف (مبسطة)
+        const ones = ['', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة', 'عشرة'];
+        const teens = ['عشر', 'أحد عشر', 'اثنا عشر', 'ثلاثة عشر', 'أربعة عشر', 'خمسة عشر', 'ستة عشر', 'سبعة عشر', 'ثمانية عشر', 'تسعة عشر'];
+        const tens = ['', 'عشرة', 'عشرون', 'ثلاثون', 'أربعون', 'خمسون', 'ستون', 'سبعون', 'ثمانون', 'تسعون'];
+        const hundreds = ['', 'مائة', 'مائتان', 'ثلاثمائة', 'أربعمائة', 'خمسمائة', 'ستمائة', 'سبعمائة', 'ثمانمائة', 'تسعمائة'];
+        const thousands = ['', 'ألف', 'ألفان', 'آلاف', 'آلاف', 'آلاف', 'آلاف', 'آلاف', 'آلاف', 'آلاف', 'آلاف'];
+        
+        // أسماء العملات
+        const currencyNames = {
+            'SAR': 'ريال سعودي',
+            'USD': 'دولار أمريكي',
+            'EUR': 'يورو',
+            'GBP': 'جنيه إسترليني',
+            'AED': 'درهم إماراتي'
+        };
+        
+        // تنفيذ مبسط - لأغراض العرض فقط
+        // يجب تنفيذ خوارزمية أكثر تعقيدًا للاستخدام الحقيقي
+        const integerPart = Math.floor(number);
+        const decimalPart = Math.round((number - integerPart) * 100);
+        
+        let result = '';
+        
+        if (integerPart === 0) {
+            result = 'صفر';
+        } else if (integerPart < 11) {
+            result = ones[integerPart];
+        } else if (integerPart < 20) {
+            result = teens[integerPart - 10];
+        } else if (integerPart < 100) {
+            const oneDigit = integerPart % 10;
+            const tenDigit = Math.floor(integerPart / 10);
+            
+            if (oneDigit === 0) {
+                result = tens[tenDigit];
+            } else {
+                result = ones[oneDigit] + ' و' + tens[tenDigit];
+            }
+        } else if (integerPart < 1000) {
+            const hundredDigit = Math.floor(integerPart / 100);
+            const remainder = integerPart % 100;
+            
+            result = hundreds[hundredDigit];
+            
+            if (remainder > 0) {
+                if (remainder < 11) {
+                    result += ' و' + ones[remainder];
+                } else if (remainder < 20) {
+                    result += ' و' + teens[remainder - 10];
+                } else {
+                    const oneDigit = remainder % 10;
+                    const tenDigit = Math.floor(remainder / 10);
+                    
+                    if (oneDigit === 0) {
+                        result += ' و' + tens[tenDigit];
+                    } else {
+                        result += ' و' + ones[oneDigit] + ' و' + tens[tenDigit];
+                    }
+                }
+            }
+        } else if (integerPart < 10000) {
+            const thousandDigit = Math.floor(integerPart / 1000);
+            const remainder = integerPart % 1000;
+            
+            if (thousandDigit === 1) {
+                result = thousands[1];
+            } else if (thousandDigit === 2) {
+                result = thousands[2];
+            } else {
+                result = ones[thousandDigit] + ' ' + thousands[3];
+            }
+            
+            if (remainder > 0) {
+                // إضافة باقي الأرقام بشكل مماثل (مبسط هنا)
+                result += ' و' + convertNumberToArabicWords(remainder, '');
+            }
+        } else {
+            // للأرقام الأكبر من 10000 - مبسط
+            result = integerPart.toLocaleString('ar-SA');
+        }
+        
+        // إضافة اسم العملة
+        if (currency) {
+            const currencyName = currencyNames[currency] || currencyNames['SAR'];
+            result += ' ' + currencyName;
+            
+            // إضافة الهللات أو السنتات إذا وجدت
+            if (decimalPart > 0) {
+                let decimalWord = '';
+                
+                if (decimalPart < 11) {
+                    decimalWord = ones[decimalPart];
+                } else if (decimalPart < 20) {
+                    decimalWord = teens[decimalPart - 10];
+                } else {
+                    const oneDigit = decimalPart % 10;
+                    const tenDigit = Math.floor(decimalPart / 10);
+                    
+                    if (oneDigit === 0) {
+                        decimalWord = tens[tenDigit];
+                    } else {
+                        decimalWord = ones[oneDigit] + ' و' + tens[tenDigit];
+                    }
+                }
+                
+                let subUnit = '';
+                switch(currency) {
+                    case 'SAR':
+                        subUnit = 'هللة';
+                        break;
+                    case 'USD':
+                    case 'GBP':
+                        subUnit = 'سنت';
+                        break;
+                    case 'EUR':
+                        subUnit = 'سنت يورو';
+                        break;
+                    case 'AED':
+                        subUnit = 'فلس';
+                        break;
+                    default:
+                        subUnit = 'جزء';
+                }
+                
+                result += ' و' + decimalWord + ' ' + subUnit;
+            }
+        }
+        
+        return currency ? ('فقط ' + result + ' لا غير') : result;
+    }
+    
+    // وظيفة لتحديث المبلغ بالحروف في نموذج سند القبض
+    function updateReceiptAmountInWords() {
+        const amountInput = document.getElementById('receipt-amount');
+        const currencySelect = document.getElementById('receipt-currency-type');
+        const amountInWordsElem = document.getElementById('receipt-amount-in-words');
+        
+        if (!amountInput || !currencySelect || !amountInWordsElem) {
+            return;
+        }
+        
+        const amount = parseFloat(amountInput.value);
+        const currency = currencySelect.value;
+        
+        if (!isNaN(amount) && amount > 0) {
+            const amountInWords = convertNumberToArabicWords(amount, currency);
+            amountInWordsElem.textContent = 'المبلغ بالحروف: ' + amountInWords;
+        } else {
+            amountInWordsElem.textContent = 'المبلغ بالحروف: ';
+        }
+    }
+    
     // وظيفة لتحديث البيان تلقائياً لسند القبض
     function updateReceiptVoucherStatement() {
         // الحصول على القيم من الحقول
@@ -1218,7 +1380,7 @@
         const accountNameSelect = document.getElementById('receipt-account-name');
         const otherAccountTypeSelect = document.getElementById('receipt-other-account-type');
         const otherAccountNameSelect = document.getElementById('receipt-other-account-name');
-        const referenceTypeSelect = document.getElementById('receipt-reference-type');
+        const referenceTypeInput = document.getElementById('receipt-reference-type');
         const referenceNumberInput = document.getElementById('receipt-reference-number');
         const descriptionTextarea = document.getElementById('receipt-description');
         
@@ -1233,8 +1395,8 @@
         const accountName = accountNameSelect.options[accountNameSelect.selectedIndex]?.text || '';
         const otherAccountType = otherAccountTypeSelect.value;
         const otherAccountName = otherAccountNameSelect.options[otherAccountNameSelect.selectedIndex]?.text || '';
-        const referenceType = referenceTypeSelect.value;
-        const referenceNumber = referenceNumberInput.value;
+        const referenceType = referenceTypeInput.value.trim();
+        const referenceNumber = referenceNumberInput.value.trim();
         
         // ترجمة أنواع الحسابات إلى العربية
         const accountTypeText = getAccountTypeText(accountType);
@@ -1252,9 +1414,9 @@
             
             // إضافة المرجع إذا كان موجوداً
             if (referenceType && referenceNumber) {
-                statement += ` عبر ${getReferenceTypeText(referenceType)} برقم ${referenceNumber}`;
+                statement += ` عبر ${referenceType} برقم ${referenceNumber}`;
             } else if (referenceType) {
-                statement += ` عبر ${getReferenceTypeText(referenceType)}`;
+                statement += ` عبر ${referenceType}`;
             }
         }
         
