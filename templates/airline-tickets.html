@@ -638,15 +638,77 @@
 
 {% block scripts %}
 <script>
+    // قائمة بأسعار الصرف التقريبية (يمكن تحديثها بأسعار حقيقية من API خارجي)
+    const exchangeRates = {
+        'SAR': 1.00,        // ريال سعودي (العملة الأساسية)
+        'USD': 3.75,        // دولار أمريكي
+        'EUR': 4.10,        // يورو
+        'AED': 1.02,        // درهم إماراتي
+        'KWD': 12.25        // دينار كويتي
+    };
+    
+    // رموز العملات
+    const currencySymbols = {
+        'SAR': 'ر.س',
+        'USD': '$',
+        'EUR': '€',
+        'AED': 'د.إ',
+        'KWD': 'د.ك'
+    };
+    
+    // دالة لتحويل المبلغ من عملة إلى عملة أخرى
+    function convertCurrency(amount, fromCurrency, toCurrency) {
+        if (amount === 0 || !fromCurrency || !toCurrency) return 0;
+        
+        // التحويل إلى الريال السعودي أولاً (العملة الأساسية)
+        const amountInSAR = amount / exchangeRates[fromCurrency];
+        
+        // التحويل من الريال السعودي إلى العملة المطلوبة
+        return amountInSAR * exchangeRates[toCurrency];
+    }
+    
+    // دالة للتنسيق الرقمي 
+    function formatNumber(number) {
+        return number.toLocaleString('ar-SA', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+    
+    // دالة لإدارة تغيير العملة
+    function handleCurrencyChange() {
+        const selectedCurrency = document.getElementById('currencyType').value;
+        const currencySymbol = currencySymbols[selectedCurrency];
+        
+        // تحديث رموز العملة في جميع الحقول
+        document.querySelectorAll('.currency-append .input-group-text').forEach(function(el) {
+            el.textContent = currencySymbol;
+        });
+        
+        // تحديث رمز العملة في حقول أخرى
+        document.getElementById('currencyTextSell').textContent = currencySymbol;
+        document.getElementById('currencyTextBuy').textContent = currencySymbol;
+        document.getElementById('currencyTextProfit').textContent = currencySymbol;
+        document.getElementById('currencyTextSupplier').textContent = currencySymbol;
+        
+        // إعادة حساب الربح بالعملة الجديدة
+        calculateProfit();
+    }
+    
     // دالة لإدارة عرض/إخفاء قسم قيد المبلغ إلى شركة النقل عند تغيير حالة التذكرة
     function handleTicketStatusChange() {
         let ticketStatus = document.getElementById('ticketStatus').value;
         let paymentSection = document.getElementById('paymentToAirlineSection');
+        let supplierPaymentGroup = document.getElementById('supplierPaymentGroup');
         
         // إظهار قسم قيد المبلغ فقط إذا كانت حالة التذكرة "مؤكدة"
         if (ticketStatus === 'confirmed') {
             paymentSection.classList.remove('d-none');
             document.getElementById('createPaymentVoucher').checked = true;
+            
+            // عرض حقل مبلغ الدفع للمورد وتعيين قيمته تلقائياً بسعر الشراء
+            const ticketCost = parseFloat(document.getElementById('ticketCost').value) || 0;
+            document.getElementById('supplierPayment').value = ticketCost.toFixed(2);
         } else {
             paymentSection.classList.add('d-none');
             document.getElementById('createPaymentVoucher').checked = false;
@@ -688,6 +750,53 @@
         } else if (paymentType === 'credit') {
             // عند اختيار آجل، نظهر حقل اختيار حساب العميل
             document.getElementById('customerAccountGroup').classList.remove('d-none');
+            
+            // التحقق من حد الائتمان للعميل
+            document.getElementById('customerAccount').onchange = function() {
+                checkCustomerCreditLimit(this.value);
+            };
+        }
+    }
+    
+    // التحقق من حد الائتمان للعميل
+    function checkCustomerCreditLimit(customerId) {
+        // هذه البيانات ستأتي من قاعدة البيانات في التطبيق الحقيقي
+        const customerCreditLimits = {
+            '1': { limit: 10000, current: 7500 },  // أحمد محمد السيد
+            '2': { limit: 5000, current: 1200 },   // نورة عبدالله محمد
+            '3': { limit: 15000, current: 12000 }  // خالد عمر يوسف
+        };
+        
+        if (customerId && customerCreditLimits[customerId]) {
+            const customer = customerCreditLimits[customerId];
+            const sellPrice = parseFloat(document.getElementById('ticketPrice').value) || 0;
+            const remaining = customer.limit - customer.current;
+            
+            if (sellPrice > remaining) {
+                // إظهار تحذير إذا تجاوز المبلغ الحد الائتماني المتبقي
+                if (!document.getElementById('creditLimitWarning')) {
+                    const warning = document.createElement('div');
+                    warning.id = 'creditLimitWarning';
+                    warning.className = 'alert alert-warning mt-2';
+                    warning.innerHTML = `
+                        <i class="fas fa-exclamation-triangle ml-1"></i>
+                        <strong>تنبيه:</strong> العميل سيتجاوز حد الائتمان المسموح به.
+                        <br>
+                        <span>الحد الائتماني: ${formatNumber(customer.limit)} ر.س</span>
+                        <br>
+                        <span>الرصيد الحالي: ${formatNumber(customer.current)} ر.س</span>
+                        <br>
+                        <span>المتبقي: ${formatNumber(remaining)} ر.س</span>
+                    `;
+                    document.getElementById('customerAccountGroup').appendChild(warning);
+                }
+            } else {
+                // إزالة التحذير إذا كان موجوداً
+                const warning = document.getElementById('creditLimitWarning');
+                if (warning) {
+                    warning.remove();
+                }
+            }
         }
     }
     
@@ -699,39 +808,59 @@
             document.getElementById('paymentType').value = '';
             document.getElementById('paymentToAirlineSection').classList.add('d-none');
             
+            // إعادة تعيين حقول العملة والأسعار
+            document.getElementById('currencyType').value = 'SAR';
+            document.getElementById('ticketPrice').value = '';
+            document.getElementById('ticketCost').value = '';
+            document.getElementById('profitDisplay').value = '';
+            document.getElementById('profitPercentage').textContent = 'نسبة الربح: 0%';
+            document.getElementById('supplierPayment').value = '';
+            
             // إخفاء جميع أقسام خيارات الدفع
             document.querySelectorAll('.paymentDetails').forEach(function(el) {
                 el.classList.add('d-none');
             });
+            
+            // تحديث رموز العملة
+            handleCurrencyChange();
             
             // حساب الربح تلقائياً عند تغيير سعر البيع أو سعر الشراء
             $('#ticketPrice, #ticketCost').on('input', function() {
                 calculateProfit();
             });
         });
-        
-        // عرض قيمة ربح التذكرة
-        function calculateProfit() {
-            const sellPrice = parseFloat($('#ticketPrice').val()) || 0;
-            const costPrice = parseFloat($('#ticketCost').val()) || 0;
-            
-            if (sellPrice > 0 && costPrice > 0) {
-                const profit = sellPrice - costPrice;
-                const profitPercent = ((profit / costPrice) * 100).toFixed(2);
-                
-                // عرض معلومات الربح إذا كان القسم غير موجود فسيتم إنشاؤه
-                if ($('#profitInfo').length === 0) {
-                    $('#ticketPrice').closest('.form-group').append(
-                        '<div id="profitInfo" class="mt-2 p-2" style="background-color: #f8f9fa; border-radius: 4px;">' +
-                        '<small><strong>الربح:</strong> <span id="profitAmount"></span> ر.س (<span id="profitPercent"></span>%)</small>' +
-                        '</div>'
-                    );
-                }
-                
-                $('#profitAmount').text(profit.toFixed(2));
-                $('#profitPercent').text(profitPercent);
-            }
-        }
     });
+    
+    // حساب الربح بطريقة احترافية
+    function calculateProfit() {
+        const sellPrice = parseFloat($('#ticketPrice').val()) || 0;
+        const costPrice = parseFloat($('#ticketCost').val()) || 0;
+        
+        if (sellPrice > 0 && costPrice > 0) {
+            const profit = sellPrice - costPrice;
+            const profitPercent = (profit / costPrice) * 100;
+            
+            // عرض معلومات الربح في الحقل المخصص
+            document.getElementById('profitDisplay').value = formatNumber(profit);
+            
+            // تلوين نسبة الربح بناءً على قيمتها
+            let profitColorClass = profitPercent >= 20 ? 'text-success' : 
+                                  (profitPercent >= 10 ? 'text-primary' : 
+                                  (profitPercent >= 0 ? 'text-muted' : 'text-danger'));
+            
+            document.getElementById('profitPercentage').className = `form-text ${profitColorClass}`;
+            document.getElementById('profitPercentage').textContent = `نسبة الربح: ${profitPercent.toFixed(2)}%`;
+            
+            // تحديث قيمة الدفع للمورد إذا كانت حالة التذكرة مؤكدة
+            if (document.getElementById('ticketStatus').value === 'confirmed') {
+                document.getElementById('supplierPayment').value = costPrice.toFixed(2);
+            }
+        } else {
+            // إعادة تعيين حقول الربح إذا لم تكن الأسعار مدخلة
+            document.getElementById('profitDisplay').value = '';
+            document.getElementById('profitPercentage').className = 'form-text text-muted';
+            document.getElementById('profitPercentage').textContent = 'نسبة الربح: 0%';
+        }
+    }
 </script>
 {% endblock %}

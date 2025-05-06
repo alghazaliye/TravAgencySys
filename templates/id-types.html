@@ -1,0 +1,774 @@
+{% extends "layout.html" %}
+
+{% block title %}أنواع الهويات{% endblock %}
+
+{% block content %}
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">إدارة أنواع الهويات</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="/dashboard">الرئيسية</a></li>
+                    <li class="breadcrumb-item">إعدادات النظام</li>
+                    <li class="breadcrumb-item active">أنواع الهويات</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- بطاقات الإحصائيات -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>8</h3>
+                        <p>أنواع الهويات</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>6</h3>
+                        <p>أنواع هويات نشطة</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>2</h3>
+                        <p>أنواع هويات غير نشطة</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>152</h3>
+                        <p>العملاء والموردين</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- أزرار الإجراءات -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-add-id-type">
+                    <i class="fas fa-plus ml-1"></i> إضافة نوع هوية جديد
+                </button>
+                <button type="button" class="btn btn-primary">
+                    <i class="fas fa-download ml-1"></i> تصدير إلى Excel
+                </button>
+                <button type="button" class="btn btn-info">
+                    <i class="fas fa-print ml-1"></i> طباعة
+                </button>
+            </div>
+        </div>
+
+        <!-- جدول أنواع الهويات -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">قائمة أنواع الهويات</h3>
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 200px;">
+                        <input type="text" name="table_search" class="form-control float-right" placeholder="بحث...">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-default">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>الرقم</th>
+                            <th>نوع الهوية</th>
+                            <th>رمز الهوية</th>
+                            <th>طول الهوية</th>
+                            <th>صيغة الهوية</th>
+                            <th>جنسية الهوية</th>
+                            <th>الحالة</th>
+                            <th>تاريخ الإضافة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>هوية وطنية سعودية</td>
+                            <td>NID</td>
+                            <td>10</td>
+                            <td>أرقام فقط</td>
+                            <td>سعودي</td>
+                            <td><span class="badge badge-success">نشط</span></td>
+                            <td>01/01/2023</td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#modal-view-id-type">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal-edit-id-type">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>جواز سفر سعودي</td>
+                            <td>SAP</td>
+                            <td>9</td>
+                            <td>حرف + 8 أرقام</td>
+                            <td>سعودي</td>
+                            <td><span class="badge badge-success">نشط</span></td>
+                            <td>01/01/2023</td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>إقامة نظامية</td>
+                            <td>IQA</td>
+                            <td>10</td>
+                            <td>أرقام فقط</td>
+                            <td>مقيم</td>
+                            <td><span class="badge badge-success">نشط</span></td>
+                            <td>01/01/2023</td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>جواز سفر أجنبي</td>
+                            <td>FPP</td>
+                            <td>متغير</td>
+                            <td>حروف وأرقام</td>
+                            <td>أجنبي</td>
+                            <td><span class="badge badge-success">نشط</span></td>
+                            <td>01/01/2023</td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>رخصة قيادة سعودية</td>
+                            <td>DL</td>
+                            <td>10</td>
+                            <td>أرقام فقط</td>
+                            <td>سعودي</td>
+                            <td><span class="badge badge-success">نشط</span></td>
+                            <td>01/01/2023</td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>هوية زائر</td>
+                            <td>VID</td>
+                            <td>12</td>
+                            <td>أرقام فقط</td>
+                            <td>زائر</td>
+                            <td><span class="badge badge-success">نشط</span></td>
+                            <td>01/01/2023</td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>بطاقة عائلية قديمة</td>
+                            <td>FOC</td>
+                            <td>10</td>
+                            <td>أرقام فقط</td>
+                            <td>سعودي</td>
+                            <td><span class="badge badge-danger">غير نشط</span></td>
+                            <td>01/01/2023</td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>تأشيرة سياحية</td>
+                            <td>TVA</td>
+                            <td>12</td>
+                            <td>حروف وأرقام</td>
+                            <td>أجنبي</td>
+                            <td><span class="badge badge-danger">غير نشط</span></td>
+                            <td>01/01/2023</td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-left">
+                    <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal - إضافة نوع هوية جديد -->
+<div class="modal fade" id="modal-add-id-type">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h4 class="modal-title">إضافة نوع هوية جديد</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="idTypeForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="idTypeName">اسم نوع الهوية <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="idTypeName" placeholder="مثال: هوية وطنية سعودية" required>
+                                <div class="invalid-feedback">
+                                    يرجى إدخال اسم نوع الهوية
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="idTypeCode">رمز الهوية <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="idTypeCode" placeholder="مثال: NID" required>
+                                <small class="form-text text-muted">
+                                    يجب أن يكون رمز الهوية فريداً (2-5 أحرف)
+                                </small>
+                                <div class="invalid-feedback">
+                                    يرجى إدخال رمز الهوية
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="idLength">طول الهوية</label>
+                                <input type="number" min="1" max="30" class="form-control" id="idLength" placeholder="عدد الأرقام/الحروف">
+                                <small class="form-text text-muted">
+                                    اترك فارغاً إذا كان الطول متغيراً
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="idFormat">صيغة الهوية</label>
+                                <select class="form-control" id="idFormat">
+                                    <option value="">اختر صيغة الهوية</option>
+                                    <option value="numbers">أرقام فقط</option>
+                                    <option value="letters">حروف فقط</option>
+                                    <option value="alphanumeric">حروف وأرقام</option>
+                                    <option value="custom">صيغة مخصصة</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row customFormatRow d-none">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="customFormat">الصيغة المخصصة</label>
+                                <input type="text" class="form-control" id="customFormat" placeholder="مثال: L-9999-LL (L=حرف, 9=رقم)">
+                                <small class="form-text text-muted">
+                                    استخدم الرموز: (L) للحروف، (9) للأرقام، والرموز الأخرى كما هي
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="idNationality">جنسية الهوية</label>
+                                <select class="form-control" id="idNationality">
+                                    <option value="">اختر الجنسية</option>
+                                    <option value="saudi">سعودي</option>
+                                    <option value="resident">مقيم</option>
+                                    <option value="foreign">أجنبي</option>
+                                    <option value="visitor">زائر</option>
+                                    <option value="all">جميع الجنسيات</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="idStatus">الحالة</label>
+                                <select class="form-control" id="idStatus">
+                                    <option value="active" selected>نشط</option>
+                                    <option value="inactive">غير نشط</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="validationRegex">تعبير التحقق (Regex)</label>
+                                <input type="text" class="form-control" id="validationRegex" placeholder="مثال: ^[0-9]{10}$">
+                                <small class="form-text text-muted">
+                                    تعبير منتظم للتحقق من صحة الهوية (اختياري)
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="idDescription">وصف نوع الهوية</label>
+                                <textarea class="form-control" id="idDescription" rows="3" placeholder="وصف مختصر لنوع الهوية وكيفية التحقق منها..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="requireExpiry">
+                                <label class="custom-control-label" for="requireExpiry">تتطلب تاريخ انتهاء</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <button type="button" class="btn btn-success" id="saveIdType">حفظ</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- Modal - تعديل نوع هوية -->
+<div class="modal fade" id="modal-edit-id-type">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h4 class="modal-title">تعديل نوع هوية</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- نفس حقول النموذج السابق مع تعبئة البيانات الحالية -->
+                <form id="editIdTypeForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editIdTypeName">اسم نوع الهوية <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="editIdTypeName" value="هوية وطنية سعودية" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editIdTypeCode">رمز الهوية <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="editIdTypeCode" value="NID" required>
+                                <small class="form-text text-muted">
+                                    يجب أن يكون رمز الهوية فريداً (2-5 أحرف)
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editIdLength">طول الهوية</label>
+                                <input type="number" min="1" max="30" class="form-control" id="editIdLength" value="10">
+                                <small class="form-text text-muted">
+                                    اترك فارغاً إذا كان الطول متغيراً
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editIdFormat">صيغة الهوية</label>
+                                <select class="form-control" id="editIdFormat">
+                                    <option value="">اختر صيغة الهوية</option>
+                                    <option value="numbers" selected>أرقام فقط</option>
+                                    <option value="letters">حروف فقط</option>
+                                    <option value="alphanumeric">حروف وأرقام</option>
+                                    <option value="custom">صيغة مخصصة</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row editCustomFormatRow d-none">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="editCustomFormat">الصيغة المخصصة</label>
+                                <input type="text" class="form-control" id="editCustomFormat" placeholder="مثال: L-9999-LL (L=حرف, 9=رقم)">
+                                <small class="form-text text-muted">
+                                    استخدم الرموز: (L) للحروف، (9) للأرقام، والرموز الأخرى كما هي
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editIdNationality">جنسية الهوية</label>
+                                <select class="form-control" id="editIdNationality">
+                                    <option value="">اختر الجنسية</option>
+                                    <option value="saudi" selected>سعودي</option>
+                                    <option value="resident">مقيم</option>
+                                    <option value="foreign">أجنبي</option>
+                                    <option value="visitor">زائر</option>
+                                    <option value="all">جميع الجنسيات</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editIdStatus">الحالة</label>
+                                <select class="form-control" id="editIdStatus">
+                                    <option value="active" selected>نشط</option>
+                                    <option value="inactive">غير نشط</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="editValidationRegex">تعبير التحقق (Regex)</label>
+                                <input type="text" class="form-control" id="editValidationRegex" value="^[0-9]{10}$">
+                                <small class="form-text text-muted">
+                                    تعبير منتظم للتحقق من صحة الهوية (اختياري)
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="editIdDescription">وصف نوع الهوية</label>
+                                <textarea class="form-control" id="editIdDescription" rows="3">هوية وطنية سعودية مكونة من 10 أرقام</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="editRequireExpiry" checked>
+                                <label class="custom-control-label" for="editRequireExpiry">تتطلب تاريخ انتهاء</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <button type="button" class="btn btn-primary" id="updateIdType">تحديث</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- Modal - عرض نوع هوية -->
+<div class="modal fade" id="modal-view-id-type">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h4 class="modal-title">عرض نوع هوية</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="invoice p-3 mb-3">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>
+                                        <i class="fas fa-id-card ml-2"></i> هوية وطنية سعودية
+                                        <small class="float-left">تاريخ الإضافة: 01/01/2023</small>
+                                    </h4>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3 class="card-title">التفاصيل الأساسية</h3>
+                                        </div>
+                                        <div class="card-body p-0">
+                                            <table class="table">
+                                                <tbody>
+                                                    <tr>
+                                                        <th style="width:50%">اسم نوع الهوية:</th>
+                                                        <td>هوية وطنية سعودية</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>رمز الهوية:</th>
+                                                        <td>NID</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>طول الهوية:</th>
+                                                        <td>10</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>صيغة الهوية:</th>
+                                                        <td>أرقام فقط</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>تعبير التحقق:</th>
+                                                        <td><code>^[0-9]{10}$</code></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3 class="card-title">معلومات إضافية</h3>
+                                        </div>
+                                        <div class="card-body p-0">
+                                            <table class="table">
+                                                <tbody>
+                                                    <tr>
+                                                        <th style="width:50%">الجنسية:</th>
+                                                        <td>سعودي</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>الحالة:</th>
+                                                        <td><span class="badge badge-success">نشط</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>تتطلب تاريخ انتهاء:</th>
+                                                        <td>نعم</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>المستخدمين:</th>
+                                                        <td>83 عميل</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>آخر تعديل:</th>
+                                                        <td>15/05/2023</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5 class="mb-3">وصف نوع الهوية</h5>
+                                    <div class="callout callout-info">
+                                        <p>هوية وطنية سعودية مكونة من 10 أرقام، ويتم استخدامها للمواطنين السعوديين.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <h5 class="mb-3">مثال على الهوية</h5>
+                                    <div class="callout callout-success">
+                                        <p dir="ltr" class="text-center">1234567890</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <div>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#modal-edit-id-type">
+                        <i class="fas fa-edit"></i> تعديل
+                    </button>
+                    <button type="button" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> حذف
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(function () {
+        // تهيئة جدول البيانات
+        $('table').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Arabic.json"
+            }
+        });
+        
+        // إظهار/إخفاء حقل الصيغة المخصصة عند تغيير نوع الصيغة
+        $('#idFormat').change(function() {
+            if ($(this).val() === 'custom') {
+                $('.customFormatRow').removeClass('d-none');
+            } else {
+                $('.customFormatRow').addClass('d-none');
+            }
+        });
+        
+        $('#editIdFormat').change(function() {
+            if ($(this).val() === 'custom') {
+                $('.editCustomFormatRow').removeClass('d-none');
+            } else {
+                $('.editCustomFormatRow').addClass('d-none');
+            }
+        });
+        
+        // التحقق من صحة النموذج عند النقر على زر الحفظ
+        $('#saveIdType').click(function() {
+            var form = document.getElementById('idTypeForm');
+            
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+                
+                // إظهار رسائل الخطأ
+                $(form).addClass('was-validated');
+            } else {
+                // هنا يتم إرسال البيانات إلى الخادم (في التطبيق الحقيقي)
+                alert('تم حفظ نوع الهوية بنجاح');
+                $('#modal-add-id-type').modal('hide');
+                
+                // إعادة تعيين النموذج
+                $(form).removeClass('was-validated');
+                form.reset();
+            }
+        });
+        
+        // التحقق من صحة نموذج التعديل عند النقر على زر التحديث
+        $('#updateIdType').click(function() {
+            var form = document.getElementById('editIdTypeForm');
+            
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+                
+                // إظهار رسائل الخطأ
+                $(form).addClass('was-validated');
+            } else {
+                // هنا يتم إرسال البيانات إلى الخادم (في التطبيق الحقيقي)
+                alert('تم تحديث نوع الهوية بنجاح');
+                $('#modal-edit-id-type').modal('hide');
+            }
+        });
+    });
+</script>
+{% endblock %}

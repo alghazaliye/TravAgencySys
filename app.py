@@ -75,5 +75,25 @@ def currencies():
 def reports():
     return render_template('reports.html')
 
+@app.route('/budget-profits')
+def budget_profits():
+    return render_template('budget-profits.html')
+
+@app.route('/cash-journal')
+def cash_journal():
+    return render_template('cash-journal.html')
+
+@app.route('/bank-journal')
+def bank_journal():
+    return render_template('bank-journal.html')
+
+@app.route('/daily-journal')
+def daily_journal():
+    return render_template('daily-journal.html')
+
+@app.route('/employees')
+def employees():
+    return render_template('employees.html')
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

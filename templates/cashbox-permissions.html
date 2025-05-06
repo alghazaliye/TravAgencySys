@@ -1,0 +1,1326 @@
+{% extends "layout.html" %}
+
+{% block title %}صلاحيات الصناديق{% endblock %}
+
+{% block content %}
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">إدارة صلاحيات الصناديق</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="/dashboard">الرئيسية</a></li>
+                    <li class="breadcrumb-item">الإدارة المالية</li>
+                    <li class="breadcrumb-item active">صلاحيات الصناديق</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- بطاقات الإحصائيات -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>4</h3>
+                        <p>عدد الصناديق</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-cash-register"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>8</h3>
+                        <p>المستخدمين ذوي الصلاحيات</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>28,500 <span class="h5">ر.س</span></h3>
+                        <p>رصيد الصناديق الحالي</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>35</h3>
+                        <p>العمليات اليوم</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- أزرار الإجراءات -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-add-permission">
+                    <i class="fas fa-plus ml-1"></i> إضافة صلاحية جديدة
+                </button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-manage-cashboxes">
+                    <i class="fas fa-cash-register ml-1"></i> إدارة الصناديق
+                </button>
+                <button type="button" class="btn btn-info">
+                    <i class="fas fa-print ml-1"></i> طباعة تقرير الصلاحيات
+                </button>
+                <button type="button" class="btn btn-warning">
+                    <i class="fas fa-history ml-1"></i> سجل التغييرات
+                </button>
+            </div>
+        </div>
+        
+        <!-- القائمة التبويبية للصناديق -->
+        <div class="card card-primary card-outline card-tabs">
+            <div class="card-header p-0 pt-1 border-bottom-0">
+                <ul class="nav nav-tabs" id="cashbox-tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="main-cashbox-tab" data-toggle="pill" href="#main-cashbox" role="tab" aria-controls="main-cashbox" aria-selected="true">الصندوق الرئيسي</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="sales-cashbox-tab" data-toggle="pill" href="#sales-cashbox" role="tab" aria-controls="sales-cashbox" aria-selected="false">صندوق المبيعات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="expenses-cashbox-tab" data-toggle="pill" href="#expenses-cashbox" role="tab" aria-controls="expenses-cashbox" aria-selected="false">صندوق المصروفات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="petty-cashbox-tab" data-toggle="pill" href="#petty-cashbox" role="tab" aria-controls="petty-cashbox" aria-selected="false">الصندوق النثري</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content" id="cashbox-tabContent">
+                    <!-- الصندوق الرئيسي -->
+                    <div class="tab-pane fade show active" id="main-cashbox" role="tabpanel" aria-labelledby="main-cashbox-tab">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <div class="info-box">
+                                    <span class="info-box-icon bg-primary"><i class="fas fa-cash-register"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">اسم الصندوق</span>
+                                        <span class="info-box-number">الصندوق الرئيسي</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="info-box">
+                                    <span class="info-box-icon bg-success"><i class="fas fa-money-bill-wave"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">الرصيد الحالي</span>
+                                        <span class="info-box-number">15,320 ر.س</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="info-box">
+                                    <span class="info-box-icon bg-warning"><i class="fas fa-users-cog"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">المستخدمين المصرح لهم</span>
+                                        <span class="info-box-number">5 مستخدمين</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>المستخدم</th>
+                                        <th>الصلاحية</th>
+                                        <th>الإيداع</th>
+                                        <th>السحب</th>
+                                        <th>التحويل</th>
+                                        <th>الاطلاع</th>
+                                        <th>الحد اليومي</th>
+                                        <th>تاريخ الإضافة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <img src="https://adminlte.io/themes/v3/dist/img/user1-128x128.jpg" alt="صورة المستخدم" class="img-circle mr-1" style="width: 30px;">
+                                            أحمد محمد (مدير النظام)
+                                        </td>
+                                        <td><span class="badge badge-primary">مدير</span></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td>غير محدود</td>
+                                        <td>01/01/2023</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal-edit-permission">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-xs">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <img src="https://adminlte.io/themes/v3/dist/img/user3-128x128.jpg" alt="صورة المستخدم" class="img-circle mr-1" style="width: 30px;">
+                                            سارة عبدالله (محاسب)
+                                        </td>
+                                        <td><span class="badge badge-info">محاسب</span></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td>10,000 ر.س</td>
+                                        <td>01/01/2023</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-xs">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-xs">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <img src="https://adminlte.io/themes/v3/dist/img/user4-128x128.jpg" alt="صورة المستخدم" class="img-circle mr-1" style="width: 30px;">
+                                            خالد عمر (موظف مبيعات)
+                                        </td>
+                                        <td><span class="badge badge-success">كاشير</span></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-times text-danger"></i></td>
+                                        <td><i class="fas fa-times text-danger"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td>5,000 ر.س</td>
+                                        <td>15/02/2023</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-xs">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-xs">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- صندوق المبيعات -->
+                    <div class="tab-pane fade" id="sales-cashbox" role="tabpanel" aria-labelledby="sales-cashbox-tab">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <div class="info-box">
+                                    <span class="info-box-icon bg-primary"><i class="fas fa-cash-register"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">اسم الصندوق</span>
+                                        <span class="info-box-number">صندوق المبيعات</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="info-box">
+                                    <span class="info-box-icon bg-success"><i class="fas fa-money-bill-wave"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">الرصيد الحالي</span>
+                                        <span class="info-box-number">8,670 ر.س</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="info-box">
+                                    <span class="info-box-icon bg-warning"><i class="fas fa-users-cog"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">المستخدمين المصرح لهم</span>
+                                        <span class="info-box-number">4 مستخدمين</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>المستخدم</th>
+                                        <th>الصلاحية</th>
+                                        <th>الإيداع</th>
+                                        <th>السحب</th>
+                                        <th>التحويل</th>
+                                        <th>الاطلاع</th>
+                                        <th>الحد اليومي</th>
+                                        <th>تاريخ الإضافة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <img src="https://adminlte.io/themes/v3/dist/img/user1-128x128.jpg" alt="صورة المستخدم" class="img-circle mr-1" style="width: 30px;">
+                                            أحمد محمد (مدير النظام)
+                                        </td>
+                                        <td><span class="badge badge-primary">مدير</span></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td>غير محدود</td>
+                                        <td>01/01/2023</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-xs">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-xs">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <img src="https://adminlte.io/themes/v3/dist/img/user4-128x128.jpg" alt="صورة المستخدم" class="img-circle mr-1" style="width: 30px;">
+                                            خالد عمر (موظف مبيعات)
+                                        </td>
+                                        <td><span class="badge badge-success">كاشير</span></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-times text-danger"></i></td>
+                                        <td><i class="fas fa-times text-danger"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td>5,000 ر.س</td>
+                                        <td>15/02/2023</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-xs">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-xs">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- صندوق المصروفات -->
+                    <div class="tab-pane fade" id="expenses-cashbox" role="tabpanel" aria-labelledby="expenses-cashbox-tab">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <div class="info-box">
+                                    <span class="info-box-icon bg-primary"><i class="fas fa-cash-register"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">اسم الصندوق</span>
+                                        <span class="info-box-number">صندوق المصروفات</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="info-box">
+                                    <span class="info-box-icon bg-success"><i class="fas fa-money-bill-wave"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">الرصيد الحالي</span>
+                                        <span class="info-box-number">2,430 ر.س</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="info-box">
+                                    <span class="info-box-icon bg-warning"><i class="fas fa-users-cog"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">المستخدمين المصرح لهم</span>
+                                        <span class="info-box-number">3 مستخدمين</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>المستخدم</th>
+                                        <th>الصلاحية</th>
+                                        <th>الإيداع</th>
+                                        <th>السحب</th>
+                                        <th>التحويل</th>
+                                        <th>الاطلاع</th>
+                                        <th>الحد اليومي</th>
+                                        <th>تاريخ الإضافة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <img src="https://adminlte.io/themes/v3/dist/img/user1-128x128.jpg" alt="صورة المستخدم" class="img-circle mr-1" style="width: 30px;">
+                                            أحمد محمد (مدير النظام)
+                                        </td>
+                                        <td><span class="badge badge-primary">مدير</span></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td>غير محدود</td>
+                                        <td>01/01/2023</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-xs">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-xs">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <img src="https://adminlte.io/themes/v3/dist/img/user3-128x128.jpg" alt="صورة المستخدم" class="img-circle mr-1" style="width: 30px;">
+                                            سارة عبدالله (محاسب)
+                                        </td>
+                                        <td><span class="badge badge-info">محاسب</span></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td>5,000 ر.س</td>
+                                        <td>01/01/2023</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-xs">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-xs">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- الصندوق النثري -->
+                    <div class="tab-pane fade" id="petty-cashbox" role="tabpanel" aria-labelledby="petty-cashbox-tab">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <div class="info-box">
+                                    <span class="info-box-icon bg-primary"><i class="fas fa-cash-register"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">اسم الصندوق</span>
+                                        <span class="info-box-number">الصندوق النثري</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="info-box">
+                                    <span class="info-box-icon bg-success"><i class="fas fa-money-bill-wave"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">الرصيد الحالي</span>
+                                        <span class="info-box-number">2,080 ر.س</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="info-box">
+                                    <span class="info-box-icon bg-warning"><i class="fas fa-users-cog"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">المستخدمين المصرح لهم</span>
+                                        <span class="info-box-number">2 مستخدمين</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>المستخدم</th>
+                                        <th>الصلاحية</th>
+                                        <th>الإيداع</th>
+                                        <th>السحب</th>
+                                        <th>التحويل</th>
+                                        <th>الاطلاع</th>
+                                        <th>الحد اليومي</th>
+                                        <th>تاريخ الإضافة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <img src="https://adminlte.io/themes/v3/dist/img/user1-128x128.jpg" alt="صورة المستخدم" class="img-circle mr-1" style="width: 30px;">
+                                            أحمد محمد (مدير النظام)
+                                        </td>
+                                        <td><span class="badge badge-primary">مدير</span></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td>غير محدود</td>
+                                        <td>01/01/2023</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-xs">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-xs">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <img src="https://adminlte.io/themes/v3/dist/img/user5-128x128.jpg" alt="صورة المستخدم" class="img-circle mr-1" style="width: 30px;">
+                                            فاطمة أحمد (سكرتيرة)
+                                        </td>
+                                        <td><span class="badge badge-warning">مساعد إداري</span></td>
+                                        <td><i class="fas fa-times text-danger"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-times text-danger"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td>1,000 ر.س</td>
+                                        <td>10/03/2023</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-xs">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-xs">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- سجل العمليات على الصناديق -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-history ml-1"></i>
+                    سجل عمليات الصناديق
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>التاريخ والوقت</th>
+                                <th>المستخدم</th>
+                                <th>الصندوق</th>
+                                <th>العملية</th>
+                                <th>المبلغ</th>
+                                <th>رقم المرجع</th>
+                                <th>ملاحظات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>15/06/2023 - 10:30</td>
+                                <td>خالد عمر</td>
+                                <td>صندوق المبيعات</td>
+                                <td><span class="badge badge-success">إيداع</span></td>
+                                <td>3,500 ر.س</td>
+                                <td>TRX-0012</td>
+                                <td>استلام قيمة حجز تذاكر طيران</td>
+                            </tr>
+                            <tr>
+                                <td>15/06/2023 - 10:15</td>
+                                <td>سارة عبدالله</td>
+                                <td>صندوق المصروفات</td>
+                                <td><span class="badge badge-danger">سحب</span></td>
+                                <td>1,200 ر.س</td>
+                                <td>TRX-0011</td>
+                                <td>دفع رسوم تأشيرات</td>
+                            </tr>
+                            <tr>
+                                <td>15/06/2023 - 09:45</td>
+                                <td>أحمد محمد</td>
+                                <td>الصندوق الرئيسي</td>
+                                <td><span class="badge badge-danger">سحب</span></td>
+                                <td>2,000 ر.س</td>
+                                <td>TRX-0010</td>
+                                <td>دفع مستحقات شركة طيران</td>
+                            </tr>
+                            <tr>
+                                <td>15/06/2023 - 09:20</td>
+                                <td>فاطمة أحمد</td>
+                                <td>الصندوق النثري</td>
+                                <td><span class="badge badge-danger">سحب</span></td>
+                                <td>250 ر.س</td>
+                                <td>TRX-0009</td>
+                                <td>مصاريف ضيافة</td>
+                            </tr>
+                            <tr>
+                                <td>14/06/2023 - 16:30</td>
+                                <td>أحمد محمد</td>
+                                <td>الصندوق الرئيسي</td>
+                                <td><span class="badge badge-warning">تحويل</span></td>
+                                <td>5,000 ر.س</td>
+                                <td>TRX-0008</td>
+                                <td>تحويل من الصندوق الرئيسي إلى صندوق المبيعات</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <a href="javascript:void(0)" class="btn btn-sm btn-info float-left">عرض جميع العمليات</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal - إضافة صلاحية جديدة -->
+<div class="modal fade" id="modal-add-permission">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h4 class="modal-title">إضافة صلاحية جديدة للصندوق</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="permissionForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="cashboxSelect">اختر الصندوق <span class="text-danger">*</span></label>
+                                <select class="form-control" id="cashboxSelect" required>
+                                    <option value="">اختر الصندوق</option>
+                                    <option value="main">الصندوق الرئيسي</option>
+                                    <option value="sales">صندوق المبيعات</option>
+                                    <option value="expenses">صندوق المصروفات</option>
+                                    <option value="petty">الصندوق النثري</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="userSelect">اختر المستخدم <span class="text-danger">*</span></label>
+                                <select class="form-control select2" id="userSelect" required>
+                                    <option value="">اختر المستخدم</option>
+                                    <option value="1">أحمد محمد (مدير النظام)</option>
+                                    <option value="2">سارة عبدالله (محاسب)</option>
+                                    <option value="3">خالد عمر (موظف مبيعات)</option>
+                                    <option value="4">محمد علي (مندوب)</option>
+                                    <option value="5">فاطمة أحمد (سكرتيرة)</option>
+                                    <option value="6">عبدالله ناصر (فني)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="permissionRole">نوع الصلاحية <span class="text-danger">*</span></label>
+                                <select class="form-control" id="permissionRole" required>
+                                    <option value="">اختر نوع الصلاحية</option>
+                                    <option value="admin">مدير (كامل الصلاحيات)</option>
+                                    <option value="accountant">محاسب</option>
+                                    <option value="cashier">كاشير</option>
+                                    <option value="assistant">مساعد إداري</option>
+                                    <option value="readonly">اطلاع فقط</option>
+                                    <option value="custom">مخصص</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dailyLimit">الحد اليومي للعمليات</label>
+                                <div class="input-group">
+                                    <input type="number" min="0" step="100" class="form-control" id="dailyLimit" placeholder="أدخل الحد اليومي المسموح به">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">ر.س</div>
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">
+                                    اترك الحقل فارغاً لعدم تحديد حد أقصى
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card card-primary card-outline">
+                                <div class="card-header">
+                                    <h3 class="card-title">الصلاحيات التفصيلية</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row" id="customPermissions">
+                                        <div class="col-md-3">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="depositPermission" checked>
+                                                <label class="custom-control-label" for="depositPermission">الإيداع</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="withdrawPermission" checked>
+                                                <label class="custom-control-label" for="withdrawPermission">السحب</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="transferPermission" checked>
+                                                <label class="custom-control-label" for="transferPermission">التحويل</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="viewPermission" checked>
+                                                <label class="custom-control-label" for="viewPermission">الاطلاع</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-md-3">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="reportPermission">
+                                                <label class="custom-control-label" for="reportPermission">التقارير</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="reconciliationPermission">
+                                                <label class="custom-control-label" for="reconciliationPermission">المطابقة</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="closePermission">
+                                                <label class="custom-control-label" for="closePermission">إغلاق الصندوق</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="managePermission">
+                                                <label class="custom-control-label" for="managePermission">إدارة الصلاحيات</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="startDate">تاريخ بداية الصلاحية</label>
+                                <div class="input-group date" id="startDatePicker" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" id="startDate" data-target="#startDatePicker" placeholder="اختر تاريخ البداية">
+                                    <div class="input-group-append" data-target="#startDatePicker" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">
+                                    اتركه فارغاً لبدء الصلاحية فوراً
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="endDate">تاريخ انتهاء الصلاحية</label>
+                                <div class="input-group date" id="endDatePicker" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" id="endDate" data-target="#endDatePicker" placeholder="اختر تاريخ الانتهاء">
+                                    <div class="input-group-append" data-target="#endDatePicker" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">
+                                    اتركه فارغاً لتكون الصلاحية دائمة
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="permissionNotes">ملاحظات</label>
+                        <textarea class="form-control" id="permissionNotes" rows="3" placeholder="ملاحظات إضافية..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <button type="button" class="btn btn-success" id="savePermission">حفظ الصلاحية</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- Modal - تعديل صلاحية -->
+<div class="modal fade" id="modal-edit-permission">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h4 class="modal-title">تعديل صلاحية صندوق</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- نفس حقول النموذج السابق مع تعبئة البيانات الحالية -->
+                <form id="editPermissionForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editCashboxSelect">الصندوق <span class="text-danger">*</span></label>
+                                <select class="form-control" id="editCashboxSelect" required>
+                                    <option value="">اختر الصندوق</option>
+                                    <option value="main" selected>الصندوق الرئيسي</option>
+                                    <option value="sales">صندوق المبيعات</option>
+                                    <option value="expenses">صندوق المصروفات</option>
+                                    <option value="petty">الصندوق النثري</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editUserSelect">المستخدم <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <img src="https://adminlte.io/themes/v3/dist/img/user1-128x128.jpg" alt="صورة المستخدم" class="img-circle" style="width: 20px; height: 20px;">
+                                        </span>
+                                    </div>
+                                    <input type="text" class="form-control" value="أحمد محمد (مدير النظام)" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editPermissionRole">نوع الصلاحية <span class="text-danger">*</span></label>
+                                <select class="form-control" id="editPermissionRole" required>
+                                    <option value="">اختر نوع الصلاحية</option>
+                                    <option value="admin" selected>مدير (كامل الصلاحيات)</option>
+                                    <option value="accountant">محاسب</option>
+                                    <option value="cashier">كاشير</option>
+                                    <option value="assistant">مساعد إداري</option>
+                                    <option value="readonly">اطلاع فقط</option>
+                                    <option value="custom">مخصص</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editDailyLimit">الحد اليومي للعمليات</label>
+                                <div class="input-group">
+                                    <input type="number" min="0" step="100" class="form-control" id="editDailyLimit" placeholder="غير محدود">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">ر.س</div>
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">
+                                    اترك الحقل فارغاً لعدم تحديد حد أقصى
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card card-primary card-outline">
+                                <div class="card-header">
+                                    <h3 class="card-title">الصلاحيات التفصيلية</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row" id="editCustomPermissions">
+                                        <div class="col-md-3">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="editDepositPermission" checked>
+                                                <label class="custom-control-label" for="editDepositPermission">الإيداع</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="editWithdrawPermission" checked>
+                                                <label class="custom-control-label" for="editWithdrawPermission">السحب</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="editTransferPermission" checked>
+                                                <label class="custom-control-label" for="editTransferPermission">التحويل</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="editViewPermission" checked>
+                                                <label class="custom-control-label" for="editViewPermission">الاطلاع</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-md-3">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="editReportPermission" checked>
+                                                <label class="custom-control-label" for="editReportPermission">التقارير</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="editReconciliationPermission" checked>
+                                                <label class="custom-control-label" for="editReconciliationPermission">المطابقة</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="editClosePermission" checked>
+                                                <label class="custom-control-label" for="editClosePermission">إغلاق الصندوق</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="editManagePermission" checked>
+                                                <label class="custom-control-label" for="editManagePermission">إدارة الصلاحيات</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editStartDate">تاريخ بداية الصلاحية</label>
+                                <div class="input-group date" id="editStartDatePicker" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" id="editStartDate" data-target="#editStartDatePicker" value="01/01/2023">
+                                    <div class="input-group-append" data-target="#editStartDatePicker" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editEndDate">تاريخ انتهاء الصلاحية</label>
+                                <div class="input-group date" id="editEndDatePicker" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" id="editEndDate" data-target="#editEndDatePicker" placeholder="غير محدد">
+                                    <div class="input-group-append" data-target="#editEndDatePicker" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">
+                                    اتركه فارغاً لتكون الصلاحية دائمة
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPermissionNotes">ملاحظات</label>
+                        <textarea class="form-control" id="editPermissionNotes" rows="3">صلاحية كاملة لمدير النظام</textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>تاريخ الإضافة</label>
+                                <input type="text" class="form-control" value="01/01/2023" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>آخر تعديل</label>
+                                <input type="text" class="form-control" value="15/06/2023" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <div>
+                    <button type="button" class="btn btn-danger" id="disablePermission">تعطيل الصلاحية</button>
+                    <button type="button" class="btn btn-primary" id="updatePermission">تحديث</button>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- Modal - إدارة الصناديق -->
+<div class="modal fade" id="modal-manage-cashboxes">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h4 class="modal-title">إدارة الصناديق</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex justify-content-end mb-3">
+                    <button type="button" class="btn btn-success btn-sm" id="addNewCashbox">
+                        <i class="fas fa-plus ml-1"></i> إضافة صندوق جديد
+                    </button>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>رقم الصندوق</th>
+                                <th>اسم الصندوق</th>
+                                <th>نوع الصندوق</th>
+                                <th>الرصيد الحالي</th>
+                                <th>الحد الأقصى</th>
+                                <th>المستخدمين</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>الصندوق الرئيسي</td>
+                                <td>رئيسي</td>
+                                <td>15,320 ر.س</td>
+                                <td>غير محدود</td>
+                                <td>5</td>
+                                <td><span class="badge badge-success">نشط</span></td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-xs" id="editCashbox1">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-xs">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>صندوق المبيعات</td>
+                                <td>فرعي</td>
+                                <td>8,670 ر.س</td>
+                                <td>10,000 ر.س</td>
+                                <td>4</td>
+                                <td><span class="badge badge-success">نشط</span></td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-xs">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-xs">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>صندوق المصروفات</td>
+                                <td>فرعي</td>
+                                <td>2,430 ر.س</td>
+                                <td>5,000 ر.س</td>
+                                <td>3</td>
+                                <td><span class="badge badge-success">نشط</span></td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-xs">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-xs">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>الصندوق النثري</td>
+                                <td>نثري</td>
+                                <td>2,080 ر.س</td>
+                                <td>3,000 ر.س</td>
+                                <td>2</td>
+                                <td><span class="badge badge-success">نشط</span></td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-xs">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-xs">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- نموذج إضافة صندوق - يظهر بعد الضغط على زر الإضافة -->
+                <div id="cashboxForm" style="display: none;">
+                    <hr>
+                    <h5 class="text-primary mb-3">إضافة صندوق جديد</h5>
+                    <form>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="cashboxName">اسم الصندوق <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="cashboxName" placeholder="أدخل اسم الصندوق" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="cashboxType">نوع الصندوق <span class="text-danger">*</span></label>
+                                    <select class="form-control" id="cashboxType" required>
+                                        <option value="">اختر نوع الصندوق</option>
+                                        <option value="main">رئيسي</option>
+                                        <option value="branch">فرعي</option>
+                                        <option value="petty">نثري</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="initialBalance">الرصيد الافتتاحي</label>
+                                    <div class="input-group">
+                                        <input type="number" min="0" step="0.01" class="form-control" id="initialBalance" placeholder="أدخل الرصيد الافتتاحي">
+                                        <div class="input-group-append">
+                                            <div class="input-group-text">ر.س</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="maxLimit">الحد الأقصى للرصيد</label>
+                                    <div class="input-group">
+                                        <input type="number" min="0" step="0.01" class="form-control" id="maxLimit" placeholder="أدخل الحد الأقصى">
+                                        <div class="input-group-append">
+                                            <div class="input-group-text">ر.س</div>
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-muted">
+                                        اتركه فارغاً إذا كان غير محدود
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="cashboxCode">رمز الصندوق</label>
+                                    <input type="text" class="form-control" id="cashboxCode" placeholder="أدخل رمز الصندوق">
+                                    <small class="form-text text-muted">
+                                        رمز اختياري لتمييز الصندوق في التقارير
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="cashboxLocation">موقع الصندوق</label>
+                                    <input type="text" class="form-control" id="cashboxLocation" placeholder="أدخل موقع الصندوق">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="cashboxDescription">وصف الصندوق</label>
+                            <textarea class="form-control" id="cashboxDescription" rows="2" placeholder="وصف الصندوق والغرض منه..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="cashboxActive" checked>
+                                <label class="custom-control-label" for="cashboxActive">صندوق نشط</label>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-default mr-2" id="cancelCashbox">إلغاء</button>
+                            <button type="button" class="btn btn-success" id="saveCashbox">حفظ الصندوق</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(function () {
+        // تهيئة جدول البيانات
+        $('table').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Arabic.json"
+            }
+        });
+        
+        // تهيئة أداة اختيار التاريخ
+        $('.date').datetimepicker({
+            format: 'L',
+            locale: 'ar'
+        });
+        
+        // تهيئة select2
+        $('.select2').select2({
+            dir: "rtl",
+            language: "ar"
+        });
+        
+        // إدارة الصلاحيات التفصيلية عند تغيير نوع الصلاحية
+        $('#permissionRole').change(function() {
+            const role = $(this).val();
+            const permissionCheckboxes = $('#customPermissions input[type="checkbox"]');
+            
+            // إعادة تعيين جميع الصلاحيات
+            permissionCheckboxes.prop('checked', false);
+            
+            switch(role) {
+                case 'admin': // مدير يملك كل الصلاحيات
+                    permissionCheckboxes.prop('checked', true);
+                    $('#depositPermission, #withdrawPermission, #transferPermission, #viewPermission, #reportPermission, #reconciliationPermission, #closePermission, #managePermission').prop('checked', true);
+                    break;
+                case 'accountant': // محاسب
+                    $('#depositPermission, #withdrawPermission, #transferPermission, #viewPermission, #reportPermission, #reconciliationPermission').prop('checked', true);
+                    break;
+                case 'cashier': // كاشير
+                    $('#depositPermission, #viewPermission').prop('checked', true);
+                    break;
+                case 'assistant': // مساعد إداري
+                    $('#withdrawPermission, #viewPermission').prop('checked', true);
+                    break;
+                case 'readonly': // اطلاع فقط
+                    $('#viewPermission, #reportPermission').prop('checked', true);
+                    break;
+                // الحالة الافتراضية للمخصص - لا تغيير على الاختيارات الحالية
+            }
+        });
+        
+        // نفس السلوك لنموذج التعديل
+        $('#editPermissionRole').change(function() {
+            const role = $(this).val();
+            const permissionCheckboxes = $('#editCustomPermissions input[type="checkbox"]');
+            
+            // إعادة تعيين جميع الصلاحيات
+            permissionCheckboxes.prop('checked', false);
+            
+            switch(role) {
+                case 'admin':
+                    permissionCheckboxes.prop('checked', true);
+                    break;
+                case 'accountant':
+                    $('#editDepositPermission, #editWithdrawPermission, #editTransferPermission, #editViewPermission, #editReportPermission, #editReconciliationPermission').prop('checked', true);
+                    break;
+                case 'cashier':
+                    $('#editDepositPermission, #editViewPermission').prop('checked', true);
+                    break;
+                case 'assistant':
+                    $('#editWithdrawPermission, #editViewPermission').prop('checked', true);
+                    break;
+                case 'readonly':
+                    $('#editViewPermission, #editReportPermission').prop('checked', true);
+                    break;
+            }
+        });
+        
+        // التحقق من صحة النموذج عند النقر على زر الحفظ
+        $('#savePermission').click(function() {
+            var form = document.getElementById('permissionForm');
+            
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+                
+                // إظهار رسائل الخطأ
+                $(form).addClass('was-validated');
+            } else {
+                // هنا يتم إرسال البيانات إلى الخادم (في التطبيق الحقيقي)
+                alert('تم حفظ الصلاحية بنجاح');
+                $('#modal-add-permission').modal('hide');
+                
+                // إعادة تعيين النموذج
+                $(form).removeClass('was-validated');
+                form.reset();
+            }
+        });
+        
+        // التحقق من صحة نموذج التعديل عند النقر على زر التحديث
+        $('#updatePermission').click(function() {
+            var form = document.getElementById('editPermissionForm');
+            
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+                
+                // إظهار رسائل الخطأ
+                $(form).addClass('was-validated');
+            } else {
+                // هنا يتم إرسال البيانات إلى الخادم (في التطبيق الحقيقي)
+                alert('تم تحديث الصلاحية بنجاح');
+                $('#modal-edit-permission').modal('hide');
+            }
+        });
+        
+        // إدارة إضافة صندوق جديد
+        $('#addNewCashbox').click(function() {
+            $('#cashboxForm').slideDown();
+        });
+        
+        // إلغاء إضافة صندوق جديد
+        $('#cancelCashbox').click(function() {
+            $('#cashboxForm').slideUp();
+        });
+        
+        // حفظ الصندوق الجديد
+        $('#saveCashbox').click(function() {
+            alert('تم حفظ الصندوق بنجاح');
+            $('#cashboxForm').slideUp();
+        });
+        
+        // تعطيل الصلاحية
+        $('#disablePermission').click(function() {
+            if (confirm('هل أنت متأكد من تعطيل هذه الصلاحية؟')) {
+                alert('تم تعطيل الصلاحية بنجاح');
+                $('#modal-edit-permission').modal('hide');
+            }
+        });
+    });
+</script>
+{% endblock %}

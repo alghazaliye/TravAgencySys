@@ -1,0 +1,859 @@
+{% extends "layout.html" %}
+
+{% block title %}إدارة الدول{% endblock %}
+
+{% block content %}
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">إدارة الدول</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="/dashboard">الرئيسية</a></li>
+                    <li class="breadcrumb-item">إعدادات النظام</li>
+                    <li class="breadcrumb-item active">إدارة الدول</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- بطاقات الإحصائيات -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>195</h3>
+                        <p>إجمالي الدول</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>22</h3>
+                        <p>دول عربية</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>47</h3>
+                        <p>دول آسيوية</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-flag"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>3254</h3>
+                        <p>العملاء والموردين</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- أزرار الإجراءات -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-add-country">
+                    <i class="fas fa-plus ml-1"></i> إضافة دولة جديدة
+                </button>
+                <button type="button" class="btn btn-primary">
+                    <i class="fas fa-download ml-1"></i> تصدير إلى Excel
+                </button>
+                <button type="button" class="btn btn-info">
+                    <i class="fas fa-print ml-1"></i> طباعة
+                </button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
+                        <i class="fas fa-filter ml-1"></i> تصفية
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">جميع الدول</a>
+                        <a class="dropdown-item" href="#">دول عربية</a>
+                        <a class="dropdown-item" href="#">دول آسيوية</a>
+                        <a class="dropdown-item" href="#">دول أوروبية</a>
+                        <a class="dropdown-item" href="#">دول أفريقية</a>
+                        <a class="dropdown-item" href="#">دول أمريكا الشمالية</a>
+                        <a class="dropdown-item" href="#">دول أمريكا الجنوبية</a>
+                        <a class="dropdown-item" href="#">دول أوقيانوسيا</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- جدول الدول -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">قائمة الدول</h3>
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 200px;">
+                        <input type="text" name="table_search" class="form-control float-right" placeholder="بحث...">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-default">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>الرقم</th>
+                            <th>العلم</th>
+                            <th>اسم الدولة (عربي)</th>
+                            <th>اسم الدولة (إنجليزي)</th>
+                            <th>رمز ISO</th>
+                            <th>رمز الهاتف</th>
+                            <th>القارة</th>
+                            <th>العملة</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><img src="https://flagcdn.com/16x12/sa.png" alt="علم السعودية"></td>
+                            <td>المملكة العربية السعودية</td>
+                            <td>Saudi Arabia</td>
+                            <td>SA</td>
+                            <td>+966</td>
+                            <td>آسيا</td>
+                            <td>ريال سعودي (SAR)</td>
+                            <td><span class="badge badge-success">نشط</span></td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#modal-view-country">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal-edit-country">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><img src="https://flagcdn.com/16x12/ae.png" alt="علم الإمارات"></td>
+                            <td>الإمارات العربية المتحدة</td>
+                            <td>United Arab Emirates</td>
+                            <td>AE</td>
+                            <td>+971</td>
+                            <td>آسيا</td>
+                            <td>درهم إماراتي (AED)</td>
+                            <td><span class="badge badge-success">نشط</span></td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td><img src="https://flagcdn.com/16x12/eg.png" alt="علم مصر"></td>
+                            <td>جمهورية مصر العربية</td>
+                            <td>Egypt</td>
+                            <td>EG</td>
+                            <td>+20</td>
+                            <td>أفريقيا</td>
+                            <td>جنيه مصري (EGP)</td>
+                            <td><span class="badge badge-success">نشط</span></td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td><img src="https://flagcdn.com/16x12/kw.png" alt="علم الكويت"></td>
+                            <td>دولة الكويت</td>
+                            <td>Kuwait</td>
+                            <td>KW</td>
+                            <td>+965</td>
+                            <td>آسيا</td>
+                            <td>دينار كويتي (KWD)</td>
+                            <td><span class="badge badge-success">نشط</span></td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td><img src="https://flagcdn.com/16x12/us.png" alt="علم أمريكا"></td>
+                            <td>الولايات المتحدة الأمريكية</td>
+                            <td>United States</td>
+                            <td>US</td>
+                            <td>+1</td>
+                            <td>أمريكا الشمالية</td>
+                            <td>دولار أمريكي (USD)</td>
+                            <td><span class="badge badge-success">نشط</span></td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-left">
+                    <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- الخريطة العالمية -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">الخريطة العالمية للدول</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="world-map" style="height: 400px;">
+                            <!-- هنا ستكون الخريطة في التطبيق الحقيقي -->
+                            <div class="text-center p-5 bg-light">
+                                <i class="fas fa-globe fa-5x text-info mb-3"></i>
+                                <p class="lead">الخريطة العالمية التفاعلية</p>
+                                <p class="text-muted">في التطبيق الفعلي، ستظهر هنا خريطة تفاعلية للعالم تعرض الدول المدعومة في النظام</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal - إضافة دولة جديدة -->
+<div class="modal fade" id="modal-add-country">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h4 class="modal-title">إضافة دولة جديدة</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="countryForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="countryNameAr">اسم الدولة (عربي) <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="countryNameAr" placeholder="أدخل اسم الدولة باللغة العربية" required>
+                                <div class="invalid-feedback">
+                                    يرجى إدخال اسم الدولة باللغة العربية
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="countryNameEn">اسم الدولة (إنجليزي) <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="countryNameEn" placeholder="أدخل اسم الدولة باللغة الإنجليزية" required>
+                                <div class="invalid-feedback">
+                                    يرجى إدخال اسم الدولة باللغة الإنجليزية
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="countryCode">رمز الدولة (ISO) <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="countryCode" placeholder="مثال: SA" required maxlength="2">
+                                <small class="form-text text-muted">
+                                    رمز ISO ثنائي الحروف (حرفين)
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="countryIso3">رمز ISO-3</label>
+                                <input type="text" class="form-control" id="countryIso3" placeholder="مثال: SAU" maxlength="3">
+                                <small class="form-text text-muted">
+                                    رمز ISO ثلاثي الحروف (3 أحرف)
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="countryCode">رمز الهاتف الدولي <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">+</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="phoneCode" placeholder="مثال: 966" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="continent">القارة <span class="text-danger">*</span></label>
+                                <select class="form-control" id="continent" required>
+                                    <option value="">اختر القارة</option>
+                                    <option value="asia">آسيا</option>
+                                    <option value="africa">أفريقيا</option>
+                                    <option value="europe">أوروبا</option>
+                                    <option value="north_america">أمريكا الشمالية</option>
+                                    <option value="south_america">أمريكا الجنوبية</option>
+                                    <option value="australia">أوقيانوسيا</option>
+                                    <option value="antarctica">القارة القطبية الجنوبية</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="currencyName">اسم العملة</label>
+                                <input type="text" class="form-control" id="currencyName" placeholder="مثال: ريال سعودي">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="currencyCode">رمز العملة</label>
+                                <input type="text" class="form-control" id="currencyCode" placeholder="مثال: SAR">
+                                <small class="form-text text-muted">
+                                    رمز ISO للعملة (3 أحرف)
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="currencySymbol">رمز العملة المختصر</label>
+                                <input type="text" class="form-control" id="currencySymbol" placeholder="مثال: ر.س">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="countryFlag">علم الدولة</label>
+                                <div class="input-group">
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="countryFlag">
+                                        <label class="custom-file-label" for="countryFlag">اختر ملف العلم</label>
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">
+                                    صيغ الملفات المقبولة: PNG, JPG, SVG - الحجم الأقصى: 1MB
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="countryStatus">الحالة</label>
+                                <select class="form-control" id="countryStatus">
+                                    <option value="active" selected>نشط</option>
+                                    <option value="inactive">غير نشط</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="countryDescription">وصف الدولة</label>
+                                <textarea class="form-control" id="countryDescription" rows="3" placeholder="معلومات إضافية عن الدولة..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="isArabCountry">
+                                <label class="custom-control-label" for="isArabCountry">دولة عربية</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="isGccCountry">
+                                <label class="custom-control-label" for="isGccCountry">دولة خليجية</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="visaRequired">
+                                <label class="custom-control-label" for="visaRequired">تحتاج تأشيرة</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <button type="button" class="btn btn-success" id="saveCountry">حفظ</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- Modal - تعديل دولة -->
+<div class="modal fade" id="modal-edit-country">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h4 class="modal-title">تعديل بيانات دولة</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- نفس حقول النموذج السابق مع تعبئة البيانات الحالية -->
+                <form id="editCountryForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editCountryNameAr">اسم الدولة (عربي) <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="editCountryNameAr" value="المملكة العربية السعودية" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editCountryNameEn">اسم الدولة (إنجليزي) <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="editCountryNameEn" value="Saudi Arabia" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="editCountryCode">رمز الدولة (ISO) <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="editCountryCode" value="SA" required maxlength="2">
+                                <small class="form-text text-muted">
+                                    رمز ISO ثنائي الحروف (حرفين)
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="editCountryIso3">رمز ISO-3</label>
+                                <input type="text" class="form-control" id="editCountryIso3" value="SAU" maxlength="3">
+                                <small class="form-text text-muted">
+                                    رمز ISO ثلاثي الحروف (3 أحرف)
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="editPhoneCode">رمز الهاتف الدولي <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">+</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="editPhoneCode" value="966" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="editContinent">القارة <span class="text-danger">*</span></label>
+                                <select class="form-control" id="editContinent" required>
+                                    <option value="">اختر القارة</option>
+                                    <option value="asia" selected>آسيا</option>
+                                    <option value="africa">أفريقيا</option>
+                                    <option value="europe">أوروبا</option>
+                                    <option value="north_america">أمريكا الشمالية</option>
+                                    <option value="south_america">أمريكا الجنوبية</option>
+                                    <option value="australia">أوقيانوسيا</option>
+                                    <option value="antarctica">القارة القطبية الجنوبية</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editCurrencyName">اسم العملة</label>
+                                <input type="text" class="form-control" id="editCurrencyName" value="ريال سعودي">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="editCurrencyCode">رمز العملة</label>
+                                <input type="text" class="form-control" id="editCurrencyCode" value="SAR">
+                                <small class="form-text text-muted">
+                                    رمز ISO للعملة (3 أحرف)
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="editCurrencySymbol">رمز العملة المختصر</label>
+                                <input type="text" class="form-control" id="editCurrencySymbol" value="ر.س">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editCountryFlag">علم الدولة</label>
+                                <div class="input-group">
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="editCountryFlag">
+                                        <label class="custom-file-label" for="editCountryFlag">تغيير علم الدولة</label>
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">
+                                    صيغ الملفات المقبولة: PNG, JPG, SVG - الحجم الأقصى: 1MB
+                                </small>
+                                <div class="mt-2">
+                                    <img src="https://flagcdn.com/48x36/sa.png" alt="علم السعودية" class="border">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editCountryStatus">الحالة</label>
+                                <select class="form-control" id="editCountryStatus">
+                                    <option value="active" selected>نشط</option>
+                                    <option value="inactive">غير نشط</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="editCountryDescription">وصف الدولة</label>
+                                <textarea class="form-control" id="editCountryDescription" rows="3">المملكة العربية السعودية هي أكبر دولة في شبه الجزيرة العربية.</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="editIsArabCountry" checked>
+                                <label class="custom-control-label" for="editIsArabCountry">دولة عربية</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="editIsGccCountry" checked>
+                                <label class="custom-control-label" for="editIsGccCountry">دولة خليجية</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="editVisaRequired">
+                                <label class="custom-control-label" for="editVisaRequired">تحتاج تأشيرة</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <button type="button" class="btn btn-primary" id="updateCountry">تحديث</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- Modal - عرض دولة -->
+<div class="modal fade" id="modal-view-country">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h4 class="modal-title">عرض بيانات الدولة</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="invoice p-3 mb-3">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>
+                                        <i class="fas fa-globe ml-2"></i> المملكة العربية السعودية
+                                        <small class="float-left">رمز الدولة: SA</small>
+                                    </h4>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3 class="card-title">التفاصيل الأساسية</h3>
+                                        </div>
+                                        <div class="card-body p-0">
+                                            <table class="table">
+                                                <tbody>
+                                                    <tr>
+                                                        <th style="width:50%">اسم الدولة (عربي):</th>
+                                                        <td>المملكة العربية السعودية</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>اسم الدولة (إنجليزي):</th>
+                                                        <td>Saudi Arabia</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>رمز الدولة (ISO):</th>
+                                                        <td>SA</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>رمز الدولة (ISO-3):</th>
+                                                        <td>SAU</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>القارة:</th>
+                                                        <td>آسيا</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3 class="card-title">معلومات إضافية</h3>
+                                        </div>
+                                        <div class="card-body p-0">
+                                            <table class="table">
+                                                <tbody>
+                                                    <tr>
+                                                        <th style="width:50%">رمز الهاتف:</th>
+                                                        <td>+966</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>العملة:</th>
+                                                        <td>ريال سعودي (SAR)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>رمز العملة:</th>
+                                                        <td>ر.س</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>دولة عربية:</th>
+                                                        <td>نعم</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>دولة خليجية:</th>
+                                                        <td>نعم</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <h5 class="mb-3">علم الدولة</h5>
+                                    <div class="text-center">
+                                        <img src="https://flagcdn.com/192x144/sa.png" alt="علم المملكة العربية السعودية" class="img-fluid border">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5 class="mb-3">وصف الدولة</h5>
+                                    <div class="callout callout-info">
+                                        <p>المملكة العربية السعودية هي أكبر دولة في شبه الجزيرة العربية، تقع في جنوب غرب آسيا، وتضم أراضيها الجزء الأكبر من شبه الجزيرة العربية.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5 class="mb-3">إحصائيات</h5>
+                                    <div class="row">
+                                        <div class="col-md-3 col-sm-6 col-12">
+                                            <div class="info-box bg-info">
+                                                <span class="info-box-icon"><i class="fas fa-user"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">العملاء</span>
+                                                    <span class="info-box-number">153</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-sm-6 col-12">
+                                            <div class="info-box bg-success">
+                                                <span class="info-box-icon"><i class="fas fa-truck"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">الموردين</span>
+                                                    <span class="info-box-number">25</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-sm-6 col-12">
+                                            <div class="info-box bg-warning">
+                                                <span class="info-box-icon"><i class="fas fa-plane"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">الرحلات</span>
+                                                    <span class="info-box-number">78</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-sm-6 col-12">
+                                            <div class="info-box bg-danger">
+                                                <span class="info-box-icon"><i class="fas fa-file-invoice-dollar"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">الفواتير</span>
+                                                    <span class="info-box-number">254</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <div>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#modal-edit-country">
+                        <i class="fas fa-edit"></i> تعديل
+                    </button>
+                    <button type="button" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> حذف
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(function () {
+        // تهيئة جدول البيانات
+        $('table').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Arabic.json"
+            }
+        });
+        
+        // التحقق من صحة النموذج عند النقر على زر الحفظ
+        $('#saveCountry').click(function() {
+            var form = document.getElementById('countryForm');
+            
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+                
+                // إظهار رسائل الخطأ
+                $(form).addClass('was-validated');
+            } else {
+                // هنا يتم إرسال البيانات إلى الخادم (في التطبيق الحقيقي)
+                alert('تم حفظ الدولة بنجاح');
+                $('#modal-add-country').modal('hide');
+                
+                // إعادة تعيين النموذج
+                $(form).removeClass('was-validated');
+                form.reset();
+            }
+        });
+        
+        // التحقق من صحة نموذج التعديل عند النقر على زر التحديث
+        $('#updateCountry').click(function() {
+            var form = document.getElementById('editCountryForm');
+            
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+                
+                // إظهار رسائل الخطأ
+                $(form).addClass('was-validated');
+            } else {
+                // هنا يتم إرسال البيانات إلى الخادم (في التطبيق الحقيقي)
+                alert('تم تحديث بيانات الدولة بنجاح');
+                $('#modal-edit-country').modal('hide');
+            }
+        });
+        
+        // تغيير تسمية حقل اختيار الملف عند اختيار ملف العلم
+        $('.custom-file-input').on('change', function() {
+            var fileName = $(this).val().split('\\').pop();
+            $(this).next('.custom-file-label').addClass("selected").html(fileName || 'اختر ملف العلم');
+        });
+    });
+</script>
+{% endblock %}

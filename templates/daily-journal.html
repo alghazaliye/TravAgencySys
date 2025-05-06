@@ -1,0 +1,1171 @@
+{% extends "layout.html" %}
+
+{% block title %}القيود اليومية{% endblock %}
+
+{% block content %}
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">القيود اليومية</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="/dashboard">الرئيسية</a></li>
+                    <li class="breadcrumb-item">الإدارة المالية</li>
+                    <li class="breadcrumb-item active">القيود اليومية</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- بطاقات الإحصائيات -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>35</h3>
+                        <p>إجمالي القيود اليوم</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>42,500 <span class="h5">ر.س</span></h3>
+                        <p>إجمالي المدين</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>42,500 <span class="h5">ر.س</span></h3>
+                        <p>إجمالي الدائن</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-hand-holding"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>0 <span class="h5">ر.س</span></h3>
+                        <p>فرق الميزان</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- أدوات التصفية والبحث -->
+        <div class="card card-outline card-primary">
+            <div class="card-header">
+                <h3 class="card-title">البحث والتصفية</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="journalType">نوع القيد</label>
+                                <select class="form-control" id="journalType">
+                                    <option value="all" selected>جميع القيود</option>
+                                    <option value="sales">المبيعات</option>
+                                    <option value="purchase">المشتريات</option>
+                                    <option value="expense">المصروفات</option>
+                                    <option value="receipt">سندات القبض</option>
+                                    <option value="payment">سندات الصرف</option>
+                                    <option value="bank">العمليات البنكية</option>
+                                    <option value="adjustment">تسويات جردية</option>
+                                    <option value="manual">قيود يدوية</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="dateFrom">من تاريخ</label>
+                                <div class="input-group date" id="dateFromPicker" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" id="dateFrom" data-target="#dateFromPicker" placeholder="DD/MM/YYYY">
+                                    <div class="input-group-append" data-target="#dateFromPicker" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="dateTo">إلى تاريخ</label>
+                                <div class="input-group date" id="dateToPicker" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" id="dateTo" data-target="#dateToPicker" placeholder="DD/MM/YYYY">
+                                    <div class="input-group-append" data-target="#dateToPicker" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="journalStatus">حالة القيد</label>
+                                <select class="form-control" id="journalStatus">
+                                    <option value="all" selected>جميع الحالات</option>
+                                    <option value="posted">مرحّل</option>
+                                    <option value="draft">مسودة</option>
+                                    <option value="cancelled">ملغي</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="searchAccount">البحث في الحسابات</label>
+                                <select class="form-control select2" id="searchAccount" data-placeholder="اختر الحساب">
+                                    <option value=""></option>
+                                    <option value="101">الصندوق الرئيسي</option>
+                                    <option value="102">البنك الرئيسي</option>
+                                    <option value="201">المبيعات</option>
+                                    <option value="301">المشتريات</option>
+                                    <option value="401">المصروفات العامة</option>
+                                    <option value="501">الذمم المدينة - العملاء</option>
+                                    <option value="601">الذمم الدائنة - الموردين</option>
+                                    <option value="701">الأصول الثابتة</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="searchKeyword">بحث</label>
+                                <input type="text" class="form-control" id="searchKeyword" placeholder="بحث بالوصف، الرقم...">
+                            </div>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <div class="form-group w-100">
+                                <button type="button" class="btn btn-primary btn-block">
+                                    <i class="fas fa-search ml-1"></i> بحث
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- الأزرار والإجراءات -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-add-journal">
+                    <i class="fas fa-plus ml-1"></i> قيد جديد
+                </button>
+                <button type="button" class="btn btn-info">
+                    <i class="fas fa-copy ml-1"></i> نسخ القيد
+                </button>
+                <button type="button" class="btn btn-danger">
+                    <i class="fas fa-minus ml-1"></i> قيد عكسي
+                </button>
+                <button type="button" class="btn btn-primary">
+                    <i class="fas fa-file-export ml-1"></i> تصدير إلى Excel
+                </button>
+                <button type="button" class="btn btn-warning">
+                    <i class="fas fa-print ml-1"></i> طباعة القيود
+                </button>
+                <button type="button" class="btn btn-secondary">
+                    <i class="fas fa-tasks ml-1"></i> ترحيل القيود
+                </button>
+            </div>
+        </div>
+        
+        <!-- جدول القيود اليومية -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">سجل القيود اليومية</h3>
+                <div class="card-tools">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-tool dropdown-toggle" data-toggle="dropdown">
+                            <i class="fas fa-filter"></i> الفلترة
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" role="menu">
+                            <a href="#" class="dropdown-item">قيود اليوم</a>
+                            <a href="#" class="dropdown-item">قيود الأسبوع</a>
+                            <a href="#" class="dropdown-item">قيود الشهر</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item">القيود المرحلة</a>
+                            <a href="#" class="dropdown-item">القيود غير المرحلة</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>رقم القيد</th>
+                            <th>التاريخ</th>
+                            <th>نوع القيد</th>
+                            <th>الوصف</th>
+                            <th>المدين</th>
+                            <th>الدائن</th>
+                            <th>المرجع</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>JE-0035</td>
+                            <td>15/06/2023</td>
+                            <td><span class="badge badge-primary">مبيعات</span></td>
+                            <td>بيع تذاكر طيران - فاتورة رقم INV-0025</td>
+                            <td>3,500 ر.س</td>
+                            <td>3,500 ر.س</td>
+                            <td><a href="#" data-toggle="tooltip" title="فاتورة مبيعات">INV-0025</a></td>
+                            <td><span class="badge badge-success">مرحّل</span></td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#modal-view-journal">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-default btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>JE-0034</td>
+                            <td>15/06/2023</td>
+                            <td><span class="badge badge-danger">مشتريات</span></td>
+                            <td>شراء تذاكر طيران - فاتورة رقم PO-0017</td>
+                            <td>2,000 ر.س</td>
+                            <td>2,000 ر.س</td>
+                            <td><a href="#" data-toggle="tooltip" title="فاتورة مشتريات">PO-0017</a></td>
+                            <td><span class="badge badge-success">مرحّل</span></td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-default btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>JE-0033</td>
+                            <td>14/06/2023</td>
+                            <td><span class="badge badge-success">سند قبض</span></td>
+                            <td>دفعة من العميل أحمد محمد - ايصال رقم REC-0021</td>
+                            <td>5,000 ر.س</td>
+                            <td>5,000 ر.س</td>
+                            <td><a href="#" data-toggle="tooltip" title="سند قبض">REC-0021</a></td>
+                            <td><span class="badge badge-success">مرحّل</span></td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-default btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>JE-0032</td>
+                            <td>14/06/2023</td>
+                            <td><span class="badge badge-warning">سند صرف</span></td>
+                            <td>دفع مستحقات شركة الخطوط السعودية - سند صرف رقم PV-0019</td>
+                            <td>12,000 ر.س</td>
+                            <td>12,000 ر.س</td>
+                            <td><a href="#" data-toggle="tooltip" title="سند صرف">PV-0019</a></td>
+                            <td><span class="badge badge-success">مرحّل</span></td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-default btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>JE-0031</td>
+                            <td>13/06/2023</td>
+                            <td><span class="badge badge-info">بنكي</span></td>
+                            <td>إيداع في حساب البنك الرئيسي - إيصال بنكي رقم BTX-0025</td>
+                            <td>20,000 ر.س</td>
+                            <td>20,000 ر.س</td>
+                            <td><a href="#" data-toggle="tooltip" title="عملية بنكية">BTX-0025</a></td>
+                            <td><span class="badge badge-success">مرحّل</span></td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-default btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-left">
+                    <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- ميزان المراجعة -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">ميزان المراجعة (اليوم)</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>رقم الحساب</th>
+                                        <th>اسم الحساب</th>
+                                        <th>مدين</th>
+                                        <th>دائن</th>
+                                        <th>الرصيد</th>
+                                        <th>نوع الرصيد</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>101</td>
+                                        <td>الصندوق الرئيسي</td>
+                                        <td>8,500 ر.س</td>
+                                        <td>3,200 ر.س</td>
+                                        <td>5,300 ر.س</td>
+                                        <td><span class="badge badge-success">مدين</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>102</td>
+                                        <td>البنك الرئيسي</td>
+                                        <td>20,000 ر.س</td>
+                                        <td>12,000 ر.س</td>
+                                        <td>8,000 ر.س</td>
+                                        <td><span class="badge badge-success">مدين</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>201</td>
+                                        <td>المبيعات</td>
+                                        <td>0 ر.س</td>
+                                        <td>3,500 ر.س</td>
+                                        <td>3,500 ر.س</td>
+                                        <td><span class="badge badge-danger">دائن</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>301</td>
+                                        <td>المشتريات</td>
+                                        <td>2,000 ر.س</td>
+                                        <td>0 ر.س</td>
+                                        <td>2,000 ر.س</td>
+                                        <td><span class="badge badge-success">مدين</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>501</td>
+                                        <td>الذمم المدينة - العملاء</td>
+                                        <td>3,500 ر.س</td>
+                                        <td>5,000 ر.س</td>
+                                        <td>1,500 ر.س</td>
+                                        <td><span class="badge badge-danger">دائن</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>601</td>
+                                        <td>الذمم الدائنة - الموردين</td>
+                                        <td>12,000 ر.س</td>
+                                        <td>2,000 ر.س</td>
+                                        <td>10,000 ر.س</td>
+                                        <td><span class="badge badge-success">مدين</span></td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr class="table-secondary">
+                                        <th colspan="2">المجموع</th>
+                                        <th>46,000 ر.س</th>
+                                        <th>25,700 ر.س</th>
+                                        <th>20,300 ر.س</th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal - إضافة قيد جديد -->
+<div class="modal fade" id="modal-add-journal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h4 class="modal-title">إضافة قيد محاسبي جديد</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="journalNumber">رقم القيد</label>
+                                <input type="text" class="form-control" id="journalNumber" placeholder="يتم إنشاؤه تلقائياً" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="journalDate">تاريخ القيد</label>
+                                <div class="input-group date" id="journalDatePicker" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" id="journalDate" data-target="#journalDatePicker" value="{{ current_date }}" required>
+                                    <div class="input-group-append" data-target="#journalDatePicker" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="journalEntryType">نوع القيد</label>
+                                <select class="form-control" id="journalEntryType" required>
+                                    <option value="">اختر نوع القيد</option>
+                                    <option value="manual">قيد يدوي</option>
+                                    <option value="sales">مبيعات</option>
+                                    <option value="purchase">مشتريات</option>
+                                    <option value="expense">مصروفات</option>
+                                    <option value="receipt">سند قبض</option>
+                                    <option value="payment">سند صرف</option>
+                                    <option value="bank">عملية بنكية</option>
+                                    <option value="adjustment">تسوية جردية</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="journalCurrency">العملة</label>
+                                <select class="form-control" id="journalCurrency" required>
+                                    <option value="SAR" selected>ريال سعودي (ر.س)</option>
+                                    <option value="USD">دولار أمريكي ($)</option>
+                                    <option value="EUR">يورو (€)</option>
+                                    <option value="AED">درهم إماراتي (د.إ)</option>
+                                    <option value="KWD">دينار كويتي (د.ك)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="journalDescription">وصف القيد</label>
+                                <input type="text" class="form-control" id="journalDescription" placeholder="وصف مختصر للقيد المحاسبي" required>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="journalReference">المرجع</label>
+                                <input type="text" class="form-control" id="journalReference" placeholder="رقم الفاتورة أو المستند">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="journalStatus">حالة القيد</label>
+                                <select class="form-control" id="journalStatus" required>
+                                    <option value="draft" selected>مسودة</option>
+                                    <option value="posted">مرحّل</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    <h5 class="mb-3">تفاصيل القيد</h5>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="journalDetailsTable">
+                            <thead>
+                                <tr>
+                                    <th style="width: 30%">الحساب</th>
+                                    <th style="width: 25%">الوصف</th>
+                                    <th style="width: 15%">مدين</th>
+                                    <th style="width: 15%">دائن</th>
+                                    <th style="width: 15%">الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="journalRow1">
+                                    <td>
+                                        <select class="form-control select2" name="account[]" required>
+                                            <option value="">اختر الحساب</option>
+                                            <optgroup label="الحسابات النقدية">
+                                                <option value="101">الصندوق الرئيسي</option>
+                                                <option value="102">البنك الرئيسي</option>
+                                            </optgroup>
+                                            <optgroup label="الإيرادات">
+                                                <option value="201">المبيعات</option>
+                                                <option value="202">إيرادات أخرى</option>
+                                            </optgroup>
+                                            <optgroup label="المصاريف">
+                                                <option value="301">المشتريات</option>
+                                                <option value="401">المصروفات العامة</option>
+                                            </optgroup>
+                                            <optgroup label="الذمم">
+                                                <option value="501">الذمم المدينة - العملاء</option>
+                                                <option value="601">الذمم الدائنة - الموردين</option>
+                                            </optgroup>
+                                            <optgroup label="الأصول">
+                                                <option value="701">الأصول الثابتة</option>
+                                            </optgroup>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" name="description[]" placeholder="وصف مختصر">
+                                    </td>
+                                    <td>
+                                        <input type="number" min="0" step="0.01" class="form-control journal-debit" name="debit[]" placeholder="0.00" onchange="calculateJournalTotals()">
+                                    </td>
+                                    <td>
+                                        <input type="number" min="0" step="0.01" class="form-control journal-credit" name="credit[]" placeholder="0.00" onchange="calculateJournalTotals()">
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="removeJournalRow('journalRow1')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr id="journalRow2">
+                                    <td>
+                                        <select class="form-control select2" name="account[]" required>
+                                            <option value="">اختر الحساب</option>
+                                            <optgroup label="الحسابات النقدية">
+                                                <option value="101">الصندوق الرئيسي</option>
+                                                <option value="102">البنك الرئيسي</option>
+                                            </optgroup>
+                                            <optgroup label="الإيرادات">
+                                                <option value="201">المبيعات</option>
+                                                <option value="202">إيرادات أخرى</option>
+                                            </optgroup>
+                                            <optgroup label="المصاريف">
+                                                <option value="301">المشتريات</option>
+                                                <option value="401">المصروفات العامة</option>
+                                            </optgroup>
+                                            <optgroup label="الذمم">
+                                                <option value="501">الذمم المدينة - العملاء</option>
+                                                <option value="601">الذمم الدائنة - الموردين</option>
+                                            </optgroup>
+                                            <optgroup label="الأصول">
+                                                <option value="701">الأصول الثابتة</option>
+                                            </optgroup>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" name="description[]" placeholder="وصف مختصر">
+                                    </td>
+                                    <td>
+                                        <input type="number" min="0" step="0.01" class="form-control journal-debit" name="debit[]" placeholder="0.00" onchange="calculateJournalTotals()">
+                                    </td>
+                                    <td>
+                                        <input type="number" min="0" step="0.01" class="form-control journal-credit" name="credit[]" placeholder="0.00" onchange="calculateJournalTotals()">
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="removeJournalRow('journalRow2')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr class="table-secondary">
+                                    <td colspan="2">
+                                        <button type="button" class="btn btn-primary btn-sm" onclick="addJournalRow()">
+                                            <i class="fas fa-plus"></i> إضافة سطر
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <strong>المجموع</strong>: <span id="totalDebit">0.00</span> ر.س
+                                    </td>
+                                    <td>
+                                        <strong>المجموع</strong>: <span id="totalCredit">0.00</span> ر.س
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-warning" id="balanceBadge">غير متزن</span>
+                                        <span id="balanceDifference">الفرق: 0.00 ر.س</span>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    
+                    <div class="form-group mt-3">
+                        <label for="journalNotes">ملاحظات</label>
+                        <textarea class="form-control" id="journalNotes" rows="3" placeholder="ملاحظات إضافية..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="journalAttachment">إرفاق مستند</label>
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="journalAttachment">
+                                <label class="custom-file-label" for="journalAttachment">اختر ملفًا...</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <div>
+                    <button type="button" class="btn btn-secondary" id="saveAsDraft">حفظ كمسودة</button>
+                    <button type="button" class="btn btn-success" id="saveAndPost">حفظ وترحيل</button>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- Modal - عرض القيد -->
+<div class="modal fade" id="modal-view-journal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h4 class="modal-title">عرض تفاصيل القيد المحاسبي</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="invoice p-3 mb-3">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>
+                                        <i class="fas fa-book ml-2"></i> قيد محاسبي رقم: JE-0035
+                                        <small class="float-left">تاريخ القيد: 15/06/2023</small>
+                                    </h4>
+                                </div>
+                            </div>
+                            
+                            <div class="row invoice-info mt-3">
+                                <div class="col-sm-4 invoice-col">
+                                    <b>معلومات القيد</b><br>
+                                    <strong>نوع القيد:</strong> <span class="badge badge-primary">مبيعات</span><br>
+                                    <strong>حالة القيد:</strong> <span class="badge badge-success">مرحّل</span><br>
+                                    <strong>تاريخ الترحيل:</strong> 15/06/2023<br>
+                                </div>
+                                
+                                <div class="col-sm-4 invoice-col">
+                                    <b>الوصف</b><br>
+                                    <p>بيع تذاكر طيران - فاتورة رقم INV-0025</p>
+                                </div>
+                                
+                                <div class="col-sm-4 invoice-col">
+                                    <b>المرجع</b><br>
+                                    <strong>رقم المرجع:</strong> <a href="#">INV-0025</a><br>
+                                    <strong>نوع المرجع:</strong> فاتورة مبيعات<br>
+                                    <strong>مدخل بواسطة:</strong> أحمد محمد<br>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-12 table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>رقم الحساب</th>
+                                                <th>اسم الحساب</th>
+                                                <th>الوصف</th>
+                                                <th>مدين</th>
+                                                <th>دائن</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>101</td>
+                                                <td>الصندوق الرئيسي</td>
+                                                <td>استلام قيمة مبيعات</td>
+                                                <td>3,500 ر.س</td>
+                                                <td>0 ر.س</td>
+                                            </tr>
+                                            <tr>
+                                                <td>201</td>
+                                                <td>المبيعات</td>
+                                                <td>قيمة تذاكر طيران</td>
+                                                <td>0 ر.س</td>
+                                                <td>3,500 ر.س</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="3">المجموع</th>
+                                                <th>3,500 ر.س</th>
+                                                <th>3,500 ر.س</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <h5 class="mb-3">ملاحظات</h5>
+                                    <div class="callout callout-info">
+                                        <p>تم إصدار فاتورة بيع تذاكر طيران للعميل أحمد محمد السيد بتاريخ 15/06/2023</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <h5 class="mb-3">المرفقات</h5>
+                                    <ul class="list-group">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            فاتورة المبيعات.pdf
+                                            <button class="btn btn-sm btn-primary">تحميل</button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <div>
+                    <button type="button" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> تعديل
+                    </button>
+                    <button type="button" class="btn btn-danger">
+                        <i class="fas fa-minus"></i> قيد عكسي
+                    </button>
+                    <button type="button" class="btn btn-info">
+                        <i class="fas fa-print"></i> طباعة
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // متغير لتتبع عدد الصفوف في القيد
+    let journalRowCount = 2;
+    
+    // دالة لإضافة سطر جديد للقيد
+    function addJournalRow() {
+        journalRowCount++;
+        const rowId = 'journalRow' + journalRowCount;
+        
+        const newRow = `
+            <tr id="${rowId}">
+                <td>
+                    <select class="form-control select2" name="account[]" required>
+                        <option value="">اختر الحساب</option>
+                        <optgroup label="الحسابات النقدية">
+                            <option value="101">الصندوق الرئيسي</option>
+                            <option value="102">البنك الرئيسي</option>
+                        </optgroup>
+                        <optgroup label="الإيرادات">
+                            <option value="201">المبيعات</option>
+                            <option value="202">إيرادات أخرى</option>
+                        </optgroup>
+                        <optgroup label="المصاريف">
+                            <option value="301">المشتريات</option>
+                            <option value="401">المصروفات العامة</option>
+                        </optgroup>
+                        <optgroup label="الذمم">
+                            <option value="501">الذمم المدينة - العملاء</option>
+                            <option value="601">الذمم الدائنة - الموردين</option>
+                        </optgroup>
+                        <optgroup label="الأصول">
+                            <option value="701">الأصول الثابتة</option>
+                        </optgroup>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" class="form-control" name="description[]" placeholder="وصف مختصر">
+                </td>
+                <td>
+                    <input type="number" min="0" step="0.01" class="form-control journal-debit" name="debit[]" placeholder="0.00" onchange="calculateJournalTotals()">
+                </td>
+                <td>
+                    <input type="number" min="0" step="0.01" class="form-control journal-credit" name="credit[]" placeholder="0.00" onchange="calculateJournalTotals()">
+                </td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removeJournalRow('${rowId}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+        
+        // إضافة الصف الجديد إلى الجدول
+        $('#journalDetailsTable tbody').append(newRow);
+        
+        // تهيئة select2 للسطر الجديد
+        $(`#${rowId} .select2`).select2();
+    }
+    
+    // دالة لإزالة سطر من القيد
+    function removeJournalRow(rowId) {
+        // التأكد من وجود صفين على الأقل في الجدول
+        if ($('#journalDetailsTable tbody tr').length > 1) {
+            $('#' + rowId).remove();
+            // إعادة حساب المجاميع
+            calculateJournalTotals();
+        } else {
+            alert('يجب أن يحتوي القيد على صف واحد على الأقل');
+        }
+    }
+    
+    // دالة لحساب مجاميع القيد
+    function calculateJournalTotals() {
+        let totalDebit = 0;
+        let totalCredit = 0;
+        
+        // جمع قيم المدين
+        $('.journal-debit').each(function() {
+            totalDebit += parseFloat($(this).val()) || 0;
+        });
+        
+        // جمع قيم الدائن
+        $('.journal-credit').each(function() {
+            totalCredit += parseFloat($(this).val()) || 0;
+        });
+        
+        // عرض المجاميع
+        $('#totalDebit').text(totalDebit.toFixed(2));
+        $('#totalCredit').text(totalCredit.toFixed(2));
+        
+        // حساب الفرق بين المدين والدائن
+        const difference = Math.abs(totalDebit - totalCredit).toFixed(2);
+        $('#balanceDifference').text('الفرق: ' + difference + ' ر.س');
+        
+        // تحديث حالة التوازن
+        if (difference == 0 && totalDebit > 0) {
+            $('#balanceBadge').removeClass('badge-warning').addClass('badge-success').text('متزن');
+        } else {
+            $('#balanceBadge').removeClass('badge-success').addClass('badge-warning').text('غير متزن');
+        }
+    }
+    
+    // منع إدخال قيمة في حقلي المدين والدائن معاً في نفس السطر
+    $(document).on('input', '.journal-debit', function() {
+        if ($(this).val() > 0) {
+            $(this).closest('tr').find('.journal-credit').val('');
+        }
+    });
+    
+    $(document).on('input', '.journal-credit', function() {
+        if ($(this).val() > 0) {
+            $(this).closest('tr').find('.journal-debit').val('');
+        }
+    });
+    
+    $(function () {
+        // تهيئة جدول البيانات
+        $('table.table-hover').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Arabic.json"
+            }
+        });
+        
+        // تهيئة أداة اختيار التاريخ
+        $('.date').datetimepicker({
+            format: 'L',
+            locale: 'ar'
+        });
+        
+        // تهيئة select2
+        $('.select2').select2({
+            dir: "rtl",
+            language: "ar"
+        });
+        
+        // توليد قيود محاسبية نموذجية عند اختيار نوع القيد
+        $('#journalEntryType').change(function() {
+            const entryType = $(this).val();
+            
+            // مسح بيانات القيد الحالية
+            $('#journalDetailsTable tbody').empty();
+            
+            if (entryType === 'sales') {
+                // إنشاء قيد مبيعات نموذجي
+                const salesEntry = `
+                    <tr id="journalRow1">
+                        <td>
+                            <select class="form-control select2" name="account[]" required>
+                                <option value="101" selected>الصندوق الرئيسي</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="description[]" value="استلام قيمة مبيعات">
+                        </td>
+                        <td>
+                            <input type="number" min="0" step="0.01" class="form-control journal-debit" name="debit[]" value="0.00" onchange="calculateJournalTotals()">
+                        </td>
+                        <td>
+                            <input type="number" min="0" step="0.01" class="form-control journal-credit" name="credit[]" value="0.00" onchange="calculateJournalTotals()">
+                        </td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-danger btn-sm" onclick="removeJournalRow('journalRow1')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr id="journalRow2">
+                        <td>
+                            <select class="form-control select2" name="account[]" required>
+                                <option value="201" selected>المبيعات</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="description[]" value="قيمة مبيعات">
+                        </td>
+                        <td>
+                            <input type="number" min="0" step="0.01" class="form-control journal-debit" name="debit[]" value="0.00" onchange="calculateJournalTotals()">
+                        </td>
+                        <td>
+                            <input type="number" min="0" step="0.01" class="form-control journal-credit" name="credit[]" value="0.00" onchange="calculateJournalTotals()">
+                        </td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-danger btn-sm" onclick="removeJournalRow('journalRow2')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                $('#journalDetailsTable tbody').append(salesEntry);
+            } else if (entryType === 'purchase') {
+                // إنشاء قيد مشتريات نموذجي
+                const purchaseEntry = `
+                    <tr id="journalRow1">
+                        <td>
+                            <select class="form-control select2" name="account[]" required>
+                                <option value="301" selected>المشتريات</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="description[]" value="تكلفة المشتريات">
+                        </td>
+                        <td>
+                            <input type="number" min="0" step="0.01" class="form-control journal-debit" name="debit[]" value="0.00" onchange="calculateJournalTotals()">
+                        </td>
+                        <td>
+                            <input type="number" min="0" step="0.01" class="form-control journal-credit" name="credit[]" value="0.00" onchange="calculateJournalTotals()">
+                        </td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-danger btn-sm" onclick="removeJournalRow('journalRow1')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr id="journalRow2">
+                        <td>
+                            <select class="form-control select2" name="account[]" required>
+                                <option value="601" selected>الذمم الدائنة - الموردين</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="description[]" value="المبلغ المستحق للمورد">
+                        </td>
+                        <td>
+                            <input type="number" min="0" step="0.01" class="form-control journal-debit" name="debit[]" value="0.00" onchange="calculateJournalTotals()">
+                        </td>
+                        <td>
+                            <input type="number" min="0" step="0.01" class="form-control journal-credit" name="credit[]" value="0.00" onchange="calculateJournalTotals()">
+                        </td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-danger btn-sm" onclick="removeJournalRow('journalRow2')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                $('#journalDetailsTable tbody').append(purchaseEntry);
+            } else {
+                // إنشاء قيد فارغ لبقية الأنواع
+                const emptyEntry = `
+                    <tr id="journalRow1">
+                        <td>
+                            <select class="form-control select2" name="account[]" required>
+                                <option value="">اختر الحساب</option>
+                                <optgroup label="الحسابات النقدية">
+                                    <option value="101">الصندوق الرئيسي</option>
+                                    <option value="102">البنك الرئيسي</option>
+                                </optgroup>
+                                <optgroup label="الإيرادات">
+                                    <option value="201">المبيعات</option>
+                                    <option value="202">إيرادات أخرى</option>
+                                </optgroup>
+                                <optgroup label="المصاريف">
+                                    <option value="301">المشتريات</option>
+                                    <option value="401">المصروفات العامة</option>
+                                </optgroup>
+                                <optgroup label="الذمم">
+                                    <option value="501">الذمم المدينة - العملاء</option>
+                                    <option value="601">الذمم الدائنة - الموردين</option>
+                                </optgroup>
+                                <optgroup label="الأصول">
+                                    <option value="701">الأصول الثابتة</option>
+                                </optgroup>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="description[]" placeholder="وصف مختصر">
+                        </td>
+                        <td>
+                            <input type="number" min="0" step="0.01" class="form-control journal-debit" name="debit[]" placeholder="0.00" onchange="calculateJournalTotals()">
+                        </td>
+                        <td>
+                            <input type="number" min="0" step="0.01" class="form-control journal-credit" name="credit[]" placeholder="0.00" onchange="calculateJournalTotals()">
+                        </td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-danger btn-sm" onclick="removeJournalRow('journalRow1')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr id="journalRow2">
+                        <td>
+                            <select class="form-control select2" name="account[]" required>
+                                <option value="">اختر الحساب</option>
+                                <optgroup label="الحسابات النقدية">
+                                    <option value="101">الصندوق الرئيسي</option>
+                                    <option value="102">البنك الرئيسي</option>
+                                </optgroup>
+                                <optgroup label="الإيرادات">
+                                    <option value="201">المبيعات</option>
+                                    <option value="202">إيرادات أخرى</option>
+                                </optgroup>
+                                <optgroup label="المصاريف">
+                                    <option value="301">المشتريات</option>
+                                    <option value="401">المصروفات العامة</option>
+                                </optgroup>
+                                <optgroup label="الذمم">
+                                    <option value="501">الذمم المدينة - العملاء</option>
+                                    <option value="601">الذمم الدائنة - الموردين</option>
+                                </optgroup>
+                                <optgroup label="الأصول">
+                                    <option value="701">الأصول الثابتة</option>
+                                </optgroup>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="description[]" placeholder="وصف مختصر">
+                        </td>
+                        <td>
+                            <input type="number" min="0" step="0.01" class="form-control journal-debit" name="debit[]" placeholder="0.00" onchange="calculateJournalTotals()">
+                        </td>
+                        <td>
+                            <input type="number" min="0" step="0.01" class="form-control journal-credit" name="credit[]" placeholder="0.00" onchange="calculateJournalTotals()">
+                        </td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-danger btn-sm" onclick="removeJournalRow('journalRow2')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                $('#journalDetailsTable tbody').append(emptyEntry);
+            }
+            
+            // إعادة تهيئة select2 للصفوف الجديدة
+            $('.select2').select2({
+                dir: "rtl",
+                language: "ar"
+            });
+            
+            // إعادة حساب المجاميع
+            calculateJournalTotals();
+        });
+        
+        // التحقق من توازن القيد عند النقر على زر الحفظ
+        $('#saveAndPost, #saveAsDraft').click(function() {
+            const totalDebit = parseFloat($('#totalDebit').text());
+            const totalCredit = parseFloat($('#totalCredit').text());
+            const difference = Math.abs(totalDebit - totalCredit);
+            
+            if (difference > 0.01) {
+                alert('القيد غير متزن! يجب أن يكون مجموع المدين مساوياً لمجموع الدائن');
+                return false;
+            }
+            
+            if (totalDebit === 0 || totalCredit === 0) {
+                alert('لا يمكن حفظ قيد بقيمة صفرية! يجب إدخال قيم في جانبي المدين والدائن');
+                return false;
+            }
+            
+            // هنا يتم إرسال البيانات إلى الخادم (في التطبيق الحقيقي)
+            alert('تم حفظ القيد بنجاح');
+            $('#modal-add-journal').modal('hide');
+        });
+    });
+</script>
+{% endblock %}
