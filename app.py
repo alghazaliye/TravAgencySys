@@ -99,5 +99,9 @@ def daily_journal():
 def employees():
     return render_template('employees.html')
 
+@app.route('/account-statements')
+def account_statements():
+    return render_template('account-statements.html')
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

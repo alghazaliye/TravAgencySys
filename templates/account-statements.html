@@ -1,0 +1,592 @@
+{% extends "layout.html" %}
+
+{% block title %}كشوفات الحسابات{% endblock %}
+
+{% block content %}
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">كشوفات الحسابات</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="/dashboard">الرئيسية</a></li>
+                    <li class="breadcrumb-item">الإدارة المالية</li>
+                    <li class="breadcrumb-item active">كشوفات الحسابات</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- أدوات التصفية والبحث -->
+        <div class="card card-outline card-primary">
+            <div class="card-header">
+                <h3 class="card-title">البحث والتصفية</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <form id="account-statement-form">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="accountType">نوع الحساب</label>
+                                <select class="form-control" id="accountType" required>
+                                    <option value="">اختر نوع الحساب</option>
+                                    <option value="customer">العملاء</option>
+                                    <option value="supplier">الموردين</option>
+                                    <option value="employee">الموظفين</option>
+                                    <option value="bank">البنوك</option>
+                                    <option value="cashbox">الصناديق</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="accountId">الحساب</label>
+                                <select class="form-control select2" id="accountId" required disabled>
+                                    <option value="">اختر الحساب</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="statementPeriod">الفترة</label>
+                                <select class="form-control" id="statementPeriod">
+                                    <option value="custom">تحديد فترة مخصصة</option>
+                                    <option value="this-month">الشهر الحالي</option>
+                                    <option value="last-month">الشهر الماضي</option>
+                                    <option value="this-quarter">الربع الحالي</option>
+                                    <option value="this-year">السنة الحالية</option>
+                                    <option value="last-year">السنة الماضية</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row date-range-container">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="dateFrom">من تاريخ</label>
+                                <div class="input-group date" id="dateFromPicker" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" id="dateFrom" data-target="#dateFromPicker" placeholder="DD/MM/YYYY">
+                                    <div class="input-group-append" data-target="#dateFromPicker" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="dateTo">إلى تاريخ</label>
+                                <div class="input-group date" id="dateToPicker" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" id="dateTo" data-target="#dateToPicker" placeholder="DD/MM/YYYY">
+                                    <div class="input-group-append" data-target="#dateToPicker" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <div class="form-group w-100">
+                                <button type="button" id="generateReport" class="btn btn-primary btn-block">
+                                    <i class="fas fa-search ml-1"></i> عرض الكشف
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- كشف الحساب -->
+        <div class="card d-none" id="account-statement-card">
+            <div class="card-header">
+                <h3 class="card-title">كشف حساب: <span id="statement-account-name">-</span></h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <div class="btn-group ml-2">
+                        <button type="button" class="btn btn-sm btn-info">
+                            <i class="fas fa-print ml-1"></i> طباعة
+                        </button>
+                        <button type="button" class="btn btn-sm btn-success">
+                            <i class="fas fa-file-excel ml-1"></i> تصدير Excel
+                        </button>
+                        <button type="button" class="btn btn-sm btn-default">
+                            <i class="fas fa-file-pdf ml-1"></i> PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <div class="statement-header p-3 bg-light">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <strong>الاسم:</strong> <span id="header-account-name">أحمد محمد علي</span><br>
+                                    <strong>رقم الحساب:</strong> <span id="header-account-number">CUST0012</span><br>
+                                    <strong>فئة الحساب:</strong> <span id="header-account-category">عميل</span>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <h4 class="mb-2">كشف حساب</h4>
+                                    <strong>من:</strong> <span id="header-from-date">01/01/2023</span><br>
+                                    <strong>إلى:</strong> <span id="header-to-date">31/01/2023</span>
+                                </div>
+                                <div class="col-md-4 text-left">
+                                    <strong>الرصيد الافتتاحي:</strong> <span id="header-opening-balance" class="text-danger">0.00 ر.س</span><br>
+                                    <strong>الرصيد الختامي:</strong> <span id="header-closing-balance" class="text-success">2,500.00 ر.س</span><br>
+                                    <strong>تاريخ الطباعة:</strong> <span id="header-print-date">15/06/2023</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>التاريخ</th>
+                                <th>رقم المستند</th>
+                                <th>البيان</th>
+                                <th>مدين</th>
+                                <th>دائن</th>
+                                <th>الرصيد</th>
+                                <th>المرجع</th>
+                            </tr>
+                        </thead>
+                        <tbody id="account-statement-rows">
+                            <tr class="opening-balance-row bg-light">
+                                <td>01/01/2023</td>
+                                <td>-</td>
+                                <td>رصيد افتتاحي</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td class="text-danger">0.00 ر.س</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td>03/01/2023</td>
+                                <td>INV-0023</td>
+                                <td>فاتورة مبيعات - حجز تذاكر طيران</td>
+                                <td class="text-danger">2,500.00 ر.س</td>
+                                <td>-</td>
+                                <td class="text-danger">2,500.00 ر.س</td>
+                                <td><a href="#">فاتورة</a></td>
+                            </tr>
+                            <tr>
+                                <td>10/01/2023</td>
+                                <td>REC-0015</td>
+                                <td>سند قبض - دفعة نقدية</td>
+                                <td>-</td>
+                                <td class="text-success">1,000.00 ر.س</td>
+                                <td class="text-danger">1,500.00 ر.س</td>
+                                <td><a href="#">سند قبض</a></td>
+                            </tr>
+                            <tr>
+                                <td>15/01/2023</td>
+                                <td>INV-0027</td>
+                                <td>فاتورة مبيعات - حجز فندق</td>
+                                <td class="text-danger">3,000.00 ر.س</td>
+                                <td>-</td>
+                                <td class="text-danger">4,500.00 ر.س</td>
+                                <td><a href="#">فاتورة</a></td>
+                            </tr>
+                            <tr>
+                                <td>25/01/2023</td>
+                                <td>REC-0018</td>
+                                <td>سند قبض - تحويل بنكي</td>
+                                <td>-</td>
+                                <td class="text-success">2,000.00 ر.س</td>
+                                <td class="text-danger">2,500.00 ر.س</td>
+                                <td><a href="#">سند قبض</a></td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr class="font-weight-bold bg-light">
+                                <td colspan="3" class="text-center">الإجمالي</td>
+                                <td class="text-danger">5,500.00 ر.س</td>
+                                <td class="text-success">3,000.00 ر.س</td>
+                                <td class="text-danger">2,500.00 ر.س</td>
+                                <td>-</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="chart-container" style="position: relative; height:250px;">
+                            <canvas id="accountTransactionsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-light">
+                            <div class="card-header">
+                                <h5 class="card-title">ملخص الحساب</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>الرصيد الافتتاحي</td>
+                                            <td class="text-left text-danger">0.00 ر.س</td>
+                                        </tr>
+                                        <tr>
+                                            <td>إجمالي الحركات المدينة</td>
+                                            <td class="text-left text-danger">5,500.00 ر.س</td>
+                                        </tr>
+                                        <tr>
+                                            <td>إجمالي الحركات الدائنة</td>
+                                            <td class="text-left text-success">3,000.00 ر.س</td>
+                                        </tr>
+                                        <tr>
+                                            <td>صافي الحركات</td>
+                                            <td class="text-left text-danger">2,500.00 ر.س</td>
+                                        </tr>
+                                        <tr class="font-weight-bold">
+                                            <td>الرصيد الختامي</td>
+                                            <td class="text-left text-danger">2,500.00 ر.س</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="callout callout-info">
+                            <h5><i class="fas fa-info-circle ml-2"></i> ملاحظات</h5>
+                            <ul>
+                                <li>الأرصدة المدينة تظهر باللون الأحمر وتمثل مستحقات لنا على العميل.</li>
+                                <li>الأرصدة الدائنة تظهر باللون الأخضر وتمثل مستحقات للعميل علينا.</li>
+                                <li>تم إعداد الكشف وفق سياسة وإجراءات شركة الخليج للسياحة والسفر.</li>
+                                <li>في حال وجود أي اختلاف يرجى مراجعة قسم المحاسبة خلال 15 يوم من تاريخ استلام الكشف.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- زر العودة للأعلى -->
+        <a id="back-to-top" href="#" class="btn btn-primary back-to-top" role="button" aria-label="العودة للأعلى">
+            <i class="fas fa-chevron-up"></i>
+        </a>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // تهيئة مكونات واجهة المستخدم
+        initializeUI();
+        
+        // معالجة تغيير نوع الحساب
+        document.getElementById('accountType').addEventListener('change', function() {
+            handleAccountTypeChange(this.value);
+        });
+        
+        // معالجة تغيير فترة الكشف
+        document.getElementById('statementPeriod').addEventListener('change', function() {
+            handleStatementPeriodChange(this.value);
+        });
+        
+        // معالجة نقر زر عرض الكشف
+        document.getElementById('generateReport').addEventListener('click', function() {
+            generateAccountStatement();
+        });
+    });
+    
+    // تهيئة مكونات واجهة المستخدم
+    function initializeUI() {
+        // تهيئة مختار التواريخ
+        if ($.fn.datetimepicker) {
+            $('#dateFromPicker, #dateToPicker').datetimepicker({
+                format: 'DD/MM/YYYY',
+                locale: 'ar',
+                icons: {
+                    time: 'far fa-clock',
+                    date: 'far fa-calendar-alt',
+                    up: 'fas fa-chevron-up',
+                    down: 'fas fa-chevron-down',
+                    previous: 'fas fa-chevron-right',
+                    next: 'fas fa-chevron-left',
+                    today: 'far fa-calendar-check',
+                    clear: 'far fa-trash-alt',
+                    close: 'fas fa-times'
+                }
+            });
+        }
+        
+        // تهيئة القوائم المنسدلة المحسنة
+        if ($.fn.select2) {
+            $('.select2').select2({
+                theme: 'bootstrap4',
+                language: 'ar',
+                dir: 'rtl'
+            });
+        }
+    }
+    
+    // معالجة تغيير نوع الحساب
+    function handleAccountTypeChange(accountType) {
+        const accountSelect = document.getElementById('accountId');
+        
+        // تفريغ قائمة الحسابات
+        accountSelect.innerHTML = '<option value="">اختر الحساب</option>';
+        
+        // تفعيل/تعطيل قائمة الحسابات
+        accountSelect.disabled = !accountType;
+        
+        if (!accountType) return;
+        
+        // إضافة الحسابات بناءً على النوع المختار
+        let accounts = [];
+        
+        switch (accountType) {
+            case 'customer':
+                accounts = [
+                    { id: 'CUST0001', name: 'أحمد محمد علي' },
+                    { id: 'CUST0002', name: 'شركة النور للسياحة' },
+                    { id: 'CUST0003', name: 'مؤسسة الخليج للسفر' },
+                    { id: 'CUST0004', name: 'خالد عبدالله العمري' },
+                    { id: 'CUST0005', name: 'محمد سعيد الغامدي' }
+                ];
+                break;
+            case 'supplier':
+                accounts = [
+                    { id: 'SUPP0001', name: 'شركة الخطوط السعودية' },
+                    { id: 'SUPP0002', name: 'مجموعة فنادق الريتز' },
+                    { id: 'SUPP0003', name: 'الشركة العربية للطيران' },
+                    { id: 'SUPP0004', name: 'شركة المسافر العالمية' },
+                    { id: 'SUPP0005', name: 'شركة نقل المعتمرين' }
+                ];
+                break;
+            case 'employee':
+                accounts = [
+                    { id: 'EMP0001', name: 'أحمد محمد علي - مدير مبيعات' },
+                    { id: 'EMP0002', name: 'سارة عبدالله محمد - منسقة حجوزات' },
+                    { id: 'EMP0003', name: 'خالد سعيد عبدالرحمن - مختص تأشيرات' },
+                    { id: 'EMP0004', name: 'نورة محمد العتيبي - محاسبة' },
+                    { id: 'EMP0005', name: 'فهد عبدالله السبيعي - مندوب' }
+                ];
+                break;
+            case 'bank':
+                accounts = [
+                    { id: 'BANK0001', name: 'مصرف الراجحي - الحساب الرئيسي' },
+                    { id: 'BANK0002', name: 'البنك الأهلي - حساب جاري' },
+                    { id: 'BANK0003', name: 'بنك الرياض - حساب تمويل' },
+                    { id: 'BANK0004', name: 'سامبا - حساب مشتريات' }
+                ];
+                break;
+            case 'cashbox':
+                accounts = [
+                    { id: 'CASH0001', name: 'الصندوق الرئيسي' },
+                    { id: 'CASH0002', name: 'صندوق المبيعات' },
+                    { id: 'CASH0003', name: 'صندوق المصروفات النثرية' }
+                ];
+                break;
+        }
+        
+        // إضافة الحسابات للقائمة المنسدلة
+        accounts.forEach(account => {
+            const option = document.createElement('option');
+            option.value = account.id;
+            option.textContent = account.name;
+            accountSelect.appendChild(option);
+        });
+    }
+    
+    // معالجة تغيير فترة الكشف
+    function handleStatementPeriodChange(period) {
+        const dateRangeContainer = document.querySelector('.date-range-container');
+        const dateFromElement = document.getElementById('dateFrom');
+        const dateToElement = document.getElementById('dateTo');
+        
+        // تحديد ما إذا كان يجب عرض حقول التاريخ
+        const showDateFields = period === 'custom';
+        dateRangeContainer.style.display = showDateFields ? 'flex' : 'none';
+        
+        // إذا تم اختيار فترة محددة مسبقًا، تعيين التواريخ المناسبة
+        if (period !== 'custom') {
+            let fromDate, toDate;
+            const today = new Date();
+            
+            switch (period) {
+                case 'this-month':
+                    fromDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                    toDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                    break;
+                case 'last-month':
+                    fromDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                    toDate = new Date(today.getFullYear(), today.getMonth(), 0);
+                    break;
+                case 'this-quarter':
+                    const quarter = Math.floor(today.getMonth() / 3);
+                    fromDate = new Date(today.getFullYear(), quarter * 3, 1);
+                    toDate = new Date(today.getFullYear(), (quarter + 1) * 3, 0);
+                    break;
+                case 'this-year':
+                    fromDate = new Date(today.getFullYear(), 0, 1);
+                    toDate = new Date(today.getFullYear(), 11, 31);
+                    break;
+                case 'last-year':
+                    fromDate = new Date(today.getFullYear() - 1, 0, 1);
+                    toDate = new Date(today.getFullYear() - 1, 11, 31);
+                    break;
+            }
+            
+            // تنسيق التواريخ بصيغة DD/MM/YYYY
+            if (fromDate && toDate) {
+                dateFromElement.value = formatDate(fromDate);
+                dateToElement.value = formatDate(toDate);
+            }
+        }
+    }
+    
+    // توليد كشف الحساب
+    function generateAccountStatement() {
+        const accountType = document.getElementById('accountType').value;
+        const accountId = document.getElementById('accountId').value;
+        const dateFrom = document.getElementById('dateFrom').value;
+        const dateTo = document.getElementById('dateTo').value;
+        
+        // التحقق من صحة البيانات
+        if (!accountType || !accountId) {
+            alert('يرجى اختيار نوع الحساب والحساب المطلوب');
+            return;
+        }
+        
+        // تحديث البيانات في الكشف
+        updateStatementHeader(accountType, accountId, dateFrom, dateTo);
+        
+        // عرض كشف الحساب
+        document.getElementById('account-statement-card').classList.remove('d-none');
+        
+        // إنشاء رسم بياني للحركات
+        createAccountTransactionsChart();
+        
+        // التمرير إلى كشف الحساب
+        document.getElementById('account-statement-card').scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // تحديث بيانات رأس كشف الحساب
+    function updateStatementHeader(accountType, accountId, dateFrom, dateTo) {
+        // الحصول على اسم الحساب المختار
+        const accountSelect = document.getElementById('accountId');
+        const accountName = accountSelect.options[accountSelect.selectedIndex].text;
+        
+        // تحديث بيانات رأس الكشف
+        document.getElementById('statement-account-name').textContent = accountName;
+        document.getElementById('header-account-name').textContent = accountName;
+        document.getElementById('header-account-number').textContent = accountId;
+        
+        // تحديث فئة الحساب
+        let accountCategory = '';
+        switch (accountType) {
+            case 'customer': accountCategory = 'عميل'; break;
+            case 'supplier': accountCategory = 'مورد'; break;
+            case 'employee': accountCategory = 'موظف'; break;
+            case 'bank': accountCategory = 'بنك'; break;
+            case 'cashbox': accountCategory = 'صندوق'; break;
+        }
+        document.getElementById('header-account-category').textContent = accountCategory;
+        
+        // تحديث فترة الكشف
+        document.getElementById('header-from-date').textContent = dateFrom || '01/01/2023';
+        document.getElementById('header-to-date').textContent = dateTo || '31/01/2023';
+        
+        // تحديث تاريخ الطباعة (اليوم)
+        document.getElementById('header-print-date').textContent = formatDate(new Date());
+    }
+    
+    // إنشاء رسم بياني للحركات
+    function createAccountTransactionsChart() {
+        const ctx = document.getElementById('accountTransactionsChart').getContext('2d');
+        
+        if (window.transactionsChart) {
+            window.transactionsChart.destroy();
+        }
+        
+        window.transactionsChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['03/01', '10/01', '15/01', '25/01'],
+                datasets: [
+                    {
+                        label: 'حركات مدينة',
+                        data: [2500, 0, 3000, 0],
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'حركات دائنة',
+                        data: [0, 1000, 0, 2000],
+                        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                        borderColor: 'rgb(75, 192, 192)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString() + ' ر.س';
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        rtl: true
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += context.parsed.y.toLocaleString() + ' ر.س';
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // تنسيق التاريخ بصيغة DD/MM/YYYY
+    function formatDate(date) {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        
+        return `${day}/${month}/${year}`;
+    }
+</script>
+{% endblock %}
