@@ -1,0 +1,405 @@
+{% extends 'layout.html' %}
+
+{% block title %}إدارة الدول والمدن | نظام إدارة وكالة السياحة والسفر{% endblock %}
+
+{% block page_title %}إدارة الدول والمدن{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item active">إدارة الدول والمدن</li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <!-- الدول -->
+        <div class="card card-travel">
+            <div class="card-header bg-travel-info">
+                <h3 class="card-title">قائمة الدول</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-travel-info btn-sm" data-toggle="modal" data-target="#modal-add-country">
+                        <i class="fas fa-plus"></i> إضافة دولة
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="countriesTable" class="table table-bordered table-striped table-travel datatable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>الدولة</th>
+                                <th>الرمز</th>
+                                <th>رمز الهاتف</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>المملكة العربية السعودية</td>
+                                <td>SA</td>
+                                <td>+966</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-country">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>مصر</td>
+                                <td>EG</td>
+                                <td>+20</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-country">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>الإمارات العربية المتحدة</td>
+                                <td>AE</td>
+                                <td>+971</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-country">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>الأردن</td>
+                                <td>JO</td>
+                                <td>+962</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-country">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>الكويت</td>
+                                <td>KW</td>
+                                <td>+965</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-country">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+    
+    <div class="col-md-6">
+        <!-- المدن -->
+        <div class="card card-travel">
+            <div class="card-header bg-travel-info">
+                <h3 class="card-title">قائمة المدن</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-travel-info btn-sm" data-toggle="modal" data-target="#modal-add-city">
+                        <i class="fas fa-plus"></i> إضافة مدينة
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="citiesTable" class="table table-bordered table-striped table-travel datatable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>المدينة</th>
+                                <th>الدولة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>الرياض</td>
+                                <td>المملكة العربية السعودية</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-city">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>جدة</td>
+                                <td>المملكة العربية السعودية</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-city">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>القاهرة</td>
+                                <td>مصر</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-city">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>الإسكندرية</td>
+                                <td>مصر</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-city">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>دبي</td>
+                                <td>الإمارات العربية المتحدة</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-city">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+
+<!-- Modal - Add/Edit Country -->
+<div class="modal fade" id="modal-add-country">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-travel-info">
+                <h4 class="modal-title">إضافة دولة جديدة</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="needs-validation" novalidate>
+                    <div class="form-group">
+                        <label for="countryName">اسم الدولة</label>
+                        <input type="text" class="form-control" id="countryName" placeholder="أدخل اسم الدولة" required>
+                        <div class="invalid-feedback">
+                            الرجاء إدخال اسم الدولة
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="countryCode">رمز الدولة</label>
+                        <input type="text" class="form-control" id="countryCode" placeholder="مثال: SA" maxlength="2" required>
+                        <div class="invalid-feedback">
+                            الرجاء إدخال رمز الدولة (حرفين)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneCode">رمز الهاتف</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">+</span>
+                            </div>
+                            <input type="text" class="form-control" id="phoneCode" placeholder="مثال: 966" required>
+                            <div class="invalid-feedback">
+                                الرجاء إدخال رمز الهاتف
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="countryFlag">علم الدولة</label>
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="countryFlag" accept="image/*">
+                                <label class="custom-file-label" for="countryFlag">اختر الملف</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <button type="button" class="btn btn-travel-info">حفظ</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- Modal - Add/Edit City -->
+<div class="modal fade" id="modal-add-city">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-travel-info">
+                <h4 class="modal-title">إضافة مدينة جديدة</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="needs-validation" novalidate>
+                    <div class="form-group">
+                        <label for="cityName">اسم المدينة</label>
+                        <input type="text" class="form-control" id="cityName" placeholder="أدخل اسم المدينة" required>
+                        <div class="invalid-feedback">
+                            الرجاء إدخال اسم المدينة
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cityCountry">الدولة</label>
+                        <select class="form-control select2" id="cityCountry" required>
+                            <option value="">اختر الدولة</option>
+                            <option value="1">المملكة العربية السعودية</option>
+                            <option value="2">مصر</option>
+                            <option value="3">الإمارات العربية المتحدة</option>
+                            <option value="4">الأردن</option>
+                            <option value="5">الكويت</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            الرجاء اختيار الدولة
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cityCode">رمز المدينة</label>
+                        <input type="text" class="form-control" id="cityCode" placeholder="مثال: RUH" maxlength="3">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <button type="button" class="btn btn-travel-info">حفظ</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // تفعيل جدول الدول والمدن
+        $('#countriesTable, #citiesTable').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "language": {
+                "sProcessing": "جارٍ التحميل...",
+                "sLengthMenu": "أظهر _MENU_ مدخلات",
+                "sZeroRecords": "لم يعثر على أية سجلات",
+                "sInfo": "إظهار _START_ إلى _END_ من أصل _TOTAL_ مدخل",
+                "sInfoEmpty": "يعرض 0 إلى 0 من أصل 0 سجل",
+                "sInfoFiltered": "(منتقاة من مجموع _MAX_ مدخل)",
+                "sInfoPostFix": "",
+                "sSearch": "ابحث:",
+                "sUrl": "",
+                "oPaginate": {
+                    "sFirst": "الأول",
+                    "sPrevious": "السابق",
+                    "sNext": "التالي",
+                    "sLast": "الأخير"
+                }
+            }
+        });
+        
+        // تفعيل Select2 لاختيار الدولة
+        $('.select2').select2({
+            placeholder: "اختر الدولة",
+            dir: "rtl"
+        });
+        
+        // تفعيل File Input
+        $('.custom-file-input').on('change', function() {
+            var fileName = $(this).val().split('\\').pop();
+            $(this).next('.custom-file-label').addClass("selected").html(fileName);
+        });
+        
+        // Form validation
+        function validateForm(formId) {
+            var form = document.getElementById(formId);
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+            return form.checkValidity();
+        }
+        
+        // حفظ بيانات الدولة
+        $('#saveCountry').click(function() {
+            if (validateForm('countryForm')) {
+                // هنا يتم إرسال البيانات للخادم
+                $('#modal-add-country').modal('hide');
+                // رسالة نجاح
+                alert('تم حفظ بيانات الدولة بنجاح');
+            }
+        });
+        
+        // حفظ بيانات المدينة
+        $('#saveCity').click(function() {
+            if (validateForm('cityForm')) {
+                // هنا يتم إرسال البيانات للخادم
+                $('#modal-add-city').modal('hide');
+                // رسالة نجاح
+                alert('تم حفظ بيانات المدينة بنجاح');
+            }
+        });
+    });
+</script>
+{% endblock %}
