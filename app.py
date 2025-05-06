@@ -12,7 +12,8 @@ app.secret_key = os.environ.get("SESSION_SECRET", "default_secret_key")
 @app.route('/')
 @app.route('/login')
 def login():
-    return render_template('login.html')
+    # Redirect directly to dashboard for now
+    return render_template('dashboard.html')
 
 @app.route('/dashboard')
 def dashboard():
