@@ -1,0 +1,532 @@
+{% extends 'layout.html' %}
+
+{% block title %}الموردين | نظام إدارة وكالة السياحة والسفر{% endblock %}
+
+{% block page_title %}الموردين{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item active">الموردين</li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card card-travel">
+            <div class="card-header bg-travel-primary">
+                <h3 class="card-title">قائمة الموردين</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-travel-primary btn-sm" data-toggle="modal" data-target="#modal-add-supplier">
+                        <i class="fas fa-plus"></i> إضافة مورد
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="suppliersTable" class="table table-bordered table-striped table-travel datatable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>اسم المورد</th>
+                                <th>نوع المورد</th>
+                                <th>جهة الاتصال</th>
+                                <th>رقم الهاتف</th>
+                                <th>البريد الإلكتروني</th>
+                                <th>الرصيد</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>شركة الخطوط السعودية</td>
+                                <td>شركة طيران</td>
+                                <td>أحمد السعيد</td>
+                                <td>0112345678</td>
+                                <td>info@saudia.com</td>
+                                <td>-25,000 ر.س</td>
+                                <td><span class="badge badge-success">نشط</span></td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-supplier">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-supplier">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>فندق الفيصلية</td>
+                                <td>فندق</td>
+                                <td>محمد خالد</td>
+                                <td>0114567890</td>
+                                <td>booking@faisaliah.com</td>
+                                <td>-18,500 ر.س</td>
+                                <td><span class="badge badge-success">نشط</span></td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-supplier">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-supplier">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>شركة سابتكو</td>
+                                <td>شركة نقل</td>
+                                <td>سعد الفهد</td>
+                                <td>0118765432</td>
+                                <td>contact@saptco.com</td>
+                                <td>-7,200 ر.س</td>
+                                <td><span class="badge badge-success">نشط</span></td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-supplier">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-supplier">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>مجموعة الفجر للعمرة</td>
+                                <td>مجموعات حج وعمرة</td>
+                                <td>خالد العبدالله</td>
+                                <td>0556781234</td>
+                                <td>alfajr@example.com</td>
+                                <td>-12,300 ر.س</td>
+                                <td><span class="badge badge-warning">غير نشط</span></td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-supplier">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-supplier">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>طيران الإمارات</td>
+                                <td>شركة طيران</td>
+                                <td>فيصل العمر</td>
+                                <td>0541234567</td>
+                                <td>agencies@emirates.com</td>
+                                <td>-30,500 ر.س</td>
+                                <td><span class="badge badge-success">نشط</span></td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-supplier">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-supplier">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+
+<!-- Modal - Add/Edit Supplier -->
+<div class="modal fade" id="modal-add-supplier">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-travel-primary">
+                <h4 class="modal-title">إضافة مورد جديد</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="needs-validation" novalidate>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="supplierName">اسم المورد</label>
+                                <input type="text" class="form-control" id="supplierName" placeholder="أدخل اسم المورد" required>
+                                <div class="invalid-feedback">
+                                    الرجاء إدخال اسم المورد
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="supplierType">نوع المورد</label>
+                                <select class="form-control select2" id="supplierType" required>
+                                    <option value="">اختر نوع المورد</option>
+                                    <option value="airline">شركة طيران</option>
+                                    <option value="hotel">فندق</option>
+                                    <option value="transport">شركة نقل</option>
+                                    <option value="umrah">مجموعات حج وعمرة</option>
+                                    <option value="visa">خدمات تأشيرات</option>
+                                    <option value="other">أخرى</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    الرجاء اختيار نوع المورد
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="commercialRecord">رقم السجل التجاري</label>
+                                <input type="text" class="form-control" id="commercialRecord" placeholder="أدخل رقم السجل التجاري" required>
+                                <div class="invalid-feedback">
+                                    الرجاء إدخال رقم السجل التجاري
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="taxNumber">الرقم الضريبي</label>
+                                <input type="text" class="form-control" id="taxNumber" placeholder="أدخل الرقم الضريبي">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="contactPerson">جهة الاتصال</label>
+                                <input type="text" class="form-control" id="contactPerson" placeholder="أدخل اسم جهة الاتصال" required>
+                                <div class="invalid-feedback">
+                                    الرجاء إدخال اسم جهة الاتصال
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="contactPosition">المنصب</label>
+                                <input type="text" class="form-control" id="contactPosition" placeholder="أدخل المنصب">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="mobileNumber">رقم الجوال</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">+966</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="mobileNumber" placeholder="5XXXXXXXX" required>
+                                    <div class="invalid-feedback">
+                                        الرجاء إدخال رقم الجوال
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="phoneNumber">رقم الهاتف</label>
+                                <input type="text" class="form-control" id="phoneNumber" placeholder="أدخل رقم الهاتف" required>
+                                <div class="invalid-feedback">
+                                    الرجاء إدخال رقم الهاتف
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="email">البريد الإلكتروني</label>
+                                <input type="email" class="form-control" id="email" placeholder="أدخل البريد الإلكتروني" required>
+                                <div class="invalid-feedback">
+                                    الرجاء إدخال بريد إلكتروني صحيح
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="website">الموقع الإلكتروني</label>
+                                <input type="url" class="form-control" id="website" placeholder="أدخل الموقع الإلكتروني">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="city">المدينة</label>
+                                <select class="form-control select2" id="city" required>
+                                    <option value="">اختر المدينة</option>
+                                    <option value="Riyadh">الرياض</option>
+                                    <option value="Jeddah">جدة</option>
+                                    <option value="Dammam">الدمام</option>
+                                    <option value="Makkah">مكة</option>
+                                    <option value="Madinah">المدينة</option>
+                                    <option value="Khobar">الخبر</option>
+                                    <option value="Dubai">دبي</option>
+                                    <option value="AbuDhabi">أبوظبي</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    الرجاء اختيار المدينة
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="country">الدولة</label>
+                                <select class="form-control select2" id="country" required>
+                                    <option value="">اختر الدولة</option>
+                                    <option value="SA">المملكة العربية السعودية</option>
+                                    <option value="AE">الإمارات العربية المتحدة</option>
+                                    <option value="BH">البحرين</option>
+                                    <option value="KW">الكويت</option>
+                                    <option value="QA">قطر</option>
+                                    <option value="OM">عمان</option>
+                                    <option value="EG">مصر</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    الرجاء اختيار الدولة
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="address">العنوان</label>
+                        <textarea class="form-control" id="address" rows="2" placeholder="أدخل العنوان بالتفصيل" required></textarea>
+                        <div class="invalid-feedback">
+                            الرجاء إدخال العنوان
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="initialBalance">الرصيد الافتتاحي</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" class="form-control" id="initialBalance" placeholder="0.00">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">ر.س</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="supplierStatus">حالة المورد</label>
+                                <select class="form-control" id="supplierStatus" required>
+                                    <option value="active">نشط</option>
+                                    <option value="inactive">غير نشط</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    الرجاء اختيار حالة المورد
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes">ملاحظات</label>
+                        <textarea class="form-control" id="notes" rows="3" placeholder="ملاحظات إضافية..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <button type="button" class="btn btn-travel-primary">حفظ التغييرات</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- Modal - View Supplier -->
+<div class="modal fade" id="modal-view-supplier">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h4 class="modal-title">معلومات المورد</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="invoice p-3 mb-3">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>
+                                        <i class="fas fa-building ml-2"></i> شركة الخطوط السعودية
+                                        <small class="float-left">تاريخ التسجيل: 01-01-2023</small>
+                                    </h4>
+                                </div>
+                            </div>
+                            
+                            <div class="row invoice-info mt-3">
+                                <div class="col-sm-4 invoice-col">
+                                    <b>معلومات المورد</b><br>
+                                    <strong>النوع:</strong> شركة طيران<br>
+                                    <strong>السجل التجاري:</strong> 4030005210<br>
+                                    <strong>الرقم الضريبي:</strong> 300146895100003<br>
+                                    <strong>الموقع الإلكتروني:</strong> <a href="https://www.saudia.com" target="_blank">www.saudia.com</a>
+                                </div>
+                                
+                                <div class="col-sm-4 invoice-col">
+                                    <b>معلومات الاتصال</b><br>
+                                    <strong>جهة الاتصال:</strong> أحمد السعيد<br>
+                                    <strong>المنصب:</strong> مدير حسابات وكالات السفر<br>
+                                    <strong>رقم الهاتف:</strong> 0112345678<br>
+                                    <strong>البريد الإلكتروني:</strong> info@saudia.com
+                                </div>
+                                
+                                <div class="col-sm-4 invoice-col">
+                                    <b>العنوان</b><br>
+                                    <strong>المدينة:</strong> جدة<br>
+                                    <strong>الدولة:</strong> المملكة العربية السعودية<br>
+                                    <strong>العنوان:</strong> حي الرحاب<br>
+                                    <strong>الرمز البريدي:</strong> 23221
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5>المعلومات المالية</h5>
+                                    <div class="d-flex justify-content-between align-items-center mt-3 bg-light p-3" style="border-radius: 5px;">
+                                        <div class="text-center">
+                                            <h6>الرصيد الحالي</h6>
+                                            <h4 class="text-danger">-25,000 ر.س</h4>
+                                        </div>
+                                        <div class="text-center">
+                                            <h6>إجمالي المشتريات</h6>
+                                            <h4>150,000 ر.س</h4>
+                                        </div>
+                                        <div class="text-center">
+                                            <h6>إجمالي المدفوعات</h6>
+                                            <h4>125,000 ر.س</h4>
+                                        </div>
+                                        <div class="text-center">
+                                            <h6>آخر معاملة</h6>
+                                            <h4>10-06-2023</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5>آخر المعاملات</h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>التاريخ</th>
+                                                    <th>الوصف</th>
+                                                    <th>المبلغ</th>
+                                                    <th>الرصيد</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>10-06-2023</td>
+                                                    <td>شراء تذاكر طيران</td>
+                                                    <td class="text-danger">- 15,000 ر.س</td>
+                                                    <td>-25,000 ر.س</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>01-06-2023</td>
+                                                    <td>دفعة للمورد</td>
+                                                    <td class="text-success">+ 10,000 ر.س</td>
+                                                    <td>-10,000 ر.س</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>15-05-2023</td>
+                                                    <td>شراء تذاكر طيران</td>
+                                                    <td class="text-danger">- 20,000 ر.س</td>
+                                                    <td>-20,000 ر.س</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <h5>الوثائق</h5>
+                                    <ul class="list-unstyled">
+                                        <li>
+                                            <i class="far fa-file-pdf ml-2"></i> السجل التجاري
+                                            <a href="#" class="btn btn-sm btn-outline-info mr-2">
+                                                <i class="fas fa-download"></i> تحميل
+                                            </a>
+                                        </li>
+                                        <li class="mt-2">
+                                            <i class="far fa-file-pdf ml-2"></i> شهادة الرقم الضريبي
+                                            <a href="#" class="btn btn-sm btn-outline-info mr-2">
+                                                <i class="fas fa-download"></i> تحميل
+                                            </a>
+                                        </li>
+                                        <li class="mt-2">
+                                            <i class="far fa-file-pdf ml-2"></i> عقد الاتفاقية
+                                            <a href="#" class="btn btn-sm btn-outline-info mr-2">
+                                                <i class="fas fa-download"></i> تحميل
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <h5>ملاحظات</h5>
+                                    <p class="text-muted">
+                                        عقد سنوي مع المورد يتجدد تلقائياً في بداية كل عام. نسبة عمولة 5% على جميع التذاكر.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <div>
+                    <button type="button" class="btn btn-warning"><i class="fas fa-history"></i> سجل المعاملات</button>
+                    <button type="button" class="btn btn-primary"><i class="fas fa-print"></i> طباعة</button>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+{% endblock %}

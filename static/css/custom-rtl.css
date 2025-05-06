@@ -1,0 +1,234 @@
+/* Custom RTL CSS for Travel Agency */
+
+/* Arabic font */
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap');
+
+body, h1, h2, h3, h4, h5, h6, p, 
+.main-sidebar, .nav-sidebar, .card-title, 
+.card-header, .form-control, .btn, .modal-title,
+.dropdown-item, .page-link, .nav-link, td, th {
+    font-family: 'Tajawal', sans-serif !important;
+}
+
+/* RTL specific adjustments */
+.content-header h1 {
+    margin-right: 0;
+    margin-left: auto;
+}
+
+.content-header .breadcrumb {
+    padding-right: 0;
+    padding-left: 0.5rem;
+}
+
+.card-tools {
+    float: left;
+}
+
+/* Custom color scheme for travel agency */
+:root {
+    --travel-primary: #2c7be5;
+    --travel-secondary: #6db7c6;
+    --travel-success: #21c87a;
+    --travel-info: #00dffc;
+    --travel-warning: #ffbc42;
+    --travel-danger: #e63757;
+    --travel-light: #f9fbfd;
+    --travel-dark: #12263f;
+}
+
+.bg-travel-primary {
+    background-color: var(--travel-primary);
+    color: white;
+}
+
+.bg-travel-secondary {
+    background-color: var(--travel-secondary);
+    color: white;
+}
+
+.bg-travel-success {
+    background-color: var(--travel-success);
+    color: white;
+}
+
+.bg-travel-info {
+    background-color: var(--travel-info);
+    color: white;
+}
+
+.text-travel-primary {
+    color: var(--travel-primary);
+}
+
+.btn-travel-primary {
+    background-color: var(--travel-primary);
+    border-color: var(--travel-primary);
+    color: white;
+}
+
+.btn-travel-primary:hover {
+    background-color: #2161b9;
+    border-color: #2161b9;
+    color: white;
+}
+
+/* Login page */
+.login-page {
+    background: linear-gradient(120deg, #2c7be5, #6db7c6);
+}
+
+.login-box {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.login-logo {
+    font-weight: 700;
+}
+
+/* Custom cards */
+.card.card-travel {
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.card.card-travel:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.card.card-travel .card-header {
+    border-radius: 10px 10px 0 0;
+    border-bottom: none;
+}
+
+/* Dashboard stats */
+.small-box {
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.small-box:hover {
+    transform: translateY(-5px);
+}
+
+/* Custom sidebar styling */
+.main-sidebar {
+    background-color: var(--travel-dark);
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active {
+    background-color: var(--travel-primary);
+}
+
+.sidebar-dark-primary .nav-treeview > .nav-item > .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Print styles for reports */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    .print-full-width {
+        width: 100% !important;
+    }
+    
+    .print-only {
+        display: block !important;
+    }
+    
+    body {
+        padding: 0;
+        margin: 0;
+    }
+    
+    .content-wrapper {
+        margin-right: 0 !important;
+        background-color: white !important;
+    }
+    
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #ddd;
+    }
+}
+
+/* Hide print-only elements when not printing */
+.print-only {
+    display: none;
+}
+
+/* Form styling */
+.form-control, .form-control:focus {
+    border-radius: 6px;
+}
+
+.btn {
+    border-radius: 6px;
+}
+
+/* Custom table styles */
+.table-travel {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+}
+
+.table-travel thead th {
+    background-color: var(--travel-light);
+    border-bottom: 2px solid var(--travel-primary);
+    color: var(--travel-dark);
+    font-weight: 600;
+}
+
+.table-travel tbody tr:hover {
+    background-color: rgba(44, 123, 229, 0.05);
+}
+
+/* Status badges */
+.badge-pending {
+    background-color: #ffbc42;
+    color: #212529;
+}
+
+.badge-approved {
+    background-color: #21c87a;
+    color: white;
+}
+
+.badge-rejected {
+    background-color: #e63757;
+    color: white;
+}
+
+.badge-processing {
+    background-color: #2c7be5;
+    color: white;
+}
+
+/* Select2 RTL fixes */
+.select2-container--default .select2-selection--single {
+    height: calc(2.25rem + 2px);
+    padding: .375rem .75rem;
+    border-radius: 6px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 1.5;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: calc(2.25rem + 2px);
+}
+
+/* Dashboard charts */
+.chart-container {
+    position: relative;
+    margin: auto;
+    height: 300px;
+}

@@ -1,0 +1,457 @@
+{% extends 'layout.html' %}
+
+{% block title %}تذاكر الطيران | نظام إدارة وكالة السياحة والسفر{% endblock %}
+
+{% block page_title %}تذاكر الطيران{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">الحجوزات</li>
+<li class="breadcrumb-item active">تذاكر الطيران</li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card card-travel">
+            <div class="card-header bg-travel-primary">
+                <h3 class="card-title">قائمة تذاكر الطيران</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-travel-primary btn-sm" data-toggle="modal" data-target="#modal-add-ticket">
+                        <i class="fas fa-plus"></i> إضافة تذكرة
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="ticketsTable" class="table table-bordered table-striped table-travel datatable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>اسم المسافر</th>
+                                <th>رقم الجواز</th>
+                                <th>شركة الطيران</th>
+                                <th>رقم الرحلة</th>
+                                <th>من</th>
+                                <th>إلى</th>
+                                <th>تاريخ الرحلة</th>
+                                <th>السعر</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>أحمد محمد السيد</td>
+                                <td>A123456789</td>
+                                <td>الخطوط السعودية</td>
+                                <td>SV123</td>
+                                <td>الرياض</td>
+                                <td>دبي</td>
+                                <td>25-06-2023</td>
+                                <td>1,500 ر.س</td>
+                                <td><span class="badge badge-success">مؤكدة</span></td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-ticket">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-ticket">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>نورة عبدالله محمد</td>
+                                <td>B987654321</td>
+                                <td>طيران الإمارات</td>
+                                <td>EK432</td>
+                                <td>جدة</td>
+                                <td>القاهرة</td>
+                                <td>28-06-2023</td>
+                                <td>2,200 ر.س</td>
+                                <td><span class="badge badge-warning">انتظار</span></td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-ticket">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-ticket">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>خالد عمر يوسف</td>
+                                <td>C456789012</td>
+                                <td>الاتحاد للطيران</td>
+                                <td>EY345</td>
+                                <td>الرياض</td>
+                                <td>أبوظبي</td>
+                                <td>30-06-2023</td>
+                                <td>1,800 ر.س</td>
+                                <td><span class="badge badge-success">مؤكدة</span></td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-ticket">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-ticket">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>لمياء سعيد خالد</td>
+                                <td>D789012345</td>
+                                <td>القطرية</td>
+                                <td>QR789</td>
+                                <td>الدمام</td>
+                                <td>الدوحة</td>
+                                <td>02-07-2023</td>
+                                <td>1,950 ر.س</td>
+                                <td><span class="badge badge-danger">ملغية</span></td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-ticket">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-ticket">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>محمد علي أحمد</td>
+                                <td>E567890123</td>
+                                <td>الخطوط البريطانية</td>
+                                <td>BA456</td>
+                                <td>جدة</td>
+                                <td>لندن</td>
+                                <td>05-07-2023</td>
+                                <td>5,200 ر.س</td>
+                                <td><span class="badge badge-primary">تم الدفع</span></td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-ticket">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-ticket">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+
+<!-- Modal - Add/Edit Ticket -->
+<div class="modal fade" id="modal-add-ticket">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-travel-primary">
+                <h4 class="modal-title">إضافة تذكرة طيران جديدة</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="needs-validation" novalidate>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="passengerName">اسم المسافر</label>
+                                <input type="text" class="form-control" id="passengerName" placeholder="أدخل اسم المسافر" required>
+                                <div class="invalid-feedback">
+                                    الرجاء إدخال اسم المسافر
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="passportNumber">رقم الجواز</label>
+                                <input type="text" class="form-control" id="passportNumber" placeholder="أدخل رقم الجواز" required>
+                                <div class="invalid-feedback">
+                                    الرجاء إدخال رقم الجواز
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="airline">شركة الطيران</label>
+                                <select class="form-control select2" id="airline" required>
+                                    <option value="">اختر شركة الطيران</option>
+                                    <option value="SV">الخطوط السعودية</option>
+                                    <option value="EK">طيران الإمارات</option>
+                                    <option value="EY">الاتحاد للطيران</option>
+                                    <option value="QR">الخطوط القطرية</option>
+                                    <option value="BA">الخطوط البريطانية</option>
+                                    <option value="AF">الخطوط الفرنسية</option>
+                                    <option value="LH">لوفتهانزا</option>
+                                    <option value="TK">الخطوط التركية</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    الرجاء اختيار شركة الطيران
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="flightNumber">رقم الرحلة</label>
+                                <input type="text" class="form-control" id="flightNumber" placeholder="أدخل رقم الرحلة" required>
+                                <div class="invalid-feedback">
+                                    الرجاء إدخال رقم الرحلة
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="departureCity">مدينة المغادرة</label>
+                                <input type="text" class="form-control" id="departureCity" placeholder="مدينة المغادرة" required>
+                                <div class="invalid-feedback">
+                                    الرجاء إدخال مدينة المغادرة
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="arrivalCity">مدينة الوصول</label>
+                                <input type="text" class="form-control" id="arrivalCity" placeholder="مدينة الوصول" required>
+                                <div class="invalid-feedback">
+                                    الرجاء إدخال مدينة الوصول
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="flightDate">تاريخ الرحلة</label>
+                                <div class="input-group date">
+                                    <input type="text" class="form-control datepicker" id="flightDate" placeholder="تاريخ الرحلة" required>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        الرجاء إدخال تاريخ الرحلة
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="flightTime">وقت الرحلة</label>
+                                <div class="input-group">
+                                    <input type="time" class="form-control" id="flightTime" required>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text"><i class="fa fa-clock"></i></div>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        الرجاء إدخال وقت الرحلة
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="ticketPrice">سعر التذكرة</label>
+                                <div class="input-group">
+                                    <input type="number" min="0" step="0.01" class="form-control" id="ticketPrice" placeholder="سعر التذكرة" required>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">ر.س</div>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        الرجاء إدخال سعر التذكرة
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="ticketStatus">حالة التذكرة</label>
+                                <select class="form-control" id="ticketStatus" required>
+                                    <option value="">اختر الحالة</option>
+                                    <option value="confirmed">مؤكدة</option>
+                                    <option value="pending">انتظار</option>
+                                    <option value="paid">تم الدفع</option>
+                                    <option value="cancelled">ملغية</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    الرجاء اختيار حالة التذكرة
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes">ملاحظات</label>
+                        <textarea class="form-control" id="notes" rows="3" placeholder="ملاحظات إضافية..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <button type="button" class="btn btn-travel-primary">حفظ التغييرات</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- Modal - View Ticket -->
+<div class="modal fade" id="modal-view-ticket">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h4 class="modal-title">تفاصيل تذكرة الطيران</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="invoice p-3 mb-3">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>
+                                        <i class="fas fa-plane ml-2"></i> تذكرة طيران
+                                        <small class="float-left">تاريخ الحجز: 23-06-2023</small>
+                                    </h4>
+                                </div>
+                            </div>
+                            
+                            <div class="row invoice-info">
+                                <div class="col-sm-4 invoice-col">
+                                    <b>المسافر</b><br>
+                                    <strong>الاسم:</strong> أحمد محمد السيد<br>
+                                    <strong>رقم الجواز:</strong> A123456789<br>
+                                    <strong>رقم الهاتف:</strong> 0501234567<br>
+                                    <strong>البريد الإلكتروني:</strong> ahmed@example.com
+                                </div>
+                                
+                                <div class="col-sm-4 invoice-col">
+                                    <b>تفاصيل الرحلة</b><br>
+                                    <strong>شركة الطيران:</strong> الخطوط السعودية<br>
+                                    <strong>رقم الرحلة:</strong> SV123<br>
+                                    <strong>تاريخ الرحلة:</strong> 25-06-2023<br>
+                                    <strong>وقت الرحلة:</strong> 10:30 صباحاً
+                                </div>
+                                
+                                <div class="col-sm-4 invoice-col">
+                                    <b>تفاصيل الحجز</b><br>
+                                    <strong>رقم الحجز:</strong> #TKT-0001<br>
+                                    <strong>حالة التذكرة:</strong> <span class="badge badge-success">مؤكدة</span><br>
+                                    <strong>طريقة الدفع:</strong> نقداً<br>
+                                    <strong>تاريخ الدفع:</strong> 23-06-2023
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div class="py-3 text-center" style="background-color: #f8f9fa; border-radius: 5px;">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-4">
+                                                <h5>الرياض</h5>
+                                                <p class="text-muted mb-0">مطار الملك خالد الدولي</p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="d-flex justify-content-center align-items-center">
+                                                    <div class="mr-3 ml-3">
+                                                        <i class="fas fa-plane-departure text-travel-primary fa-2x"></i>
+                                                    </div>
+                                                    <div class="flight-dots"></div>
+                                                    <div class="mr-3 ml-3">
+                                                        <i class="fas fa-plane-arrival text-travel-primary fa-2x"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="text-center">
+                                                    <span class="badge badge-light">مدة الرحلة: 1 ساعة 45 دقيقة</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <h5>دبي</h5>
+                                                <p class="text-muted mb-0">مطار دبي الدولي</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-6">
+                                    <p class="lead">تفاصيل الدفع:</p>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <tr>
+                                                <th style="width:50%">سعر التذكرة:</th>
+                                                <td>1,350 ر.س</td>
+                                            </tr>
+                                            <tr>
+                                                <th>الضرائب:</th>
+                                                <td>150 ر.س</td>
+                                            </tr>
+                                            <tr>
+                                                <th>الإجمالي:</th>
+                                                <td>1,500 ر.س</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <p class="lead">ملاحظات:</p>
+                                    <p class="text-muted well">
+                                        الرجاء الحضور إلى المطار قبل ساعتين من موعد الرحلة. مسموح بحقيبة واحدة وزن 23 كيلوجرام وحقيبة يد لا تتجاوز 7 كيلوجرام.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <button type="button" class="btn btn-primary"><i class="fas fa-print"></i> طباعة</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+{% endblock %}

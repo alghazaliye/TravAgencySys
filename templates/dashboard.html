@@ -1,0 +1,255 @@
+{% extends 'layout.html' %}
+
+{% block title %}لوحة التحكم | نظام إدارة وكالة السياحة والسفر{% endblock %}
+
+{% block page_title %}لوحة التحكم{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item active">لوحة التحكم</li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-travel-primary">
+            <div class="inner">
+                <h3>150</h3>
+                <p>تذاكر الطيران</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-plane"></i>
+            </div>
+            <a href="{{ url_for('airline_tickets') }}" class="small-box-footer">المزيد <i class="fas fa-arrow-circle-left"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-travel-success">
+            <div class="inner">
+                <h3>53</h3>
+                <p>تأشيرات</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-passport"></i>
+            </div>
+            <a href="{{ url_for('work_visa') }}" class="small-box-footer">المزيد <i class="fas fa-arrow-circle-left"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-travel-info">
+            <div class="inner">
+                <h3>44</h3>
+                <p>العملاء</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <a href="{{ url_for('customers') }}" class="small-box-footer">المزيد <i class="fas fa-arrow-circle-left"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-travel-secondary">
+            <div class="inner">
+                <h3>65,000 ر.س</h3>
+                <p>الإيرادات</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <a href="{{ url_for('reports') }}" class="small-box-footer">المزيد <i class="fas fa-arrow-circle-left"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+</div>
+<!-- /.row -->
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card card-travel">
+            <div class="card-header bg-travel-primary">
+                <h3 class="card-title">الإيرادات الشهرية</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+    
+    <div class="col-md-4">
+        <div class="card card-travel">
+            <div class="card-header bg-travel-success">
+                <h3 class="card-title">توزيع العملاء حسب الخدمة</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="chart-container" style="height: 250px;">
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card card-travel">
+            <div class="card-header bg-travel-info">
+                <h3 class="card-title">أحدث التأشيرات</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>الاسم</th>
+                                <th>نوع التأشيرة</th>
+                                <th>الحالة</th>
+                                <th>التاريخ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>عبدالله محمد</td>
+                                <td>عمل</td>
+                                <td><span class="badge badge-success">مكتملة</span></td>
+                                <td>22-06-2023</td>
+                            </tr>
+                            <tr>
+                                <td>سارة أحمد</td>
+                                <td>زيارة عائلية</td>
+                                <td><span class="badge badge-warning">قيد المعالجة</span></td>
+                                <td>20-06-2023</td>
+                            </tr>
+                            <tr>
+                                <td>محمد خالد</td>
+                                <td>عمرة</td>
+                                <td><span class="badge badge-primary">جديدة</span></td>
+                                <td>19-06-2023</td>
+                            </tr>
+                            <tr>
+                                <td>فاطمة علي</td>
+                                <td>عمل</td>
+                                <td><span class="badge badge-danger">مرفوضة</span></td>
+                                <td>18-06-2023</td>
+                            </tr>
+                            <tr>
+                                <td>خالد عمر</td>
+                                <td>زيارة عائلية</td>
+                                <td><span class="badge badge-success">مكتملة</span></td>
+                                <td>15-06-2023</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <a href="{{ url_for('work_visa') }}" class="btn btn-sm btn-info float-left">عرض الكل</a>
+            </div>
+            <!-- /.card-footer -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+    
+    <div class="col-md-6">
+        <div class="card card-travel">
+            <div class="card-header bg-travel-secondary">
+                <h3 class="card-title">أحدث الحجوزات</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>اسم المسافر</th>
+                                <th>الوجهة</th>
+                                <th>التاريخ</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>أحمد السيد</td>
+                                <td>دبي</td>
+                                <td>25-06-2023</td>
+                                <td><span class="badge badge-success">مؤكد</span></td>
+                            </tr>
+                            <tr>
+                                <td>نورة محمد</td>
+                                <td>القاهرة</td>
+                                <td>24-06-2023</td>
+                                <td><span class="badge badge-primary">تم الدفع</span></td>
+                            </tr>
+                            <tr>
+                                <td>محمد علي</td>
+                                <td>لندن</td>
+                                <td>22-06-2023</td>
+                                <td><span class="badge badge-warning">انتظار</span></td>
+                            </tr>
+                            <tr>
+                                <td>سعيد عبدالله</td>
+                                <td>إسطنبول</td>
+                                <td>20-06-2023</td>
+                                <td><span class="badge badge-success">مؤكد</span></td>
+                            </tr>
+                            <tr>
+                                <td>لمياء خالد</td>
+                                <td>باريس</td>
+                                <td>18-06-2023</td>
+                                <td><span class="badge badge-danger">ملغي</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <a href="{{ url_for('airline_tickets') }}" class="btn btn-sm btn-info float-left">عرض الكل</a>
+            </div>
+            <!-- /.card-footer -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+{% endblock %}

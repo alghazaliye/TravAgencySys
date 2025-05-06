@@ -1,0 +1,574 @@
+{% extends 'layout.html' %}
+
+{% block title %}سندات الصرف | نظام إدارة وكالة السياحة والسفر{% endblock %}
+
+{% block page_title %}سندات الصرف{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">الإدارة المالية</li>
+<li class="breadcrumb-item active">سندات الصرف</li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card card-travel">
+            <div class="card-header bg-travel-primary">
+                <h3 class="card-title">قائمة سندات الصرف</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-travel-primary btn-sm" data-toggle="modal" data-target="#modal-add-payment">
+                        <i class="fas fa-plus"></i> إضافة سند صرف
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="paymentsTable" class="table table-bordered table-striped table-travel datatable">
+                        <thead>
+                            <tr>
+                                <th>رقم السند</th>
+                                <th>التاريخ</th>
+                                <th>المستفيد</th>
+                                <th>نوع المستفيد</th>
+                                <th>المبلغ</th>
+                                <th>الحساب</th>
+                                <th>طريقة الدفع</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>PV-0048</td>
+                                <td>15-06-2023</td>
+                                <td>شركة الخطوط السعودية</td>
+                                <td>مورد</td>
+                                <td>5,000 ر.س</td>
+                                <td>الصندوق الرئيسي</td>
+                                <td>نقداً</td>
+                                <td><span class="badge badge-success">مكتمل</span></td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-payment">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-payment">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PV-0047</td>
+                                <td>12-06-2023</td>
+                                <td>محمد السيد</td>
+                                <td>موظف</td>
+                                <td>3,000 ر.س</td>
+                                <td>بنك الراجحي - الحساب الرئيسي</td>
+                                <td>تحويل بنكي</td>
+                                <td><span class="badge badge-success">مكتمل</span></td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-payment">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-payment">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PV-0046</td>
+                                <td>10-06-2023</td>
+                                <td>فندق الفيصلية</td>
+                                <td>مورد</td>
+                                <td>8,500 ر.س</td>
+                                <td>البنك الأهلي</td>
+                                <td>شيك</td>
+                                <td><span class="badge badge-success">مكتمل</span></td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-payment">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-payment">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PV-0045</td>
+                                <td>05-06-2023</td>
+                                <td>شركة الخطوط السعودية</td>
+                                <td>مورد</td>
+                                <td>10,000 ر.س</td>
+                                <td>بنك الراجحي - الحساب الرئيسي</td>
+                                <td>تحويل بنكي</td>
+                                <td><span class="badge badge-success">مكتمل</span></td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-payment">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-payment">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PV-0044</td>
+                                <td>01-06-2023</td>
+                                <td>مجموعة الفجر للعمرة</td>
+                                <td>مورد</td>
+                                <td>15,000 ر.س</td>
+                                <td>البنك الأهلي</td>
+                                <td>تحويل بنكي</td>
+                                <td><span class="badge badge-success">مكتمل</span></td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-payment">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-payment">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+
+<div class="row">
+    <div class="col-md-3 col-sm-6 col-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-info"><i class="fas fa-file-invoice-dollar"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">سندات الشهر الحالي</span>
+                <span class="info-box-number">25</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 col-sm-6 col-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-success"><i class="fas fa-money-bill-wave"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">إجمالي المدفوعات (الشهر)</span>
+                <span class="info-box-number">85,500 ر.س</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 col-sm-6 col-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-warning"><i class="fas fa-truck"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">مدفوعات الموردين</span>
+                <span class="info-box-number">45,000 ر.س</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 col-sm-6 col-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-danger"><i class="fas fa-chart-pie"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">مصروفات تشغيلية</span>
+                <span class="info-box-number">15,000 ر.س</span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.row -->
+
+<!-- Modal - Add/Edit Payment -->
+<div class="modal fade" id="modal-add-payment">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-travel-primary">
+                <h4 class="modal-title">إضافة سند صرف جديد</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="needs-validation" novalidate>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="voucherNumber">رقم السند</label>
+                                <input type="text" class="form-control" id="voucherNumber" placeholder="سيتم توليده تلقائياً" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="voucherDate">تاريخ السند</label>
+                                <div class="input-group date">
+                                    <input type="text" class="form-control datepicker" id="voucherDate" placeholder="تاريخ السند" required>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        الرجاء إدخال تاريخ السند
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="beneficiaryType">نوع المستفيد</label>
+                                <select class="form-control" id="beneficiaryType" required>
+                                    <option value="">اختر نوع المستفيد</option>
+                                    <option value="supplier">مورد</option>
+                                    <option value="employee">موظف</option>
+                                    <option value="customer">عميل</option>
+                                    <option value="other">أخرى</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    الرجاء اختيار نوع المستفيد
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="beneficiaryName">اسم المستفيد</label>
+                                <select class="form-control select2" id="beneficiaryName" required>
+                                    <option value="">اختر المستفيد</option>
+                                    <option value="1">شركة الخطوط السعودية</option>
+                                    <option value="2">فندق الفيصلية</option>
+                                    <option value="3">شركة سابتكو</option>
+                                    <option value="4">مجموعة الفجر للعمرة</option>
+                                    <option value="5">طيران الإمارات</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    الرجاء اختيار اسم المستفيد
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="account">الحساب</label>
+                                <select class="form-control select2" id="account" required>
+                                    <option value="">اختر الحساب</option>
+                                    <option value="1">الصندوق الرئيسي</option>
+                                    <option value="2">بنك الراجحي - الحساب الرئيسي</option>
+                                    <option value="3">البنك الأهلي</option>
+                                    <option value="4">بنك الرياض</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    الرجاء اختيار الحساب
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="paymentMethod">طريقة الدفع</label>
+                                <select class="form-control" id="paymentMethod" required>
+                                    <option value="">اختر طريقة الدفع</option>
+                                    <option value="cash">نقداً</option>
+                                    <option value="bank_transfer">تحويل بنكي</option>
+                                    <option value="check">شيك</option>
+                                    <option value="credit_card">بطاقة ائتمان</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    الرجاء اختيار طريقة الدفع
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="checkFields" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="checkNumber">رقم الشيك</label>
+                                    <input type="text" class="form-control" id="checkNumber" placeholder="أدخل رقم الشيك">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="checkDate">تاريخ الشيك</label>
+                                    <div class="input-group date">
+                                        <input type="text" class="form-control datepicker" id="checkDate" placeholder="تاريخ الشيك">
+                                        <div class="input-group-append">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="bankName">اسم البنك</label>
+                                    <input type="text" class="form-control" id="bankName" placeholder="أدخل اسم البنك">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="transferFields" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="transferReference">رقم المرجع</label>
+                                    <input type="text" class="form-control" id="transferReference" placeholder="أدخل رقم مرجع التحويل">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="transferDate">تاريخ التحويل</label>
+                                    <div class="input-group date">
+                                        <input type="text" class="form-control datepicker" id="transferDate" placeholder="تاريخ التحويل">
+                                        <div class="input-group-append">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="amount">المبلغ</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" class="form-control" id="amount" placeholder="0.00" required>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">ر.س</div>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        الرجاء إدخال المبلغ
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="currency">العملة</label>
+                                <select class="form-control" id="currency" required>
+                                    <option value="SAR">ريال سعودي (SAR)</option>
+                                    <option value="USD">دولار أمريكي (USD)</option>
+                                    <option value="EUR">يورو (EUR)</option>
+                                    <option value="GBP">جنيه استرليني (GBP)</option>
+                                    <option value="AED">درهم إماراتي (AED)</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    الرجاء اختيار العملة
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">البيان</label>
+                        <textarea class="form-control" id="description" rows="3" placeholder="وصف سبب الصرف..." required></textarea>
+                        <div class="invalid-feedback">
+                            الرجاء إدخال البيان
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="category">فئة المصروف</label>
+                                <select class="form-control select2" id="category" required>
+                                    <option value="">اختر فئة المصروف</option>
+                                    <option value="operations">مصاريف تشغيلية</option>
+                                    <option value="suppliers">مدفوعات الموردين</option>
+                                    <option value="salaries">رواتب ومكافآت</option>
+                                    <option value="rent">إيجارات</option>
+                                    <option value="utilities">مرافق وخدمات</option>
+                                    <option value="other">أخرى</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    الرجاء اختيار فئة المصروف
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="reference">المرجع</label>
+                                <input type="text" class="form-control" id="reference" placeholder="رقم الفاتورة أو المرجع">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="attachments">المرفقات</label>
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="attachments" multiple>
+                                <label class="custom-file-label" for="attachments">اختر الملفات</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <button type="button" class="btn btn-travel-primary">حفظ السند</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- Modal - View Payment -->
+<div class="modal fade" id="modal-view-payment">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h4 class="modal-title">تفاصيل سند الصرف</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="invoice p-3 mb-3">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>
+                                        <i class="fas fa-file-invoice-dollar ml-2"></i> سند صرف رقم PV-0048
+                                        <small class="float-left">تاريخ السند: 15-06-2023</small>
+                                    </h4>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-12 text-center">
+                                    <h2>سند صرف</h2>
+                                    <h5>PAYMENT VOUCHER</h5>
+                                </div>
+                            </div>
+                            
+                            <div class="row invoice-info mt-3">
+                                <div class="col-sm-4 invoice-col">
+                                    <b>معلومات المستفيد</b><br>
+                                    <strong>الاسم:</strong> شركة الخطوط السعودية<br>
+                                    <strong>النوع:</strong> مورد<br>
+                                    <strong>الرصيد بعد الصرف:</strong> -20,000 ر.س
+                                </div>
+                                
+                                <div class="col-sm-4 invoice-col">
+                                    <b>معلومات الدفع</b><br>
+                                    <strong>المبلغ:</strong> 5,000 ر.س<br>
+                                    <strong>الحساب:</strong> الصندوق الرئيسي<br>
+                                    <strong>طريقة الدفع:</strong> نقداً<br>
+                                    <strong>العملة:</strong> ريال سعودي (SAR)
+                                </div>
+                                
+                                <div class="col-sm-4 invoice-col">
+                                    <b>بيانات إضافية</b><br>
+                                    <strong>فئة المصروف:</strong> مدفوعات الموردين<br>
+                                    <strong>المرجع:</strong> INV-234567<br>
+                                    <strong>المستخدم:</strong> أحمد محمد<br>
+                                    <strong>الحالة:</strong> <span class="badge badge-success">مكتمل</span>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div class="p-3" style="background-color: #f8f9fa; border-radius: 5px;">
+                                        <h5>البيان</h5>
+                                        <p>سداد فاتورة تذاكر طيران للعملاء (محمد السيد وعائلته) - رحلة الرياض - دبي بتاريخ 25/06/2023.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-6">
+                                    <p class="lead">المرفقات:</p>
+                                    <ul class="list-unstyled">
+                                        <li>
+                                            <i class="far fa-file-pdf ml-2"></i> صورة الفاتورة
+                                            <a href="#" class="btn btn-sm btn-outline-info mr-2">
+                                                <i class="fas fa-download"></i> تحميل
+                                            </a>
+                                        </li>
+                                        <li class="mt-2">
+                                            <i class="far fa-file-pdf ml-2"></i> إيصال الدفع
+                                            <a href="#" class="btn btn-sm btn-outline-info mr-2">
+                                                <i class="fas fa-download"></i> تحميل
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="col-6">
+                                    <p class="lead">التوقيعات:</p>
+                                    <div class="row">
+                                        <div class="col-6 text-center border-left">
+                                            <p>المستلم</p>
+                                            <p class="mt-4 text-muted">________________</p>
+                                        </div>
+                                        <div class="col-6 text-center">
+                                            <p>المدير المالي</p>
+                                            <p class="mt-4 text-muted">________________</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <button type="button" class="btn btn-primary"><i class="fas fa-print"></i> طباعة</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+{% block scripts %}
+<script>
+    $(function() {
+        // Toggle payment method fields
+        $('#paymentMethod').on('change', function() {
+            const method = $(this).val();
+            
+            // Hide all method-specific fields
+            $('#checkFields, #transferFields').hide();
+            
+            // Show fields based on selected method
+            if (method === 'check') {
+                $('#checkFields').show();
+            } else if (method === 'bank_transfer') {
+                $('#transferFields').show();
+            }
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}
