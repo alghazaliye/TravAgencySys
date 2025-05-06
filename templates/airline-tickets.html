@@ -287,9 +287,9 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="ticketPrice">سعر التذكرة</label>
+                                <label for="ticketPrice">سعر التذكرة (البيع)</label>
                                 <div class="input-group">
-                                    <input type="number" min="0" step="0.01" class="form-control" id="ticketPrice" placeholder="سعر التذكرة" required>
+                                    <input type="number" min="0" step="0.01" class="form-control" id="ticketPrice" placeholder="سعر البيع للعميل" required>
                                     <div class="input-group-append">
                                         <div class="input-group-text">ر.س</div>
                                     </div>
@@ -301,8 +301,22 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
+                                <label for="ticketCost">سعر شراء التذكرة</label>
+                                <div class="input-group">
+                                    <input type="number" min="0" step="0.01" class="form-control" id="ticketCost" placeholder="سعر الشراء من الشركة" required>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">ر.س</div>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        الرجاء إدخال سعر شراء التذكرة
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 <label for="ticketStatus">حالة التذكرة</label>
-                                <select class="form-control" id="ticketStatus" required>
+                                <select class="form-control" id="ticketStatus" onchange="handleTicketStatusChange()" required>
                                     <option value="">اختر الحالة</option>
                                     <option value="confirmed">مؤكدة</option>
                                     <option value="pending">انتظار</option>
@@ -316,7 +330,57 @@
                         </div>
                     </div>
                     
-                    <div class="form-group">
+                    <!-- قسم قيد المبلغ إلى شركة النقل - يظهر فقط عند اختيار حالة التذكرة "مؤكدة" -->
+                    <div id="paymentToAirlineSection" class="d-none">
+                        <hr>
+                        <div class="row">
+                            <div class="col-12">
+                                <h5 class="text-primary">قيد المبلغ إلى شركة النقل</h5>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="createPaymentVoucher">
+                                    <label class="custom-control-label" for="createPaymentVoucher">إنشاء سند صرف تلقائي لشركة النقل</label>
+                                </div>
+                                <small class="form-text text-muted">عند التحديد، سيتم إنشاء سند صرف تلقائي بقيمة سعر شراء التذكرة إلى شركة النقل</small>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="paymentAccount">الحساب المالي</label>
+                                    <select class="form-control" id="paymentAccount">
+                                        <option value="">اختر الحساب</option>
+                                        <option value="1">الصندوق الرئيسي</option>
+                                        <option value="2">بنك الراجحي - الحساب الرئيسي</option>
+                                        <option value="3">البنك الأهلي</option>
+                                        <option value="4">بنك الرياض</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="paymentMethod">طريقة الدفع</label>
+                                    <select class="form-control" id="paymentMethod">
+                                        <option value="">اختر طريقة الدفع</option>
+                                        <option value="cash">نقداً</option>
+                                        <option value="bank_transfer">تحويل بنكي</option>
+                                        <option value="check">شيك</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="paymentNotes">ملاحظات الدفع</label>
+                                    <textarea class="form-control" id="paymentNotes" rows="2" placeholder="ملاحظات خاصة بالدفع لشركة النقل..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mt-3">
                         <label for="notes">ملاحظات</label>
                         <textarea class="form-control" id="notes" rows="3" placeholder="ملاحظات إضافية..."></textarea>
                     </div>
@@ -454,4 +518,60 @@
     <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // دالة لإدارة عرض/إخفاء قسم قيد المبلغ إلى شركة النقل عند تغيير حالة التذكرة
+    function handleTicketStatusChange() {
+        let ticketStatus = document.getElementById('ticketStatus').value;
+        let paymentSection = document.getElementById('paymentToAirlineSection');
+        
+        // إظهار قسم قيد المبلغ فقط إذا كانت حالة التذكرة "مؤكدة"
+        if (ticketStatus === 'confirmed') {
+            paymentSection.classList.remove('d-none');
+            document.getElementById('createPaymentVoucher').checked = true;
+        } else {
+            paymentSection.classList.add('d-none');
+            document.getElementById('createPaymentVoucher').checked = false;
+        }
+    }
+    
+    // عند فتح النافذة المنبثقة للتذكرة
+    $(document).ready(function() {
+        $('#modal-add-ticket').on('shown.bs.modal', function() {
+            // إعادة تعيين النموذج
+            document.getElementById('ticketStatus').value = '';
+            document.getElementById('paymentToAirlineSection').classList.add('d-none');
+            
+            // حساب الربح تلقائياً عند تغيير سعر البيع أو سعر الشراء
+            $('#ticketPrice, #ticketCost').on('input', function() {
+                calculateProfit();
+            });
+        });
+        
+        // عرض قيمة ربح التذكرة
+        function calculateProfit() {
+            const sellPrice = parseFloat($('#ticketPrice').val()) || 0;
+            const costPrice = parseFloat($('#ticketCost').val()) || 0;
+            
+            if (sellPrice > 0 && costPrice > 0) {
+                const profit = sellPrice - costPrice;
+                const profitPercent = ((profit / costPrice) * 100).toFixed(2);
+                
+                // عرض معلومات الربح إذا كان القسم غير موجود فسيتم إنشاؤه
+                if ($('#profitInfo').length === 0) {
+                    $('#ticketPrice').closest('.form-group').append(
+                        '<div id="profitInfo" class="mt-2 p-2" style="background-color: #f8f9fa; border-radius: 4px;">' +
+                        '<small><strong>الربح:</strong> <span id="profitAmount"></span> ر.س (<span id="profitPercent"></span>%)</small>' +
+                        '</div>'
+                    );
+                }
+                
+                $('#profitAmount').text(profit.toFixed(2));
+                $('#profitPercent').text(profitPercent);
+            }
+        }
+    });
+</script>
 {% endblock %}
