@@ -39,6 +39,10 @@ def family_visit():
 def umrah_visa():
     return render_template('umrah-visa.html')
 
+@app.route('/umrah-guarantee')
+def umrah_guarantee():
+    return render_template('umrah-guarantee.html')
+
 @app.route('/mail-tracking')
 def mail_tracking():
     return render_template('mail-tracking.html')

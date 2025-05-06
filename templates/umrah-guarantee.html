@@ -1,0 +1,832 @@
+{% extends "layout.html" %}
+
+{% block title %}نظام ضمان المعتمرين{% endblock %}
+
+{% block content %}
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">إدارة ضمانات العمرة</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="/dashboard">الرئيسية</a></li>
+                    <li class="breadcrumb-item">العمرة</li>
+                    <li class="breadcrumb-item active">إدارة الضمانات</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- نظرة عامة -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>320</h3>
+                        <p>إجمالي الضمانات</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>280</h3>
+                        <p>ضمانات نشطة</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>40</h3>
+                        <p>ضمانات منتهية</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-calendar-times"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>5</h3>
+                        <p>ضمانات متعثرة</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- أزرار الإجراءات -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-add-guarantee">
+                    <i class="fas fa-plus ml-1"></i> إضافة ضمان جديد
+                </button>
+                <button type="button" class="btn btn-primary">
+                    <i class="fas fa-search ml-1"></i> استعلام عن ضمان
+                </button>
+                <button type="button" class="btn btn-info">
+                    <i class="fas fa-print ml-1"></i> طباعة تقرير
+                </button>
+                <button type="button" class="btn btn-warning">
+                    <i class="fas fa-tasks ml-1"></i> متابعة الضمانات
+                </button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <i class="fas fa-filter ml-1"></i> تصفية
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">جميع الضمانات</a>
+                        <a class="dropdown-item" href="#">ضمانات نشطة</a>
+                        <a class="dropdown-item" href="#">ضمانات منتهية</a>
+                        <a class="dropdown-item" href="#">ضمانات متعثرة</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- جدول الضمانات -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">سجل ضمانات العمرة</h3>
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 250px;">
+                        <input type="text" name="table_search" class="form-control float-right" placeholder="بحث...">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-default">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>اسم الضامن</th>
+                            <th>الاسم التجاري</th>
+                            <th>رقم الهاتف</th>
+                            <th>نوع الهوية</th>
+                            <th>رقم الهوية</th>
+                            <th>عدد المعتمرين</th>
+                            <th>تاريخ الإصدار</th>
+                            <th>تاريخ الانتهاء</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>عبدالله محمد السالم</td>
+                            <td>مؤسسة أفاق الخير للعمرة</td>
+                            <td>0512345678</td>
+                            <td>هوية وطنية</td>
+                            <td>1098765432</td>
+                            <td>25</td>
+                            <td>10/02/2023</td>
+                            <td>10/05/2023</td>
+                            <td><span class="badge badge-success">نشط</span></td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal-view-guarantee">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button type="button" class="btn btn-warning btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>محمد أحمد العتيبي</td>
+                            <td>شركة البركة للسياحة</td>
+                            <td>0523456789</td>
+                            <td>هوية وطنية</td>
+                            <td>1087654321</td>
+                            <td>18</td>
+                            <td>15/02/2023</td>
+                            <td>15/05/2023</td>
+                            <td><span class="badge badge-success">نشط</span></td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button type="button" class="btn btn-warning btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>خالد سعيد الغامدي</td>
+                            <td>مؤسسة طيبة للعمرة والحج</td>
+                            <td>0534567890</td>
+                            <td>هوية وطنية</td>
+                            <td>1076543210</td>
+                            <td>32</td>
+                            <td>20/01/2023</td>
+                            <td>20/01/2023</td>
+                            <td><span class="badge badge-warning">منتهي</span></td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button type="button" class="btn btn-warning btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>سلطان سعد القحطاني</td>
+                            <td>مؤسسة سبل النور للعمرة</td>
+                            <td>0545678901</td>
+                            <td>هوية وطنية</td>
+                            <td>1065432109</td>
+                            <td>15</td>
+                            <td>05/03/2023</td>
+                            <td>05/06/2023</td>
+                            <td><span class="badge badge-success">نشط</span></td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button type="button" class="btn btn-warning btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>عبدالرحمن خالد الزهراني</td>
+                            <td>مؤسسة الهدى للسياحة الدينية</td>
+                            <td>0556789012</td>
+                            <td>هوية وطنية</td>
+                            <td>1054321098</td>
+                            <td>20</td>
+                            <td>10/01/2023</td>
+                            <td>10/04/2023</td>
+                            <td><span class="badge badge-danger">متعثر</span></td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button type="button" class="btn btn-warning btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-left">
+                    <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- إحصائيات ومؤشرات -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-pie ml-1"></i>
+                            توزيع الضمانات حسب المدن
+                        </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="position: relative; height:300px;">
+                            <canvas id="guaranteeDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-line ml-1"></i>
+                            إحصائيات المعتمرين الشهرية
+                        </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="position: relative; height:300px;">
+                            <canvas id="umrahStatisticsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal - إضافة ضمان جديد -->
+<div class="modal fade" id="modal-add-guarantee">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h4 class="modal-title">إضافة ضمان عمرة جديد</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="guaranteeForm">
+                    <div class="card card-default">
+                        <div class="card-header">
+                            <h3 class="card-title">بيانات الضامن</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="guarantorName">اسم الضامن <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="guarantorName" placeholder="أدخل اسم الضامن الكامل" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="businessName">الاسم التجاري <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="businessName" placeholder="أدخل الاسم التجاري للمؤسسة" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="phoneNumber">رقم الهاتف <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="phoneNumber" placeholder="أدخل رقم الهاتف" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="mobileNumber">رقم الموبايل</label>
+                                        <input type="text" class="form-control" id="mobileNumber" placeholder="أدخل رقم الموبايل">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="idType">نوع الهوية <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="idType" required>
+                                            <option value="">اختر نوع الهوية</option>
+                                            <option value="national-id">هوية وطنية</option>
+                                            <option value="iqama">إقامة</option>
+                                            <option value="passport">جواز سفر</option>
+                                            <option value="commercial">سجل تجاري</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="idNumber">رقم الهوية <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="idNumber" placeholder="أدخل رقم الهوية" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="idIssueDate">تاريخ الإصدار <span class="text-danger">*</span></label>
+                                        <div class="input-group date" id="idIssueDatePicker" data-target-input="nearest">
+                                            <input type="text" class="form-control datetimepicker-input" id="idIssueDate" data-target="#idIssueDatePicker" placeholder="DD/MM/YYYY" required>
+                                            <div class="input-group-append" data-target="#idIssueDatePicker" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="idIssuePlace">مكان الإصدار <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="idIssuePlace" placeholder="أدخل مكان إصدار الهوية" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="address">العنوان <span class="text-danger">*</span></label>
+                                        <textarea class="form-control" id="address" rows="2" placeholder="أدخل العنوان التفصيلي" required></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card card-default mt-4">
+                        <div class="card-header">
+                            <h3 class="card-title">بيانات الضمان</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="guaranteeType">نوع الضمان <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="guaranteeType" required>
+                                            <option value="">اختر نوع الضمان</option>
+                                            <option value="bank">ضمان بنكي</option>
+                                            <option value="property">ضمان عقاري</option>
+                                            <option value="commercial">ضمان تجاري</option>
+                                            <option value="personal">ضمان شخصي</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="guaranteeAmount">مبلغ الضمان <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" id="guaranteeAmount" placeholder="أدخل مبلغ الضمان" required>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">ر.س</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="guaranteeStartDate">تاريخ بداية الضمان <span class="text-danger">*</span></label>
+                                        <div class="input-group date" id="guaranteeStartDatePicker" data-target-input="nearest">
+                                            <input type="text" class="form-control datetimepicker-input" id="guaranteeStartDate" data-target="#guaranteeStartDatePicker" placeholder="DD/MM/YYYY" required>
+                                            <div class="input-group-append" data-target="#guaranteeStartDatePicker" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="guaranteeEndDate">تاريخ نهاية الضمان <span class="text-danger">*</span></label>
+                                        <div class="input-group date" id="guaranteeEndDatePicker" data-target-input="nearest">
+                                            <input type="text" class="form-control datetimepicker-input" id="guaranteeEndDate" data-target="#guaranteeEndDatePicker" placeholder="DD/MM/YYYY" required>
+                                            <div class="input-group-append" data-target="#guaranteeEndDatePicker" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="umrahCount">عدد المعتمرين <span class="text-danger">*</span></label>
+                                        <input type="number" class="form-control" id="umrahCount" placeholder="أدخل عدد المعتمرين" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="guaranteeStatus">حالة الضمان <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="guaranteeStatus" required>
+                                            <option value="">اختر حالة الضمان</option>
+                                            <option value="active" selected>نشط</option>
+                                            <option value="expired">منتهي</option>
+                                            <option value="defaulted">متعثر</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="guaranteeNotes">ملاحظات</label>
+                                        <textarea class="form-control" id="guaranteeNotes" rows="3" placeholder="أدخل أي ملاحظات إضافية"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="guaranteeAttachment">مرفقات الضمان</label>
+                                        <div class="input-group">
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input" id="guaranteeAttachment">
+                                                <label class="custom-file-label" for="guaranteeAttachment">اختر ملف</label>
+                                            </div>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">رفع</span>
+                                            </div>
+                                        </div>
+                                        <small class="form-text text-muted">يمكنك إرفاق صور الهوية، وثائق الضمان، وأي مستندات أخرى ذات صلة</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-success" id="saveGuarantee">حفظ الضمان</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- Modal - عرض تفاصيل الضمان -->
+<div class="modal fade" id="modal-view-guarantee">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h4 class="modal-title">تفاصيل الضمان</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="invoice p-3 mb-3">
+                            <!-- title row -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>
+                                        <i class="fas fa-file-contract ml-2"></i> مؤسسة أفاق الخير للعمرة
+                                        <small class="float-left">رقم الضمان: GUR-00123</small>
+                                    </h4>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            
+                            <!-- info row -->
+                            <div class="row invoice-info mt-3">
+                                <div class="col-sm-4 invoice-col">
+                                    <b>بيانات الضامن</b><br>
+                                    <b>الاسم:</b> عبدالله محمد السالم<br>
+                                    <b>الاسم التجاري:</b> مؤسسة أفاق الخير للعمرة<br>
+                                    <b>رقم الهاتف:</b> 0512345678<br>
+                                    <b>الموبايل:</b> 0567890123<br>
+                                </div>
+                                <!-- /.col -->
+                                <div class="col-sm-4 invoice-col">
+                                    <b>معلومات الهوية</b><br>
+                                    <b>نوع الهوية:</b> هوية وطنية<br>
+                                    <b>رقم الهوية:</b> 1098765432<br>
+                                    <b>تاريخ الإصدار:</b> 01/01/2020<br>
+                                    <b>مكان الإصدار:</b> الرياض<br>
+                                </div>
+                                <!-- /.col -->
+                                <div class="col-sm-4 invoice-col">
+                                    <b>معلومات الضمان</b><br>
+                                    <b>نوع الضمان:</b> ضمان بنكي<br>
+                                    <b>تاريخ البداية:</b> 10/02/2023<br>
+                                    <b>تاريخ النهاية:</b> 10/05/2023<br>
+                                    <b>الحالة:</b> <span class="badge badge-success">نشط</span><br>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+                            
+                            <!-- address row -->
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <address>
+                                        <strong>العنوان:</strong><br>
+                                        حي النزهة، شارع الأمير سلطان، عمارة رقم 25، الرياض، المملكة العربية السعودية
+                                    </address>
+                                </div>
+                            </div>
+                            
+                            <!-- guarantee details -->
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3 class="card-title">تفاصيل الضمان</h3>
+                                        </div>
+                                        <div class="card-body p-0">
+                                            <table class="table">
+                                                <tbody>
+                                                    <tr>
+                                                        <th style="width:50%">مبلغ الضمان:</th>
+                                                        <td>100,000 ر.س</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>عدد المعتمرين:</th>
+                                                        <td>25 معتمر</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>قيمة الضمان لكل معتمر:</th>
+                                                        <td>4,000 ر.س</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>المدة المتبقية:</th>
+                                                        <td>45 يوم</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3 class="card-title">المستندات المرفقة</h3>
+                                        </div>
+                                        <div class="card-body p-0">
+                                            <table class="table">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <i class="fas fa-file-pdf text-danger ml-2"></i>
+                                                            <span>خطاب الضمان البنكي</span>
+                                                            <button class="btn btn-xs btn-primary float-left">
+                                                                <i class="fas fa-download"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <i class="fas fa-file-image text-info ml-2"></i>
+                                                            <span>صورة الهوية</span>
+                                                            <button class="btn btn-xs btn-primary float-left">
+                                                                <i class="fas fa-download"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <i class="fas fa-file-pdf text-danger ml-2"></i>
+                                                            <span>السجل التجاري</span>
+                                                            <button class="btn btn-xs btn-primary float-left">
+                                                                <i class="fas fa-download"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <i class="fas fa-file-word text-primary ml-2"></i>
+                                                            <span>قائمة المعتمرين</span>
+                                                            <button class="btn btn-xs btn-primary float-left">
+                                                                <i class="fas fa-download"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5 class="mb-3">ملاحظات</h5>
+                                    <div class="callout callout-info">
+                                        <p>تم التحقق من جميع بيانات الضمان ومستنداته، وتم اعتماده من قبل الإدارة. يرجى متابعة حالة المعتمرين بشكل دوري للتأكد من عودتهم قبل انتهاء مدة الضمان.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.invoice -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <div>
+                    <button type="button" class="btn btn-info">
+                        <i class="fas fa-print ml-1"></i> طباعة
+                    </button>
+                    <button type="button" class="btn btn-warning">
+                        <i class="fas fa-edit ml-1"></i> تعديل
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(function () {
+        // تهيئة جدول البيانات
+        $('table.table').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Arabic.json"
+            }
+        });
+        
+        // تهيئة أداة اختيار التاريخ
+        $('.date').datetimepicker({
+            format: 'L',
+            locale: 'ar'
+        });
+        
+        // تغيير تسمية حقل اختيار الملف عند اختيار ملف
+        $('.custom-file-input').on('change', function() {
+            var fileName = $(this).val().split('\\').pop();
+            $(this).next('.custom-file-label').addClass("selected").html(fileName || 'اختر ملف');
+        });
+        
+        // التحقق من صحة النموذج عند النقر على زر الحفظ
+        $('#saveGuarantee').click(function() {
+            var form = document.getElementById('guaranteeForm');
+            
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+                
+                // إظهار رسائل الخطأ
+                $(form).addClass('was-validated');
+                alert('يرجى ملء جميع الحقول المطلوبة');
+            } else {
+                // هنا يتم إرسال البيانات إلى الخادم (في التطبيق الحقيقي)
+                alert('تم حفظ بيانات الضمان بنجاح');
+                $('#modal-add-guarantee').modal('hide');
+                
+                // إعادة تعيين النموذج
+                $(form).removeClass('was-validated');
+                form.reset();
+            }
+        });
+        
+        // تهيئة الرسوم البيانية
+        var guaranteeDistributionCtx = document.getElementById('guaranteeDistributionChart').getContext('2d');
+        var umrahStatisticsCtx = document.getElementById('umrahStatisticsChart').getContext('2d');
+        
+        // رسم بياني لتوزيع الضمانات حسب المدن
+        var guaranteeDistributionChart = new Chart(guaranteeDistributionCtx, {
+            type: 'pie',
+            data: {
+                labels: ['الرياض', 'جدة', 'مكة المكرمة', 'المدينة المنورة', 'الدمام', 'أخرى'],
+                datasets: [{
+                    data: [120, 80, 60, 40, 10, 10],
+                    backgroundColor: [
+                        '#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    position: 'right',
+                    rtl: true,
+                    labels: {
+                        fontFamily: 'Cairo, sans-serif'
+                    }
+                }
+            }
+        });
+        
+        // رسم بياني لإحصائيات المعتمرين الشهرية
+        var umrahStatisticsChart = new Chart(umrahStatisticsCtx, {
+            type: 'line',
+            data: {
+                labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
+                datasets: [{
+                    label: 'عدد المعتمرين',
+                    data: [150, 200, 350, 520, 450, 380],
+                    fill: false,
+                    borderColor: '#00a65a',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    display: false
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            fontFamily: 'Cairo, sans-serif'
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            fontFamily: 'Cairo, sans-serif'
+                        }
+                    }]
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
