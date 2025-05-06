@@ -1,0 +1,443 @@
+{% extends "layout.html" %}
+
+{% block title %}الميزانية والأرباح{% endblock %}
+
+{% block content %}
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">الميزانية والأرباح</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="/dashboard">الرئيسية</a></li>
+                    <li class="breadcrumb-item active">الميزانية والأرباح</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- Main Cards -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>120,500 <span class="h5">ر.س</span></h3>
+                        <p>إجمالي المبيعات (الشهر الحالي)</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-bag"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">تفاصيل <i class="fas fa-arrow-circle-left"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>45,200 <span class="h5">ر.س</span></h3>
+                        <p>صافي الأرباح (الشهر الحالي)</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-stats-bars"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">تفاصيل <i class="fas fa-arrow-circle-left"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>75,300 <span class="h5">ر.س</span></h3>
+                        <p>إجمالي المصروفات (الشهر الحالي)</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-cash"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">تفاصيل <i class="fas fa-arrow-circle-left"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>32,400 <span class="h5">ر.س</span></h3>
+                        <p>الديون المستحقة</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-pie-graph"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">تفاصيل <i class="fas fa-arrow-circle-left"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+        </div>
+        <!-- /.row -->
+        
+        <!-- Charts -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">تحليل الإيرادات والمصروفات (آخر 6 أشهر)</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart">
+                            <canvas id="revenueExpensesChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">توزيع الأرباح حسب نوع الخدمة</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart">
+                            <canvas id="profitDistributionChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Financial Summary Table -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">ملخص الأداء المالي</h3>
+                        <div class="card-tools">
+                            <div class="input-group input-group-sm" style="width: 150px;">
+                                <input type="text" name="table_search" class="form-control float-right" placeholder="بحث">
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-default">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body table-responsive p-0">
+                        <table class="table table-hover text-nowrap">
+                            <thead>
+                                <tr>
+                                    <th>الشهر</th>
+                                    <th>المبيعات</th>
+                                    <th>المصروفات</th>
+                                    <th>صافي الربح</th>
+                                    <th>هامش الربح</th>
+                                    <th>نسبة النمو</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>يناير 2023</td>
+                                    <td>105,200 ر.س</td>
+                                    <td>65,500 ر.س</td>
+                                    <td>39,700 ر.س</td>
+                                    <td>37.7%</td>
+                                    <td><span class="badge badge-success">+5.2%</span></td>
+                                </tr>
+                                <tr>
+                                    <td>فبراير 2023</td>
+                                    <td>98,700 ر.س</td>
+                                    <td>61,200 ر.س</td>
+                                    <td>37,500 ر.س</td>
+                                    <td>38.0%</td>
+                                    <td><span class="badge badge-danger">-2.8%</span></td>
+                                </tr>
+                                <tr>
+                                    <td>مارس 2023</td>
+                                    <td>112,400 ر.س</td>
+                                    <td>68,900 ر.س</td>
+                                    <td>43,500 ر.س</td>
+                                    <td>38.7%</td>
+                                    <td><span class="badge badge-success">+12.3%</span></td>
+                                </tr>
+                                <tr>
+                                    <td>أبريل 2023</td>
+                                    <td>110,800 ر.س</td>
+                                    <td>70,100 ر.س</td>
+                                    <td>40,700 ر.س</td>
+                                    <td>36.7%</td>
+                                    <td><span class="badge badge-danger">-6.4%</span></td>
+                                </tr>
+                                <tr>
+                                    <td>مايو 2023</td>
+                                    <td>115,600 ر.س</td>
+                                    <td>72,300 ر.س</td>
+                                    <td>43,300 ر.س</td>
+                                    <td>37.5%</td>
+                                    <td><span class="badge badge-success">+6.4%</span></td>
+                                </tr>
+                                <tr>
+                                    <td>يونيو 2023</td>
+                                    <td>120,500 ر.س</td>
+                                    <td>75,300 ر.س</td>
+                                    <td>45,200 ر.س</td>
+                                    <td>37.5%</td>
+                                    <td><span class="badge badge-success">+4.4%</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+        
+        <!-- Cash Flow -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">التدفقات النقدية الداخلة</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>المصدر</th>
+                                    <th>الشهر الحالي</th>
+                                    <th>المتوسط (6 أشهر)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>تذاكر طيران</td>
+                                    <td>42,500 ر.س</td>
+                                    <td>38,200 ر.س</td>
+                                </tr>
+                                <tr>
+                                    <td>تأشيرات عمرة</td>
+                                    <td>35,800 ر.س</td>
+                                    <td>33,600 ر.س</td>
+                                </tr>
+                                <tr>
+                                    <td>تأشيرات عمل</td>
+                                    <td>24,600 ر.س</td>
+                                    <td>22,100 ر.س</td>
+                                </tr>
+                                <tr>
+                                    <td>تأشيرات زيارة عائلية</td>
+                                    <td>12,300 ر.س</td>
+                                    <td>11,500 ر.س</td>
+                                </tr>
+                                <tr>
+                                    <td>خدمات أخرى</td>
+                                    <td>5,300 ر.س</td>
+                                    <td>4,800 ر.س</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">التدفقات النقدية الخارجة</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>الفئة</th>
+                                    <th>الشهر الحالي</th>
+                                    <th>المتوسط (6 أشهر)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>تكاليف شركات الطيران</td>
+                                    <td>32,100 ر.س</td>
+                                    <td>28,500 ر.س</td>
+                                </tr>
+                                <tr>
+                                    <td>رسوم التأشيرات</td>
+                                    <td>25,700 ر.س</td>
+                                    <td>22,800 ر.س</td>
+                                </tr>
+                                <tr>
+                                    <td>رواتب الموظفين</td>
+                                    <td>12,500 ر.س</td>
+                                    <td>12,500 ر.س</td>
+                                </tr>
+                                <tr>
+                                    <td>إيجار المكتب</td>
+                                    <td>3,000 ر.س</td>
+                                    <td>3,000 ر.س</td>
+                                </tr>
+                                <tr>
+                                    <td>مصاريف تشغيلية أخرى</td>
+                                    <td>2,000 ر.س</td>
+                                    <td>1,800 ر.س</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // تهيئة مخطط الإيرادات والمصروفات
+        const ctxRevExp = document.getElementById('revenueExpensesChart').getContext('2d');
+        const revenueExpensesChart = new Chart(ctxRevExp, {
+            type: 'line',
+            data: {
+                labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
+                datasets: [
+                    {
+                        label: 'الإيرادات',
+                        data: [105200, 98700, 112400, 110800, 115600, 120500],
+                        borderColor: 'rgba(60, 141, 188, 1)',
+                        backgroundColor: 'rgba(60, 141, 188, 0.2)',
+                        borderWidth: 2,
+                        fill: true
+                    },
+                    {
+                        label: 'المصروفات',
+                        data: [65500, 61200, 68900, 70100, 72300, 75300],
+                        borderColor: 'rgba(210, 214, 222, 1)',
+                        backgroundColor: 'rgba(210, 214, 222, 0.2)',
+                        borderWidth: 2,
+                        fill: true
+                    },
+                    {
+                        label: 'الأرباح',
+                        data: [39700, 37500, 43500, 40700, 43300, 45200],
+                        borderColor: 'rgba(0, 166, 90, 1)',
+                        backgroundColor: 'rgba(0, 166, 90, 0.2)',
+                        borderWidth: 2,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += context.parsed.y.toLocaleString() + ' ر.س';
+                                return label;
+                            }
+                        }
+                    },
+                    legend: {
+                        position: 'top',
+                        rtl: true
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString() + ' ر.س';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // تهيئة مخطط توزيع الأرباح
+        const ctxProfit = document.getElementById('profitDistributionChart').getContext('2d');
+        const profitDistributionChart = new Chart(ctxProfit, {
+            type: 'pie',
+            data: {
+                labels: ['تذاكر طيران', 'تأشيرات عمرة', 'تأشيرات عمل', 'تأشيرات زيارة عائلية', 'خدمات أخرى'],
+                datasets: [{
+                    data: [10400, 9200, 8500, 5300, 2500],
+                    backgroundColor: [
+                        'rgba(60, 141, 188, 0.8)',
+                        'rgba(0, 192, 239, 0.8)',
+                        'rgba(0, 166, 90, 0.8)',
+                        'rgba(243, 156, 18, 0.8)',
+                        'rgba(210, 214, 222, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(60, 141, 188, 1)',
+                        'rgba(0, 192, 239, 1)',
+                        'rgba(0, 166, 90, 1)',
+                        'rgba(243, 156, 18, 1)',
+                        'rgba(210, 214, 222, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += context.parsed.toLocaleString() + ' ر.س';
+                                return label;
+                            }
+                        }
+                    },
+                    legend: {
+                        position: 'right',
+                        rtl: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

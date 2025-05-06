@@ -313,6 +313,76 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="paymentType">نوع التوصيل</label>
+                                <select class="form-control" id="paymentType" onchange="handlePaymentTypeChange()" required>
+                                    <option value="">اختر نوع التوصيل</option>
+                                    <option value="cash">نقد</option>
+                                    <option value="credit">آجل</option>
+                                    <option value="bank_transfer">تحويل بنكي</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    الرجاء اختيار نوع التوصيل
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group paymentDetails d-none" id="cashAmountGroup">
+                                <label for="cashAmount">المبلغ الواصل</label>
+                                <div class="input-group">
+                                    <input type="number" min="0" step="0.01" class="form-control" id="cashAmount" placeholder="المبلغ المستلم">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">ر.س</div>
+                                    </div>
+                                    <div class="invalid-feedback" id="cashAmountFeedback">
+                                        لا يمكن أن يتجاوز المبلغ الواصل سعر الشراء
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 paymentDetails d-none" id="cashAccountGroup">
+                            <div class="form-group">
+                                <label for="cashAccount">الصندوق</label>
+                                <select class="form-control" id="cashAccount">
+                                    <option value="">اختر الصندوق</option>
+                                    <option value="1">الصندوق الرئيسي</option>
+                                    <option value="2">صندوق المبيعات</option>
+                                    <option value="3">صندوق الإيرادات</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 paymentDetails d-none" id="bankAccountGroup">
+                            <div class="form-group">
+                                <label for="bankAccount">الحساب البنكي</label>
+                                <select class="form-control" id="bankAccount">
+                                    <option value="">اختر الحساب البنكي</option>
+                                    <option value="1">بنك الراجحي - الحساب الرئيسي</option>
+                                    <option value="2">البنك الأهلي</option>
+                                    <option value="3">بنك الرياض</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 paymentDetails d-none" id="customerAccountGroup">
+                            <div class="form-group">
+                                <label for="customerAccount">حساب العميل</label>
+                                <select class="form-control" id="customerAccount">
+                                    <option value="">اختر حساب العميل</option>
+                                    <option value="1">أحمد محمد السيد</option>
+                                    <option value="2">نورة عبدالله محمد</option>
+                                    <option value="3">خالد عمر يوسف</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="ticketStatus">حالة التذكرة</label>
@@ -537,12 +607,56 @@
         }
     }
     
+    // دالة لإدارة إظهار الخيارات المناسبة عند تغيير نوع التوصيل
+    function handlePaymentTypeChange() {
+        // إخفاء جميع أقسام خيارات الدفع أولاً
+        document.querySelectorAll('.paymentDetails').forEach(function(el) {
+            el.classList.add('d-none');
+        });
+        
+        // الحصول على قيمة نوع التوصيل المحدد
+        let paymentType = document.getElementById('paymentType').value;
+        
+        // إظهار الحقول المناسبة حسب نوع التوصيل
+        if (paymentType === 'cash') {
+            // عند اختيار نقد، نظهر حقل المبلغ الواصل والصندوق
+            document.getElementById('cashAmountGroup').classList.remove('d-none');
+            document.getElementById('cashAccountGroup').classList.remove('d-none');
+            
+            // التحقق من المبلغ الواصل لا يتجاوز سعر الشراء
+            document.getElementById('cashAmount').onchange = function() {
+                let cashAmount = parseFloat(this.value) || 0;
+                let ticketCost = parseFloat(document.getElementById('ticketCost').value) || 0;
+                
+                if (cashAmount > ticketCost) {
+                    document.getElementById('cashAmountFeedback').textContent = 'لا يمكن أن يتجاوز المبلغ الواصل سعر الشراء';
+                    this.classList.add('is-invalid');
+                } else {
+                    this.classList.remove('is-invalid');
+                }
+            };
+            
+        } else if (paymentType === 'bank_transfer') {
+            // عند اختيار تحويل بنكي، نظهر حقل اختيار الحساب البنكي
+            document.getElementById('bankAccountGroup').classList.remove('d-none');
+        } else if (paymentType === 'credit') {
+            // عند اختيار آجل، نظهر حقل اختيار حساب العميل
+            document.getElementById('customerAccountGroup').classList.remove('d-none');
+        }
+    }
+    
     // عند فتح النافذة المنبثقة للتذكرة
     $(document).ready(function() {
         $('#modal-add-ticket').on('shown.bs.modal', function() {
             // إعادة تعيين النموذج
             document.getElementById('ticketStatus').value = '';
+            document.getElementById('paymentType').value = '';
             document.getElementById('paymentToAirlineSection').classList.add('d-none');
+            
+            // إخفاء جميع أقسام خيارات الدفع
+            document.querySelectorAll('.paymentDetails').forEach(function(el) {
+                el.classList.add('d-none');
+            });
             
             // حساب الربح تلقائياً عند تغيير سعر البيع أو سعر الشراء
             $('#ticketPrice, #ticketCost').on('input', function() {
