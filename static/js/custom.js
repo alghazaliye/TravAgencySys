@@ -21,6 +21,9 @@ document.addEventListener("DOMContentLoaded", function() {
     // تفعيل عناصر التحقق من صحة النماذج في Bootstrap
     initializeFormValidation();
     
+    // تهيئة أزرار التنقل في النماذج متعددة الخطوات
+    initializeFormNavigation();
+    
     // التعامل مع حدث تغيير حجم النافذة
     window.addEventListener('resize', handleWindowResize);
     
