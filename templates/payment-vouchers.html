@@ -347,7 +347,10 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary">
-                <h4 class="modal-title">إضافة سند قبض جديد</h4>
+                <h4 class="modal-title">
+                    إضافة سند قبض جديد
+                    <span id="receipt-voucher-number-display" class="badge badge-light ml-2">رقم السند: <span id="receipt-voucher-number-value">تلقائي</span></span>
+                </h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -364,71 +367,159 @@
                         </div>
                     </div>
                     
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="receipt-beneficiary-type">نوع المصدر <span class="text-danger">*</span></label>
-                                <select class="form-control" id="receipt-beneficiary-type" required>
-                                    <option value="">اختر نوع المصدر</option>
-                                    <option value="supplier">مورد</option>
-                                    <option value="employee">موظف</option>
-                                    <option value="customer">عميل</option>
-                                    <option value="cashbox">صندوق</option>
-                                    <option value="bank">بنك</option>
-                                </select>
-                            </div>
+                    <!-- الحساب المستقبل (الحساب الأول) -->
+                    <div class="card card-outline card-primary mb-3">
+                        <div class="card-header">
+                            <h3 class="card-title">الحساب المستقبل</h3>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="receipt-beneficiary-name">اسم المصدر <span class="text-danger">*</span></label>
-                                <select class="form-control" id="receipt-beneficiary-name" required disabled>
-                                    <option value="">يرجى اختيار نوع المصدر أولاً</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="receipt-amount">المبلغ <span class="text-danger">*</span></label>
-                                <div class="input-group">
-                                    <input type="number" min="0" step="0.01" class="form-control" id="receipt-amount" placeholder="أدخل المبلغ" required>
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">ر.س</span>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="receipt-account-type">نوع الحساب <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="receipt-account-type" name="receipt-account-type" required>
+                                            <option value="">اختر نوع الحساب</option>
+                                            <option value="bank">بنك</option>
+                                            <option value="cashbox">صندوق</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="receipt-account-name">الحساب <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="receipt-account-name" name="receipt-account-name" required disabled>
+                                            <option value="">يرجى اختيار نوع الحساب أولاً</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="receipt-operation-date">تاريخ العملية <span class="text-danger">*</span></label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                    </div>
+                    
+                    <!-- الحساب الدافع (الطرف المرسل) -->
+                    <div class="card card-outline card-info mb-3">
+                        <div class="card-header">
+                            <h3 class="card-title">الحساب الدافع</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="receipt-other-account-type">نوع الحساب الآخر <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="receipt-other-account-type" name="receipt-other-account-type" required>
+                                            <option value="">اختر نوع الحساب</option>
+                                            <option value="supplier">مورد</option>
+                                            <option value="employee">موظف</option>
+                                            <option value="customer">عميل</option>
+                                            <option value="bank">بنك</option>
+                                            <option value="cashbox">صندوق</option>
+                                        </select>
                                     </div>
-                                    <input type="date" class="form-control" id="receipt-operation-date" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="receipt-other-account-name">الحساب الآخر <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="receipt-other-account-name" name="receipt-other-account-name" required disabled>
+                                            <option value="">يرجى اختيار نوع الحساب الآخر أولاً</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="receipt-description">وصف العملية <span class="text-danger">*</span></label>
-                                <textarea class="form-control" id="receipt-description" rows="3" placeholder="أدخل وصف مختصر للعملية" required></textarea>
+                    <!-- بيانات المعاملة -->
+                    <div class="card card-outline card-success mb-3">
+                        <div class="card-header">
+                            <h3 class="card-title">بيانات المعاملة</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="receipt-currency-type">نوع العملة <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="receipt-currency-type" name="receipt-currency-type" required>
+                                            <option value="SAR" selected>ريال سعودي (SAR)</option>
+                                            <option value="USD">دولار أمريكي (USD)</option>
+                                            <option value="EUR">يورو (EUR)</option>
+                                            <option value="GBP">جنيه إسترليني (GBP)</option>
+                                            <option value="AED">درهم إماراتي (AED)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="receipt-amount">المبلغ <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="number" min="0" step="0.01" class="form-control" id="receipt-amount" name="receipt-amount" placeholder="أدخل المبلغ" required>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text" id="receipt-currency-symbol">ر.س</span>
+                                            </div>
+                                        </div>
+                                        <small class="text-muted" id="receipt-amount-in-words"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="receipt-reference-type">نوع المرجع</label>
+                                        <select class="form-control" id="receipt-reference-type" name="receipt-reference-type">
+                                            <option value="">بدون مرجع</option>
+                                            <option value="invoice">فاتورة مبيعات</option>
+                                            <option value="purchase">فاتورة مشتريات</option>
+                                            <option value="entry">قيد محاسبي</option>
+                                            <option value="contract">عقد</option>
+                                            <option value="other">آخر</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="receipt-reference-number">رقم المرجع</label>
+                                        <input type="text" class="form-control" id="receipt-reference-number" name="receipt-reference-number" placeholder="أدخل رقم المستند المرجعي">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="receipt-operation-date">تاريخ العملية <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                            </div>
+                                            <input type="date" class="form-control" id="receipt-operation-date" name="receipt-operation-date" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="receipt-voucher-number">رقم السند</label>
+                                        <input type="text" class="form-control" id="receipt-voucher-number" name="receipt-voucher-number" placeholder="سيتم إنشاؤه تلقائياً" disabled>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="row">
-                        <div class="col-md-12">
+                    <!-- البيان والملاحظات -->
+                    <div class="card card-outline card-secondary mb-3">
+                        <div class="card-header">
+                            <h3 class="card-title">البيان والملاحظات</h3>
+                        </div>
+                        <div class="card-body">
                             <div class="form-group">
-                                <label for="receipt-financial-account">الحساب المالي <span class="text-danger">*</span></label>
-                                <select class="form-control" id="receipt-financial-account" required disabled>
-                                    <option value="">سيتم تحديد الحساب المالي تلقائياً بناءً على نوع المصدر</option>
-                                </select>
+                                <label for="receipt-description">البيان (وصف العملية) <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="receipt-description" name="receipt-description" rows="3" required readonly></textarea>
+                                <small class="text-info">يتم إنشاء البيان تلقائياً بناءً على البيانات المدخلة، يمكنك تعديله عند الحاجة.</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="receipt-notes">ملاحظات إضافية</label>
+                                <textarea class="form-control" id="receipt-notes" name="receipt-notes" rows="2" placeholder="أدخل أي ملاحظات إضافية"></textarea>
                             </div>
                         </div>
                     </div>
@@ -657,11 +748,209 @@
             document.getElementById('description').readOnly = true;
         });
         
+        // تهيئة نموذج سند القبض
+        $('#modal-add-receipt-voucher').on('show.bs.modal', function (e) {
+            // توليد رقم سند افتراضي (في النظام الحقيقي سيتم جلبه من الخادم)
+            const randomVoucherNumber = 'REC-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('receipt-voucher-number').value = randomVoucherNumber;
+            document.getElementById('receipt-voucher-number-value').textContent = randomVoucherNumber;
+        });
+        
+        // تسجيل مستمعي الأحداث لتحديث البيان تلقائياً لسند القبض
+        const receiptStatementFields = [
+            'receipt-account-type', 'receipt-account-name', 'receipt-other-account-type', 
+            'receipt-other-account-name', 'receipt-reference-type', 'receipt-reference-number'
+        ];
+        
+        receiptStatementFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.addEventListener('change', updateReceiptVoucherStatement);
+            }
+        });
+        
+        // تعامل مع تغيير نوع الحساب المستقبل
+        document.getElementById('receipt-account-type').addEventListener('change', function() {
+            const accountType = this.value;
+            const accountNameDropdown = document.getElementById('receipt-account-name');
+            
+            // إعادة تعيين الخيارات
+            accountNameDropdown.innerHTML = '<option value="">يرجى اختيار الحساب</option>';
+            
+            if (accountType) {
+                accountNameDropdown.disabled = false;
+                
+                // إضافة خيارات حسب نوع الحساب
+                if (accountType === 'bank') {
+                    // بيانات البنوك
+                    const banks = [
+                        { id: 'bank1', name: 'البنك الأهلي' },
+                        { id: 'bank2', name: 'مصرف الراجحي' },
+                        { id: 'bank3', name: 'بنك الرياض' }
+                    ];
+                    
+                    banks.forEach(bank => {
+                        const option = document.createElement('option');
+                        option.value = bank.id;
+                        option.textContent = bank.name;
+                        accountNameDropdown.appendChild(option);
+                    });
+                } else if (accountType === 'cashbox') {
+                    // بيانات الصناديق
+                    const cashboxes = [
+                        { id: 'cash1', name: 'الصندوق الرئيسي' },
+                        { id: 'cash2', name: 'صندوق الفرع الأول' },
+                        { id: 'cash3', name: 'صندوق الفرع الثاني' }
+                    ];
+                    
+                    cashboxes.forEach(cashbox => {
+                        const option = document.createElement('option');
+                        option.value = cashbox.id;
+                        option.textContent = cashbox.name;
+                        accountNameDropdown.appendChild(option);
+                    });
+                }
+                
+                // تحديث البيان بعد تغيير نوع الحساب
+                setTimeout(updateReceiptVoucherStatement, 100);
+            } else {
+                accountNameDropdown.disabled = true;
+            }
+        });
+        
+        // تعامل مع تغيير نوع الحساب الدافع
+        document.getElementById('receipt-other-account-type').addEventListener('change', function() {
+            const accountType = this.value;
+            const accountNameDropdown = document.getElementById('receipt-other-account-name');
+            
+            // إعادة تعيين الخيارات
+            accountNameDropdown.innerHTML = '<option value="">يرجى اختيار الحساب</option>';
+            
+            if (accountType) {
+                accountNameDropdown.disabled = false;
+                
+                // إضافة خيارات حسب نوع الحساب
+                switch(accountType) {
+                    case 'supplier':
+                        const suppliers = [
+                            { id: 'sup1', name: 'شركة التوريدات العالمية' },
+                            { id: 'sup2', name: 'مؤسسة الإمداد التجارية' },
+                            { id: 'sup3', name: 'مكتب الخدمات المتكاملة' }
+                        ];
+                        
+                        suppliers.forEach(supplier => {
+                            const option = document.createElement('option');
+                            option.value = supplier.id;
+                            option.textContent = supplier.name;
+                            accountNameDropdown.appendChild(option);
+                        });
+                        break;
+                    
+                    case 'employee':
+                        const employees = [
+                            { id: 'emp1', name: 'محمد أحمد' },
+                            { id: 'emp2', name: 'عبدالله محمد' },
+                            { id: 'emp3', name: 'خالد عبدالرحمن' }
+                        ];
+                        
+                        employees.forEach(employee => {
+                            const option = document.createElement('option');
+                            option.value = employee.id;
+                            option.textContent = employee.name;
+                            accountNameDropdown.appendChild(option);
+                        });
+                        break;
+                    
+                    case 'customer':
+                        const customers = [
+                            { id: 'cust1', name: 'شركة السفر العالمية' },
+                            { id: 'cust2', name: 'مؤسسة الرحلات المميزة' },
+                            { id: 'cust3', name: 'أحمد محمد علي' }
+                        ];
+                        
+                        customers.forEach(customer => {
+                            const option = document.createElement('option');
+                            option.value = customer.id;
+                            option.textContent = customer.name;
+                            accountNameDropdown.appendChild(option);
+                        });
+                        break;
+                    
+                    case 'bank':
+                        const banks = [
+                            { id: 'bank1', name: 'البنك الأهلي' },
+                            { id: 'bank2', name: 'مصرف الراجحي' },
+                            { id: 'bank3', name: 'بنك الرياض' }
+                        ];
+                        
+                        banks.forEach(bank => {
+                            const option = document.createElement('option');
+                            option.value = bank.id;
+                            option.textContent = bank.name;
+                            accountNameDropdown.appendChild(option);
+                        });
+                        break;
+                    
+                    case 'cashbox':
+                        const cashboxes = [
+                            { id: 'cash1', name: 'الصندوق الرئيسي' },
+                            { id: 'cash2', name: 'صندوق الفرع الأول' },
+                            { id: 'cash3', name: 'صندوق الفرع الثاني' }
+                        ];
+                        
+                        cashboxes.forEach(cashbox => {
+                            const option = document.createElement('option');
+                            option.value = cashbox.id;
+                            option.textContent = cashbox.name;
+                            accountNameDropdown.appendChild(option);
+                        });
+                        break;
+                }
+                
+                // تحديث البيان بعد تغيير نوع الحساب
+                setTimeout(updateReceiptVoucherStatement, 100);
+            } else {
+                accountNameDropdown.disabled = true;
+            }
+        });
+        
+        // تحديث رمز العملة لسند القبض
+        document.getElementById('receipt-currency-type').addEventListener('change', function() {
+            const currencyType = this.value;
+            const currencySymbol = document.getElementById('receipt-currency-symbol');
+            
+            switch(currencyType) {
+                case 'SAR':
+                    currencySymbol.textContent = 'ر.س';
+                    break;
+                case 'USD':
+                    currencySymbol.textContent = '$';
+                    break;
+                case 'EUR':
+                    currencySymbol.textContent = '€';
+                    break;
+                case 'GBP':
+                    currencySymbol.textContent = '£';
+                    break;
+                case 'AED':
+                    currencySymbol.textContent = 'د.إ';
+                    break;
+                default:
+                    currencySymbol.textContent = 'ر.س';
+            }
+        });
+        
         document.getElementById('receipt-voucher-form').addEventListener('submit', function(e) {
             e.preventDefault();
+            // إزالة صفة القراءة فقط من وصف العملية لإرسال البيانات
+            document.getElementById('receipt-description').readOnly = false;
+            
             // هنا سيتم إرسال البيانات للخادم (سيتم تنفيذه لاحقاً)
             alert('تم حفظ سند القبض بنجاح!');
             $('#modal-add-receipt-voucher').modal('hide');
+            
+            // إعادة تعيين صفة القراءة فقط
+            document.getElementById('receipt-description').readOnly = true;
         });
     });
     
@@ -909,6 +1198,8 @@
                 return 'فاتورة شراء';
             case 'sales':
                 return 'فاتورة بيع';
+            case 'purchase':
+                return 'فاتورة مشتريات';
             case 'entry':
                 return 'قيد محاسبي';
             case 'contract':
@@ -918,6 +1209,64 @@
             default:
                 return referenceType || '';
         }
+    }
+    
+    // وظيفة لتحديث البيان تلقائياً لسند القبض
+    function updateReceiptVoucherStatement() {
+        // الحصول على القيم من الحقول
+        const accountTypeSelect = document.getElementById('receipt-account-type');
+        const accountNameSelect = document.getElementById('receipt-account-name');
+        const otherAccountTypeSelect = document.getElementById('receipt-other-account-type');
+        const otherAccountNameSelect = document.getElementById('receipt-other-account-name');
+        const referenceTypeSelect = document.getElementById('receipt-reference-type');
+        const referenceNumberInput = document.getElementById('receipt-reference-number');
+        const descriptionTextarea = document.getElementById('receipt-description');
+        
+        // التحقق من وجود القيم المطلوبة
+        if (!accountTypeSelect || !accountNameSelect || !otherAccountTypeSelect || 
+            !otherAccountNameSelect || !descriptionTextarea) {
+            return;
+        }
+        
+        // القيم المحددة
+        const accountType = accountTypeSelect.value;
+        const accountName = accountNameSelect.options[accountNameSelect.selectedIndex]?.text || '';
+        const otherAccountType = otherAccountTypeSelect.value;
+        const otherAccountName = otherAccountNameSelect.options[otherAccountNameSelect.selectedIndex]?.text || '';
+        const referenceType = referenceTypeSelect.value;
+        const referenceNumber = referenceNumberInput.value;
+        
+        // ترجمة أنواع الحسابات إلى العربية
+        const accountTypeText = getAccountTypeText(accountType);
+        const otherAccountTypeText = getAccountTypeText(otherAccountType);
+        
+        // توليد البيان بناءً على البيانات المدخلة
+        let statement = '';
+        
+        if (accountType && accountName && otherAccountType && otherAccountName) {
+            if (accountType === 'bank') {
+                statement = `سند قبض حوالة من ${otherAccountTypeText} ${otherAccountName} إلى ${accountTypeText} ${accountName}`;
+            } else {
+                statement = `سند قبض من ${otherAccountTypeText} ${otherAccountName} إلى ${accountTypeText} ${accountName}`;
+            }
+            
+            // إضافة المرجع إذا كان موجوداً
+            if (referenceType && referenceNumber) {
+                statement += ` عبر ${getReferenceTypeText(referenceType)} برقم ${referenceNumber}`;
+            } else if (referenceType) {
+                statement += ` عبر ${getReferenceTypeText(referenceType)}`;
+            }
+        }
+        
+        // تحديث حقل البيان
+        descriptionTextarea.value = statement;
+        
+        // إلغاء صفة القراءة فقط مؤقتاً للسماح بالتعديل
+        descriptionTextarea.readOnly = false;
+        // إعادة تعيين صفة القراءة فقط بعد لحظة
+        setTimeout(() => {
+            descriptionTextarea.readOnly = true;
+        }, 100);
     }
 </script>
 {% endblock %}
