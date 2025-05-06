@@ -142,39 +142,48 @@ body, h1, h2, h3, h4, h5, h6, p,
 
 /* Fix RTL sidebar - global */
 .main-sidebar, .main-sidebar::before {
-    transition: margin-right .3s ease-in-out, width .3s ease-in-out !important;
-    right: 0 !important;
-    left: auto !important;
+    transition: margin-right .3s ease-in-out, width .3s ease-in-out;
+    right: 0;
+    left: auto;
 }
 
-.content-wrapper, .main-footer, .main-header {
-    margin-right: 250px !important;
-    margin-left: 0 !important;
-    transition: margin-right .3s ease-in-out !important;
+.layout-fixed .main-sidebar {
+    right: 0;
+    left: auto;
+}
+
+.main-header {
+    margin-right: 250px;
+    margin-left: 0;
+    transition: margin-right .3s ease-in-out;
+}
+
+.content-wrapper, .main-footer {
+    margin-right: 250px;
+    margin-left: 0;
+    transition: margin-right .3s ease-in-out;
 }
 
 /* Fix for COLLAPSED state */
 body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper, 
 body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer, 
 body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header {
-    margin-right: 250px !important;
-    margin-left: 0 !important;
+    transition: margin-right .3s ease-in-out;
 }
 
 /* Styles for sidebar-collapse state */
 body.sidebar-collapse .main-sidebar, 
 body.sidebar-collapse .main-sidebar::before {
-    margin-right: -250px !important;
-    margin-left: 0 !important;
+    margin-right: -250px;
+    margin-left: 0;
 }
 
 body.sidebar-collapse .content-wrapper, 
 body.sidebar-collapse .main-footer, 
 body.sidebar-collapse .main-header {
-    margin-right: 0 !important;
-    margin-left: 0 !important;
-    width: 100% !important;
-    transition: margin-right .3s ease-in-out, width .3s ease-in-out !important;
+    margin-right: 0;
+    margin-left: 0;
+    transition: margin-right .3s ease-in-out;
 }
 
 /* Fix for sidebar mini specific */

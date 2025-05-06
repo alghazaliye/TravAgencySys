@@ -71,29 +71,12 @@ function fixRtlSidebar() {
     // إصلاح مشكلة تبديل القائمة الجانبية في وضع الجوال
     const pushMenuButton = document.querySelector('[data-widget="pushmenu"]');
     if (pushMenuButton) {
-        // إضافة مستمع لحدث النقر
-        pushMenuButton.addEventListener('click', function() {
-            // تحديث حجم المحتوى عند إخفاء/إظهار القائمة الجانبية
-            setTimeout(() => {
-                const isSidebarCollapsed = document.body.classList.contains('sidebar-collapse');
-                const contentWrapper = document.querySelector('.content-wrapper');
-                
-                if (contentWrapper) {
-                    if (isSidebarCollapsed) {
-                        // عند إخفاء القائمة الجانبية
-                        contentWrapper.style.marginRight = '0';
-                        contentWrapper.style.width = '100%';
-                    } else {
-                        // عند إظهار القائمة الجانبية
-                        contentWrapper.style.marginRight = '250px';
-                        contentWrapper.style.width = 'calc(100% - 250px)';
-                    }
-                }
-                
-                // إعادة تعيين مؤشر الماوس بعد النقر لتفادي مشكلة التداخل في RTL
-                document.body.style.cursor = 'default';
-            }, 100);
-        });
+        // نزيل المستمع السابق إذا كان موجودًا
+        pushMenuButton.replaceWith(pushMenuButton.cloneNode(true));
+        
+        // نعيد تعريف الزر بعد استبداله
+        const newPushMenuButton = document.querySelector('[data-widget="pushmenu"]');
+        // لا نضيف مستمعًا خاصًا، ونترك AdminLTE يتعامل مع الأمر
     }
     
     // معالجة مشكلة القائمة المنسدلة في الهاتف المحمول
