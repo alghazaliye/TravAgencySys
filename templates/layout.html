@@ -67,6 +67,67 @@
                 margin-right: 0;
             }
         }
+        
+        /* إصلاح عرض الأيقونات في القائمة الجانبية */
+        .nav-sidebar .nav-link p {
+            display: inline-block;
+            margin: 0;
+            margin-right: 5px;
+        }
+        
+        .nav-sidebar .nav-icon, 
+        .nav-sidebar .fas, 
+        .nav-sidebar .fa {
+            margin-left: 0.2rem;
+            text-align: center;
+            width: 1.6rem;
+            font-size: 1.1rem;
+        }
+        
+        /* إصلاح أيقونات الأزرار */
+        .btn i, .btn .fas, .btn .fa {
+            margin-left: 0.5rem;
+            margin-right: 0;
+        }
+        
+        /* إصلاح أيقونات القوائم المنسدلة */
+        .dropdown-item i, 
+        .dropdown-item .fa, 
+        .dropdown-item .fas {
+            margin-left: 0.5rem;
+            margin-right: 0;
+            width: 1.25rem;
+            text-align: center;
+        }
+        
+        /* إصلاح أيقونات حقول الإدخال */
+        .input-group-text .fa,
+        .input-group-text .fas {
+            width: 1rem;
+            text-align: center;
+        }
+        
+        /* محاذاة أيقونات العناوين */
+        .card-title i,
+        .card-title .fa,
+        .card-title .fas,
+        h1 i, h2 i, h3 i, h4 i, h5 i {
+            margin-left: 0.5rem;
+            margin-right: 0;
+        }
+        
+        /* إصلاح محاذاة الأيقونات في لوحة التحكم */
+        .small-box .icon {
+            right: auto;
+            left: 10px;
+        }
+        
+        /* إصلاح الأيقونات في لوحة الحجوزات */
+        .reservation-card .card-tools {
+            position: absolute;
+            left: 1rem;
+            top: 0.5rem;
+        }
     </style>
     
     {% block styles %}{% endblock %}
