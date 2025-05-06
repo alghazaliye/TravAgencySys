@@ -515,17 +515,17 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="form-group">
-                                                <label for="email">
-                                                    <i class="fas fa-envelope ml-1"></i>
-                                                    البريد الإلكتروني
+                                                <label for="emergencyContact">
+                                                    <i class="fas fa-phone-alt ml-1"></i>
+                                                    رقم للطوارئ
                                                 </label>
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                                        <span class="input-group-text"><i class="fas fa-phone-alt"></i></span>
                                                     </div>
-                                                    <input type="email" class="form-control" id="email" placeholder="your.email@example.com">
+                                                    <input type="text" class="form-control" id="emergencyContact" placeholder="رقم شخص للاتصال في حالات الطوارئ">
                                                 </div>
-                                                <small class="form-text text-muted">سيتم إرسال تفاصيل الحجز والتذكرة على هذا البريد</small>
+                                                <small class="form-text text-muted">رقم للاتصال في حالات الطوارئ (اختياري)</small>
                                             </div>
                                         </div>
                                     </div>
@@ -713,9 +713,9 @@
                                             <div class="form-group">
                                                 <label for="departureDate">تاريخ السفر <span class="text-danger">*</span></label>
                                                 <div class="input-group date" id="departureDatePicker" data-target-input="nearest">
-                                                    <input type="text" class="form-control datetimepicker-input" id="departureDate" data-target="#departureDatePicker" placeholder="DD/MM/YYYY" required>
+                                                    <input type="text" class="form-control datetimepicker-input" id="departureDate" data-target="#departureDatePicker" placeholder="يوم/شهر/سنة" required>
                                                     <div class="input-group-append" data-target="#departureDatePicker" data-toggle="datetimepicker">
-                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                        <div class="input-group-text"><i class="fas fa-calendar-alt"></i></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -724,9 +724,9 @@
                                             <div class="form-group">
                                                 <label for="returnDate">تاريخ العودة <span class="text-danger">*</span></label>
                                                 <div class="input-group date" id="returnDatePicker" data-target-input="nearest">
-                                                    <input type="text" class="form-control datetimepicker-input" id="returnDate" data-target="#returnDatePicker" placeholder="DD/MM/YYYY">
+                                                    <input type="text" class="form-control datetimepicker-input" id="returnDate" data-target="#returnDatePicker" placeholder="يوم/شهر/سنة">
                                                     <div class="input-group-append" data-target="#returnDatePicker" data-toggle="datetimepicker">
-                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                        <div class="input-group-text"><i class="fas fa-calendar-alt"></i></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -754,9 +754,9 @@
                                             <div class="form-group">
                                                 <label for="departureTime">وقت المغادرة</label>
                                                 <div class="input-group date" id="departureTimePicker" data-target-input="nearest">
-                                                    <input type="text" class="form-control datetimepicker-input" id="departureTime" data-target="#departureTimePicker" placeholder="HH:MM">
+                                                    <input type="text" class="form-control datetimepicker-input" id="departureTime" data-target="#departureTimePicker" placeholder="ساعة:دقيقة">
                                                     <div class="input-group-append" data-target="#departureTimePicker" data-toggle="datetimepicker">
-                                                        <div class="input-group-text"><i class="fa fa-clock"></i></div>
+                                                        <div class="input-group-text"><i class="fas fa-clock"></i></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -765,9 +765,9 @@
                                             <div class="form-group">
                                                 <label for="arrivalTime">وقت الوصول</label>
                                                 <div class="input-group date" id="arrivalTimePicker" data-target-input="nearest">
-                                                    <input type="text" class="form-control datetimepicker-input" id="arrivalTime" data-target="#arrivalTimePicker" placeholder="HH:MM">
+                                                    <input type="text" class="form-control datetimepicker-input" id="arrivalTime" data-target="#arrivalTimePicker" placeholder="ساعة:دقيقة">
                                                     <div class="input-group-append" data-target="#arrivalTimePicker" data-toggle="datetimepicker">
-                                                        <div class="input-group-text"><i class="fa fa-clock"></i></div>
+                                                        <div class="input-group-text"><i class="fas fa-clock"></i></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -834,9 +834,9 @@
                                             <div class="form-group">
                                                 <label for="transactionDateTime">تاريخ ووقت العملية <span class="text-danger">*</span></label>
                                                 <div class="input-group date" id="transactionDateTimePicker" data-target-input="nearest">
-                                                    <input type="text" class="form-control datetimepicker-input" id="transactionDateTime" data-target="#transactionDateTimePicker" placeholder="DD/MM/YYYY HH:MM" required>
+                                                    <input type="text" class="form-control datetimepicker-input" id="transactionDateTime" data-target="#transactionDateTimePicker" placeholder="يوم/شهر/سنة ساعة:دقيقة" required>
                                                     <div class="input-group-append" data-target="#transactionDateTimePicker" data-toggle="datetimepicker">
-                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                        <div class="input-group-text"><i class="fas fa-calendar-alt"></i></div>
                                                     </div>
                                                 </div>
                                             </div>
