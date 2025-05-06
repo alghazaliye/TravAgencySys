@@ -313,6 +313,106 @@
 <!-- Main content -->
 <section class="content">
     <div class="container-fluid">
+        <!-- إحصائيات -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>150</h3>
+                        <p>إجمالي التذاكر</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-ticket-alt"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">المزيد <i class="fas fa-arrow-circle-left"></i></a>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>85</h3>
+                        <p>تذاكر مؤكدة</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">المزيد <i class="fas fa-arrow-circle-left"></i></a>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>30</h3>
+                        <p>تذاكر قيد الإجراء</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">المزيد <i class="fas fa-arrow-circle-left"></i></a>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>15</h3>
+                        <p>تذاكر ملغاة</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-ban"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">المزيد <i class="fas fa-arrow-circle-left"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- التقارير والرسوم البيانية -->
+        <div class="row">
+            <!-- الرسم البياني للحجوزات -->
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-line ml-2"></i>إحصائيات الحجوزات الشهرية
+                        </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart">
+                            <canvas id="airlineBookingsChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- توزيع شركات الطيران -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-pie ml-2"></i>توزيع شركات الطيران
+                        </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart">
+                            <canvas id="airlineDistributionChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <!-- نظرة عامة -->
         <div class="row">
             <div class="col-12">
@@ -980,6 +1080,105 @@
     document.addEventListener('DOMContentLoaded', function() {
         // تهيئة النموذج متعدد الخطوات
         initializeAirlineForm();
+        
+        // تهيئة الرسم البياني للحجوزات الشهرية
+        var bookingsChartCanvas = document.getElementById('airlineBookingsChart').getContext('2d');
+        var bookingsChartData = {
+            labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'],
+            datasets: [
+                {
+                    label: 'دولية',
+                    backgroundColor: 'rgba(60,141,188,0.4)',
+                    borderColor: 'rgba(60,141,188,1)',
+                    pointRadius: 3,
+                    pointBackgroundColor: 'rgba(60,141,188,1)',
+                    pointBorderColor: '#fff',
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(60,141,188,1)',
+                    data: [28, 32, 40, 45, 50, 65, 70, 85, 60, 55, 48, 42]
+                },
+                {
+                    label: 'داخلية',
+                    backgroundColor: 'rgba(210, 214, 222, 0.4)',
+                    borderColor: 'rgba(210, 214, 222, 1)',
+                    pointRadius: 3,
+                    pointBackgroundColor: 'rgba(210, 214, 222, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(210, 214, 222, 1)',
+                    data: [15, 18, 20, 25, 30, 35, 40, 45, 30, 25, 22, 20]
+                }
+            ]
+        };
+        
+        var bookingsChartOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            legend: {
+                display: true,
+                position: 'top',
+                rtl: true,
+                labels: {
+                    fontFamily: 'Tajawal, sans-serif'
+                }
+            },
+            scales: {
+                xAxes: [{
+                    gridLines: {
+                        display: false
+                    },
+                    ticks: {
+                        fontFamily: 'Tajawal, sans-serif'
+                    }
+                }],
+                yAxes: [{
+                    gridLines: {
+                        display: true
+                    },
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 20,
+                        fontFamily: 'Tajawal, sans-serif'
+                    }
+                }]
+            }
+        };
+        
+        new Chart(bookingsChartCanvas, {
+            type: 'line',
+            data: bookingsChartData,
+            options: bookingsChartOptions
+        });
+        
+        // تهيئة الرسم البياني لتوزيع شركات الطيران
+        var distributionChartCanvas = document.getElementById('airlineDistributionChart').getContext('2d');
+        var distributionData = {
+            labels: ['الخطوط السعودية', 'طيران الإمارات', 'الاتحاد للطيران', 'مصر للطيران', 'الخطوط القطرية', 'أخرى'],
+            datasets: [{
+                data: [35, 20, 15, 10, 12, 8],
+                backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de']
+            }]
+        };
+        
+        var distributionOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            legend: {
+                position: 'right',
+                rtl: true,
+                labels: {
+                    fontFamily: 'Tajawal, sans-serif'
+                }
+            }
+        };
+        
+        new Chart(distributionChartCanvas, {
+            type: 'pie',
+            data: distributionData,
+            options: distributionOptions
+        });
         
         // تحديث المبلغ المتبقي عند تغيير الدفعة المقدمة
         document.getElementById('down_payment').addEventListener('input', updateRemainingAmount);
