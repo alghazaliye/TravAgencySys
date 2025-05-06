@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}سندات الصرف{% endblock %}
+{% block title %}سندات القبض{% endblock %}
 
 {% block content %}
 <!-- Content Header (Page header) -->
@@ -8,12 +8,12 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">سندات الصرف</h1>
+                <h1 class="m-0">سندات القبض</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-left">
                     <li class="breadcrumb-item"><a href="/dashboard">الرئيسية</a></li>
-                    <li class="breadcrumb-item active">سندات الصرف</li>
+                    <li class="breadcrumb-item active">سندات القبض</li>
                 </ol>
             </div><!-- /.col -->
         </div><!-- /.row -->
@@ -31,15 +31,12 @@
                     <div class="card-header">
                         <h3 class="card-title">
                             <i class="fas fa-money-bill-wave ml-2"></i>
-                            قائمة سندات الصرف
+                            قائمة سندات القبض
                         </h3>
                         <div class="card-tools">
-                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-add-payment-voucher">
-                                <i class="fas fa-plus"></i> سند صرف جديد
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-add-receipt-voucher">
+                                <i class="fas fa-plus"></i> سند قبض جديد
                             </button>
-                            <a href="/receipt-vouchers" class="btn btn-primary ml-2">
-                                <i class="fas fa-file-invoice"></i> سندات القبض
-                            </a>
                         </div>
                     </div>
                     <!-- /.card-header -->
@@ -48,8 +45,7 @@
                             <thead>
                                 <tr>
                                     <th>رقم السند</th>
-                                    <th>نوع السند</th>
-                                    <th>المستفيد</th>
+                                    <th>المصدر</th>
                                     <th>المبلغ</th>
                                     <th>تاريخ العملية</th>
                                     <th>وصف العملية</th>
@@ -59,27 +55,7 @@
                             <tbody>
                                 <!-- بيانات توضيحية -->
                                 <tr>
-                                    <td>123456</td>
-                                    <td><span class="badge badge-danger">سند صرف</span></td>
-                                    <td>شركة الخطوط السعودية (مورد)</td>
-                                    <td>1000 ريال</td>
-                                    <td>2023-06-15</td>
-                                    <td>دفعة مقدمة لحجز تذاكر</td>
-                                    <td>
-                                        <button class="btn btn-info btn-sm">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
                                     <td>123457</td>
-                                    <td><span class="badge badge-success">سند قبض</span></td>
                                     <td>أحمد محمد (عميل)</td>
                                     <td>2500 ريال</td>
                                     <td>2023-06-16</td>
@@ -97,12 +73,11 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>123458</td>
-                                    <td><span class="badge badge-danger">سند صرف</span></td>
-                                    <td>محمد عبدالله (موظف)</td>
-                                    <td>1200 ريال</td>
-                                    <td>2023-06-17</td>
-                                    <td>مصاريف نثرية</td>
+                                    <td>123459</td>
+                                    <td>صندوق المكتب (صندوق)</td>
+                                    <td>5000 ريال</td>
+                                    <td>2023-06-18</td>
+                                    <td>ايداع يومي</td>
                                     <td>
                                         <button class="btn btn-info btn-sm">
                                             <i class="fas fa-eye"></i>
@@ -116,12 +91,29 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>123459</td>
-                                    <td><span class="badge badge-success">سند قبض</span></td>
-                                    <td>صندوق المكتب (صندوق)</td>
-                                    <td>5000 ريال</td>
-                                    <td>2023-06-18</td>
-                                    <td>ايداع يومي</td>
+                                    <td>123461</td>
+                                    <td>مؤسسة الرحلات المميزة (عميل)</td>
+                                    <td>8000 ريال</td>
+                                    <td>2023-06-19</td>
+                                    <td>دفعة مقدمة لتذاكر طيران</td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-primary btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>123463</td>
+                                    <td>محمد خالد (عميل)</td>
+                                    <td>3500 ريال</td>
+                                    <td>2023-06-20</td>
+                                    <td>تسوية حساب تأشيرة زيارة عائلية</td>
                                     <td>
                                         <button class="btn btn-info btn-sm">
                                             <i class="fas fa-eye"></i>
@@ -147,200 +139,6 @@
     <!-- /.container-fluid -->
 </section>
 <!-- /.content -->
-
-<!-- Modal - إضافة سند صرف جديد -->
-<div class="modal fade" id="modal-add-payment-voucher">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-success">
-                <h4 class="modal-title">
-                    إضافة سند صرف جديد
-                    <span id="voucher-number-display" class="badge badge-light ml-2">رقم السند: <span id="voucher-number-value">تلقائي</span></span>
-                </h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="payment-voucher-form">
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="alert alert-info alert-dismissible">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                <h5><i class="icon fas fa-info"></i> معلومات عن سند الصرف!</h5>
-                                <p>يستخدم سند الصرف عند دفع مبلغ من المكتب لمستفيد (مورد، موظف، عميل، صندوق أو بنك).</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- الحساب المصدر (الحساب الأول) -->
-                    <div class="card card-outline card-primary mb-3">
-                        <div class="card-header">
-                            <h3 class="card-title">الحساب المصدر</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="account-type">نوع الحساب <span class="text-danger">*</span></label>
-                                        <select class="form-control" id="account-type" name="account-type" required>
-                                            <option value="">اختر نوع الحساب</option>
-                                            <option value="bank">بنك</option>
-                                            <option value="cashbox">صندوق</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="account-name">الحساب <span class="text-danger">*</span></label>
-                                        <select class="form-control" id="account-name" name="account-name" required disabled>
-                                            <option value="">يرجى اختيار نوع الحساب أولاً</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- الحساب المستفيد (الحساب الآخر) -->
-                    <div class="card card-outline card-success mb-3">
-                        <div class="card-header">
-                            <h3 class="card-title">الحساب المستفيد</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="other-account-type">نوع الحساب الآخر <span class="text-danger">*</span></label>
-                                        <select class="form-control" id="other-account-type" name="other-account-type" required>
-                                            <option value="">اختر نوع الحساب</option>
-                                            <option value="supplier">مورد</option>
-                                            <option value="employee">موظف</option>
-                                            <option value="customer">عميل</option>
-                                            <option value="bank">بنك</option>
-                                            <option value="cashbox">صندوق</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="other-account-name">الحساب الآخر <span class="text-danger">*</span></label>
-                                        <select class="form-control" id="other-account-name" name="other-account-name" required disabled>
-                                            <option value="">يرجى اختيار نوع الحساب الآخر أولاً</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- بيانات المعاملة -->
-                    <div class="card card-outline card-info mb-3">
-                        <div class="card-header">
-                            <h3 class="card-title">بيانات المعاملة</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="currency-type">نوع العملة <span class="text-danger">*</span></label>
-                                        <select class="form-control" id="currency-type" name="currency-type" required>
-                                            <option value="SAR" selected>ريال سعودي (SAR)</option>
-                                            <option value="USD">دولار أمريكي (USD)</option>
-                                            <option value="EUR">يورو (EUR)</option>
-                                            <option value="GBP">جنيه إسترليني (GBP)</option>
-                                            <option value="AED">درهم إماراتي (AED)</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="amount">المبلغ <span class="text-danger">*</span></label>
-                                        <div class="input-group">
-                                            <input type="number" min="0" step="0.01" class="form-control" id="amount" name="amount" placeholder="أدخل المبلغ" required>
-                                            <div class="input-group-append">
-                                                <span class="input-group-text" id="currency-symbol">ر.س</span>
-                                            </div>
-                                        </div>
-                                        <small class="text-muted" id="amount-in-words"></small>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="reference-type">نوع المرجع</label>
-                                        <select class="form-control" id="reference-type" name="reference-type">
-                                            <option value="">بدون مرجع</option>
-                                            <option value="invoice">فاتورة شراء</option>
-                                            <option value="sales">فاتورة بيع</option>
-                                            <option value="entry">قيد محاسبي</option>
-                                            <option value="contract">عقد</option>
-                                            <option value="other">آخر</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="reference-number">رقم المرجع</label>
-                                        <input type="text" class="form-control" id="reference-number" name="reference-number" placeholder="أدخل رقم المستند المرجعي">
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="operation-date">تاريخ العملية <span class="text-danger">*</span></label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                                            </div>
-                                            <input type="date" class="form-control" id="operation-date" name="operation-date" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="voucher-number">رقم السند</label>
-                                        <input type="text" class="form-control" id="voucher-number" name="voucher-number" placeholder="سيتم إنشاؤه تلقائياً" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- البيان والملاحظات -->
-                    <div class="card card-outline card-secondary mb-3">
-                        <div class="card-header">
-                            <h3 class="card-title">البيان والملاحظات</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="form-group">
-                                <label for="description">البيان (وصف العملية) <span class="text-danger">*</span></label>
-                                <textarea class="form-control" id="description" name="description" rows="3" required readonly></textarea>
-                                <small class="text-info">يتم إنشاء البيان تلقائياً بناءً على البيانات المدخلة، يمكنك تعديله عند الحاجة.</small>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="notes">ملاحظات إضافية</label>
-                                <textarea class="form-control" id="notes" name="notes" rows="2" placeholder="أدخل أي ملاحظات إضافية"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">إلغاء</button>
-                    <button type="submit" class="btn btn-success">حفظ السند</button>
-                </div>
-            </form>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
 
 <!-- Modal - إضافة سند قبض جديد -->
 <div class="modal fade" id="modal-add-receipt-voucher">
@@ -528,7 +326,6 @@
     <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
-
 {% endblock %}
 
 {% block scripts %}
@@ -536,212 +333,6 @@
     // تهيئة النماذج عند تحميل الصفحة
     document.addEventListener('DOMContentLoaded', function() {
         // تهيئة رقم السند عند فتح النموذج
-        $('#modal-add-payment-voucher').on('show.bs.modal', function (e) {
-            // توليد رقم سند افتراضي (في النظام الحقيقي سيتم جلبه من الخادم)
-            const randomVoucherNumber = 'PMT-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
-            document.getElementById('voucher-number').value = randomVoucherNumber;
-            document.getElementById('voucher-number-value').textContent = randomVoucherNumber;
-        });
-        
-        // تسجيل مستمعي الأحداث لتحديث البيان تلقائياً
-        const statementFields = [
-            'account-type', 'account-name', 'other-account-type', 'other-account-name',
-            'reference-type', 'reference-number'
-        ];
-        
-        statementFields.forEach(fieldId => {
-            const field = document.getElementById(fieldId);
-            if (field) {
-                field.addEventListener('change', updatePaymentVoucherStatement);
-            }
-        });
-        
-        // تعامل مع تغيير نوع الحساب المصدر
-        document.getElementById('account-type').addEventListener('change', function() {
-            const accountType = this.value;
-            const accountNameDropdown = document.getElementById('account-name');
-            
-            // إعادة تعيين الخيارات
-            accountNameDropdown.innerHTML = '<option value="">يرجى اختيار الحساب</option>';
-            
-            if (accountType) {
-                accountNameDropdown.disabled = false;
-                
-                // إضافة خيارات حسب نوع الحساب
-                if (accountType === 'bank') {
-                    // بيانات البنوك
-                    const banks = [
-                        { id: 'bank1', name: 'البنك الأهلي' },
-                        { id: 'bank2', name: 'مصرف الراجحي' },
-                        { id: 'bank3', name: 'بنك الرياض' }
-                    ];
-                    
-                    banks.forEach(bank => {
-                        const option = document.createElement('option');
-                        option.value = bank.id;
-                        option.textContent = bank.name;
-                        accountNameDropdown.appendChild(option);
-                    });
-                } else if (accountType === 'cashbox') {
-                    // بيانات الصناديق
-                    const cashboxes = [
-                        { id: 'cash1', name: 'الصندوق الرئيسي' },
-                        { id: 'cash2', name: 'صندوق الفرع الأول' },
-                        { id: 'cash3', name: 'صندوق الفرع الثاني' }
-                    ];
-                    
-                    cashboxes.forEach(cashbox => {
-                        const option = document.createElement('option');
-                        option.value = cashbox.id;
-                        option.textContent = cashbox.name;
-                        accountNameDropdown.appendChild(option);
-                    });
-                }
-                
-                // تحديث البيان بعد تغيير نوع الحساب
-                setTimeout(updatePaymentVoucherStatement, 100);
-            } else {
-                accountNameDropdown.disabled = true;
-            }
-        });
-        
-        // تعامل مع تغيير نوع الحساب المستفيد
-        document.getElementById('other-account-type').addEventListener('change', function() {
-            const accountType = this.value;
-            const accountNameDropdown = document.getElementById('other-account-name');
-            
-            // إعادة تعيين الخيارات
-            accountNameDropdown.innerHTML = '<option value="">يرجى اختيار الحساب</option>';
-            
-            if (accountType) {
-                accountNameDropdown.disabled = false;
-                
-                // إضافة خيارات حسب نوع الحساب
-                switch(accountType) {
-                    case 'supplier':
-                        const suppliers = [
-                            { id: 'sup1', name: 'شركة التوريدات العالمية' },
-                            { id: 'sup2', name: 'مؤسسة الإمداد التجارية' },
-                            { id: 'sup3', name: 'مكتب الخدمات المتكاملة' }
-                        ];
-                        
-                        suppliers.forEach(supplier => {
-                            const option = document.createElement('option');
-                            option.value = supplier.id;
-                            option.textContent = supplier.name;
-                            accountNameDropdown.appendChild(option);
-                        });
-                        break;
-                    
-                    case 'employee':
-                        const employees = [
-                            { id: 'emp1', name: 'محمد أحمد' },
-                            { id: 'emp2', name: 'عبدالله محمد' },
-                            { id: 'emp3', name: 'خالد عبدالرحمن' }
-                        ];
-                        
-                        employees.forEach(employee => {
-                            const option = document.createElement('option');
-                            option.value = employee.id;
-                            option.textContent = employee.name;
-                            accountNameDropdown.appendChild(option);
-                        });
-                        break;
-                    
-                    case 'customer':
-                        const customers = [
-                            { id: 'cust1', name: 'شركة السفر العالمية' },
-                            { id: 'cust2', name: 'مؤسسة الرحلات المميزة' },
-                            { id: 'cust3', name: 'أحمد محمد علي' }
-                        ];
-                        
-                        customers.forEach(customer => {
-                            const option = document.createElement('option');
-                            option.value = customer.id;
-                            option.textContent = customer.name;
-                            accountNameDropdown.appendChild(option);
-                        });
-                        break;
-                    
-                    case 'bank':
-                        const banks = [
-                            { id: 'bank1', name: 'البنك الأهلي' },
-                            { id: 'bank2', name: 'مصرف الراجحي' },
-                            { id: 'bank3', name: 'بنك الرياض' }
-                        ];
-                        
-                        banks.forEach(bank => {
-                            const option = document.createElement('option');
-                            option.value = bank.id;
-                            option.textContent = bank.name;
-                            accountNameDropdown.appendChild(option);
-                        });
-                        break;
-                    
-                    case 'cashbox':
-                        const cashboxes = [
-                            { id: 'cash1', name: 'الصندوق الرئيسي' },
-                            { id: 'cash2', name: 'صندوق الفرع الأول' },
-                            { id: 'cash3', name: 'صندوق الفرع الثاني' }
-                        ];
-                        
-                        cashboxes.forEach(cashbox => {
-                            const option = document.createElement('option');
-                            option.value = cashbox.id;
-                            option.textContent = cashbox.name;
-                            accountNameDropdown.appendChild(option);
-                        });
-                        break;
-                }
-                
-                // تحديث البيان بعد تغيير نوع الحساب
-                setTimeout(updatePaymentVoucherStatement, 100);
-            } else {
-                accountNameDropdown.disabled = true;
-            }
-        });
-        
-        // تحديث رمز العملة عند تغيير نوع العملة
-        document.getElementById('currency-type').addEventListener('change', function() {
-            const currencyType = this.value;
-            const currencySymbol = document.getElementById('currency-symbol');
-            
-            switch(currencyType) {
-                case 'SAR':
-                    currencySymbol.textContent = 'ر.س';
-                    break;
-                case 'USD':
-                    currencySymbol.textContent = '$';
-                    break;
-                case 'EUR':
-                    currencySymbol.textContent = '€';
-                    break;
-                case 'GBP':
-                    currencySymbol.textContent = '£';
-                    break;
-                case 'AED':
-                    currencySymbol.textContent = 'د.إ';
-                    break;
-                default:
-                    currencySymbol.textContent = 'ر.س';
-            }
-        });
-        
-        // تسجيل أحداث إرسال النماذج
-        document.getElementById('payment-voucher-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // إزالة صفة القراءة فقط من وصف العملية لإرسال البيانات
-            document.getElementById('description').readOnly = false;
-            
-            // هنا سيتم إرسال البيانات للخادم (سيتم تنفيذه لاحقاً)
-            alert('تم حفظ سند الصرف بنجاح!');
-            $('#modal-add-payment-voucher').modal('hide');
-            
-            // إعادة تعيين صفة القراءة فقط
-            document.getElementById('description').readOnly = true;
-        });
-        
-        // تهيئة نموذج سند القبض
         $('#modal-add-receipt-voucher').on('show.bs.modal', function (e) {
             // توليد رقم سند افتراضي (في النظام الحقيقي سيتم جلبه من الخادم)
             const randomVoucherNumber = 'REC-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
@@ -759,6 +350,10 @@
             const field = document.getElementById(fieldId);
             if (field) {
                 field.addEventListener('change', updateReceiptVoucherStatement);
+                // بالنسبة للحقول النصية مثل نوع المرجع، نحتاج أيضًا إلى مراقبة حدث input
+                if (field.type === 'text' || field.type === 'textarea') {
+                    field.addEventListener('input', updateReceiptVoucherStatement);
+                }
             }
         });
         
@@ -955,225 +550,6 @@
         });
     });
     
-    // وظيفة لتهيئة نموذج السندات مع ربط الحقول ببعضها
-    function initializeVoucherForm(typeFieldId, nameFieldId, accountFieldId) {
-        const typeField = document.getElementById(typeFieldId);
-        const nameField = document.getElementById(nameFieldId);
-        const accountField = document.getElementById(accountFieldId);
-        
-        // معالجة تغيير نوع المستفيد/المصدر
-        typeField.addEventListener('change', function() {
-            const selectedType = this.value;
-            
-            // إعادة تعيين حقل الاسم
-            nameField.innerHTML = '';
-            nameField.disabled = true;
-            
-            // إعادة تعيين حقل الحساب المالي
-            accountField.innerHTML = '';
-            accountField.disabled = true;
-            
-            if (selectedType) {
-                // تمكين حقل الاسم
-                nameField.disabled = false;
-                
-                // إضافة الخيارات حسب النوع المختار
-                switch (selectedType) {
-                    case 'supplier':
-                        addOptionsToSelect(nameField, getSuppliers());
-                        break;
-                    case 'employee':
-                        addOptionsToSelect(nameField, getEmployees());
-                        break;
-                    case 'customer':
-                        addOptionsToSelect(nameField, getCustomers());
-                        break;
-                    case 'cashbox':
-                        addOptionsToSelect(nameField, getCashboxes());
-                        break;
-                    case 'bank':
-                        addOptionsToSelect(nameField, getBanks());
-                        break;
-                }
-            }
-        });
-        
-        // معالجة تغيير اسم المستفيد/المصدر
-        nameField.addEventListener('change', function() {
-            const selectedName = this.value;
-            const selectedType = typeField.value;
-            
-            // إعادة تعيين حقل الحساب المالي
-            accountField.innerHTML = '';
-            accountField.disabled = true;
-            
-            if (selectedName && selectedType) {
-                // تمكين حقل الحساب المالي
-                accountField.disabled = false;
-                
-                // إضافة الخيارات حسب النوع والاسم المختار
-                switch (selectedType) {
-                    case 'supplier':
-                        addOptionsToSelect(accountField, getSupplierAccounts(selectedName));
-                        break;
-                    case 'employee':
-                        addOptionsToSelect(accountField, getEmployeeAccounts(selectedName));
-                        break;
-                    case 'customer':
-                        addOptionsToSelect(accountField, getCustomerAccounts(selectedName));
-                        break;
-                    case 'cashbox':
-                        addOptionsToSelect(accountField, getCashboxAccounts(selectedName));
-                        break;
-                    case 'bank':
-                        addOptionsToSelect(accountField, getBankAccounts(selectedName));
-                        break;
-                }
-            }
-        });
-    }
-    
-    // وظيفة مساعدة لإضافة خيارات إلى قائمة منسدلة
-    function addOptionsToSelect(selectElement, options) {
-        // إضافة خيار افتراضي
-        const defaultOption = document.createElement('option');
-        defaultOption.value = '';
-        defaultOption.textContent = 'اختر من القائمة';
-        selectElement.appendChild(defaultOption);
-        
-        // إضافة الخيارات
-        options.forEach(option => {
-            const optionElement = document.createElement('option');
-            optionElement.value = option.id;
-            optionElement.textContent = option.name;
-            selectElement.appendChild(optionElement);
-        });
-    }
-    
-    // وظائف وهمية لجلب البيانات (ستستبدل لاحقًا بطلبات AJAX للخادم)
-    function getSuppliers() {
-        return [
-            { id: 1, name: 'الخطوط السعودية' },
-            { id: 2, name: 'طيران الإمارات' },
-            { id: 3, name: 'الخطوط القطرية' },
-            { id: 4, name: 'شركة النقل الجماعي' }
-        ];
-    }
-    
-    function getEmployees() {
-        return [
-            { id: 1, name: 'أحمد محمد' },
-            { id: 2, name: 'محمد علي' },
-            { id: 3, name: 'فهد خالد' },
-            { id: 4, name: 'عبدالله سعيد' }
-        ];
-    }
-    
-    function getCustomers() {
-        return [
-            { id: 1, name: 'سلطان العتيبي' },
-            { id: 2, name: 'خالد المحمدي' },
-            { id: 3, name: 'راشد الدوسري' },
-            { id: 4, name: 'سعود القحطاني' }
-        ];
-    }
-    
-    function getCashboxes() {
-        return [
-            { id: 1, name: 'صندوق المكتب الرئيسي' },
-            { id: 2, name: 'صندوق فرع الرياض' },
-            { id: 3, name: 'صندوق فرع جدة' }
-        ];
-    }
-    
-    function getBanks() {
-        return [
-            { id: 1, name: 'بنك الراجحي' },
-            { id: 2, name: 'البنك الأهلي السعودي' },
-            { id: 3, name: 'بنك ساب' },
-            { id: 4, name: 'بنك سامبا' }
-        ];
-    }
-    
-    // وظائف وهمية لجلب حسابات المالية
-    function getSupplierAccounts(supplierName) {
-        return [{ id: 1, name: 'حساب الموردين - ' + supplierName }];
-    }
-    
-    function getEmployeeAccounts(employeeName) {
-        return [{ id: 1, name: 'حساب الموظفين - ' + employeeName }];
-    }
-    
-    function getCustomerAccounts(customerName) {
-        return [{ id: 1, name: 'حساب العملاء - ' + customerName }];
-    }
-    
-    function getCashboxAccounts(cashboxName) {
-        return [{ id: 1, name: 'حساب الصناديق - ' + cashboxName }];
-    }
-    
-    function getBankAccounts(bankName) {
-        return [{ id: 1, name: 'حساب البنوك - ' + bankName }];
-    }
-    
-    // وظيفة لتحديث البيان تلقائياً
-    function updatePaymentVoucherStatement() {
-        // الحصول على القيم من الحقول
-        const accountTypeSelect = document.getElementById('account-type');
-        const accountNameSelect = document.getElementById('account-name');
-        const otherAccountTypeSelect = document.getElementById('other-account-type');
-        const otherAccountNameSelect = document.getElementById('other-account-name');
-        const referenceTypeSelect = document.getElementById('reference-type');
-        const referenceNumberInput = document.getElementById('reference-number');
-        const descriptionTextarea = document.getElementById('description');
-        
-        // التحقق من وجود القيم المطلوبة
-        if (!accountTypeSelect || !accountNameSelect || !otherAccountTypeSelect || 
-            !otherAccountNameSelect || !descriptionTextarea) {
-            return;
-        }
-        
-        // القيم المحددة
-        const accountType = accountTypeSelect.value;
-        const accountName = accountNameSelect.options[accountNameSelect.selectedIndex]?.text || '';
-        const otherAccountType = otherAccountTypeSelect.value;
-        const otherAccountName = otherAccountNameSelect.options[otherAccountNameSelect.selectedIndex]?.text || '';
-        const referenceType = referenceTypeSelect.value;
-        const referenceNumber = referenceNumberInput.value;
-        
-        // ترجمة أنواع الحسابات إلى العربية
-        const accountTypeText = getAccountTypeText(accountType);
-        const otherAccountTypeText = getAccountTypeText(otherAccountType);
-        
-        // توليد البيان بناءً على البيانات المدخلة
-        let statement = '';
-        
-        if (accountType && accountName && otherAccountType && otherAccountName) {
-            if (accountType === 'bank') {
-                statement = `سند صرف حوالة من ${accountTypeText} ${accountName} إلى ${otherAccountTypeText} ${otherAccountName}`;
-            } else {
-                statement = `سند صرف من ${accountTypeText} ${accountName} إلى ${otherAccountTypeText} ${otherAccountName}`;
-            }
-            
-            // إضافة المرجع إذا كان موجوداً
-            if (referenceType && referenceNumber) {
-                statement += ` عبر ${getReferenceTypeText(referenceType)} برقم ${referenceNumber}`;
-            } else if (referenceType) {
-                statement += ` عبر ${getReferenceTypeText(referenceType)}`;
-            }
-        }
-        
-        // تحديث حقل البيان
-        descriptionTextarea.value = statement;
-        
-        // إلغاء صفة القراءة فقط مؤقتاً للسماح بالتعديل
-        descriptionTextarea.readOnly = false;
-        // إعادة تعيين صفة القراءة فقط بعد لحظة
-        setTimeout(() => {
-            descriptionTextarea.readOnly = true;
-        }, 100);
-    }
-    
     // وظيفة للحصول على النص العربي لنوع الحساب
     function getAccountTypeText(accountType) {
         switch(accountType) {
@@ -1189,26 +565,6 @@
                 return 'عميل';
             default:
                 return accountType || '';
-        }
-    }
-    
-    // وظيفة للحصول على النص العربي لنوع المرجع
-    function getReferenceTypeText(referenceType) {
-        switch(referenceType) {
-            case 'invoice':
-                return 'فاتورة شراء';
-            case 'sales':
-                return 'فاتورة بيع';
-            case 'purchase':
-                return 'فاتورة مشتريات';
-            case 'entry':
-                return 'قيد محاسبي';
-            case 'contract':
-                return 'عقد';
-            case 'other':
-                return 'مستند';
-            default:
-                return referenceType || '';
         }
     }
     
@@ -1237,22 +593,27 @@
             'AED': 'درهم إماراتي'
         };
         
-        // اسم العملة باللغة العربية كما هو معروض في واجهة المستخدم
+        // اسم العملة باللغة العربية كما هو معروض في واجهة المستخدم (بدون الرمز)
         const currencyDisplayNames = {
             'SAR': function() {
-                return document.querySelector('#receipt-currency-type option[value="SAR"]')?.textContent.trim() || 'ريال سعودي';
+                const optionText = document.querySelector('#receipt-currency-type option[value="SAR"]')?.textContent.trim() || 'ريال سعودي (SAR)';
+                return optionText.replace(/\s*\([^)]*\)\s*$/, ''); // إزالة النص بين قوسين في النهاية
             },
             'USD': function() {
-                return document.querySelector('#receipt-currency-type option[value="USD"]')?.textContent.trim() || 'دولار أمريكي';
+                const optionText = document.querySelector('#receipt-currency-type option[value="USD"]')?.textContent.trim() || 'دولار أمريكي (USD)';
+                return optionText.replace(/\s*\([^)]*\)\s*$/, '');
             },
             'EUR': function() {
-                return document.querySelector('#receipt-currency-type option[value="EUR"]')?.textContent.trim() || 'يورو';
+                const optionText = document.querySelector('#receipt-currency-type option[value="EUR"]')?.textContent.trim() || 'يورو (EUR)';
+                return optionText.replace(/\s*\([^)]*\)\s*$/, '');
             },
             'GBP': function() {
-                return document.querySelector('#receipt-currency-type option[value="GBP"]')?.textContent.trim() || 'جنيه إسترليني';
+                const optionText = document.querySelector('#receipt-currency-type option[value="GBP"]')?.textContent.trim() || 'جنيه إسترليني (GBP)';
+                return optionText.replace(/\s*\([^)]*\)\s*$/, '');
             },
             'AED': function() {
-                return document.querySelector('#receipt-currency-type option[value="AED"]')?.textContent.trim() || 'درهم إماراتي';
+                const optionText = document.querySelector('#receipt-currency-type option[value="AED"]')?.textContent.trim() || 'درهم إماراتي (AED)';
+                return optionText.replace(/\s*\([^)]*\)\s*$/, '');
             }
         };
         

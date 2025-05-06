@@ -63,6 +63,10 @@ def banks():
 def payment_vouchers():
     return render_template('payment-vouchers.html')
 
+@app.route('/receipt-vouchers')
+def receipt_vouchers():
+    return render_template('receipt-vouchers.html')
+
 @app.route('/receipts')
 def receipts():
     return render_template('receipts.html')
