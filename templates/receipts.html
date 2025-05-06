@@ -1,0 +1,229 @@
+{% extends 'layout.html' %}
+
+{% block title %}سندات القبض | نظام إدارة وكالة السياحة والسفر{% endblock %}
+
+{% block page_title %}سندات القبض{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">لوحة التحكم</a></li>
+<li class="breadcrumb-item active">سندات القبض</li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card card-outline card-primary">
+            <div class="card-header">
+                <h3 class="card-title">قائمة سندات القبض</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-receipt-modal">
+                        <i class="fas fa-plus ml-1"></i> إضافة سند قبض جديد
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped datatable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>رقم السند</th>
+                                <th>التاريخ</th>
+                                <th>الحساب</th>
+                                <th>المبلغ</th>
+                                <th>العملة</th>
+                                <th>البيان</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>RCP-001</td>
+                                <td>01-05-2023</td>
+                                <td>أحمد محمد</td>
+                                <td>5,000</td>
+                                <td>ريال سعودي</td>
+                                <td>دفعة على الحساب - تذاكر طيران</td>
+                                <td><span class="badge badge-success">مدفوع</span></td>
+                                <td>
+                                    <button class="btn btn-info btn-sm" title="عرض"><i class="fas fa-eye"></i></button>
+                                    <button class="btn btn-primary btn-sm" title="تعديل"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-danger btn-sm" title="حذف"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>RCP-002</td>
+                                <td>05-05-2023</td>
+                                <td>شركة السماء للسياحة</td>
+                                <td>12,500</td>
+                                <td>ريال سعودي</td>
+                                <td>دفعة نهائية - تأشيرات عمرة</td>
+                                <td><span class="badge badge-success">مدفوع</span></td>
+                                <td>
+                                    <button class="btn btn-info btn-sm" title="عرض"><i class="fas fa-eye"></i></button>
+                                    <button class="btn btn-primary btn-sm" title="تعديل"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-danger btn-sm" title="حذف"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>RCP-003</td>
+                                <td>10-05-2023</td>
+                                <td>خالد العبدالله</td>
+                                <td>3,000</td>
+                                <td>ريال سعودي</td>
+                                <td>دفعة أولى - تأشيرة زيارة عائلية</td>
+                                <td><span class="badge badge-warning">معلق</span></td>
+                                <td>
+                                    <button class="btn btn-info btn-sm" title="عرض"><i class="fas fa-eye"></i></button>
+                                    <button class="btn btn-primary btn-sm" title="تعديل"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-danger btn-sm" title="حذف"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+
+<!-- Modal -->
+<div class="modal fade" id="add-receipt-modal" tabindex="-1" role="dialog" aria-labelledby="addReceiptModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addReceiptModalLabel">إضافة سند قبض جديد</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="receipt_number">رقم السند</label>
+                                <input type="text" class="form-control" id="receipt_number" placeholder="سيتم انشاؤه تلقائياً" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="receipt_date">التاريخ</label>
+                                <input type="text" class="form-control datepicker" id="receipt_date" placeholder="إختر التاريخ" required>
+                                <div class="invalid-feedback">يرجى إدخال تاريخ صحيح</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="customer_account">الحساب</label>
+                                <select class="form-control select2" id="customer_account" required>
+                                    <option value="" selected disabled>إختر الحساب</option>
+                                    <option value="1">أحمد محمد</option>
+                                    <option value="2">شركة السماء للسياحة</option>
+                                    <option value="3">خالد العبدالله</option>
+                                    <option value="4">سارة عبدالرحمن</option>
+                                </select>
+                                <div class="invalid-feedback">يرجى إختيار الحساب</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="payment_method">طريقة الدفع</label>
+                                <select class="form-control" id="payment_method" required>
+                                    <option value="" selected disabled>إختر طريقة الدفع</option>
+                                    <option value="cash">نقدي</option>
+                                    <option value="bank_transfer">حوالة بنكية</option>
+                                    <option value="check">شيك</option>
+                                    <option value="credit_card">بطاقة إئتمانية</option>
+                                </select>
+                                <div class="invalid-feedback">يرجى إختيار طريقة الدفع</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row bank-details d-none">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="bank_name">البنك</label>
+                                <select class="form-control" id="bank_name">
+                                    <option value="" selected disabled>إختر البنك</option>
+                                    <option value="alrajhi">مصرف الراجحي</option>
+                                    <option value="alahli">البنك الأهلي السعودي</option>
+                                    <option value="samba">سامبا</option>
+                                    <option value="riyadh">بنك الرياض</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="reference_number">رقم المرجع/رقم الشيك</label>
+                                <input type="text" class="form-control" id="reference_number" placeholder="أدخل رقم المرجع">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="amount">المبلغ</label>
+                                <input type="number" step="0.01" class="form-control" id="amount" placeholder="أدخل المبلغ" required>
+                                <div class="invalid-feedback">يرجى إدخال المبلغ</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="currency">العملة</label>
+                                <select class="form-control" id="currency" required>
+                                    <option value="SAR" selected>ريال سعودي (SAR)</option>
+                                    <option value="USD">دولار أمريكي (USD)</option>
+                                    <option value="EUR">يورو (EUR)</option>
+                                    <option value="GBP">جنيه إسترليني (GBP)</option>
+                                </select>
+                                <div class="invalid-feedback">يرجى إختيار العملة</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="receipt_description">البيان</label>
+                                <textarea class="form-control" id="receipt_description" rows="3" placeholder="أدخل وصف السند" required></textarea>
+                                <div class="invalid-feedback">يرجى إدخال البيان</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">حفظ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // إظهار/إخفاء تفاصيل البنك بناءً على طريقة الدفع
+        $('#payment_method').on('change', function() {
+            var paymentMethod = $(this).val();
+            if (paymentMethod === 'bank_transfer' || paymentMethod === 'check') {
+                $('.bank-details').removeClass('d-none');
+            } else {
+                $('.bank-details').addClass('d-none');
+            }
+        });
+    });
+</script>
+{% endblock %}

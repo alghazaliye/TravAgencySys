@@ -1,0 +1,523 @@
+{% extends 'layout.html' %}
+
+{% block title %}المستخدمين والصلاحيات | نظام إدارة وكالة السياحة والسفر{% endblock %}
+
+{% block page_title %}إدارة المستخدمين والصلاحيات{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">لوحة التحكم</a></li>
+<li class="breadcrumb-item active">المستخدمين والصلاحيات</li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card card-outline card-primary">
+            <div class="card-header">
+                <h3 class="card-title">قائمة المستخدمين</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-user-modal">
+                        <i class="fas fa-user-plus ml-1"></i> إضافة مستخدم جديد
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 10px">#</th>
+                                <th>اسم المستخدم</th>
+                                <th>البريد الإلكتروني</th>
+                                <th>المجموعة</th>
+                                <th>الحالة</th>
+                                <th>آخر تسجيل دخول</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>أحمد محمد</td>
+                                <td>admin@example.com</td>
+                                <td><span class="badge bg-primary">مدير النظام</span></td>
+                                <td><span class="badge bg-success">نشط</span></td>
+                                <td>01-05-2023 10:23</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-primary btn-sm" title="تعديل" data-toggle="modal" data-target="#edit-user-modal">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm" title="حذف">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>سارة أحمد</td>
+                                <td>sara@example.com</td>
+                                <td><span class="badge bg-info">موظف مبيعات</span></td>
+                                <td><span class="badge bg-success">نشط</span></td>
+                                <td>01-05-2023 09:15</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-primary btn-sm" title="تعديل" data-toggle="modal" data-target="#edit-user-modal">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm" title="حذف">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>محمد علي</td>
+                                <td>mohamed@example.com</td>
+                                <td><span class="badge bg-warning">محاسب</span></td>
+                                <td><span class="badge bg-success">نشط</span></td>
+                                <td>30-04-2023 14:05</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-primary btn-sm" title="تعديل" data-toggle="modal" data-target="#edit-user-modal">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm" title="حذف">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>فاطمة محمود</td>
+                                <td>fatima@example.com</td>
+                                <td><span class="badge bg-info">موظف مبيعات</span></td>
+                                <td><span class="badge bg-danger">معطل</span></td>
+                                <td>15-04-2023 11:30</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-primary btn-sm" title="تعديل" data-toggle="modal" data-target="#edit-user-modal">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm" title="حذف">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+    
+    <div class="col-md-4">
+        <div class="card card-outline card-success">
+            <div class="card-header">
+                <h3 class="card-title">مجموعات المستخدمين</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#add-role-modal">
+                        <i class="fas fa-plus ml-1"></i> إضافة مجموعة
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 10px">#</th>
+                                <th>اسم المجموعة</th>
+                                <th>عدد المستخدمين</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>مدير النظام</td>
+                                <td><span class="badge bg-primary">1</span></td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-info btn-sm" title="الصلاحيات" data-toggle="modal" data-target="#permissions-modal">
+                                            <i class="fas fa-key"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-sm" title="تعديل" data-toggle="modal" data-target="#edit-role-modal">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>موظف مبيعات</td>
+                                <td><span class="badge bg-primary">2</span></td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-info btn-sm" title="الصلاحيات" data-toggle="modal" data-target="#permissions-modal">
+                                            <i class="fas fa-key"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-sm" title="تعديل" data-toggle="modal" data-target="#edit-role-modal">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm" title="حذف">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>محاسب</td>
+                                <td><span class="badge bg-primary">1</span></td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-info btn-sm" title="الصلاحيات" data-toggle="modal" data-target="#permissions-modal">
+                                            <i class="fas fa-key"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-sm" title="تعديل" data-toggle="modal" data-target="#edit-role-modal">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm" title="حذف">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+        
+        <div class="card card-outline card-warning">
+            <div class="card-header">
+                <h3 class="card-title">سجل النشاطات</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>المستخدم</th>
+                                <th>النشاط</th>
+                                <th>التاريخ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>أحمد محمد</td>
+                                <td>تسجيل دخول</td>
+                                <td>01-05-2023 10:23</td>
+                            </tr>
+                            <tr>
+                                <td>سارة أحمد</td>
+                                <td>تسجيل دخول</td>
+                                <td>01-05-2023 09:15</td>
+                            </tr>
+                            <tr>
+                                <td>أحمد محمد</td>
+                                <td>إضافة مستخدم</td>
+                                <td>30-04-2023 16:45</td>
+                            </tr>
+                            <tr>
+                                <td>محمد علي</td>
+                                <td>تسجيل دخول</td>
+                                <td>30-04-2023 14:05</td>
+                            </tr>
+                            <tr>
+                                <td>أحمد محمد</td>
+                                <td>تعديل صلاحيات</td>
+                                <td>30-04-2023 11:20</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+                <a href="#" class="btn btn-sm btn-warning">عرض الكل</a>
+            </div>
+            <!-- /.card-footer -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+
+<!-- Modal إضافة مستخدم جديد -->
+<div class="modal fade" id="add-user-modal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserModalLabel">إضافة مستخدم جديد</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="username">اسم المستخدم</label>
+                        <input type="text" class="form-control" id="username" placeholder="أدخل اسم المستخدم" required>
+                        <div class="invalid-feedback">يرجى إدخال اسم المستخدم</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">البريد الإلكتروني</label>
+                        <input type="email" class="form-control" id="email" placeholder="أدخل البريد الإلكتروني" required>
+                        <div class="invalid-feedback">يرجى إدخال بريد إلكتروني صحيح</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">كلمة المرور</label>
+                        <input type="password" class="form-control" id="password" placeholder="أدخل كلمة المرور" required>
+                        <div class="invalid-feedback">يرجى إدخال كلمة المرور</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm_password">تأكيد كلمة المرور</label>
+                        <input type="password" class="form-control" id="confirm_password" placeholder="أعد إدخال كلمة المرور" required>
+                        <div class="invalid-feedback">كلمة المرور غير متطابقة</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="user_role">المجموعة</label>
+                        <select class="form-control" id="user_role" required>
+                            <option value="" selected disabled>اختر المجموعة</option>
+                            <option value="1">مدير النظام</option>
+                            <option value="2">موظف مبيعات</option>
+                            <option value="3">محاسب</option>
+                        </select>
+                        <div class="invalid-feedback">يرجى اختيار المجموعة</div>
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="user_status" checked>
+                            <label class="custom-control-label" for="user_status">نشط</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">حفظ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal إضافة مجموعة جديدة -->
+<div class="modal fade" id="add-role-modal" tabindex="-1" role="dialog" aria-labelledby="addRoleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addRoleModalLabel">إضافة مجموعة جديدة</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="role_name">اسم المجموعة</label>
+                        <input type="text" class="form-control" id="role_name" placeholder="أدخل اسم المجموعة" required>
+                        <div class="invalid-feedback">يرجى إدخال اسم المجموعة</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="role_description">الوصف</label>
+                        <textarea class="form-control" id="role_description" rows="3" placeholder="أدخل وصف المجموعة"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-success">حفظ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal الصلاحيات -->
+<div class="modal fade" id="permissions-modal" tabindex="-1" role="dialog" aria-labelledby="permissionsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="permissionsModalLabel">صلاحيات المجموعة: <span class="text-primary">موظف مبيعات</span></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card card-primary card-outline">
+                            <div class="card-header">
+                                <h3 class="card-title">الحجوزات</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="airline_view" checked>
+                                        <label class="custom-control-label" for="airline_view">عرض تذاكر الطيران</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="airline_add" checked>
+                                        <label class="custom-control-label" for="airline_add">إضافة تذاكر طيران</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="airline_edit" checked>
+                                        <label class="custom-control-label" for="airline_edit">تعديل تذاكر الطيران</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="airline_delete">
+                                        <label class="custom-control-label" for="airline_delete">حذف تذاكر الطيران</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card card-primary card-outline">
+                            <div class="card-header">
+                                <h3 class="card-title">التأشيرات</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="visa_view" checked>
+                                        <label class="custom-control-label" for="visa_view">عرض التأشيرات</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="visa_add" checked>
+                                        <label class="custom-control-label" for="visa_add">إضافة تأشيرات</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="visa_edit" checked>
+                                        <label class="custom-control-label" for="visa_edit">تعديل التأشيرات</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="visa_delete">
+                                        <label class="custom-control-label" for="visa_delete">حذف التأشيرات</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card card-primary card-outline">
+                            <div class="card-header">
+                                <h3 class="card-title">العملاء</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="customer_view" checked>
+                                        <label class="custom-control-label" for="customer_view">عرض العملاء</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="customer_add" checked>
+                                        <label class="custom-control-label" for="customer_add">إضافة عملاء</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="customer_edit" checked>
+                                        <label class="custom-control-label" for="customer_edit">تعديل العملاء</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="customer_delete">
+                                        <label class="custom-control-label" for="customer_delete">حذف العملاء</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card card-primary card-outline">
+                            <div class="card-header">
+                                <h3 class="card-title">الإدارة المالية</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="finance_view">
+                                        <label class="custom-control-label" for="finance_view">عرض العمليات المالية</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="finance_add">
+                                        <label class="custom-control-label" for="finance_add">إضافة عمليات مالية</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="finance_edit">
+                                        <label class="custom-control-label" for="finance_edit">تعديل العمليات المالية</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="finance_delete">
+                                        <label class="custom-control-label" for="finance_delete">حذف العمليات المالية</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-primary">حفظ الصلاحيات</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // التحقق من تطابق كلمة المرور
+        $('#confirm_password').on('keyup', function() {
+            if ($('#password').val() != $('#confirm_password').val()) {
+                $('#confirm_password').addClass('is-invalid');
+            } else {
+                $('#confirm_password').removeClass('is-invalid').addClass('is-valid');
+            }
+        });
+    });
+</script>
+{% endblock %}

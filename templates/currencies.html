@@ -1,0 +1,249 @@
+{% extends 'layout.html' %}
+
+{% block title %}العملات | نظام إدارة وكالة السياحة والسفر{% endblock %}
+
+{% block page_title %}إدارة العملات{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">لوحة التحكم</a></li>
+<li class="breadcrumb-item active">العملات</li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card card-outline card-primary">
+            <div class="card-header">
+                <h3 class="card-title">قائمة العملات وأسعار الصرف</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-currency-modal">
+                        <i class="fas fa-plus ml-1"></i> إضافة عملة جديدة
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle ml-2"></i>
+                    أسعار الصرف محدثة بتاريخ: <strong>01-05-2023</strong>
+                    <button class="btn btn-sm btn-outline-primary float-left" id="update-exchange-rates">
+                        <i class="fas fa-sync-alt ml-1"></i> تحديث الأسعار
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped datatable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>رمز العملة</th>
+                                <th>اسم العملة</th>
+                                <th>الرمز</th>
+                                <th>سعر الصرف (مقابل الريال)</th>
+                                <th>آخر تحديث</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>SAR</td>
+                                <td>ريال سعودي</td>
+                                <td>ر.س</td>
+                                <td>1.00</td>
+                                <td>01-05-2023</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" title="تعديل" data-toggle="modal" data-target="#edit-currency-modal"><i class="fas fa-edit"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>USD</td>
+                                <td>دولار أمريكي</td>
+                                <td>$</td>
+                                <td>0.27</td>
+                                <td>01-05-2023</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" title="تعديل" data-toggle="modal" data-target="#edit-currency-modal"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-danger btn-sm" title="حذف"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>EUR</td>
+                                <td>يورو</td>
+                                <td>€</td>
+                                <td>0.24</td>
+                                <td>01-05-2023</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" title="تعديل" data-toggle="modal" data-target="#edit-currency-modal"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-danger btn-sm" title="حذف"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>GBP</td>
+                                <td>جنيه إسترليني</td>
+                                <td>£</td>
+                                <td>0.21</td>
+                                <td>01-05-2023</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" title="تعديل" data-toggle="modal" data-target="#edit-currency-modal"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-danger btn-sm" title="حذف"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>AED</td>
+                                <td>درهم إماراتي</td>
+                                <td>د.إ</td>
+                                <td>0.98</td>
+                                <td>01-05-2023</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" title="تعديل" data-toggle="modal" data-target="#edit-currency-modal"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-danger btn-sm" title="حذف"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+
+<!-- Modal إضافة عملة جديدة -->
+<div class="modal fade" id="add-currency-modal" tabindex="-1" role="dialog" aria-labelledby="addCurrencyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCurrencyModalLabel">إضافة عملة جديدة</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="currency_code">رمز العملة (ISO)</label>
+                        <input type="text" class="form-control" id="currency_code" placeholder="مثال: USD, EUR, GBP" required maxlength="3">
+                        <div class="invalid-feedback">يرجى إدخال رمز العملة (3 أحرف)</div>
+                        <small class="form-text text-muted">أدخل الرمز الدولي للعملة (3 أحرف)</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="currency_name">اسم العملة</label>
+                        <input type="text" class="form-control" id="currency_name" placeholder="مثال: دولار أمريكي" required>
+                        <div class="invalid-feedback">يرجى إدخال اسم العملة</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="currency_symbol">رمز العملة (الشكل)</label>
+                        <input type="text" class="form-control" id="currency_symbol" placeholder="مثال: $, €, £" required>
+                        <div class="invalid-feedback">يرجى إدخال رمز العملة</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exchange_rate">سعر الصرف (مقابل الريال السعودي)</label>
+                        <div class="input-group">
+                            <input type="number" step="0.0001" class="form-control" id="exchange_rate" placeholder="أدخل سعر الصرف" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text">ريال سعودي</span>
+                            </div>
+                        </div>
+                        <div class="invalid-feedback">يرجى إدخال سعر الصرف</div>
+                        <small class="form-text text-muted">قيمة العملة مقابل الريال السعودي. مثال: 1 دولار = 3.75 ريال، أدخل 0.27</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">حفظ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal تعديل عملة -->
+<div class="modal fade" id="edit-currency-modal" tabindex="-1" role="dialog" aria-labelledby="editCurrencyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCurrencyModalLabel">تعديل العملة</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="edit_currency_code">رمز العملة (ISO)</label>
+                        <input type="text" class="form-control" id="edit_currency_code" value="USD" readonly>
+                        <small class="form-text text-muted">لا يمكن تعديل رمز العملة</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_currency_name">اسم العملة</label>
+                        <input type="text" class="form-control" id="edit_currency_name" value="دولار أمريكي" required>
+                        <div class="invalid-feedback">يرجى إدخال اسم العملة</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_currency_symbol">رمز العملة (الشكل)</label>
+                        <input type="text" class="form-control" id="edit_currency_symbol" value="$" required>
+                        <div class="invalid-feedback">يرجى إدخال رمز العملة</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_exchange_rate">سعر الصرف (مقابل الريال السعودي)</label>
+                        <div class="input-group">
+                            <input type="number" step="0.0001" class="form-control" id="edit_exchange_rate" value="0.27" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text">ريال سعودي</span>
+                            </div>
+                        </div>
+                        <div class="invalid-feedback">يرجى إدخال سعر الصرف</div>
+                        <small class="form-text text-muted">قيمة العملة مقابل الريال السعودي. مثال: 1 دولار = 3.75 ريال، أدخل 0.27</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // تحديث أسعار الصرف
+        $('#update-exchange-rates').on('click', function() {
+            // هنا يمكن إضافة كود لتحديث أسعار الصرف من API خارجي
+            Swal.fire({
+                title: 'جاري التحديث...',
+                text: 'يتم الآن تحديث أسعار الصرف من المصادر الرسمية',
+                icon: 'info',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                willOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
+            // محاكاة عملية التحديث
+            setTimeout(function() {
+                Swal.fire({
+                    title: 'تم التحديث!',
+                    text: 'تم تحديث أسعار الصرف بنجاح',
+                    icon: 'success',
+                    confirmButtonText: 'حسناً'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
+                });
+            }, 2000);
+        });
+    });
+</script>
+{% endblock %}

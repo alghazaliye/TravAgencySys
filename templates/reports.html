@@ -1,0 +1,863 @@
+{% extends 'layout.html' %}
+
+{% block title %}التقارير | نظام إدارة وكالة السياحة والسفر{% endblock %}
+
+{% block page_title %}التقارير{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">لوحة التحكم</a></li>
+<li class="breadcrumb-item active">التقارير</li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-tabs card-outline card-primary">
+            <div class="card-header p-0 pt-1 border-bottom-0">
+                <ul class="nav nav-tabs" id="report-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="sales-tab" data-toggle="pill" href="#sales-reports" role="tab" aria-controls="sales-reports" aria-selected="true">
+                            <i class="fas fa-chart-line ml-1"></i> تقارير المبيعات
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="visas-tab" data-toggle="pill" href="#visas-reports" role="tab" aria-controls="visas-reports" aria-selected="false">
+                            <i class="fas fa-passport ml-1"></i> تقارير التأشيرات
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="financial-tab" data-toggle="pill" href="#financial-reports" role="tab" aria-controls="financial-reports" aria-selected="false">
+                            <i class="fas fa-money-bill-wave ml-1"></i> التقارير المالية
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="customers-tab" data-toggle="pill" href="#customers-reports" role="tab" aria-controls="customers-reports" aria-selected="false">
+                            <i class="fas fa-users ml-1"></i> تقارير العملاء
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content" id="report-tabsContent">
+                    <!-- تقارير المبيعات -->
+                    <div class="tab-pane fade show active" id="sales-reports" role="tabpanel" aria-labelledby="sales-tab">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card card-primary">
+                                    <div class="card-header">
+                                        <h3 class="card-title">مرشح التقرير</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label>نوع التقرير</label>
+                                                <select class="form-control" id="sales-report-type">
+                                                    <option value="daily">مبيعات يومية</option>
+                                                    <option value="monthly" selected>مبيعات شهرية</option>
+                                                    <option value="yearly">مبيعات سنوية</option>
+                                                    <option value="custom">فترة مخصصة</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>الفترة</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="far fa-calendar-alt"></i>
+                                                        </span>
+                                                    </div>
+                                                    <input type="text" class="form-control datepicker float-right" id="sales-start-date" placeholder="من تاريخ">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="far fa-calendar-alt"></i>
+                                                        </span>
+                                                    </div>
+                                                    <input type="text" class="form-control datepicker float-right" id="sales-end-date" placeholder="إلى تاريخ">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>نوع الخدمة</label>
+                                                <select class="form-control" id="sales-service-type">
+                                                    <option value="all" selected>جميع الخدمات</option>
+                                                    <option value="visa">تأشيرات</option>
+                                                    <option value="ticket">تذاكر طيران</option>
+                                                    <option value="package">حزم سياحية</option>
+                                                    <option value="hotel">فنادق</option>
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">عرض التقرير</button>
+                                            <button type="button" class="btn btn-success">تصدير Excel</button>
+                                            <button type="button" class="btn btn-danger">تصدير PDF</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card card-info">
+                                    <div class="card-header">
+                                        <h3 class="card-title">تقرير المبيعات الشهرية</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart">
+                                            <canvas id="salesReportChart" style="height: 300px;"></canvas>
+                                        </div>
+                                        <div class="table-responsive mt-4">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>الشهر</th>
+                                                        <th>تأشيرات</th>
+                                                        <th>تذاكر طيران</th>
+                                                        <th>خدمات أخرى</th>
+                                                        <th>المجموع</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>يناير</td>
+                                                        <td>35,000 ر.س</td>
+                                                        <td>15,000 ر.س</td>
+                                                        <td>5,000 ر.س</td>
+                                                        <td>55,000 ر.س</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>فبراير</td>
+                                                        <td>40,000 ر.س</td>
+                                                        <td>20,000 ر.س</td>
+                                                        <td>5,000 ر.س</td>
+                                                        <td>65,000 ر.س</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>مارس</td>
+                                                        <td>45,000 ر.س</td>
+                                                        <td>22,000 ر.س</td>
+                                                        <td>7,000 ر.س</td>
+                                                        <td>74,000 ر.س</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>أبريل</td>
+                                                        <td>50,000 ر.س</td>
+                                                        <td>25,000 ر.س</td>
+                                                        <td>7,000 ر.س</td>
+                                                        <td>82,000 ر.س</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>مايو</td>
+                                                        <td>55,000 ر.س</td>
+                                                        <td>30,000 ر.س</td>
+                                                        <td>10,000 ر.س</td>
+                                                        <td>95,000 ر.س</td>
+                                                    </tr>
+                                                    <tr class="bg-light font-weight-bold">
+                                                        <td>المجموع</td>
+                                                        <td>225,000 ر.س</td>
+                                                        <td>112,000 ر.س</td>
+                                                        <td>34,000 ر.س</td>
+                                                        <td>371,000 ر.س</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- تقارير التأشيرات -->
+                    <div class="tab-pane fade" id="visas-reports" role="tabpanel" aria-labelledby="visas-tab">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card card-primary">
+                                    <div class="card-header">
+                                        <h3 class="card-title">مرشح التقرير</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label>نوع التقرير</label>
+                                                <select class="form-control" id="visa-report-type">
+                                                    <option value="status" selected>حالة التأشيرات</option>
+                                                    <option value="type">أنواع التأشيرات</option>
+                                                    <option value="provider">مزود الخدمة</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>الفترة</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="far fa-calendar-alt"></i>
+                                                        </span>
+                                                    </div>
+                                                    <input type="text" class="form-control datepicker float-right" id="visa-start-date" placeholder="من تاريخ">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="far fa-calendar-alt"></i>
+                                                        </span>
+                                                    </div>
+                                                    <input type="text" class="form-control datepicker float-right" id="visa-end-date" placeholder="إلى تاريخ">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>نوع التأشيرة</label>
+                                                <select class="form-control" id="visa-type">
+                                                    <option value="all" selected>جميع التأشيرات</option>
+                                                    <option value="umrah">تأشيرة عمرة</option>
+                                                    <option value="work">تأشيرة عمل</option>
+                                                    <option value="visit">تأشيرة زيارة</option>
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">عرض التقرير</button>
+                                            <button type="button" class="btn btn-success">تصدير Excel</button>
+                                            <button type="button" class="btn btn-danger">تصدير PDF</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card card-info">
+                                    <div class="card-header">
+                                        <h3 class="card-title">تقرير حالة التأشيرات</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="chart-container" style="height: 300px;">
+                                                    <canvas id="visaStatusChart"></canvas>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>حالة التأشيرة</th>
+                                                            <th>العدد</th>
+                                                            <th>النسبة</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><span class="badge badge-success">موافق عليها</span></td>
+                                                            <td>75</td>
+                                                            <td>60%</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><span class="badge badge-warning">قيد المعالجة</span></td>
+                                                            <td>35</td>
+                                                            <td>28%</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><span class="badge badge-danger">مرفوضة</span></td>
+                                                            <td>15</td>
+                                                            <td>12%</td>
+                                                        </tr>
+                                                        <tr class="bg-light font-weight-bold">
+                                                            <td>المجموع</td>
+                                                            <td>125</td>
+                                                            <td>100%</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-4">
+                                            <div class="col-md-12">
+                                                <h5 class="text-primary">تفاصيل التأشيرات حسب النوع</h5>
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>نوع التأشيرة</th>
+                                                                <th>موافق عليها</th>
+                                                                <th>قيد المعالجة</th>
+                                                                <th>مرفوضة</th>
+                                                                <th>المجموع</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>تأشيرة عمرة</td>
+                                                                <td>45</td>
+                                                                <td>20</td>
+                                                                <td>5</td>
+                                                                <td>70</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>تأشيرة عمل</td>
+                                                                <td>15</td>
+                                                                <td>10</td>
+                                                                <td>5</td>
+                                                                <td>30</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>تأشيرة زيارة</td>
+                                                                <td>15</td>
+                                                                <td>5</td>
+                                                                <td>5</td>
+                                                                <td>25</td>
+                                                            </tr>
+                                                            <tr class="bg-light font-weight-bold">
+                                                                <td>المجموع</td>
+                                                                <td>75</td>
+                                                                <td>35</td>
+                                                                <td>15</td>
+                                                                <td>125</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- التقارير المالية -->
+                    <div class="tab-pane fade" id="financial-reports" role="tabpanel" aria-labelledby="financial-tab">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card card-primary">
+                                    <div class="card-header">
+                                        <h3 class="card-title">مرشح التقرير</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label>نوع التقرير</label>
+                                                <select class="form-control" id="financial-report-type">
+                                                    <option value="summary" selected>ملخص مالي</option>
+                                                    <option value="transactions">سجل المعاملات</option>
+                                                    <option value="profit">الأرباح والخسائر</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>الفترة</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="far fa-calendar-alt"></i>
+                                                        </span>
+                                                    </div>
+                                                    <input type="text" class="form-control datepicker float-right" id="financial-start-date" placeholder="من تاريخ">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="far fa-calendar-alt"></i>
+                                                        </span>
+                                                    </div>
+                                                    <input type="text" class="form-control datepicker float-right" id="financial-end-date" placeholder="إلى تاريخ">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>العملة</label>
+                                                <select class="form-control" id="currency">
+                                                    <option value="SAR" selected>ريال سعودي</option>
+                                                    <option value="USD">دولار أمريكي</option>
+                                                    <option value="EUR">يورو</option>
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">عرض التقرير</button>
+                                            <button type="button" class="btn btn-success">تصدير Excel</button>
+                                            <button type="button" class="btn btn-danger">تصدير PDF</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card card-info">
+                                    <div class="card-header">
+                                        <h3 class="card-title">ملخص مالي</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="info-box bg-success">
+                                                    <span class="info-box-icon"><i class="fas fa-money-bill"></i></span>
+                                                    <div class="info-box-content">
+                                                        <span class="info-box-text">الإيرادات</span>
+                                                        <span class="info-box-number">371,000 ر.س</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="info-box bg-danger">
+                                                    <span class="info-box-icon"><i class="fas fa-money-bill-wave"></i></span>
+                                                    <div class="info-box-content">
+                                                        <span class="info-box-text">المصروفات</span>
+                                                        <span class="info-box-number">220,000 ر.س</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="info-box bg-warning">
+                                                    <span class="info-box-icon"><i class="fas fa-chart-line"></i></span>
+                                                    <div class="info-box-content">
+                                                        <span class="info-box-text">صافي الربح</span>
+                                                        <span class="info-box-number">151,000 ر.س</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="info-box bg-info">
+                                                    <span class="info-box-icon"><i class="fas fa-percentage"></i></span>
+                                                    <div class="info-box-content">
+                                                        <span class="info-box-text">هامش الربح</span>
+                                                        <span class="info-box-number">40.7%</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="chart mt-4">
+                                            <canvas id="financialReportChart" style="height: 300px;"></canvas>
+                                        </div>
+                                        <div class="table-responsive mt-4">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>الشهر</th>
+                                                        <th>الإيرادات</th>
+                                                        <th>المصروفات</th>
+                                                        <th>صافي الربح</th>
+                                                        <th>هامش الربح</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>يناير</td>
+                                                        <td>55,000 ر.س</td>
+                                                        <td>35,000 ر.س</td>
+                                                        <td>20,000 ر.س</td>
+                                                        <td>36.4%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>فبراير</td>
+                                                        <td>65,000 ر.س</td>
+                                                        <td>38,000 ر.س</td>
+                                                        <td>27,000 ر.س</td>
+                                                        <td>41.5%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>مارس</td>
+                                                        <td>74,000 ر.س</td>
+                                                        <td>42,000 ر.س</td>
+                                                        <td>32,000 ر.س</td>
+                                                        <td>43.2%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>أبريل</td>
+                                                        <td>82,000 ر.س</td>
+                                                        <td>48,000 ر.س</td>
+                                                        <td>34,000 ر.س</td>
+                                                        <td>41.5%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>مايو</td>
+                                                        <td>95,000 ر.س</td>
+                                                        <td>57,000 ر.س</td>
+                                                        <td>38,000 ر.س</td>
+                                                        <td>40.0%</td>
+                                                    </tr>
+                                                    <tr class="bg-light font-weight-bold">
+                                                        <td>المجموع</td>
+                                                        <td>371,000 ر.س</td>
+                                                        <td>220,000 ر.س</td>
+                                                        <td>151,000 ر.س</td>
+                                                        <td>40.7%</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- تقارير العملاء -->
+                    <div class="tab-pane fade" id="customers-reports" role="tabpanel" aria-labelledby="customers-tab">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card card-primary">
+                                    <div class="card-header">
+                                        <h3 class="card-title">مرشح التقرير</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label>نوع التقرير</label>
+                                                <select class="form-control" id="customer-report-type">
+                                                    <option value="demographics" selected>تصنيف العملاء</option>
+                                                    <option value="activity">نشاط العملاء</option>
+                                                    <option value="services">استخدام الخدمات</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>الفترة</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="far fa-calendar-alt"></i>
+                                                        </span>
+                                                    </div>
+                                                    <input type="text" class="form-control datepicker float-right" id="customer-start-date" placeholder="من تاريخ">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="far fa-calendar-alt"></i>
+                                                        </span>
+                                                    </div>
+                                                    <input type="text" class="form-control datepicker float-right" id="customer-end-date" placeholder="إلى تاريخ">
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">عرض التقرير</button>
+                                            <button type="button" class="btn btn-success">تصدير Excel</button>
+                                            <button type="button" class="btn btn-danger">تصدير PDF</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card card-info">
+                                    <div class="card-header">
+                                        <h3 class="card-title">تقرير تصنيف العملاء</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="chart-container" style="height: 300px;">
+                                                    <canvas id="customerDemographicsChart"></canvas>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="chart-container" style="height: 300px;">
+                                                    <canvas id="customerRegionsChart"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-4">
+                                            <div class="col-md-12">
+                                                <h5 class="text-primary">توزيع العملاء حسب الخدمة المستخدمة</h5>
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>الخدمة</th>
+                                                                <th>عدد العملاء</th>
+                                                                <th>النسبة</th>
+                                                                <th>متوسط المبلغ</th>
+                                                                <th>إجمالي المبيعات</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>تأشيرات عمرة</td>
+                                                                <td>85</td>
+                                                                <td>42.5%</td>
+                                                                <td>2,500 ر.س</td>
+                                                                <td>212,500 ر.س</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>تذاكر طيران</td>
+                                                                <td>60</td>
+                                                                <td>30.0%</td>
+                                                                <td>1,800 ر.س</td>
+                                                                <td>108,000 ر.س</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>تأشيرات عمل</td>
+                                                                <td>35</td>
+                                                                <td>17.5%</td>
+                                                                <td>1,200 ر.س</td>
+                                                                <td>42,000 ر.س</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>خدمات أخرى</td>
+                                                                <td>20</td>
+                                                                <td>10.0%</td>
+                                                                <td>425 ر.س</td>
+                                                                <td>8,500 ر.س</td>
+                                                            </tr>
+                                                            <tr class="bg-light font-weight-bold">
+                                                                <td>المجموع</td>
+                                                                <td>200</td>
+                                                                <td>100%</td>
+                                                                <td>1,855 ر.س</td>
+                                                                <td>371,000 ر.س</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // تفعيل مخططات التقارير
+        
+        // مخطط المبيعات
+        var salesCtx = document.getElementById('salesReportChart').getContext('2d');
+        var salesChart = new Chart(salesCtx, {
+            type: 'bar',
+            data: {
+                labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو'],
+                datasets: [
+                    {
+                        label: 'تأشيرات',
+                        backgroundColor: '#4e73df',
+                        data: [35000, 40000, 45000, 50000, 55000]
+                    },
+                    {
+                        label: 'تذاكر طيران',
+                        backgroundColor: '#1cc88a',
+                        data: [15000, 20000, 22000, 25000, 30000]
+                    },
+                    {
+                        label: 'خدمات أخرى',
+                        backgroundColor: '#36b9cc',
+                        data: [5000, 5000, 7000, 7000, 10000]
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: true,
+                    },
+                    y: {
+                        stacked: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        rtl: true,
+                        labels: {
+                            font: {
+                                family: "Tajawal"
+                            }
+                        }
+                    },
+                    tooltip: {
+                        rtl: true,
+                        titleFont: {
+                            family: "Tajawal"
+                        },
+                        bodyFont: {
+                            family: "Tajawal"
+                        }
+                    }
+                }
+            }
+        });
+        
+        // مخطط حالة التأشيرات
+        var visaStatusCtx = document.getElementById('visaStatusChart').getContext('2d');
+        var visaStatusChart = new Chart(visaStatusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['موافق عليها', 'قيد المعالجة', 'مرفوضة'],
+                datasets: [
+                    {
+                        data: [75, 35, 15],
+                        backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        rtl: true,
+                        labels: {
+                            font: {
+                                family: "Tajawal"
+                            }
+                        }
+                    },
+                    tooltip: {
+                        rtl: true,
+                        titleFont: {
+                            family: "Tajawal"
+                        },
+                        bodyFont: {
+                            family: "Tajawal"
+                        }
+                    }
+                }
+            }
+        });
+        
+        // مخطط التقرير المالي
+        var financialCtx = document.getElementById('financialReportChart').getContext('2d');
+        var financialChart = new Chart(financialCtx, {
+            type: 'line',
+            data: {
+                labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو'],
+                datasets: [
+                    {
+                        label: 'الإيرادات',
+                        borderColor: '#28a745',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        data: [55000, 65000, 74000, 82000, 95000],
+                        fill: true
+                    },
+                    {
+                        label: 'المصروفات',
+                        borderColor: '#dc3545',
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        data: [35000, 38000, 42000, 48000, 57000],
+                        fill: true
+                    },
+                    {
+                        label: 'صافي الربح',
+                        borderColor: '#17a2b8',
+                        backgroundColor: 'rgba(23, 162, 184, 0.1)',
+                        data: [20000, 27000, 32000, 34000, 38000],
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        rtl: true,
+                        labels: {
+                            font: {
+                                family: "Tajawal"
+                            }
+                        }
+                    },
+                    tooltip: {
+                        rtl: true,
+                        titleFont: {
+                            family: "Tajawal"
+                        },
+                        bodyFont: {
+                            family: "Tajawal"
+                        }
+                    }
+                }
+            }
+        });
+        
+        // مخطط تصنيف العملاء
+        var customerDemographicsCtx = document.getElementById('customerDemographicsChart').getContext('2d');
+        var customerDemographicsChart = new Chart(customerDemographicsCtx, {
+            type: 'pie',
+            data: {
+                labels: ['أفراد', 'شركات', 'وكالات سفر', 'هيئات حكومية'],
+                datasets: [
+                    {
+                        data: [120, 45, 25, 10],
+                        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e'],
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        rtl: true,
+                        labels: {
+                            font: {
+                                family: "Tajawal"
+                            }
+                        }
+                    },
+                    tooltip: {
+                        rtl: true,
+                        titleFont: {
+                            family: "Tajawal"
+                        },
+                        bodyFont: {
+                            family: "Tajawal"
+                        }
+                    }
+                }
+            }
+        });
+        
+        // مخطط مناطق العملاء
+        var customerRegionsCtx = document.getElementById('customerRegionsChart').getContext('2d');
+        var customerRegionsChart = new Chart(customerRegionsCtx, {
+            type: 'pie',
+            data: {
+                labels: ['الرياض', 'مكة', 'المدينة', 'جدة', 'الدمام', 'مناطق أخرى'],
+                datasets: [
+                    {
+                        data: [65, 45, 30, 25, 20, 15],
+                        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796'],
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        rtl: true,
+                        labels: {
+                            font: {
+                                family: "Tajawal"
+                            }
+                        }
+                    },
+                    tooltip: {
+                        rtl: true,
+                        titleFont: {
+                            family: "Tajawal"
+                        },
+                        bodyFont: {
+                            family: "Tajawal"
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
