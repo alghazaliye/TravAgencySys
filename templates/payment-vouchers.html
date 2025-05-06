@@ -153,7 +153,10 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-success">
-                <h4 class="modal-title">إضافة سند صرف جديد</h4>
+                <h4 class="modal-title">
+                    إضافة سند صرف جديد
+                    <span id="voucher-number-display" class="badge badge-light ml-2">رقم السند: <span id="voucher-number-value">تلقائي</span></span>
+                </h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -448,18 +451,210 @@
 <script>
     // تهيئة النماذج عند تحميل الصفحة
     document.addEventListener('DOMContentLoaded', function() {
-        // استدعاء وظيفة التهيئة لنموذج سند الصرف
-        initializeVoucherForm('beneficiary-type', 'beneficiary-name', 'financial-account');
+        // تهيئة رقم السند عند فتح النموذج
+        $('#modal-add-payment-voucher').on('show.bs.modal', function (e) {
+            // توليد رقم سند افتراضي (في النظام الحقيقي سيتم جلبه من الخادم)
+            const randomVoucherNumber = 'PMT-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('voucher-number').value = randomVoucherNumber;
+            document.getElementById('voucher-number-value').textContent = randomVoucherNumber;
+        });
         
-        // استدعاء وظيفة التهيئة لنموذج سند القبض
-        initializeVoucherForm('receipt-beneficiary-type', 'receipt-beneficiary-name', 'receipt-financial-account');
+        // تسجيل مستمعي الأحداث لتحديث البيان تلقائياً
+        const statementFields = [
+            'account-type', 'account-name', 'other-account-type', 'other-account-name',
+            'reference-type', 'reference-number'
+        ];
+        
+        statementFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.addEventListener('change', updatePaymentVoucherStatement);
+            }
+        });
+        
+        // تعامل مع تغيير نوع الحساب المصدر
+        document.getElementById('account-type').addEventListener('change', function() {
+            const accountType = this.value;
+            const accountNameDropdown = document.getElementById('account-name');
+            
+            // إعادة تعيين الخيارات
+            accountNameDropdown.innerHTML = '<option value="">يرجى اختيار الحساب</option>';
+            
+            if (accountType) {
+                accountNameDropdown.disabled = false;
+                
+                // إضافة خيارات حسب نوع الحساب
+                if (accountType === 'bank') {
+                    // بيانات البنوك
+                    const banks = [
+                        { id: 'bank1', name: 'البنك الأهلي' },
+                        { id: 'bank2', name: 'مصرف الراجحي' },
+                        { id: 'bank3', name: 'بنك الرياض' }
+                    ];
+                    
+                    banks.forEach(bank => {
+                        const option = document.createElement('option');
+                        option.value = bank.id;
+                        option.textContent = bank.name;
+                        accountNameDropdown.appendChild(option);
+                    });
+                } else if (accountType === 'cashbox') {
+                    // بيانات الصناديق
+                    const cashboxes = [
+                        { id: 'cash1', name: 'الصندوق الرئيسي' },
+                        { id: 'cash2', name: 'صندوق الفرع الأول' },
+                        { id: 'cash3', name: 'صندوق الفرع الثاني' }
+                    ];
+                    
+                    cashboxes.forEach(cashbox => {
+                        const option = document.createElement('option');
+                        option.value = cashbox.id;
+                        option.textContent = cashbox.name;
+                        accountNameDropdown.appendChild(option);
+                    });
+                }
+                
+                // تحديث البيان بعد تغيير نوع الحساب
+                setTimeout(updatePaymentVoucherStatement, 100);
+            } else {
+                accountNameDropdown.disabled = true;
+            }
+        });
+        
+        // تعامل مع تغيير نوع الحساب المستفيد
+        document.getElementById('other-account-type').addEventListener('change', function() {
+            const accountType = this.value;
+            const accountNameDropdown = document.getElementById('other-account-name');
+            
+            // إعادة تعيين الخيارات
+            accountNameDropdown.innerHTML = '<option value="">يرجى اختيار الحساب</option>';
+            
+            if (accountType) {
+                accountNameDropdown.disabled = false;
+                
+                // إضافة خيارات حسب نوع الحساب
+                switch(accountType) {
+                    case 'supplier':
+                        const suppliers = [
+                            { id: 'sup1', name: 'شركة التوريدات العالمية' },
+                            { id: 'sup2', name: 'مؤسسة الإمداد التجارية' },
+                            { id: 'sup3', name: 'مكتب الخدمات المتكاملة' }
+                        ];
+                        
+                        suppliers.forEach(supplier => {
+                            const option = document.createElement('option');
+                            option.value = supplier.id;
+                            option.textContent = supplier.name;
+                            accountNameDropdown.appendChild(option);
+                        });
+                        break;
+                    
+                    case 'employee':
+                        const employees = [
+                            { id: 'emp1', name: 'محمد أحمد' },
+                            { id: 'emp2', name: 'عبدالله محمد' },
+                            { id: 'emp3', name: 'خالد عبدالرحمن' }
+                        ];
+                        
+                        employees.forEach(employee => {
+                            const option = document.createElement('option');
+                            option.value = employee.id;
+                            option.textContent = employee.name;
+                            accountNameDropdown.appendChild(option);
+                        });
+                        break;
+                    
+                    case 'customer':
+                        const customers = [
+                            { id: 'cust1', name: 'شركة السفر العالمية' },
+                            { id: 'cust2', name: 'مؤسسة الرحلات المميزة' },
+                            { id: 'cust3', name: 'أحمد محمد علي' }
+                        ];
+                        
+                        customers.forEach(customer => {
+                            const option = document.createElement('option');
+                            option.value = customer.id;
+                            option.textContent = customer.name;
+                            accountNameDropdown.appendChild(option);
+                        });
+                        break;
+                    
+                    case 'bank':
+                        const banks = [
+                            { id: 'bank1', name: 'البنك الأهلي' },
+                            { id: 'bank2', name: 'مصرف الراجحي' },
+                            { id: 'bank3', name: 'بنك الرياض' }
+                        ];
+                        
+                        banks.forEach(bank => {
+                            const option = document.createElement('option');
+                            option.value = bank.id;
+                            option.textContent = bank.name;
+                            accountNameDropdown.appendChild(option);
+                        });
+                        break;
+                    
+                    case 'cashbox':
+                        const cashboxes = [
+                            { id: 'cash1', name: 'الصندوق الرئيسي' },
+                            { id: 'cash2', name: 'صندوق الفرع الأول' },
+                            { id: 'cash3', name: 'صندوق الفرع الثاني' }
+                        ];
+                        
+                        cashboxes.forEach(cashbox => {
+                            const option = document.createElement('option');
+                            option.value = cashbox.id;
+                            option.textContent = cashbox.name;
+                            accountNameDropdown.appendChild(option);
+                        });
+                        break;
+                }
+                
+                // تحديث البيان بعد تغيير نوع الحساب
+                setTimeout(updatePaymentVoucherStatement, 100);
+            } else {
+                accountNameDropdown.disabled = true;
+            }
+        });
+        
+        // تحديث رمز العملة عند تغيير نوع العملة
+        document.getElementById('currency-type').addEventListener('change', function() {
+            const currencyType = this.value;
+            const currencySymbol = document.getElementById('currency-symbol');
+            
+            switch(currencyType) {
+                case 'SAR':
+                    currencySymbol.textContent = 'ر.س';
+                    break;
+                case 'USD':
+                    currencySymbol.textContent = '$';
+                    break;
+                case 'EUR':
+                    currencySymbol.textContent = '€';
+                    break;
+                case 'GBP':
+                    currencySymbol.textContent = '£';
+                    break;
+                case 'AED':
+                    currencySymbol.textContent = 'د.إ';
+                    break;
+                default:
+                    currencySymbol.textContent = 'ر.س';
+            }
+        });
         
         // تسجيل أحداث إرسال النماذج
         document.getElementById('payment-voucher-form').addEventListener('submit', function(e) {
             e.preventDefault();
+            // إزالة صفة القراءة فقط من وصف العملية لإرسال البيانات
+            document.getElementById('description').readOnly = false;
+            
             // هنا سيتم إرسال البيانات للخادم (سيتم تنفيذه لاحقاً)
             alert('تم حفظ سند الصرف بنجاح!');
             $('#modal-add-payment-voucher').modal('hide');
+            
+            // إعادة تعيين صفة القراءة فقط
+            document.getElementById('description').readOnly = true;
         });
         
         document.getElementById('receipt-voucher-form').addEventListener('submit', function(e) {
@@ -629,6 +824,100 @@
     
     function getBankAccounts(bankName) {
         return [{ id: 1, name: 'حساب البنوك - ' + bankName }];
+    }
+    
+    // وظيفة لتحديث البيان تلقائياً
+    function updatePaymentVoucherStatement() {
+        // الحصول على القيم من الحقول
+        const accountTypeSelect = document.getElementById('account-type');
+        const accountNameSelect = document.getElementById('account-name');
+        const otherAccountTypeSelect = document.getElementById('other-account-type');
+        const otherAccountNameSelect = document.getElementById('other-account-name');
+        const referenceTypeSelect = document.getElementById('reference-type');
+        const referenceNumberInput = document.getElementById('reference-number');
+        const descriptionTextarea = document.getElementById('description');
+        
+        // التحقق من وجود القيم المطلوبة
+        if (!accountTypeSelect || !accountNameSelect || !otherAccountTypeSelect || 
+            !otherAccountNameSelect || !descriptionTextarea) {
+            return;
+        }
+        
+        // القيم المحددة
+        const accountType = accountTypeSelect.value;
+        const accountName = accountNameSelect.options[accountNameSelect.selectedIndex]?.text || '';
+        const otherAccountType = otherAccountTypeSelect.value;
+        const otherAccountName = otherAccountNameSelect.options[otherAccountNameSelect.selectedIndex]?.text || '';
+        const referenceType = referenceTypeSelect.value;
+        const referenceNumber = referenceNumberInput.value;
+        
+        // ترجمة أنواع الحسابات إلى العربية
+        const accountTypeText = getAccountTypeText(accountType);
+        const otherAccountTypeText = getAccountTypeText(otherAccountType);
+        
+        // توليد البيان بناءً على البيانات المدخلة
+        let statement = '';
+        
+        if (accountType && accountName && otherAccountType && otherAccountName) {
+            if (accountType === 'bank') {
+                statement = `سند صرف حوالة من ${accountTypeText} ${accountName} إلى ${otherAccountTypeText} ${otherAccountName}`;
+            } else {
+                statement = `سند صرف من ${accountTypeText} ${accountName} إلى ${otherAccountTypeText} ${otherAccountName}`;
+            }
+            
+            // إضافة المرجع إذا كان موجوداً
+            if (referenceType && referenceNumber) {
+                statement += ` عبر ${getReferenceTypeText(referenceType)} برقم ${referenceNumber}`;
+            } else if (referenceType) {
+                statement += ` عبر ${getReferenceTypeText(referenceType)}`;
+            }
+        }
+        
+        // تحديث حقل البيان
+        descriptionTextarea.value = statement;
+        
+        // إلغاء صفة القراءة فقط مؤقتاً للسماح بالتعديل
+        descriptionTextarea.readOnly = false;
+        // إعادة تعيين صفة القراءة فقط بعد لحظة
+        setTimeout(() => {
+            descriptionTextarea.readOnly = true;
+        }, 100);
+    }
+    
+    // وظيفة للحصول على النص العربي لنوع الحساب
+    function getAccountTypeText(accountType) {
+        switch(accountType) {
+            case 'bank':
+                return 'بنك';
+            case 'cashbox':
+                return 'صندوق';
+            case 'supplier':
+                return 'مورد';
+            case 'employee':
+                return 'موظف';
+            case 'customer':
+                return 'عميل';
+            default:
+                return accountType || '';
+        }
+    }
+    
+    // وظيفة للحصول على النص العربي لنوع المرجع
+    function getReferenceTypeText(referenceType) {
+        switch(referenceType) {
+            case 'invoice':
+                return 'فاتورة شراء';
+            case 'sales':
+                return 'فاتورة بيع';
+            case 'entry':
+                return 'قيد محاسبي';
+            case 'contract':
+                return 'عقد';
+            case 'other':
+                return 'مستند';
+            default:
+                return referenceType || '';
+        }
     }
 </script>
 {% endblock %}
