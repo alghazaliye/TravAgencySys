@@ -71,9 +71,26 @@ function fixRtlSidebar() {
     // إصلاح مشكلة تبديل القائمة الجانبية في وضع الجوال
     const pushMenuButton = document.querySelector('[data-widget="pushmenu"]');
     if (pushMenuButton) {
+        // إضافة مستمع لحدث النقر
         pushMenuButton.addEventListener('click', function() {
-            // إعادة تعيين مؤشر الماوس بعد النقر لتفادي مشكلة التداخل في RTL
+            // تحديث حجم المحتوى عند إخفاء/إظهار القائمة الجانبية
             setTimeout(() => {
+                const isSidebarCollapsed = document.body.classList.contains('sidebar-collapse');
+                const contentWrapper = document.querySelector('.content-wrapper');
+                
+                if (contentWrapper) {
+                    if (isSidebarCollapsed) {
+                        // عند إخفاء القائمة الجانبية
+                        contentWrapper.style.marginRight = '0';
+                        contentWrapper.style.width = '100%';
+                    } else {
+                        // عند إظهار القائمة الجانبية
+                        contentWrapper.style.marginRight = '250px';
+                        contentWrapper.style.width = 'calc(100% - 250px)';
+                    }
+                }
+                
+                // إعادة تعيين مؤشر الماوس بعد النقر لتفادي مشكلة التداخل في RTL
                 document.body.style.cursor = 'default';
             }, 100);
         });
@@ -225,31 +242,35 @@ function initializeVisasChart() {
             }
         },
         scales: {
-            xAxes: [{
-                gridLines: {
+            x: {
+                grid: {
                     display: false,
                     drawBorder: false
                 },
                 ticks: {
-                    fontFamily: "Tajawal",
+                    font: {
+                        family: "Tajawal"
+                    },
                     maxTicksLimit: 12
                 }
-            }],
-            yAxes: [{
+            },
+            y: {
                 ticks: {
-                    fontFamily: "Tajawal",
+                    font: {
+                        family: "Tajawal"
+                    },
                     beginAtZero: true,
                     maxTicksLimit: 5,
                     padding: 10
                 },
-                gridLines: {
+                grid: {
                     color: "rgb(234, 236, 244)",
-                    zeroLineColor: "rgb(234, 236, 244)",
+                    borderColor: "rgb(234, 236, 244)",
                     drawBorder: false,
                     borderDash: [2],
-                    zeroLineBorderDash: [2]
+                    borderDashOffset: [2]
                 }
-            }],
+            },
         },
         legend: {
             display: true,
@@ -330,31 +351,35 @@ function initializeSalesChart() {
             }
         },
         scales: {
-            xAxes: [{
-                gridLines: {
+            x: {
+                grid: {
                     display: false,
                     drawBorder: false
                 },
                 ticks: {
-                    fontFamily: "Tajawal",
+                    font: {
+                        family: "Tajawal"
+                    },
                     maxTicksLimit: 12
                 }
-            }],
-            yAxes: [{
+            },
+            y: {
                 ticks: {
-                    fontFamily: "Tajawal",
+                    font: {
+                        family: "Tajawal"
+                    },
                     beginAtZero: true,
                     maxTicksLimit: 5,
                     padding: 10
                 },
-                gridLines: {
+                grid: {
                     color: "rgb(234, 236, 244)",
-                    zeroLineColor: "rgb(234, 236, 244)",
+                    borderColor: "rgb(234, 236, 244)",
                     drawBorder: false,
                     borderDash: [2],
-                    zeroLineBorderDash: [2]
+                    borderDashOffset: [2]
                 }
-            }],
+            },
         },
         legend: {
             display: true,

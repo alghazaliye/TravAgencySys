@@ -173,6 +173,8 @@ body.sidebar-collapse .main-footer,
 body.sidebar-collapse .main-header {
     margin-right: 0 !important;
     margin-left: 0 !important;
+    width: 100% !important;
+    transition: margin-right .3s ease-in-out, width .3s ease-in-out !important;
 }
 
 /* Fix for sidebar mini specific */
