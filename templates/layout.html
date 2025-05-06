@@ -297,6 +297,41 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.ar.min.js"></script>
     <!-- Custom JS -->
     <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+    <!-- SweetAlert2 for Notifications -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Notifications System -->
+    <script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+    <!-- Notification Integration -->
+    <script>
+        // إضافة مستمعي أحداث للإشعارات - سيتم استدعاؤهم عند إضافة أي بيانات
+        $(document).ready(function() {
+            // مثال على إضافة إشعار عند إضافة بيانات جديدة
+            $('.btn-travel-info, .btn-primary, button[type="submit"]').on('click', function() {
+                // التحقق من أن الزر ليس زر إغلاق أو إلغاء
+                if (!$(this).hasClass('btn-default') && !$(this).hasClass('close') && 
+                    !$(this).hasClass('btn-danger') && $(this).attr('data-dismiss') !== 'modal') {
+                    
+                    // الحصول على النص من أقرب عنوان في النموذج أو استخدام نص افتراضي
+                    var form = $(this).closest('form');
+                    var modalTitle = $(this).closest('.modal').find('.modal-title').text();
+                    var pageTitle = $('.content-header h1').text();
+                    var actionText = modalTitle || pageTitle || 'العملية';
+                    
+                    // إضافة إشعار بعد 500 مللي ثانية (لمحاكاة عملية الحفظ)
+                    setTimeout(function() {
+                        if (window.NotificationManager) {
+                            window.NotificationManager.addNotification(
+                                'success', 
+                                'تم تنفيذ العملية بنجاح',
+                                'تم حفظ البيانات المتعلقة بـ ' + actionText,
+                                actionText
+                            );
+                        }
+                    }, 500);
+                }
+            });
+        });
+    </script>
     
     {% block scripts %}{% endblock %}
 </body>
