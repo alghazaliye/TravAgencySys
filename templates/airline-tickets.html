@@ -354,13 +354,13 @@
                                     <td>2500 ريال</td>
                                     <td><span class="badge badge-success">مؤكد</span></td>
                                     <td>
-                                        <button class="btn btn-info btn-sm">
+                                        <button class="btn btn-info btn-action" title="عرض التفاصيل">
                                             <i class="fas fa-eye"></i>
                                         </button>
-                                        <button class="btn btn-primary btn-sm">
+                                        <button class="btn btn-primary btn-action" title="تعديل الحجز">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-danger btn-sm">
+                                        <button class="btn btn-danger btn-action" title="حذف الحجز">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -1222,28 +1222,41 @@
     // تحديث المبلغ المتبقي
     function updateRemainingAmount() {
         const totalAmount = 1250; // في التطبيق الفعلي، ستحسب هذا بناءً على التذاكر المختارة
-        const downPayment = parseFloat(document.getElementById('down_payment').value) || 0;
-        const remainingAmount = totalAmount - downPayment;
-        
-        document.getElementById('remaining_amount').value = remainingAmount.toFixed(2);
+        const downPaymentElement = document.getElementById('down_payment');
+        if (downPaymentElement) {
+            const downPayment = parseFloat(downPaymentElement.value) || 0;
+            const remainingAmount = totalAmount - downPayment;
+            
+            const remainingElement = document.getElementById('remaining_amount');
+            if (remainingElement) {
+                remainingElement.value = remainingAmount.toFixed(2);
+            }
+        }
     }
     
     // معالجة طريقة الدفع
     function handlePaymentMethod() {
-        const paymentMethod = document.getElementById('payment_method').value;
+        const paymentMethodElement = document.getElementById('payment_method');
+        if (!paymentMethodElement) return;
+        
+        const paymentMethod = paymentMethodElement.value;
         
         // إخفاء جميع تفاصيل الدفع
-        document.querySelector('.payment-details-cash').style.display = 'none';
-        document.querySelector('.payment-details-bank').style.display = 'none';
-        document.querySelector('.payment-details-credit').style.display = 'none';
+        const cashDetails = document.querySelector('.payment-details-cash');
+        const bankDetails = document.querySelector('.payment-details-bank');
+        const creditDetails = document.querySelector('.payment-details-credit');
+        
+        if (cashDetails) cashDetails.style.display = 'none';
+        if (bankDetails) bankDetails.style.display = 'none';
+        if (creditDetails) creditDetails.style.display = 'none';
         
         // إظهار التفاصيل المناسبة حسب طريقة الدفع المختارة
-        if (paymentMethod === 'cash') {
-            document.querySelector('.payment-details-cash').style.display = 'block';
-        } else if (paymentMethod === 'bank-transfer') {
-            document.querySelector('.payment-details-bank').style.display = 'block';
-        } else if (paymentMethod === 'customer-account') {
-            document.querySelector('.payment-details-credit').style.display = 'block';
+        if (paymentMethod === 'cash' && cashDetails) {
+            cashDetails.style.display = 'block';
+        } else if (paymentMethod === 'bank-transfer' && bankDetails) {
+            bankDetails.style.display = 'block';
+        } else if (paymentMethod === 'customer-account' && creditDetails) {
+            creditDetails.style.display = 'block';
         }
     }
 </script>
