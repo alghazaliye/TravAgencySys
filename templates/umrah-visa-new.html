@@ -546,27 +546,90 @@
                                 </div>
                             </div>
 
+                            <!-- مزود الخدمة والسعر -->
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="supplier">المورد</label>
-                                        <select class="form-control select2" id="supplier">
-                                            <option value="">اختر المورد</option>
+                                        <label for="serviceProvider">مزود الخدمة</label>
+                                        <select class="form-control select2" id="serviceProvider">
+                                            <option value="">اختر مزود الخدمة</option>
                                             <option value="1">شركة الغانم للخدمات السياحية</option>
                                             <option value="2">شركة النور للتأشيرات</option>
                                             <option value="3">مكتب الروضة للخدمات السياحية</option>
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="supplierPrice">سعر الشراء من المورد</label>
+                                        <div class="input-group">
+                                            <input type="number" min="0" step="0.01" class="form-control" id="supplierPrice" placeholder="سعر الشراء">
+                                            <div class="input-group-append">
+                                                <div class="input-group-text">ر.س</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="currency">العملة</label>
+                                        <select class="form-control select2" id="currency">
+                                            <option value="SAR" selected>ريال سعودي (SAR)</option>
+                                            <option value="USD">دولار أمريكي (USD)</option>
+                                            <option value="EUR">يورو (EUR)</option>
+                                            <option value="GBP">جنيه إسترليني (GBP)</option>
+                                            <option value="AED">درهم إماراتي (AED)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- نوع التوصيل والحساب -->
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="deliveryType">نوع التوصيل</label>
-                                        <select class="form-control" id="deliveryType">
+                                        <label for="paymentMethod">نوع التوصيل</label>
+                                        <select class="form-control" id="paymentMethod">
                                             <option value="">اختر نوع التوصيل</option>
+                                            <option value="cash">نقد</option>
+                                            <option value="credit">آجل</option>
+                                            <option value="bank">تحويل بنكي</option>
+                                            <option value="none">بدون توصيل</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group paymentAccount-container" style="display:none;">
+                                        <label for="paymentAccount">الحساب</label>
+                                        <select class="form-control select2" id="paymentAccount">
+                                            <option value="">اختر الحساب</option>
+                                            <option value="1">الصندوق الرئيسي</option>
+                                            <option value="2">حساب بنك الراجحي</option>
+                                            <option value="3">حساب بنك الإنماء</option>
+                                            <option value="4">حساب العملاء</option>
+                                            <option value="5">حساب الموردين</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- طريقة التسليم -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="deliveryType">طريقة التسليم</label>
+                                        <select class="form-control" id="deliveryType">
+                                            <option value="">اختر طريقة التسليم</option>
                                             <option value="personal">استلام شخصي</option>
                                             <option value="shipping">شحن خارجي</option>
                                             <option value="delegate">مندوب</option>
                                         </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 deliveryDetails-container" style="display:none;">
+                                    <div class="form-group">
+                                        <label for="deliveryDetails">تفاصيل التسليم</label>
+                                        <input type="text" class="form-control" id="deliveryDetails" placeholder="تفاصيل التسليم">
                                     </div>
                                 </div>
                             </div>
@@ -688,6 +751,27 @@
                                     <div class="col-md-6">
                                         <p><strong>رقم السجل التجاري:</strong> 1234567890</p>
                                         <p><strong>العنوان:</strong> الرياض، شارع الملك فهد</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- معلومات مزود الخدمة والدفع -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h5 class="card-title mb-0">معلومات مزود الخدمة والدفع</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>مزود الخدمة:</strong> شركة النور للتأشيرات</p>
+                                        <p><strong>سعر الشراء:</strong> 800 ر.س</p>
+                                        <p><strong>العملة:</strong> ريال سعودي (SAR)</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>نوع التوصيل:</strong> تحويل بنكي</p>
+                                        <p><strong>الحساب:</strong> حساب بنك الراجحي</p>
+                                        <p><strong>طريقة التسليم:</strong> استلام شخصي</p>
                                     </div>
                                 </div>
                             </div>
@@ -954,6 +1038,67 @@
         
         // تفعيل التحديث اليومي
         scheduleDailyUpdate();
+        
+        // إظهار وإخفاء حقل الحساب بناءً على نوع التوصيل
+        $('#paymentMethod').change(function() {
+            var selectedValue = $(this).val();
+            
+            // إظهار حقل الحساب للتحويل البنكي والنقد
+            if (selectedValue === 'bank' || selectedValue === 'cash') {
+                $('.paymentAccount-container').slideDown();
+            } else {
+                $('.paymentAccount-container').slideUp();
+            }
+            
+            // تغيير تسمية الحقل بناءً على الاختيار
+            if (selectedValue === 'bank') {
+                $('label[for="paymentAccount"]').text('الحساب البنكي');
+            } else if (selectedValue === 'cash') {
+                $('label[for="paymentAccount"]').text('الصندوق');
+            } else if (selectedValue === 'credit') {
+                $('label[for="paymentAccount"]').text('حساب العميل');
+            }
+        });
+        
+        // إظهار وإخفاء تفاصيل التسليم بناءً على طريقة التسليم
+        $('#deliveryType').change(function() {
+            var selectedValue = $(this).val();
+            
+            // إظهار حقل تفاصيل التسليم للشحن والمندوب
+            if (selectedValue === 'shipping' || selectedValue === 'delegate') {
+                $('.deliveryDetails-container').slideDown();
+                
+                // تغيير تسمية الحقل بناءً على الاختيار
+                if (selectedValue === 'shipping') {
+                    $('label[for="deliveryDetails"]').text('تفاصيل الشحن');
+                } else if (selectedValue === 'delegate') {
+                    $('label[for="deliveryDetails"]').text('بيانات المندوب');
+                }
+            } else {
+                $('.deliveryDetails-container').slideUp();
+            }
+        });
+        
+        // تغيير رمز العملة عند تغيير العملة
+        $('#currency').change(function() {
+            var selectedCurrency = $(this).val();
+            var currencySymbol = 'ر.س';
+            
+            if (selectedCurrency === 'USD') {
+                currencySymbol = '$';
+            } else if (selectedCurrency === 'EUR') {
+                currencySymbol = '€';
+            } else if (selectedCurrency === 'GBP') {
+                currencySymbol = '£';
+            } else if (selectedCurrency === 'AED') {
+                currencySymbol = 'د.إ';
+            }
+            
+            // تحديث رمز العملة في حقول السعر
+            $('#visaPrice').closest('.input-group').find('.input-group-text').text(currencySymbol);
+            $('#servicePrice').closest('.input-group').find('.input-group-text').text(currencySymbol);
+            $('#supplierPrice').closest('.input-group').find('.input-group-text').text(currencySymbol);
+        });
     });
 </script>
 {% endblock %}
