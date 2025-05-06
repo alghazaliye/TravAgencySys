@@ -307,7 +307,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form>
+                <form id="employee-form">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -442,6 +442,86 @@
                         </div>
                     </div>
                     
+                    <hr>
+                    <h5 class="mb-3">ربط المستخدم بالنظام</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="userType">نوع حساب المستخدم</label>
+                                <select class="form-control" id="userType">
+                                    <option value="">اختر نوع المستخدم</option>
+                                    <option value="new">إنشاء حساب مستخدم جديد</option>
+                                    <option value="existing">ربط بحساب مستخدم موجود</option>
+                                    <option value="none">عدم إنشاء حساب للموظف</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 user-existing-section" style="display: none;">
+                            <div class="form-group">
+                                <label for="existingUser">اختر المستخدم</label>
+                                <select class="form-control" id="existingUser">
+                                    <option value="">اختر المستخدم</option>
+                                    <option value="user1">admin</option>
+                                    <option value="user2">cashier1</option>
+                                    <option value="user3">manager</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="user-new-section" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="username">اسم المستخدم</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control" id="username" placeholder="اسم المستخدم للدخول">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="userPassword">كلمة المرور</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                        </div>
+                                        <input type="password" class="form-control" id="userPassword" placeholder="كلمة المرور">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="userGroup">مجموعة المستخدم</label>
+                                    <select class="form-control" id="userGroup">
+                                        <option value="">اختر مجموعة المستخدم</option>
+                                        <option value="admin">مدير النظام</option>
+                                        <option value="manager">مدير</option>
+                                        <option value="accountant">محاسب</option>
+                                        <option value="sales">مبيعات</option>
+                                        <option value="visas">تأشيرات</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="userStatus">حالة المستخدم</label>
+                                    <select class="form-control" id="userStatus">
+                                        <option value="active">نشط</option>
+                                        <option value="inactive">غير نشط</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr>
                     <div class="form-group">
                         <label for="notes">ملاحظات</label>
                         <textarea class="form-control" id="notes" rows="3" placeholder="ملاحظات إضافية..."></textarea>
@@ -778,6 +858,57 @@
                     legend: {
                         position: 'right',
                         rtl: true
+                    }
+                }
+            }
+        });
+        
+        // معالجة تغيير نوع حساب المستخدم
+        document.getElementById('userType').addEventListener('change', function() {
+            const userType = this.value;
+            const userNewSection = document.querySelector('.user-new-section');
+            const userExistingSection = document.querySelector('.user-existing-section');
+            
+            // إخفاء جميع أقسام المستخدم
+            if (userNewSection) userNewSection.style.display = 'none';
+            if (userExistingSection) userExistingSection.style.display = 'none';
+            
+            // إظهار القسم المناسب حسب اختيار المستخدم
+            if (userType === 'new' && userNewSection) {
+                userNewSection.style.display = 'block';
+            } else if (userType === 'existing' && userExistingSection) {
+                userExistingSection.style.display = 'block';
+            }
+        });
+        
+        // إنشاء معرف موظف تلقائي عند كتابة الاسم
+        document.getElementById('employeeName').addEventListener('change', function() {
+            const name = this.value;
+            if (name) {
+                // استخراج الأحرف الأولى من الاسم
+                const initials = name.split(' ')
+                    .map(word => word.charAt(0).toUpperCase())
+                    .join('');
+                
+                // إنشاء رقم عشوائي
+                const randomNum = Math.floor(Math.random() * 9000) + 1000;
+                
+                // تعيين معرف الموظف
+                const employeeIdField = document.getElementById('employeeId');
+                if (employeeIdField) {
+                    employeeIdField.value = 'EMP' + initials + randomNum;
+                }
+                
+                // اقتراح اسم مستخدم إذا كان القسم مرئيًا
+                const userNewSection = document.querySelector('.user-new-section');
+                const usernameField = document.getElementById('username');
+                
+                if (userNewSection && userNewSection.style.display === 'block' && usernameField) {
+                    // استخراج اسم المستخدم من الاسم (الاسم الأول + أول حرف من اسم العائلة)
+                    const nameParts = name.split(' ');
+                    if (nameParts.length >= 2) {
+                        const suggestedUsername = (nameParts[0] + nameParts[nameParts.length - 1].charAt(0)).toLowerCase();
+                        usernameField.value = suggestedUsername;
                     }
                 }
             }
