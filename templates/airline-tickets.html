@@ -484,11 +484,11 @@
                                                     <i class="fas fa-calendar-alt ml-1"></i>
                                                     تاريخ الميلاد <span class="text-danger">*</span>
                                                 </label>
-                                                <div class="input-group date" id="birthDatePicker" data-target-input="nearest">
-                                                    <div class="input-group-prepend" data-target="#birthDatePicker" data-toggle="datetimepicker">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
                                                         <span class="input-group-text"><i class="fas fa-calendar"></i></span>
                                                     </div>
-                                                    <input type="text" class="form-control datetimepicker-input" id="birthDate" data-target="#birthDatePicker" placeholder="DD/MM/YYYY" required>
+                                                    <input type="date" class="form-control" id="birthDate" required>
                                                 </div>
                                                 <small class="form-text text-muted">العمر يجب أن يكون أكبر من سنتين</small>
                                             </div>
@@ -571,11 +571,11 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="idIssueDate">تاريخ الإصدار</label>
-                                                <div class="input-group date" id="idIssueDatePicker" data-target-input="nearest">
-                                                    <input type="text" class="form-control datetimepicker-input" id="idIssueDate" data-target="#idIssueDatePicker" placeholder="DD/MM/YYYY">
-                                                    <div class="input-group-append" data-target="#idIssueDatePicker" data-toggle="datetimepicker">
-                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fas fa-calendar"></i></span>
                                                     </div>
+                                                    <input type="date" class="form-control" id="idIssueDate">
                                                 </div>
                                             </div>
                                         </div>
@@ -609,11 +609,11 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="idExpiryDate">تاريخ انتهاء الهوية <span class="text-danger">*</span></label>
-                                                <div class="input-group date" id="idExpiryDatePicker" data-target-input="nearest">
-                                                    <input type="text" class="form-control datetimepicker-input" id="idExpiryDate" data-target="#idExpiryDatePicker" placeholder="DD/MM/YYYY" required>
-                                                    <div class="input-group-append" data-target="#idExpiryDatePicker" data-toggle="datetimepicker">
-                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fas fa-calendar"></i></span>
                                                     </div>
+                                                    <input type="date" class="form-control" id="idExpiryDate" required>
                                                 </div>
                                             </div>
                                         </div>
@@ -747,22 +747,22 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="departureTime">وقت المغادرة</label>
-                                                <div class="input-group date" id="departureTimePicker" data-target-input="nearest">
-                                                    <input type="text" class="form-control datetimepicker-input" id="departureTime" data-target="#departureTimePicker" placeholder="ساعة:دقيقة">
-                                                    <div class="input-group-append" data-target="#departureTimePicker" data-toggle="datetimepicker">
-                                                        <div class="input-group-text"><i class="fas fa-clock"></i></div>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fas fa-clock"></i></span>
                                                     </div>
+                                                    <input type="time" class="form-control" id="departureTime">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="arrivalTime">وقت الوصول</label>
-                                                <div class="input-group date" id="arrivalTimePicker" data-target-input="nearest">
-                                                    <input type="text" class="form-control datetimepicker-input" id="arrivalTime" data-target="#arrivalTimePicker" placeholder="ساعة:دقيقة">
-                                                    <div class="input-group-append" data-target="#arrivalTimePicker" data-toggle="datetimepicker">
-                                                        <div class="input-group-text"><i class="fas fa-clock"></i></div>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fas fa-clock"></i></span>
                                                     </div>
+                                                    <input type="time" class="form-control" id="arrivalTime">
                                                 </div>
                                             </div>
                                         </div>

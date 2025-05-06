@@ -469,3 +469,127 @@ function fixUIIssues() {
         });
     }
 }
+
+/**
+ * تهيئة أزرار التنقل في النماذج متعددة الخطوات
+ */
+function initializeFormNavigation() {
+    // أزرار الانتقال للقسم التالي
+    const nextButtons = document.querySelectorAll('.next-step');
+    nextButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const nextSectionId = this.getAttribute('data-next');
+            const currentSection = this.closest('.section');
+            
+            // التحقق من صحة الحقول الإلزامية في القسم الحالي
+            const requiredFields = currentSection.querySelectorAll('input[required], select[required], textarea[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('is-invalid');
+                } else {
+                    field.classList.remove('is-invalid');
+                }
+            });
+            
+            if (isValid) {
+                // إخفاء القسم الحالي
+                currentSection.style.display = 'none';
+                
+                // إظهار القسم التالي
+                const nextSection = document.getElementById(nextSectionId);
+                if (nextSection) {
+                    nextSection.style.display = 'block';
+                    
+                    // تحديث شريط التقدم إذا كان موجودًا
+                    updateProgressBar(nextSectionId);
+                    
+                    // تمرير إلى أعلى القسم الجديد
+                    window.scrollTo({ top: nextSection.offsetTop - 100, behavior: 'smooth' });
+                }
+            }
+        });
+    });
+    
+    // أزرار الرجوع للقسم السابق
+    const prevButtons = document.querySelectorAll('.prev-step');
+    prevButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const prevSectionId = this.getAttribute('data-prev');
+            const currentSection = this.closest('.section');
+            
+            // إخفاء القسم الحالي
+            currentSection.style.display = 'none';
+            
+            // إظهار القسم السابق
+            const prevSection = document.getElementById(prevSectionId);
+            if (prevSection) {
+                prevSection.style.display = 'block';
+                
+                // تحديث شريط التقدم إذا كان موجودًا
+                updateProgressBar(prevSectionId);
+                
+                // تمرير إلى أعلى القسم الجديد
+                window.scrollTo({ top: prevSection.offsetTop - 100, behavior: 'smooth' });
+            }
+        });
+    });
+    
+    // تهيئة تبديل نوع الرحلة (ذهاب/ذهاب وعودة) في نموذج حجز الطيران
+    const tripTypeInputs = document.querySelectorAll('input[name="tripType"]');
+    tripTypeInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            const returnDateSection = document.querySelector('.return-date-section');
+            if (returnDateSection) {
+                if (this.value === 'round-trip') {
+                    returnDateSection.style.display = 'block';
+                } else {
+                    returnDateSection.style.display = 'none';
+                }
+            }
+        });
+    });
+}
+
+/**
+ * تحديث شريط التقدم (إذا كان موجودًا)
+ */
+function updateProgressBar(sectionId) {
+    // الحصول على رقم الخطوة من معرّف القسم
+    const stepMatch = sectionId.match(/section-(\w+)/);
+    if (!stepMatch) return;
+    
+    // تحديد كل الأقسام
+    const sections = document.querySelectorAll('.section');
+    const totalSteps = sections.length;
+    
+    // معرفة الخطوة الحالية
+    let currentStepIndex = 0;
+    sections.forEach((section, index) => {
+        if (section.id === sectionId) {
+            currentStepIndex = index;
+        }
+    });
+    
+    // تحديث شريط التقدم إذا وجد
+    const progressBar = document.querySelector('.progress-bar');
+    if (progressBar) {
+        const progressPercentage = ((currentStepIndex + 1) / totalSteps) * 100;
+        progressBar.style.width = progressPercentage + '%';
+        progressBar.setAttribute('aria-valuenow', progressPercentage);
+    }
+    
+    // تحديث مؤشرات الخطوات إذا وجدت
+    const stepIndicators = document.querySelectorAll('.step-indicator');
+    if (stepIndicators.length > 0) {
+        stepIndicators.forEach((indicator, index) => {
+            if (index <= currentStepIndex) {
+                indicator.classList.add('active');
+            } else {
+                indicator.classList.remove('active');
+            }
+        });
+    }
+}
