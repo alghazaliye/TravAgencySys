@@ -41,13 +41,31 @@ $(function () {
         orientation: "bottom auto"
     });
     
-    // Sidebar menu active state
+    // Sidebar menu active state and mobile behavior
     var currentUrl = window.location.href;
+    
+    // Add active state to current menu
     $('.nav-sidebar .nav-link').each(function () {
         if (currentUrl.indexOf($(this).attr('href')) > -1) {
             $(this).addClass('active');
             $(this).closest('.has-treeview').addClass('menu-open');
             $(this).closest('.has-treeview').find('.nav-link').first().addClass('active');
+        }
+    });
+    
+    // Improve mobile sidebar behavior
+    $(window).resize(function() {
+        if ($(window).width() <= 767.98) {
+            $('.main-sidebar').css('transform', 'translateX(250px)');
+        } else {
+            $('.main-sidebar').css('transform', '');
+        }
+    });
+    
+    // Close sidebar when clicking on a menu item in mobile view
+    $('.nav-sidebar .nav-item:not(.has-treeview) .nav-link').on('click', function() {
+        if ($(window).width() <= 767.98) {
+            $('[data-widget="pushmenu"]').PushMenu('collapse');
         }
     });
     
