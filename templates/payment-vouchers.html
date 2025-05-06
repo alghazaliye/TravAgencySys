@@ -1237,6 +1237,25 @@
             'AED': 'درهم إماراتي'
         };
         
+        // اسم العملة باللغة العربية كما هو معروض في واجهة المستخدم
+        const currencyDisplayNames = {
+            'SAR': function() {
+                return document.querySelector('#receipt-currency-type option[value="SAR"]')?.textContent.trim() || 'ريال سعودي';
+            },
+            'USD': function() {
+                return document.querySelector('#receipt-currency-type option[value="USD"]')?.textContent.trim() || 'دولار أمريكي';
+            },
+            'EUR': function() {
+                return document.querySelector('#receipt-currency-type option[value="EUR"]')?.textContent.trim() || 'يورو';
+            },
+            'GBP': function() {
+                return document.querySelector('#receipt-currency-type option[value="GBP"]')?.textContent.trim() || 'جنيه إسترليني';
+            },
+            'AED': function() {
+                return document.querySelector('#receipt-currency-type option[value="AED"]')?.textContent.trim() || 'درهم إماراتي';
+            }
+        };
+        
         // تنفيذ مبسط - لأغراض العرض فقط
         // يجب تنفيذ خوارزمية أكثر تعقيدًا للاستخدام الحقيقي
         const integerPart = Math.floor(number);
@@ -1304,8 +1323,9 @@
         
         // إضافة اسم العملة
         if (currency) {
-            const currencyName = currencyNames[currency] || currencyNames['SAR'];
-            result += ' ' + currencyName;
+            // استخدام اسم العملة من واجهة المستخدم بدلاً من القيمة المحددة مسبقاً
+            const currencyDisplayName = currencyDisplayNames[currency] ? currencyDisplayNames[currency]() : currencyNames[currency] || currencyNames['SAR'];
+            result += ' ' + currencyDisplayName;
             
             // إضافة الهللات أو السنتات إذا وجدت
             if (decimalPart > 0) {
