@@ -45,27 +45,17 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
                         <i class="far fa-bell"></i>
-                        <span class="badge badge-warning navbar-badge">15</span>
+                        <span class="badge badge-warning navbar-badge notification-badge">0</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-left">
-                        <span class="dropdown-item dropdown-header">15 إشعار</span>
+                        <span class="dropdown-item dropdown-header notification-header">0 إشعار</span>
                         <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-envelope ml-2"></i> 4 رسائل جديدة
-                            <span class="float-left text-muted text-sm">3 دقائق</span>
-                        </a>
+                        <div class="notification-list">
+                            <!-- هنا ستظهر قائمة الإشعارات بواسطة JavaScript -->
+                            <div class="dropdown-item text-center">لا توجد إشعارات</div>
+                        </div>
                         <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-users ml-2"></i> 8 طلبات
-                            <span class="float-left text-muted text-sm">12 ساعة</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-file ml-2"></i> 3 تقارير
-                            <span class="float-left text-muted text-sm">2 يوم</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item dropdown-footer">عرض جميع الإشعارات</a>
+                        <a href="#" class="dropdown-item dropdown-footer" id="mark-all-read">وضع علامة "مقروء" على الكل</a>
                     </div>
                 </li>
                 <li class="nav-item">
