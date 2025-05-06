@@ -1,650 +1,753 @@
-{% extends 'layout.html' %}
+{% extends "layout.html" %}
 
-{% block title %}تأشيرة العمرة | نظام إدارة وكالة السياحة والسفر{% endblock %}
-
-{% block page_title %}تأشيرة العمرة{% endblock %}
-
-{% block breadcrumb %}
-<li class="breadcrumb-item">التأشيرات</li>
-<li class="breadcrumb-item active">تأشيرة العمرة</li>
-{% endblock %}
+{% block title %}تأشيرة العمرة{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <div class="card card-travel">
-            <div class="card-header bg-travel-info">
-                <h3 class="card-title">قائمة تأشيرات العمرة</h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-travel-info btn-sm" data-toggle="modal" data-target="#modal-add-umrah-visa">
-                        <i class="fas fa-plus"></i> إضافة طلب تأشيرة
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">إدارة تأشيرات العمرة</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="/dashboard">الرئيسية</a></li>
+                    <li class="breadcrumb-item">التأشيرات</li>
+                    <li class="breadcrumb-item active">تأشيرة العمرة</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- نظرة عامة -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>430</h3>
+                        <p>طلبات تأشيرات</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-passport"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>320</h3>
+                        <p>تأشيرات صادرة</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>95</h3>
+                        <p>قيد المعالجة</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-hourglass-half"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>15</h3>
+                        <p>طلبات مرفوضة</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- أزرار الإجراءات -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-add-visa">
+                    <i class="fas fa-plus ml-1"></i> طلب تأشيرة جديد
+                </button>
+                <button type="button" class="btn btn-primary">
+                    <i class="fas fa-search ml-1"></i> استعلام عن طلب
+                </button>
+                <button type="button" class="btn btn-info">
+                    <i class="fas fa-print ml-1"></i> طباعة تقرير
+                </button>
+                <button type="button" class="btn btn-warning">
+                    <i class="fas fa-tasks ml-1"></i> متابعة الطلبات
+                </button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <i class="fas fa-filter ml-1"></i> تصفية
                     </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">جميع الطلبات</a>
+                        <a class="dropdown-item" href="#">جديد</a>
+                        <a class="dropdown-item" href="#">تم الترحيل</a>
+                        <a class="dropdown-item" href="#">تم إصدار التأشيرة</a>
+                        <a class="dropdown-item" href="#">تسليم للعميل</a>
+                        <a class="dropdown-item" href="#">مرفوض</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- جدول الطلبات -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">طلبات تأشيرات العمرة</h3>
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 250px;">
+                        <input type="text" name="table_search" class="form-control float-right" placeholder="بحث...">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-default">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- /.card-header -->
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table id="umrahVisaTable" class="table table-bordered table-striped table-travel datatable">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>الاسم</th>
-                                <th>الجنسية</th>
-                                <th>رقم الجواز</th>
-                                <th>اسم المجموعة</th>
-                                <th>تاريخ الوصول</th>
-                                <th>مدة الإقامة</th>
-                                <th>السعر</th>
-                                <th>الحالة</th>
-                                <th>الإجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>محمود أحمد السيد</td>
-                                <td>مصر</td>
-                                <td>A12345678</td>
-                                <td>مجموعة الهدى</td>
-                                <td>25-10-2023</td>
-                                <td>15 يوم</td>
-                                <td>950 ر.س</td>
-                                <td><span class="badge badge-success">مكتملة</span></td>
-                                <td>
-                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-umrah-visa">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-umrah-visa">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>عبدالرحمن محمد خالد</td>
-                                <td>الأردن</td>
-                                <td>B87654321</td>
-                                <td>مجموعة النور</td>
-                                <td>27-10-2023</td>
-                                <td>10 يوم</td>
-                                <td>900 ر.س</td>
-                                <td><span class="badge badge-warning">قيد المعالجة</span></td>
-                                <td>
-                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-umrah-visa">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-umrah-visa">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>أمينة علي أحمد</td>
-                                <td>المغرب</td>
-                                <td>C56789012</td>
-                                <td>مجموعة الإيمان</td>
-                                <td>29-10-2023</td>
-                                <td>12 يوم</td>
-                                <td>920 ر.س</td>
-                                <td><span class="badge badge-primary">تم الدفع</span></td>
-                                <td>
-                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-umrah-visa">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-umrah-visa">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>سعد محمد العتيبي</td>
-                                <td>الكويت</td>
-                                <td>D34567890</td>
-                                <td>مجموعة الرحمة</td>
-                                <td>02-11-2023</td>
-                                <td>14 يوم</td>
-                                <td>940 ر.س</td>
-                                <td><span class="badge badge-danger">مرفوضة</span></td>
-                                <td>
-                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-umrah-visa">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-umrah-visa">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>فاطمة محمد الشمري</td>
-                                <td>السعودية</td>
-                                <td>E90123456</td>
-                                <td>مجموعة الهدى</td>
-                                <td>05-11-2023</td>
-                                <td>15 يوم</td>
-                                <td>950 ر.س</td>
-                                <td><span class="badge badge-success">مكتملة</span></td>
-                                <td>
-                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-umrah-visa">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-umrah-visa">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>اسم مقدم الطلب</th>
+                            <th>رقم الهاتف</th>
+                            <th>الجنسية</th>
+                            <th>الضامن</th>
+                            <th>رقم التأشيرة</th>
+                            <th>تاريخ الإصدار</th>
+                            <th>الأيام المتبقية</th>
+                            <th>المبلغ</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>محمد أحمد إبراهيم</td>
+                            <td>0512345678</td>
+                            <td>مصري</td>
+                            <td>مؤسسة أفاق الخير للعمرة</td>
+                            <td>UMV12345678</td>
+                            <td>15/06/2023</td>
+                            <td>25</td>
+                            <td>2,500 ر.س</td>
+                            <td><span class="badge badge-success">تم إصدار التأشيرة</span></td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal-view-visa">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button type="button" class="btn btn-warning btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>أحمد محمود سليمان</td>
+                            <td>0523456789</td>
+                            <td>سوداني</td>
+                            <td>شركة البركة للسياحة</td>
+                            <td>UMV23456789</td>
+                            <td>16/06/2023</td>
+                            <td>45</td>
+                            <td>2,200 ر.س</td>
+                            <td><span class="badge badge-success">تم إصدار التأشيرة</span></td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button type="button" class="btn btn-warning btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>عبدالله علي محمد</td>
+                            <td>0534567890</td>
+                            <td>يمني</td>
+                            <td>مؤسسة طيبة للعمرة والحج</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>2,300 ر.س</td>
+                            <td><span class="badge badge-warning">تم الترحيل</span></td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button type="button" class="btn btn-warning btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>سميرة عبدالرحمن محمد</td>
+                            <td>0545678901</td>
+                            <td>مصرية</td>
+                            <td>مؤسسة سبل النور للعمرة</td>
+                            <td>UMV34567890</td>
+                            <td>17/06/2023</td>
+                            <td>38</td>
+                            <td>2,500 ر.س</td>
+                            <td><span class="badge badge-info">تسليم للعميل</span></td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button type="button" class="btn btn-warning btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>خالد عبدالله السيد</td>
+                            <td>0556789012</td>
+                            <td>سوداني</td>
+                            <td>مؤسسة الهدى للسياحة الدينية</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>2,200 ر.س</td>
+                            <td><span class="badge badge-danger">مرفوض</span></td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button type="button" class="btn btn-warning btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-left">
+                    <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                </ul>
+            </div>
         </div>
-        <!-- /.card -->
+        
+        <!-- إحصائيات ومؤشرات -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-pie ml-1"></i>
+                            توزيع طلبات التأشيرات حسب الجنسية
+                        </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="position: relative; height:300px;">
+                            <canvas id="nationalityChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-line ml-1"></i>
+                            إحصائيات الطلبات الشهرية
+                        </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="position: relative; height:300px;">
+                            <canvas id="visaRequestsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <!-- /.col -->
-</div>
-<!-- /.row -->
+</section>
 
-<!-- Modal - Add/Edit Umrah Visa -->
-<div class="modal fade" id="modal-add-umrah-visa">
-    <div class="modal-dialog modal-xl">
+<!-- Modal - طلب تأشيرة جديد -->
+<div class="modal fade" id="modal-add-visa">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-travel-info">
-                <h4 class="modal-title">إضافة طلب تأشيرة عمرة جديد</h4>
+            <div class="modal-header bg-success">
+                <h4 class="modal-title">طلب تأشيرة عمرة جديدة</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form class="needs-validation" novalidate>
-                    <!-- بيانات المعتمر -->
-                    <div class="card card-travel mb-3">
-                        <div class="card-header bg-travel-light">
-                            <h3 class="card-title">بيانات المعتمر</h3>
+                <form id="umrahVisaForm">
+                    <div class="card card-default">
+                        <div class="card-header">
+                            <h3 class="card-title">البيانات الشخصية</h3>
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="applicantName">اسم المعتمر</label>
-                                        <input type="text" class="form-control" id="applicantName" placeholder="أدخل اسم المعتمر" required>
-                                        <div class="invalid-feedback">
-                                            الرجاء إدخال اسم المعتمر
-                                        </div>
+                                        <label for="fullName">الاسم الرباعي <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="fullName" placeholder="أدخل الاسم بالكامل" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="nationality">الجنسية</label>
-                                        <select class="form-control select2" id="nationality" required>
-                                            <option value="">اختر الجنسية</option>
-                                            <option value="EG">مصر</option>
-                                            <option value="JO">الأردن</option>
-                                            <option value="MA">المغرب</option>
-                                            <option value="KW">الكويت</option>
-                                            <option value="SA">السعودية</option>
-                                            <option value="QA">قطر</option>
-                                            <option value="AE">الإمارات</option>
-                                            <option value="BH">البحرين</option>
-                                            <option value="OM">عمان</option>
-                                        </select>
-                                        <div class="invalid-feedback">
-                                            الرجاء اختيار الجنسية
-                                        </div>
+                                        <label for="phoneNumber">رقم الهاتف <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="phoneNumber" placeholder="أدخل رقم الهاتف" required>
                                     </div>
                                 </div>
                             </div>
-                            
                             <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="birthPlace">مكان الميلاد</label>
+                                        <input type="text" class="form-control" id="birthPlace" placeholder="أدخل مكان الميلاد">
+                                    </div>
+                                </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="birthDate">تاريخ الميلاد</label>
-                                        <div class="input-group date">
-                                            <input type="text" class="form-control datepicker" id="birthDate" placeholder="تاريخ الميلاد" required>
-                                            <div class="input-group-append">
+                                        <div class="input-group date" id="birthDatePicker" data-target-input="nearest">
+                                            <input type="text" class="form-control datetimepicker-input" id="birthDate" data-target="#birthDatePicker" placeholder="DD/MM/YYYY">
+                                            <div class="input-group-append" data-target="#birthDatePicker" data-toggle="datetimepicker">
                                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                             </div>
-                                            <div class="invalid-feedback">
-                                                الرجاء إدخال تاريخ الميلاد
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>الجنس <span class="text-danger">*</span></label>
+                                        <div class="custom-control custom-radio">
+                                            <input class="custom-control-input" type="radio" id="genderMale" name="gender" value="male" checked>
+                                            <label for="genderMale" class="custom-control-label">ذكر</label>
+                                        </div>
+                                        <div class="custom-control custom-radio">
+                                            <input class="custom-control-input" type="radio" id="genderFemale" name="gender" value="female">
+                                            <label for="genderFemale" class="custom-control-label">أنثى</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="email">البريد الإلكتروني</label>
+                                        <input type="email" class="form-control" id="email" placeholder="البريد الإلكتروني (اختياري)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card card-default mt-4">
+                        <div class="card-header">
+                            <h3 class="card-title">بيانات الهوية</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="idType">نوع الهوية <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="idType" required>
+                                            <option value="">اختر نوع الهوية</option>
+                                            <option value="passport">جواز سفر</option>
+                                            <option value="national-id">هوية وطنية</option>
+                                            <option value="iqama">إقامة</option>
+                                            <option value="visitor-id">هوية زائر</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="idNumber">رقم الهوية <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="idNumber" placeholder="أدخل رقم الهوية" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="idIssueDate">تاريخ الإصدار</label>
+                                        <div class="input-group date" id="idIssueDatePicker" data-target-input="nearest">
+                                            <input type="text" class="form-control datetimepicker-input" id="idIssueDate" data-target="#idIssueDatePicker" placeholder="DD/MM/YYYY">
+                                            <div class="input-group-append" data-target="#idIssueDatePicker" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="gender">الجنس</label>
-                                        <select class="form-control" id="gender" required>
-                                            <option value="">اختر الجنس</option>
-                                            <option value="M">ذكر</option>
-                                            <option value="F">أنثى</option>
+                                        <label for="idIssuePlace">مكان الإصدار</label>
+                                        <input type="text" class="form-control" id="idIssuePlace" placeholder="أدخل مكان إصدار الهوية">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="nationality">الجنسية <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="nationality" required>
+                                            <option value="">اختر الجنسية</option>
+                                            <option value="eg">مصري</option>
+                                            <option value="sd">سوداني</option>
+                                            <option value="ye">يمني</option>
+                                            <option value="jo">أردني</option>
+                                            <option value="sy">سوري</option>
+                                            <option value="pk">باكستاني</option>
+                                            <option value="in">هندي</option>
+                                            <option value="id">إندونيسي</option>
+                                            <option value="my">ماليزي</option>
+                                            <option value="other">أخرى</option>
                                         </select>
-                                        <div class="invalid-feedback">
-                                            الرجاء اختيار الجنس
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="idExpiryDate">تاريخ انتهاء الهوية <span class="text-danger">*</span></label>
+                                        <div class="input-group date" id="idExpiryDatePicker" data-target-input="nearest">
+                                            <input type="text" class="form-control datetimepicker-input" id="idExpiryDate" data-target="#idExpiryDatePicker" placeholder="DD/MM/YYYY" required>
+                                            <div class="input-group-append" data-target="#idExpiryDatePicker" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- بيانات جواز السفر -->
-                    <div class="card card-travel mb-3">
-                        <div class="card-header bg-travel-light">
-                            <h3 class="card-title">بيانات جواز السفر</h3>
+
+                    <div class="card card-default mt-4">
+                        <div class="card-header">
+                            <h3 class="card-title">تفاصيل التأشيرة</h3>
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="passportNumber">رقم الجواز</label>
-                                        <input type="text" class="form-control" id="passportNumber" placeholder="أدخل رقم الجواز" required>
-                                        <div class="invalid-feedback">
-                                            الرجاء إدخال رقم الجواز
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="passportIssueDate">تاريخ إصدار الجواز</label>
-                                        <div class="input-group date">
-                                            <input type="text" class="form-control datepicker" id="passportIssueDate" placeholder="تاريخ إصدار الجواز" required>
-                                            <div class="input-group-append">
-                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                            </div>
-                                            <div class="invalid-feedback">
-                                                الرجاء إدخال تاريخ إصدار الجواز
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="passportExpiry">تاريخ انتهاء الجواز</label>
-                                        <div class="input-group date">
-                                            <input type="text" class="form-control datepicker" id="passportExpiry" placeholder="تاريخ انتهاء الجواز" required>
-                                            <div class="input-group-append">
-                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                            </div>
-                                            <div class="invalid-feedback">
-                                                الرجاء إدخال تاريخ انتهاء الجواز
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="passportIssuePlace">مكان إصدار الجواز</label>
-                                        <input type="text" class="form-control" id="passportIssuePlace" placeholder="مكان إصدار الجواز" required>
-                                        <div class="invalid-feedback">
-                                            الرجاء إدخال مكان إصدار الجواز
-                                        </div>
+                                        <label for="visaStatus">حالة التأشيرة <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="visaStatus" required>
+                                            <option value="">اختر الحالة</option>
+                                            <option value="new" selected>جديد</option>
+                                            <option value="forwarded">تم الترحيل</option>
+                                            <option value="issued">تم إصدار التأشيرة</option>
+                                            <option value="delivered">تسليم للعميل</option>
+                                            <option value="rejected">مرفوض</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="passportDocument">صورة الجواز</label>
+                                        <label for="guarantee">الضمان <span class="text-danger">*</span></label>
                                         <div class="input-group">
-                                            <div class="custom-file">
-                                                <input type="file" class="custom-file-input" id="passportDocument" accept="image/*,.pdf">
-                                                <label class="custom-file-label" for="passportDocument">اختر الملف</label>
+                                            <select class="form-control" id="guarantee" required>
+                                                <option value="">اختر الضامن</option>
+                                                <option value="1">مؤسسة أفاق الخير للعمرة</option>
+                                                <option value="2">شركة البركة للسياحة</option>
+                                                <option value="3">مؤسسة طيبة للعمرة والحج</option>
+                                                <option value="4">مؤسسة سبل النور للعمرة</option>
+                                                <option value="5">مؤسسة الهدى للسياحة الدينية</option>
+                                            </select>
+                                            <div class="input-group-append">
+                                                <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#modal-add-guarantee" title="إضافة ضامن جديد">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- بيانات الضامن -->
-                    <div class="card card-travel mb-3">
-                        <div class="card-header bg-travel-light">
-                            <h3 class="card-title">بيانات الضامن</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="guarantorSelect">اختيار الضامن</label>
-                                        <select class="form-control select2" id="guarantorSelect">
-                                            <option value="">اختر الضامن</option>
-                                            <option value="1">شركة السعد للسياحة</option>
-                                            <option value="2">مؤسسة دار الحجاج</option>
-                                            <option value="3">مؤسسة بيت المقدس</option>
-                                            <option value="new">إضافة ضامن جديد...</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 align-self-end">
-                                    <button type="button" class="btn btn-info mb-2" id="showNewGuarantorForm">
-                                        <i class="fas fa-plus"></i> إضافة ضامن جديد
-                                    </button>
                                 </div>
                             </div>
                             
-                            <div id="newGuarantorForm" style="display:none;">
-                                <hr>
-                                <h5 class="mb-3">إضافة ضامن جديد</h5>
+                            <!-- حقول مخصصة للحالة: تم الترحيل -->
+                            <div class="forwarded-fields" style="display: none;">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="guarantorName">اسم الضامن</label>
-                                            <input type="text" class="form-control" id="guarantorName" placeholder="أدخل اسم الضامن">
+                                            <label for="applicantNumber">رقم الطالب <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="applicantNumber" placeholder="أدخل رقم الطالب">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="guarantorPhone">رقم الهاتف</label>
-                                            <input type="text" class="form-control" id="guarantorPhone" placeholder="أدخل رقم الهاتف">
+                                            <label for="applicantDate">تاريخ الطالب <span class="text-danger">*</span></label>
+                                            <div class="input-group date" id="applicantDatePicker" data-target-input="nearest">
+                                                <input type="text" class="form-control datetimepicker-input" id="applicantDate" data-target="#applicantDatePicker" placeholder="DD/MM/YYYY">
+                                                <div class="input-group-append" data-target="#applicantDatePicker" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- حقول مخصصة للحالة: تم إصدار التأشيرة -->
+                            <div class="issued-fields" style="display: none;">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="visaNumber">رقم التأشيرة <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="visaNumber" placeholder="أدخل رقم التأشيرة">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="visaIssueDate">تاريخ إصدار التأشيرة <span class="text-danger">*</span></label>
+                                            <div class="input-group date" id="visaIssueDatePicker" data-target-input="nearest">
+                                                <input type="text" class="form-control datetimepicker-input" id="visaIssueDate" data-target="#visaIssueDatePicker" placeholder="DD/MM/YYYY">
+                                                <div class="input-group-append" data-target="#visaIssueDatePicker" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="commercialRegister">السجل التجاري</label>
-                                            <input type="text" class="form-control" id="commercialRegister" placeholder="أدخل رقم السجل التجاري">
+                                            <label for="visaExpiryDate">تاريخ انتهاء التأشيرة <span class="text-danger">*</span></label>
+                                            <div class="input-group date" id="visaExpiryDatePicker" data-target-input="nearest">
+                                                <input type="text" class="form-control datetimepicker-input" id="visaExpiryDate" data-target="#visaExpiryDatePicker" placeholder="DD/MM/YYYY">
+                                                <div class="input-group-append" data-target="#visaExpiryDatePicker" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="idType">نوع الهوية</label>
-                                            <select class="form-control" id="idType">
-                                                <option value="">اختر نوع الهوية</option>
-                                                <option value="passport">جواز سفر</option>
-                                                <option value="commercial">سجل تجاري</option>
-                                                <option value="national">بطاقة شخصية</option>
-                                                <option value="iqama">إقامة</option>
-                                            </select>
+                                            <label for="remainingDays">الأيام المتبقية</label>
+                                            <input type="number" class="form-control" id="remainingDays" placeholder="تحسب تلقائياً" readonly>
+                                            <small class="form-text text-muted">
+                                                يتم حساب هذه القيمة تلقائياً عند تحديد تاريخ انتهاء التأشيرة
+                                            </small>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            
+                            <!-- حقول مخصصة للحالة: مرفوض -->
+                            <div class="rejected-fields" style="display: none;">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label for="guarantorAddress">العنوان</label>
-                                            <textarea class="form-control" id="guarantorAddress" rows="3" placeholder="أدخل العنوان..."></textarea>
+                                            <label for="rejectionReason">سبب الرفض <span class="text-danger">*</span></label>
+                                            <textarea class="form-control" id="rejectionReason" rows="3" placeholder="أدخل سبب رفض الطلب"></textarea>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- بيانات الرحلة -->
-                    <div class="card card-travel mb-3">
-                        <div class="card-header bg-travel-light">
-                            <h3 class="card-title">بيانات الرحلة</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="groupName">اسم المجموعة</label>
-                                        <select class="form-control select2" id="groupName" required>
-                                            <option value="">اختر اسم المجموعة</option>
-                                            <option value="alhuda">مجموعة الهدى</option>
-                                            <option value="alnoor">مجموعة النور</option>
-                                            <option value="aleeman">مجموعة الإيمان</option>
-                                            <option value="alrahma">مجموعة الرحمة</option>
-                                            <option value="altaqwa">مجموعة التقوى</option>
-                                        </select>
-                                        <div class="invalid-feedback">
-                                            الرجاء اختيار اسم المجموعة
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="arrivalDate">تاريخ الوصول</label>
-                                        <div class="input-group date">
-                                            <input type="text" class="form-control datepicker" id="arrivalDate" placeholder="تاريخ الوصول" required>
-                                            <div class="input-group-append">
-                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                            </div>
-                                            <div class="invalid-feedback">
-                                                الرجاء إدخال تاريخ الوصول
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="stayDuration">مدة الإقامة (بالأيام)</label>
-                                        <input type="number" min="1" class="form-control" id="stayDuration" placeholder="مدة الإقامة" required>
-                                        <div class="invalid-feedback">
-                                            الرجاء إدخال مدة الإقامة
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="accommodation">مكان الإقامة</label>
-                                        <select class="form-control select2" id="accommodation" required>
-                                            <option value="">اختر مكان الإقامة</option>
-                                            <option value="makkah_hotel">فندق في مكة</option>
-                                            <option value="madinah_hotel">فندق في المدينة</option>
-                                            <option value="both">فندق في مكة والمدينة</option>
-                                        </select>
-                                        <div class="invalid-feedback">
-                                            الرجاء اختيار مكان الإقامة
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- البيانات المالية -->
-                    <div class="card card-travel mb-3">
-                        <div class="card-header bg-travel-light">
+
+                    <div class="card card-default mt-4">
+                        <div class="card-header">
                             <h3 class="card-title">البيانات المالية</h3>
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="visaPrice">سعر التأشيرة</label>
+                                        <label for="visaPrice">سعر التأشيرة <span class="text-danger">*</span></label>
                                         <div class="input-group">
-                                            <input type="number" min="0" step="0.01" class="form-control" id="visaPrice" placeholder="سعر التأشيرة" required>
+                                            <input type="number" min="0" step="0.01" class="form-control" id="visaPrice" placeholder="أدخل سعر التأشيرة" required>
                                             <div class="input-group-append">
-                                                <div class="input-group-text">ر.س</div>
-                                            </div>
-                                            <div class="invalid-feedback">
-                                                الرجاء إدخال سعر التأشيرة
+                                                <span class="input-group-text">ر.س</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="servicePrice">رسوم الخدمة</label>
-                                        <div class="input-group">
-                                            <input type="number" min="0" step="0.01" class="form-control" id="servicePrice" placeholder="رسوم الخدمة">
-                                            <div class="input-group-append">
-                                                <div class="input-group-text">ر.س</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="visaStatus">حالة التأشيرة</label>
-                                        <select class="form-control" id="visaStatus" required>
-                                            <option value="">اختر الحالة</option>
-                                            <option value="completed">مكتملة</option>
-                                            <option value="processing">قيد المعالجة</option>
-                                            <option value="paid">تم الدفع</option>
-                                            <option value="rejected">مرفوضة</option>
+                                        <label for="currency">نوع العملة <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="currency" required>
+                                            <option value="SAR" selected>ريال سعودي (ر.س)</option>
+                                            <option value="USD">دولار أمريكي ($)</option>
+                                            <option value="EUR">يورو (€)</option>
+                                            <option value="EGP">جنيه مصري (ج.م)</option>
+                                            <option value="INR">روبية هندية (₹)</option>
                                         </select>
-                                        <div class="invalid-feedback">
-                                            الرجاء اختيار حالة التأشيرة
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="paymentType">نوع التوصيل <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="paymentType" required>
+                                            <option value="">اختر نوع التوصيل</option>
+                                            <option value="cash">نقد الصندوق</option>
+                                            <option value="credit">أجل العميل</option>
+                                            <option value="transfer">تحويل بنكي</option>
+                                            <option value="bank">البنوك</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="transactionDateTime">تاريخ ووقت العملية <span class="text-danger">*</span></label>
+                                        <div class="input-group date" id="transactionDateTimePicker" data-target-input="nearest">
+                                            <input type="text" class="form-control datetimepicker-input" id="transactionDateTime" data-target="#transactionDateTimePicker" placeholder="DD/MM/YYYY HH:MM" required>
+                                            <div class="input-group-append" data-target="#transactionDateTimePicker" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             
-                            <!-- تواريخ التأشيرة -->
-                            <div class="row visa-dates-section" id="visaDatesSection" style="display:none;">
+                            <!-- حقول نقد الصندوق (تظهر فقط عند اختيار نقد الصندوق) -->
+                            <div id="cash-fields" style="display: none;">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="cashAmount">المبلغ <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <input type="number" min="0" step="0.01" class="form-control" id="cashAmount" placeholder="أدخل المبلغ">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">ر.س</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="receiptNumber">رقم الوصل <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="receiptNumber" placeholder="أدخل رقم الوصل">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- حقل الحساب المالي (يظهر لجميع أنواع التوصيل) -->
+                            <div class="row">
                                 <div class="col-md-12">
-                                    <hr>
-                                    <h5 class="mb-3">تواريخ التأشيرة</h5>
-                                </div>
-                                <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="visaIssueDate">تاريخ إصدار التأشيرة</label>
-                                        <div class="input-group date">
-                                            <input type="text" class="form-control datepicker" id="visaIssueDate" placeholder="تاريخ إصدار التأشيرة">
-                                            <div class="input-group-append">
-                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="visaExpiryDate">تاريخ انتهاء التأشيرة</label>
-                                        <div class="input-group date">
-                                            <input type="text" class="form-control datepicker" id="visaExpiryDate" placeholder="تاريخ انتهاء التأشيرة">
-                                            <div class="input-group-append">
-                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="remainingDays">الأيام المتبقية</label>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" id="remainingDays" readonly>
-                                            <div class="input-group-append">
-                                                <div class="input-group-text">يوم</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- مزود الخدمة والسعر -->
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="serviceProvider">مزود الخدمة</label>
-                                        <select class="form-control select2" id="serviceProvider">
-                                            <option value="">اختر مزود الخدمة</option>
-                                            <option value="1">شركة الغانم للخدمات السياحية</option>
-                                            <option value="2">شركة النور للتأشيرات</option>
-                                            <option value="3">مكتب الروضة للخدمات السياحية</option>
+                                        <label for="accountId">الحساب المالي <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="accountId">
+                                            <option value="">اختر الحساب المالي</option>
+                                            <!-- ستتغير الخيارات حسب نوع التوصيل -->
                                         </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="supplierPrice">سعر الشراء من المورد</label>
-                                        <div class="input-group">
-                                            <input type="number" min="0" step="0.01" class="form-control" id="supplierPrice" placeholder="سعر الشراء">
-                                            <div class="input-group-append">
-                                                <div class="input-group-text">ر.س</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="currency">العملة</label>
-                                        <select class="form-control select2" id="currency">
-                                            <option value="SAR" selected>ريال سعودي (SAR)</option>
-                                            <option value="USD">دولار أمريكي (USD)</option>
-                                            <option value="EUR">يورو (EUR)</option>
-                                            <option value="GBP">جنيه إسترليني (GBP)</option>
-                                            <option value="AED">درهم إماراتي (AED)</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- نوع التوصيل والحساب -->
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="paymentMethod">نوع التوصيل</label>
-                                        <select class="form-control" id="paymentMethod">
-                                            <option value="">اختر نوع التوصيل</option>
-                                            <option value="cash">نقد</option>
-                                            <option value="credit">آجل</option>
-                                            <option value="bank">تحويل بنكي</option>
-                                            <option value="none">بدون توصيل</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group paymentAccount-container" style="display:none;">
-                                        <label for="paymentAccount">الحساب</label>
-                                        <select class="form-control select2" id="paymentAccount">
-                                            <option value="">اختر الحساب</option>
-                                            <option value="1">الصندوق الرئيسي</option>
-                                            <option value="2">حساب بنك الراجحي</option>
-                                            <option value="3">حساب بنك الإنماء</option>
-                                            <option value="4">حساب العملاء</option>
-                                            <option value="5">حساب الموردين</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- طريقة التسليم -->
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="deliveryType">طريقة التسليم</label>
-                                        <select class="form-control" id="deliveryType">
-                                            <option value="">اختر طريقة التسليم</option>
-                                            <option value="personal">استلام شخصي</option>
-                                            <option value="shipping">شحن خارجي</option>
-                                            <option value="delegate">مندوب</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 deliveryDetails-container" style="display:none;">
-                                    <div class="form-group">
-                                        <label for="deliveryDetails">تفاصيل التسليم</label>
-                                        <input type="text" class="form-control" id="deliveryDetails" placeholder="تفاصيل التسليم">
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="notes">ملاحظات</label>
-                        <textarea class="form-control" id="notes" rows="3" placeholder="ملاحظات إضافية..."></textarea>
+
+                    <div class="card card-default mt-4">
+                        <div class="card-header">
+                            <h3 class="card-title">بيانات المزود</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="supplierId">مزود الخدمة <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="supplierId" required>
+                                            <option value="">اختر مزود الخدمة</option>
+                                            <option value="1">وزارة الحج والعمرة</option>
+                                            <option value="2">سفارة المملكة بالخارج</option>
+                                            <option value="3">مركز التأشيرات السعودي</option>
+                                            <option value="4">وكالة مسار الأفق</option>
+                                            <option value="5">شركة تيسير للحج والعمرة</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="purchasePrice">سعر الشراء <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="number" min="0" step="0.01" class="form-control" id="purchasePrice" placeholder="أدخل سعر الشراء" required>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">ر.س</span>
+                                            </div>
+                                        </div>
+                                        <small class="form-text text-muted">
+                                            سيتم تسجيل هذا المبلغ كأجل (دين) على الشركة لمزود الخدمة
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="notes">ملاحظات</label>
+                                        <textarea class="form-control" id="notes" rows="3" placeholder="ملاحظات إضافية..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
-                <button type="button" class="btn btn-travel-info">حفظ التغييرات</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-success" id="saveVisa">حفظ التأشيرة</button>
             </div>
         </div>
         <!-- /.modal-content -->
@@ -653,12 +756,12 @@
 </div>
 <!-- /.modal -->
 
-<!-- Modal - View Umrah Visa -->
-<div class="modal fade" id="modal-view-umrah-visa">
+<!-- Modal - عرض تفاصيل التأشيرة -->
+<div class="modal fade" id="modal-view-visa">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-info">
-                <h4 class="modal-title">عرض تفاصيل التأشيرة</h4>
+            <div class="modal-header bg-primary">
+                <h4 class="modal-title">تفاصيل تأشيرة العمرة</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -666,194 +769,136 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-12">
-                        <h4 class="text-center mb-4">تفاصيل تأشيرة العمرة</h4>
-                        
-                        <!-- المعلومات الشخصية -->
-                        <div class="card mb-4">
-                            <div class="card-header bg-light">
-                                <h5 class="card-title mb-0">المعلومات الشخصية</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p><strong>الاسم:</strong> محمود أحمد السيد</p>
-                                        <p><strong>الجنسية:</strong> مصر</p>
-                                        <p><strong>تاريخ الميلاد:</strong> 15-05-1985</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p><strong>رقم الجواز:</strong> A12345678</p>
-                                        <p><strong>تاريخ انتهاء الجواز:</strong> 20-06-2025</p>
-                                        <p><strong>الجنس:</strong> ذكر</p>
-                                    </div>
+                        <div class="invoice p-3 mb-3">
+                            <!-- title row -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>
+                                        <i class="fas fa-passport ml-2"></i> تأشيرة عمرة
+                                        <small class="float-left">التاريخ: 15/06/2023</small>
+                                    </h4>
                                 </div>
+                                <!-- /.col -->
                             </div>
-                        </div>
-                        
-                        <!-- معلومات الرحلة -->
-                        <div class="card mb-4">
-                            <div class="card-header bg-light">
-                                <h5 class="card-title mb-0">معلومات الرحلة</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p><strong>اسم المجموعة:</strong> مجموعة الهدى</p>
-                                        <p><strong>تاريخ الوصول:</strong> 25-10-2023</p>
-                                        <p><strong>مدة الإقامة:</strong> 15 يوم</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p><strong>مكان الإقامة:</strong> فندق في مكة والمدينة</p>
-                                        <p><strong>حالة التأشيرة:</strong> <span class="badge badge-success">مكتملة</span></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- معلومات التأشيرة -->
-                        <div class="card mb-4">
-                            <div class="card-header bg-light">
-                                <h5 class="card-title mb-0">معلومات التأشيرة</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p><strong>تاريخ إصدار التأشيرة:</strong> 15-10-2023</p>
-                                        <p><strong>تاريخ انتهاء التأشيرة:</strong> 15-11-2023</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="d-flex align-items-center">
-                                            <div>
-                                                <p><strong>الأيام المتبقية:</strong> <span id="viewRemainingDays">5</span> يوم</p>
-                                            </div>
-                                            <div class="mr-3">
-                                                <span class="badge badge-danger p-2" id="expiryWarningBadge" style="font-size: 14px;"><i class="fas fa-exclamation-triangle"></i> انتبه: اقتراب انتهاء التأشيرة</span>
-                                            </div>
-                                        </div>
-                                        <div class="progress mt-2">
-                                            <div class="progress-bar bg-danger" role="progressbar" id="expiryProgressBar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- معلومات الضامن -->
-                        <div class="card mb-4">
-                            <div class="card-header bg-light">
-                                <h5 class="card-title mb-0">معلومات الضامن</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p><strong>اسم الضامن:</strong> شركة السعد للسياحة</p>
-                                        <p><strong>رقم الهاتف:</strong> +966 55 123 4567</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p><strong>رقم السجل التجاري:</strong> 1234567890</p>
-                                        <p><strong>العنوان:</strong> الرياض، شارع الملك فهد</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- معلومات مزود الخدمة والدفع -->
-                        <div class="card mb-4">
-                            <div class="card-header bg-light">
-                                <h5 class="card-title mb-0">معلومات مزود الخدمة والدفع</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p><strong>مزود الخدمة:</strong> شركة النور للتأشيرات</p>
-                                        <p><strong>سعر الشراء:</strong> 800 ر.س</p>
-                                        <p><strong>العملة:</strong> ريال سعودي (SAR)</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p><strong>نوع التوصيل:</strong> تحويل بنكي</p>
-                                        <p><strong>الحساب:</strong> حساب بنك الراجحي</p>
-                                        <p><strong>طريقة التسليم:</strong> استلام شخصي</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- سجل المعاملات -->
-                        <div class="card mb-4">
-                            <div class="card-header bg-light">
-                                <h5 class="card-title mb-0">سجل المعاملات</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="timeline">
-                                    <div class="time-label">
-                                        <span class="bg-success">معلومات التأشيرة</span>
-                                    </div>
-                                    <div>
-                                        <i class="fas fa-envelope bg-primary"></i>
-                                        <div class="timeline-item">
-                                            <span class="time"><i class="far fa-clock"></i> 10-10-2023</span>
-                                            <h3 class="timeline-header">تقديم الطلب</h3>
-                                            <div class="timeline-body">
-                                                تم تقديم طلب تأشيرة العمرة.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <i class="fas fa-file-invoice bg-warning"></i>
-                                        <div class="timeline-item">
-                                            <span class="time"><i class="far fa-clock"></i> 12-10-2023</span>
-                                            <h3 class="timeline-header">سداد الرسوم</h3>
-                                            <div class="timeline-body">
-                                                تم سداد رسوم التأشيرة بنجاح.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <i class="fas fa-check bg-success"></i>
-                                        <div class="timeline-item">
-                                            <span class="time"><i class="far fa-clock"></i> 15-10-2023</span>
-                                            <h3 class="timeline-header">إصدار التأشيرة</h3>
-                                            <div class="timeline-body">
-                                                تم إصدار التأشيرة بنجاح.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                             
-                        <div class="row mt-4">
-                            <div class="col-6">
-                                <p class="lead">تفاصيل الدفع:</p>
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <tr>
-                                            <th style="width:50%">رسوم التأشيرة:</th>
-                                            <td>800 ر.س</td>
-                                        </tr>
-                                        <tr>
-                                            <th>رسوم الخدمة:</th>
-                                            <td>150 ر.س</td>
-                                        </tr>
-                                        <tr>
-                                            <th>الإجمالي:</th>
-                                            <td>950 ر.س</td>
-                                        </tr>
-                                    </table>
+                            <!-- info row -->
+                            <div class="row invoice-info mt-3">
+                                <div class="col-sm-4 invoice-col">
+                                    <b>البيانات الشخصية</b><br>
+                                    <b>الاسم:</b> محمد أحمد إبراهيم<br>
+                                    <b>الهاتف:</b> 0512345678<br>
+                                    <b>الجنس:</b> ذكر<br>
+                                    <b>الجنسية:</b> مصري<br>
+                                </div>
+                                <!-- /.col -->
+                                <div class="col-sm-4 invoice-col">
+                                    <b>معلومات الهوية</b><br>
+                                    <b>نوع الهوية:</b> جواز سفر<br>
+                                    <b>رقم الهوية:</b> A12345678<br>
+                                    <b>تاريخ الإصدار:</b> 01/01/2020<br>
+                                    <b>تاريخ الانتهاء:</b> 01/01/2025<br>
+                                </div>
+                                <!-- /.col -->
+                                <div class="col-sm-4 invoice-col">
+                                    <b>معلومات التأشيرة</b><br>
+                                    <b>رقم التأشيرة:</b> UMV12345678<br>
+                                    <b>تاريخ الإصدار:</b> 15/06/2023<br>
+                                    <b>تاريخ الانتهاء:</b> 10/07/2023<br>
+                                    <b>الأيام المتبقية:</b> 25 يوم<br>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+                            
+                            <!-- visa details -->
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3 class="card-title">تفاصيل التأشيرة</h3>
+                                        </div>
+                                        <div class="card-body p-0">
+                                            <table class="table">
+                                                <tbody>
+                                                    <tr>
+                                                        <th style="width:50%">حالة التأشيرة:</th>
+                                                        <td><span class="badge badge-success">تم إصدار التأشيرة</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>الضامن:</th>
+                                                        <td>مؤسسة أفاق الخير للعمرة</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>مزود الخدمة:</th>
+                                                        <td>وزارة الحج والعمرة</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>تاريخ الطلب:</th>
+                                                        <td>10/06/2023</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3 class="card-title">البيانات المالية</h3>
+                                        </div>
+                                        <div class="card-body p-0">
+                                            <table class="table">
+                                                <tbody>
+                                                    <tr>
+                                                        <th style="width:50%">سعر التأشيرة:</th>
+                                                        <td>2,500 ر.س</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>طريقة الدفع:</th>
+                                                        <td>نقد الصندوق</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>رقم الوصل:</th>
+                                                        <td>REC-1234</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>سعر الشراء:</th>
+                                                        <td>1,800 ر.س</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>صافي الربح:</th>
+                                                        <td>700 ر.س</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-6">
-                                <p class="lead">ملاحظات:</p>
-                                <p class="text-muted well">
-                                    تم إصدار التأشيرة بنجاح. يرجى الالتزام بكافة تعليمات وتوجيهات المجموعة، والتواجد في مطار الوصول قبل 3 ساعات من موعد الرحلة.
-                                </p>
+                            
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5 class="mb-3">ملاحظات</h5>
+                                    <div class="callout callout-info">
+                                        <p>تمت معالجة الطلب بنجاح وإصدار التأشيرة في الوقت المحدد. يرجى التأكد من تواريخ الصلاحية والمعلومات الأخرى قبل السفر.</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <!-- /.invoice -->
                     </div>
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
-                <button type="button" class="btn btn-primary"><i class="fas fa-print"></i> طباعة</button>
+                <div>
+                    <button type="button" class="btn btn-info">
+                        <i class="fas fa-print ml-1"></i> طباعة
+                    </button>
+                    <button type="button" class="btn btn-warning">
+                        <i class="fas fa-edit ml-1"></i> تعديل
+                    </button>
+                </div>
             </div>
         </div>
         <!-- /.modal-content -->
@@ -861,243 +906,212 @@
     <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
-
 {% endblock %}
 
 {% block scripts %}
 <script>
-    $(document).ready(function() {
-        // إظهار نموذج إضافة ضامن جديد
-        $('#showNewGuarantorForm').click(function() {
-            $('#newGuarantorForm').slideDown();
-            $('#guarantorSelect').val('new').trigger('change');
-        });
-        
-        // عند تغيير الضامن المحدد
-        $('#guarantorSelect').change(function() {
-            if ($(this).val() === 'new') {
-                $('#newGuarantorForm').slideDown();
-            } else {
-                $('#newGuarantorForm').slideUp();
+    $(function () {
+        // تهيئة جدول البيانات
+        $('table.table').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Arabic.json"
             }
         });
         
-        // عند تغيير حالة التأشيرة
+        // تهيئة أداة اختيار التاريخ
+        $('.date').datetimepicker({
+            format: 'L',
+            locale: 'ar'
+        });
+        
+        // تهيئة أداة اختيار التاريخ والوقت
+        $('#transactionDateTimePicker').datetimepicker({
+            format: 'L LT',
+            locale: 'ar'
+        });
+        
+        // إظهار/إخفاء الحقول حسب حالة التأشيرة
         $('#visaStatus').change(function() {
-            if ($(this).val() === 'completed') {
-                $('#visaDatesSection').slideDown();
-            } else {
-                $('#visaDatesSection').slideUp();
+            // إعادة تعيين الحقول
+            $('.forwarded-fields, .issued-fields, .rejected-fields').hide();
+            
+            // إظهار الحقول المناسبة حسب الحالة
+            switch ($(this).val()) {
+                case 'forwarded':
+                    $('.forwarded-fields').show();
+                    $('#applicantNumber, #applicantDate').prop('required', true);
+                    break;
+                    
+                case 'issued':
+                    $('.issued-fields').show();
+                    $('#visaNumber, #visaIssueDate, #visaExpiryDate').prop('required', true);
+                    break;
+                    
+                case 'rejected':
+                    $('.rejected-fields').show();
+                    $('#rejectionReason').prop('required', true);
+                    break;
+                    
+                default:
+                    // إلغاء تطبيق required من الحقول الخاصة
+                    $('#applicantNumber, #applicantDate, #visaNumber, #visaIssueDate, #visaExpiryDate, #rejectionReason').prop('required', false);
             }
         });
         
-        // حساب الأيام المتبقية للتأشيرة
-        function calculateRemainingDays() {
-            var expiryDate = $('#visaExpiryDate').val();
-            if (expiryDate) {
-                var parts = expiryDate.split('-');
-                var expiry = new Date(parts[2], parts[1] - 1, parts[0]);
-                var today = new Date();
-                
-                // تجاهل الوقت في الحساب
-                today.setHours(0, 0, 0, 0);
-                
-                // الفرق بالمللي ثانية
-                var diffTime = expiry.getTime() - today.getTime();
-                
-                // الفرق بالأيام
-                var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                
-                if (diffDays < 0) {
-                    diffDays = 0;
-                }
-                
-                $('#remainingDays').val(diffDays);
-                
-                // تنسيق شريط التقدم
-                updateExpiryProgress(diffDays);
+        // حساب الأيام المتبقية تلقائيًا
+        $('#visaExpiryDate').change(function() {
+            var expiryDate = moment($(this).val(), 'MM/DD/YYYY');
+            var today = moment();
+            var diff = expiryDate.diff(today, 'days');
+            
+            if (diff >= 0) {
+                $('#remainingDays').val(diff);
+            } else {
+                $('#remainingDays').val('منتهية الصلاحية');
             }
-        }
+        });
         
-        // تحديث شريط تقدم الانتهاء في نموذج الإضافة
-        function updateExpiryProgress(days) {
-            var totalDays = 30; // افتراض أن مدة التأشيرة 30 يوم
-            var percentage = (days / totalDays) * 100;
+        // إظهار/إخفاء الحقول حسب نوع التوصيل
+        $('#paymentType').change(function() {
+            // إعادة تعيين الحقول
+            $('#cash-fields').hide();
+            $('#cashAmount, #receiptNumber').prop('required', false);
             
-            if (percentage > 100) percentage = 100;
-            if (percentage < 0) percentage = 0;
+            // تحديث قائمة الحسابات المالية حسب نوع التوصيل
+            var accountSelect = $('#accountId');
+            accountSelect.empty(); // مسح الخيارات السابقة
+            accountSelect.append('<option value="">اختر الحساب المالي</option>');
             
-            // لون شريط التقدم استنادًا إلى الأيام المتبقية
-            var progressClass = 'bg-success';
-            
-            if (days <= 10 && days > 5) {
-                progressClass = 'bg-warning';
-            } else if (days <= 5) {
-                progressClass = 'bg-danger';
+            // إظهار الحقول المناسبة حسب نوع التوصيل
+            switch ($(this).val()) {
+                case 'cash':
+                    // إظهار حقول الصندوق
+                    $('#cash-fields').show();
+                    $('#cashAmount, #receiptNumber').prop('required', true);
+                    
+                    // إضافة حسابات الصندوق
+                    accountSelect.append('<option value="101">الصندوق الرئيسي</option>');
+                    accountSelect.append('<option value="102">صندوق المبيعات</option>');
+                    accountSelect.append('<option value="103">الصندوق النثري</option>');
+                    break;
+                    
+                case 'credit':
+                    // إضافة حسابات العملاء
+                    accountSelect.append('<option value="201">محمد أحمد إبراهيم</option>');
+                    accountSelect.append('<option value="202">أحمد محمود سليمان</option>');
+                    accountSelect.append('<option value="203">عبدالله علي محمد</option>');
+                    accountSelect.append('<option value="204">سميرة عبدالرحمن محمد</option>');
+                    accountSelect.append('<option value="205">خالد عبدالله السيد</option>');
+                    break;
+                    
+                case 'transfer':
+                case 'bank':
+                    // إضافة حسابات البنوك
+                    accountSelect.append('<option value="301">بنك الراجحي</option>');
+                    accountSelect.append('<option value="302">البنك الأهلي السعودي</option>');
+                    accountSelect.append('<option value="303">بنك الإنماء</option>');
+                    accountSelect.append('<option value="304">بنك سامبا</option>');
+                    accountSelect.append('<option value="305">بنك الرياض</option>');
+                    break;
             }
-            
-            $('#expiryProgressBar')
-                .removeClass('bg-success bg-warning bg-danger')
-                .addClass(progressClass)
-                .css('width', percentage + '%')
-                .attr('aria-valuenow', percentage);
-        }
+        });
         
-        // تحديث الأيام المتبقية تلقائيًا
-        $('#visaExpiryDate').change(calculateRemainingDays);
-        
-        // حساب الأيام المتبقية عند عرض صفحة التأشيرة
-        function calculateViewRemainingDays() {
-            // في الواقع هنا ستُجلب البيانات من الخادم
-            // هذا مجرد مثال للعرض
-            var expiryDateStr = "15-11-2023";
+        // حفظ التأشيرة
+        $('#saveVisa').click(function() {
+            var isValid = true;
+            var requiredFields = $('#umrahVisaForm [required]').filter(':visible');
             
-            if (expiryDateStr) {
-                var parts = expiryDateStr.split('-');
-                var expiry = new Date(parts[2], parts[1] - 1, parts[0]);
-                var today = new Date();
-                
-                // تجاهل الوقت في الحساب
-                today.setHours(0, 0, 0, 0);
-                
-                // الفرق بالمللي ثانية
-                var diffTime = expiry.getTime() - today.getTime();
-                
-                // الفرق بالأيام
-                var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                
-                if (diffDays < 0) {
-                    diffDays = 0;
-                }
-                
-                $('#viewRemainingDays').text(diffDays);
-                
-                // تحديث شريط التقدم
-                updateViewExpiryProgress(diffDays);
-                
-                // إظهار أو إخفاء التحذير
-                if (diffDays <= 10) {
-                    $('#expiryWarningBadge').show();
+            requiredFields.each(function() {
+                if ($(this).val() === '') {
+                    isValid = false;
+                    $(this).addClass('is-invalid');
                 } else {
-                    $('#expiryWarningBadge').hide();
+                    $(this).removeClass('is-invalid');
                 }
-            }
-        }
-        
-        // تحديث شريط تقدم الانتهاء في صفحة العرض
-        function updateViewExpiryProgress(days) {
-            var totalDays = 30; // افتراض أن مدة التأشيرة 30 يوم
-            var percentage = (days / totalDays) * 100;
+            });
             
-            if (percentage > 100) percentage = 100;
-            if (percentage < 0) percentage = 0;
-            
-            // لون شريط التقدم استنادًا إلى الأيام المتبقية
-            var progressClass = 'bg-success';
-            
-            if (days <= 10 && days > 5) {
-                progressClass = 'bg-warning';
-            } else if (days <= 5) {
-                progressClass = 'bg-danger';
-            }
-            
-            $('#expiryProgressBar')
-                .removeClass('bg-success bg-warning bg-danger')
-                .addClass(progressClass)
-                .css('width', percentage + '%')
-                .attr('aria-valuenow', percentage);
-        }
-        
-        // استدعاء وظيفة حساب الأيام المتبقية عند فتح صفحة العرض
-        $('#modal-view-umrah-visa').on('shown.bs.modal', function () {
-            calculateViewRemainingDays();
-        });
-        
-        // إخفاء علامة التحذير افتراضيًا
-        $('#expiryWarningBadge').hide();
-        
-        // تنفيذ وظيفة حساب الأيام المتبقية تلقائيًا كل يوم
-        // في الواقع هذا سيكون مناسبًا للتنفيذ على الخادم وليس في المتصفح
-        // ولكن هذا يوضح الفكرة
-        function scheduleDailyUpdate() {
-            // تحديث الأيام المتبقية فورًا
-            calculateViewRemainingDays();
-            
-            // تحديد توقيت التحديث القادم (الساعة 12 منتصف الليل)
-            var now = new Date();
-            var nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
-            var timeUntilMidnight = nextMidnight.getTime() - now.getTime();
-            
-            // جدولة التحديث التالي
-            setTimeout(function() {
-                calculateViewRemainingDays();
-                // إعادة جدولة للتحديث اليومي
-                setInterval(calculateViewRemainingDays, 24 * 60 * 60 * 1000);
-            }, timeUntilMidnight);
-        }
-        
-        // تفعيل التحديث اليومي
-        scheduleDailyUpdate();
-        
-        // إظهار وإخفاء حقل الحساب بناءً على نوع التوصيل
-        $('#paymentMethod').change(function() {
-            var selectedValue = $(this).val();
-            
-            // إظهار حقل الحساب للتحويل البنكي والنقد
-            if (selectedValue === 'bank' || selectedValue === 'cash') {
-                $('.paymentAccount-container').slideDown();
-            } else {
-                $('.paymentAccount-container').slideUp();
-            }
-            
-            // تغيير تسمية الحقل بناءً على الاختيار
-            if (selectedValue === 'bank') {
-                $('label[for="paymentAccount"]').text('الحساب البنكي');
-            } else if (selectedValue === 'cash') {
-                $('label[for="paymentAccount"]').text('الصندوق');
-            } else if (selectedValue === 'credit') {
-                $('label[for="paymentAccount"]').text('حساب العميل');
-            }
-        });
-        
-        // إظهار وإخفاء تفاصيل التسليم بناءً على طريقة التسليم
-        $('#deliveryType').change(function() {
-            var selectedValue = $(this).val();
-            
-            // إظهار حقل تفاصيل التسليم للشحن والمندوب
-            if (selectedValue === 'shipping' || selectedValue === 'delegate') {
-                $('.deliveryDetails-container').slideDown();
+            if (isValid) {
+                alert('تم حفظ التأشيرة بنجاح');
+                $('#modal-add-visa').modal('hide');
                 
-                // تغيير تسمية الحقل بناءً على الاختيار
-                if (selectedValue === 'shipping') {
-                    $('label[for="deliveryDetails"]').text('تفاصيل الشحن');
-                } else if (selectedValue === 'delegate') {
-                    $('label[for="deliveryDetails"]').text('بيانات المندوب');
-                }
+                // إعادة تعيين النموذج
+                $('#umrahVisaForm')[0].reset();
+                $('.forwarded-fields, .issued-fields, .rejected-fields').hide();
+                $('#cash-fields').hide();
             } else {
-                $('.deliveryDetails-container').slideUp();
+                alert('يرجى ملء جميع الحقول المطلوبة');
             }
         });
         
-        // تغيير رمز العملة عند تغيير العملة
-        $('#currency').change(function() {
-            var selectedCurrency = $(this).val();
-            var currencySymbol = 'ر.س';
-            
-            if (selectedCurrency === 'USD') {
-                currencySymbol = '$';
-            } else if (selectedCurrency === 'EUR') {
-                currencySymbol = '€';
-            } else if (selectedCurrency === 'GBP') {
-                currencySymbol = '£';
-            } else if (selectedCurrency === 'AED') {
-                currencySymbol = 'د.إ';
+        // تهيئة الرسوم البيانية
+        var nationalityCtx = document.getElementById('nationalityChart').getContext('2d');
+        var visaRequestsCtx = document.getElementById('visaRequestsChart').getContext('2d');
+        
+        // رسم بياني للجنسيات
+        var nationalityChart = new Chart(nationalityCtx, {
+            type: 'pie',
+            data: {
+                labels: ['مصري', 'سوداني', 'يمني', 'أردني', 'باكستاني', 'هندي', 'إندونيسي', 'أخرى'],
+                datasets: [{
+                    data: [35, 20, 15, 10, 8, 7, 5, 5],
+                    backgroundColor: [
+                        '#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de', '#605ca8', '#ff851b'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    position: 'right',
+                    rtl: true,
+                    labels: {
+                        fontFamily: 'Cairo, sans-serif'
+                    }
+                }
             }
-            
-            // تحديث رمز العملة في حقول السعر
-            $('#visaPrice').closest('.input-group').find('.input-group-text').text(currencySymbol);
-            $('#servicePrice').closest('.input-group').find('.input-group-text').text(currencySymbol);
-            $('#supplierPrice').closest('.input-group').find('.input-group-text').text(currencySymbol);
+        });
+        
+        // رسم بياني للطلبات الشهرية
+        var visaRequestsChart = new Chart(visaRequestsCtx, {
+            type: 'line',
+            data: {
+                labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
+                datasets: [{
+                    label: 'عدد الطلبات',
+                    data: [120, 150, 180, 270, 350, 430],
+                    fill: false,
+                    borderColor: '#00a65a',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    display: false
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            fontFamily: 'Cairo, sans-serif'
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            fontFamily: 'Cairo, sans-serif'
+                        }
+                    }]
+                }
+            }
         });
     });
 </script>

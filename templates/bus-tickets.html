@@ -349,40 +349,55 @@
             </div>
             <div class="modal-body">
                 <form id="busTicketForm">
-                    <!-- Wizard Progress Bar -->
-                    <div class="card card-default">
-                        <div class="card-header">
-                            <h3 class="card-title">مراحل الحجز</h3>
+                    <!-- شريط التقدم -->
+                    <div class="card card-default mb-4">
+                        <div class="card-header bg-light">
+                            <h3 class="card-title">
+                                <i class="fas fa-tasks ml-2"></i>
+                                مراحل الحجز
+                            </h3>
                         </div>
                         <div class="card-body">
-                            <div class="progress mb-3">
+                            <div class="progress mb-4" style="height: 25px;">
                                 <div class="progress-bar bg-success progress-bar-striped" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
-                                    <span class="sr-only">20% Complete</span>
+                                    <span>المرحلة 1 من 4</span>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-3 text-center">
+                            <div class="row wizard-steps">
+                                <div class="col-md-3 col-6 text-center mb-3">
                                     <div class="wizard-step active">
+                                        <div class="wizard-step-icon bg-success">
+                                            <i class="fas fa-user"></i>
+                                        </div>
                                         <span class="badge badge-pill badge-success">1</span>
-                                        <p>البيانات الشخصية</p>
+                                        <p class="wizard-step-text font-weight-bold mt-2">البيانات الشخصية</p>
                                     </div>
                                 </div>
-                                <div class="col-md-3 text-center">
+                                <div class="col-md-3 col-6 text-center mb-3">
                                     <div class="wizard-step">
+                                        <div class="wizard-step-icon">
+                                            <i class="fas fa-id-card"></i>
+                                        </div>
                                         <span class="badge badge-pill badge-secondary">2</span>
-                                        <p>بيانات الهوية</p>
+                                        <p class="wizard-step-text mt-2">بيانات الهوية</p>
                                     </div>
                                 </div>
-                                <div class="col-md-3 text-center">
+                                <div class="col-md-3 col-6 text-center mb-3">
                                     <div class="wizard-step">
+                                        <div class="wizard-step-icon">
+                                            <i class="fas fa-route"></i>
+                                        </div>
                                         <span class="badge badge-pill badge-secondary">3</span>
-                                        <p>تفاصيل الرحلة</p>
+                                        <p class="wizard-step-text mt-2">تفاصيل الرحلة</p>
                                     </div>
                                 </div>
-                                <div class="col-md-3 text-center">
+                                <div class="col-md-3 col-6 text-center mb-3">
                                     <div class="wizard-step">
+                                        <div class="wizard-step-icon">
+                                            <i class="fas fa-money-bill-wave"></i>
+                                        </div>
                                         <span class="badge badge-pill badge-secondary">4</span>
-                                        <p>البيانات المالية</p>
+                                        <p class="wizard-step-text mt-2">البيانات المالية</p>
                                     </div>
                                 </div>
                             </div>
@@ -395,68 +410,115 @@
                         <div class="section" id="section-personal" style="display: block;">
                             <div class="card card-primary">
                                 <div class="card-header">
-                                    <h3 class="card-title">البيانات الشخصية</h3>
+                                    <h3 class="card-title">
+                                        <i class="fas fa-user ml-2"></i>
+                                        البيانات الشخصية للمسافر
+                                    </h3>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-lg-6">
                                             <div class="form-group">
-                                                <label for="passengerName">اسم المسافر <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" id="passengerName" placeholder="أدخل الاسم بالكامل" required>
+                                                <label for="passengerName">
+                                                    <i class="fas fa-user ml-1"></i>
+                                                    اسم المسافر <span class="text-danger">*</span>
+                                                </label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                                    </div>
+                                                    <input type="text" class="form-control" id="passengerName" placeholder="أدخل الاسم بالكامل" required>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-lg-6">
                                             <div class="form-group">
-                                                <label for="phoneNumber">رقم الهاتف <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" id="phoneNumber" placeholder="05xxxxxxxx" required>
+                                                <label for="phoneNumber">
+                                                    <i class="fas fa-phone ml-1"></i>
+                                                    رقم الهاتف <span class="text-danger">*</span>
+                                                </label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                                    </div>
+                                                    <input type="text" class="form-control" id="phoneNumber" placeholder="05xxxxxxxx" required>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-lg-6">
                                             <div class="form-group">
-                                                <label for="birthPlace">مكان الميلاد</label>
-                                                <input type="text" class="form-control" id="birthPlace" placeholder="أدخل مكان الميلاد">
+                                                <label for="birthPlace">
+                                                    <i class="fas fa-map-marker-alt ml-1"></i>
+                                                    مكان الميلاد
+                                                </label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                                    </div>
+                                                    <input type="text" class="form-control" id="birthPlace" placeholder="أدخل مكان الميلاد">
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-lg-6">
                                             <div class="form-group">
-                                                <label for="birthDate">تاريخ الميلاد</label>
+                                                <label for="birthDate">
+                                                    <i class="fas fa-calendar-alt ml-1"></i>
+                                                    تاريخ الميلاد
+                                                </label>
                                                 <div class="input-group date" id="birthDatePicker" data-target-input="nearest">
+                                                    <div class="input-group-prepend" data-target="#birthDatePicker" data-toggle="datetimepicker">
+                                                        <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                                    </div>
                                                     <input type="text" class="form-control datetimepicker-input" id="birthDate" data-target="#birthDatePicker" placeholder="DD/MM/YYYY">
-                                                    <div class="input-group-append" data-target="#birthDatePicker" data-toggle="datetimepicker">
-                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label>
+                                                    <i class="fas fa-venus-mars ml-1"></i>
+                                                    الجنس <span class="text-danger">*</span>
+                                                </label>
+                                                <div class="d-flex">
+                                                    <div class="custom-control custom-radio mr-3">
+                                                        <input class="custom-control-input" type="radio" id="genderMale" name="gender" value="male" checked>
+                                                        <label for="genderMale" class="custom-control-label">ذكر</label>
+                                                    </div>
+                                                    <div class="custom-control custom-radio">
+                                                        <input class="custom-control-input" type="radio" id="genderFemale" name="gender" value="female">
+                                                        <label for="genderFemale" class="custom-control-label">أنثى</label>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-lg-6">
                                             <div class="form-group">
-                                                <label>الجنس <span class="text-danger">*</span></label>
-                                                <div class="custom-control custom-radio">
-                                                    <input class="custom-control-input" type="radio" id="genderMale" name="gender" value="male" checked>
-                                                    <label for="genderMale" class="custom-control-label">ذكر</label>
+                                                <label for="email">
+                                                    <i class="fas fa-envelope ml-1"></i>
+                                                    البريد الإلكتروني
+                                                </label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                                    </div>
+                                                    <input type="email" class="form-control" id="email" placeholder="البريد الإلكتروني (اختياري)">
                                                 </div>
-                                                <div class="custom-control custom-radio">
-                                                    <input class="custom-control-input" type="radio" id="genderFemale" name="gender" value="female">
-                                                    <label for="genderFemale" class="custom-control-label">أنثى</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="email">البريد الإلكتروني</label>
-                                                <input type="email" class="form-control" id="email" placeholder="البريد الإلكتروني (اختياري)">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="card-footer">
                                     <div class="d-flex justify-content-between">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">إلغاء</button>
-                                        <button type="button" class="btn btn-primary next-step" data-next="section-identity">التالي <i class="fas fa-arrow-left ml-1"></i></button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                                            <i class="fas fa-times ml-1"></i> إلغاء
+                                        </button>
+                                        <button type="button" class="btn btn-primary next-step" data-next="section-identity">
+                                            التالي <i class="fas fa-arrow-left ml-1"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
