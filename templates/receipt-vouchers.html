@@ -24,117 +24,313 @@
 <!-- Main content -->
 <section class="content">
     <div class="container-fluid">
-        <!-- نظرة عامة -->
+        <!-- ملخص إحصائي -->
         <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            <i class="fas fa-money-bill-wave ml-2"></i>
-                            قائمة سندات القبض
-                        </h3>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-add-receipt-voucher">
-                                <i class="fas fa-plus"></i> سند قبض جديد
-                            </button>
-                        </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-primary">
+                    <div class="inner">
+                        <h3>42</h3>
+                        <p>إجمالي سندات القبض</p>
                     </div>
-                    <!-- /.card-header -->
-                    <div class="card-body table-responsive p-0">
-                        <table class="table table-hover text-nowrap datatable">
-                            <thead>
-                                <tr>
-                                    <th>رقم السند</th>
-                                    <th>المصدر</th>
-                                    <th>المبلغ</th>
-                                    <th>تاريخ العملية</th>
-                                    <th>وصف العملية</th>
-                                    <th>الإجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- بيانات توضيحية -->
-                                <tr>
-                                    <td>123457</td>
-                                    <td>أحمد محمد (عميل)</td>
-                                    <td>2500 ريال</td>
-                                    <td>2023-06-16</td>
-                                    <td>دفعة لتأشيرة عمرة</td>
-                                    <td>
-                                        <button class="btn btn-info btn-sm">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>123459</td>
-                                    <td>صندوق المكتب (صندوق)</td>
-                                    <td>5000 ريال</td>
-                                    <td>2023-06-18</td>
-                                    <td>ايداع يومي</td>
-                                    <td>
-                                        <button class="btn btn-info btn-sm">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>123461</td>
-                                    <td>مؤسسة الرحلات المميزة (عميل)</td>
-                                    <td>8000 ريال</td>
-                                    <td>2023-06-19</td>
-                                    <td>دفعة مقدمة لتذاكر طيران</td>
-                                    <td>
-                                        <button class="btn btn-info btn-sm">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>123463</td>
-                                    <td>محمد خالد (عميل)</td>
-                                    <td>3500 ريال</td>
-                                    <td>2023-06-20</td>
-                                    <td>تسوية حساب تأشيرة زيارة عائلية</td>
-                                    <td>
-                                        <button class="btn btn-info btn-sm">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="icon">
+                        <i class="fas fa-file-invoice-dollar"></i>
                     </div>
-                    <!-- /.card-body -->
                 </div>
-                <!-- /.card -->
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>38,500</h3>
+                        <p>إجمالي مبالغ القبض (ريال)</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>15</h3>
+                        <p>سندات قبض هذا الشهر</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>19,000</h3>
+                        <p>مبالغ قبض هذا الشهر (ريال)</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
             </div>
         </div>
-        <!-- /.row -->
+
+        <!-- أدوات البحث والتصفية -->
+        <div class="card card-outline card-primary mb-3">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-filter ml-2"></i>
+                    البحث والتصفية
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <form id="search-form">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="search-voucher-number">رقم السند</label>
+                                <input type="text" class="form-control" id="search-voucher-number" placeholder="أدخل رقم السند">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="search-source">المصدر</label>
+                                <input type="text" class="form-control" id="search-source" placeholder="اسم المصدر">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="search-date-from">من تاريخ</label>
+                                <input type="date" class="form-control" id="search-date-from">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="search-date-to">إلى تاريخ</label>
+                                <input type="date" class="form-control" id="search-date-to">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="search-amount-from">المبلغ من</label>
+                                <input type="number" class="form-control" id="search-amount-from" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="search-amount-to">المبلغ إلى</label>
+                                <input type="number" class="form-control" id="search-amount-to" placeholder="أقصى مبلغ">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="search-description">وصف العملية</label>
+                                <input type="text" class="form-control" id="search-description" placeholder="كلمات في الوصف">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group mt-4 pt-2">
+                                <button type="button" class="btn btn-primary">
+                                    <i class="fas fa-search ml-2"></i> بحث
+                                </button>
+                                <button type="reset" class="btn btn-default">
+                                    <i class="fas fa-redo ml-2"></i> إعادة ضبط
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- جدول سندات القبض -->
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-money-bill-wave ml-2"></i>
+                    قائمة سندات القبض
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-add-receipt-voucher">
+                        <i class="fas fa-plus ml-1"></i> سند قبض جديد
+                    </button>
+                    <a href="/payment-vouchers" class="btn btn-success mr-2">
+                        <i class="fas fa-file-invoice ml-1"></i> سندات الصرف
+                    </a>
+                    <div class="btn-group mr-2">
+                        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-file-export ml-1"></i> تصدير
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#"><i class="fas fa-file-pdf ml-1"></i> PDF</a>
+                            <a class="dropdown-item" href="#"><i class="fas fa-file-excel ml-1"></i> Excel</a>
+                            <a class="dropdown-item" href="#"><i class="fas fa-print ml-1"></i> طباعة</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover table-striped text-nowrap datatable">
+                    <thead>
+                        <tr class="bg-gradient-primary text-white">
+                            <th>رقم السند</th>
+                            <th>المصدر</th>
+                            <th>المستلم</th>
+                            <th>المبلغ</th>
+                            <th>تاريخ العملية</th>
+                            <th>وصف العملية</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- بيانات توضيحية -->
+                        <tr>
+                            <td><span class="badge bg-primary">REC-2023-7457</span></td>
+                            <td>
+                                <div class="user-block">
+                                    <img class="img-circle img-bordered-sm" src="https://adminlte.io/themes/v3/dist/img/user4-128x128.jpg" alt="User Image">
+                                    <span class="username">أحمد محمد</span>
+                                    <span class="description text-muted">عميل</span>
+                                </div>
+                            </td>
+                            <td>الصندوق الرئيسي</td>
+                            <td><span class="font-weight-bold">2,500.00 ر.س</span></td>
+                            <td>16-06-2023</td>
+                            <td>دفعة لتأشيرة عمرة</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-info btn-flat btn-sm" title="عرض التفاصيل">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-flat btn-sm" title="تعديل">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-flat btn-sm" title="حذف">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-success btn-flat btn-sm" title="طباعة السند">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-primary">REC-2023-7459</span></td>
+                            <td>
+                                <div class="user-block">
+                                    <img class="img-circle img-bordered-sm" src="https://adminlte.io/themes/v3/dist/img/user7-128x128.jpg" alt="User Image">
+                                    <span class="username">صندوق المكتب</span>
+                                    <span class="description text-muted">صندوق</span>
+                                </div>
+                            </td>
+                            <td>بنك الرياض</td>
+                            <td><span class="font-weight-bold">5,000.00 ر.س</span></td>
+                            <td>18-06-2023</td>
+                            <td>ايداع يومي</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-info btn-flat btn-sm" title="عرض التفاصيل">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-flat btn-sm" title="تعديل">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-flat btn-sm" title="حذف">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-success btn-flat btn-sm" title="طباعة السند">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-primary">REC-2023-7461</span></td>
+                            <td>
+                                <div class="user-block">
+                                    <img class="img-circle img-bordered-sm" src="https://adminlte.io/themes/v3/dist/img/user5-128x128.jpg" alt="User Image">
+                                    <span class="username">مؤسسة الرحلات المميزة</span>
+                                    <span class="description text-muted">عميل</span>
+                                </div>
+                            </td>
+                            <td>الصندوق الرئيسي</td>
+                            <td><span class="font-weight-bold">8,000.00 ر.س</span></td>
+                            <td>19-06-2023</td>
+                            <td>دفعة مقدمة لتذاكر طيران</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-info btn-flat btn-sm" title="عرض التفاصيل">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-flat btn-sm" title="تعديل">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-flat btn-sm" title="حذف">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-success btn-flat btn-sm" title="طباعة السند">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-primary">REC-2023-7463</span></td>
+                            <td>
+                                <div class="user-block">
+                                    <img class="img-circle img-bordered-sm" src="https://adminlte.io/themes/v3/dist/img/user6-128x128.jpg" alt="User Image">
+                                    <span class="username">محمد خالد</span>
+                                    <span class="description text-muted">عميل</span>
+                                </div>
+                            </td>
+                            <td>بنك الأهلي</td>
+                            <td><span class="font-weight-bold">3,500.00 ر.س</span></td>
+                            <td>20-06-2023</td>
+                            <td>تسوية حساب تأشيرة زيارة عائلية</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-info btn-flat btn-sm" title="عرض التفاصيل">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-flat btn-sm" title="تعديل">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-flat btn-sm" title="حذف">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-success btn-flat btn-sm" title="طباعة السند">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="bg-light">
+                            <th colspan="3" style="text-align:left">الإجمالي</th>
+                            <th>19,000.00 ر.س</th>
+                            <th colspan="3"></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-left">
+                    <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- /.card -->
     </div>
     <!-- /.container-fluid -->
 </section>

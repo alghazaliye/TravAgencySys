@@ -24,87 +24,283 @@
 <!-- Main content -->
 <section class="content">
     <div class="container-fluid">
-        <!-- نظرة عامة -->
+        <!-- ملخص إحصائي -->
         <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            <i class="fas fa-money-bill-wave ml-2"></i>
-                            قائمة سندات الصرف
-                        </h3>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-add-payment-voucher">
-                                <i class="fas fa-plus"></i> سند صرف جديد
-                            </button>
-                            <a href="/receipt-vouchers" class="btn btn-primary ml-2">
-                                <i class="fas fa-file-invoice"></i> سندات القبض
-                            </a>
-                        </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>58</h3>
+                        <p>إجمالي سندات الصرف</p>
                     </div>
-                    <!-- /.card-header -->
-                    <div class="card-body table-responsive p-0">
-                        <table class="table table-hover text-nowrap datatable">
-                            <thead>
-                                <tr>
-                                    <th>رقم السند</th>
-                                    <th>نوع السند</th>
-                                    <th>المستفيد</th>
-                                    <th>المبلغ</th>
-                                    <th>تاريخ العملية</th>
-                                    <th>وصف العملية</th>
-                                    <th>الإجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- بيانات توضيحية -->
-                                <tr>
-                                    <td>123456</td>
-                                    <td><span class="badge badge-danger">سند صرف</span></td>
-                                    <td>شركة الخطوط السعودية (مورد)</td>
-                                    <td>1000 ريال</td>
-                                    <td>2023-06-15</td>
-                                    <td>دفعة مقدمة لحجز تذاكر</td>
-                                    <td>
-                                        <button class="btn btn-info btn-sm">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>123458</td>
-                                    <td><span class="badge badge-danger">سند صرف</span></td>
-                                    <td>محمد عبدالله (موظف)</td>
-                                    <td>1200 ريال</td>
-                                    <td>2023-06-17</td>
-                                    <td>مصاريف نثرية</td>
-                                    <td>
-                                        <button class="btn btn-info btn-sm">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="icon">
+                        <i class="fas fa-file-invoice-dollar"></i>
                     </div>
-                    <!-- /.card-body -->
                 </div>
-                <!-- /.card -->
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>45,000</h3>
+                        <p>إجمالي مبالغ الصرف (ريال)</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>12</h3>
+                        <p>سندات صرف هذا الشهر</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>15,600</h3>
+                        <p>مبالغ صرف هذا الشهر (ريال)</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
             </div>
         </div>
-        <!-- /.row -->
+
+        <!-- أدوات البحث والتصفية -->
+        <div class="card card-outline card-success mb-3">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-filter ml-2"></i>
+                    البحث والتصفية
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <form id="search-form">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="search-voucher-number">رقم السند</label>
+                                <input type="text" class="form-control" id="search-voucher-number" placeholder="أدخل رقم السند">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="search-beneficiary">المستفيد</label>
+                                <input type="text" class="form-control" id="search-beneficiary" placeholder="اسم المستفيد">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="search-date-from">من تاريخ</label>
+                                <input type="date" class="form-control" id="search-date-from">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="search-date-to">إلى تاريخ</label>
+                                <input type="date" class="form-control" id="search-date-to">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="search-amount-from">المبلغ من</label>
+                                <input type="number" class="form-control" id="search-amount-from" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="search-amount-to">المبلغ إلى</label>
+                                <input type="number" class="form-control" id="search-amount-to" placeholder="أقصى مبلغ">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="search-description">وصف العملية</label>
+                                <input type="text" class="form-control" id="search-description" placeholder="كلمات في الوصف">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group mt-4 pt-2">
+                                <button type="button" class="btn btn-primary">
+                                    <i class="fas fa-search ml-2"></i> بحث
+                                </button>
+                                <button type="reset" class="btn btn-default">
+                                    <i class="fas fa-redo ml-2"></i> إعادة ضبط
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- جدول سندات الصرف -->
+        <div class="card card-success card-outline">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-money-bill-wave ml-2"></i>
+                    قائمة سندات الصرف
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-add-payment-voucher">
+                        <i class="fas fa-plus ml-1"></i> سند صرف جديد
+                    </button>
+                    <a href="/receipt-vouchers" class="btn btn-primary mr-2">
+                        <i class="fas fa-file-invoice ml-1"></i> سندات القبض
+                    </a>
+                    <div class="btn-group mr-2">
+                        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-file-export ml-1"></i> تصدير
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#"><i class="fas fa-file-pdf ml-1"></i> PDF</a>
+                            <a class="dropdown-item" href="#"><i class="fas fa-file-excel ml-1"></i> Excel</a>
+                            <a class="dropdown-item" href="#"><i class="fas fa-print ml-1"></i> طباعة</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover table-striped text-nowrap datatable">
+                    <thead>
+                        <tr class="bg-gradient-success text-white">
+                            <th>رقم السند</th>
+                            <th>نوع السند</th>
+                            <th>المستفيد</th>
+                            <th>المبلغ</th>
+                            <th>تاريخ العملية</th>
+                            <th>وصف العملية</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- بيانات توضيحية -->
+                        <tr>
+                            <td><span class="badge bg-primary">PAY-2023-1234</span></td>
+                            <td><span class="badge bg-danger">سند صرف</span></td>
+                            <td>
+                                <div class="user-block">
+                                    <img class="img-circle img-bordered-sm" src="https://adminlte.io/themes/v3/dist/img/user1-128x128.jpg" alt="User Image">
+                                    <span class="username">شركة الخطوط السعودية</span>
+                                    <span class="description text-muted">مورد</span>
+                                </div>
+                            </td>
+                            <td><span class="font-weight-bold">1,000.00 ر.س</span></td>
+                            <td>15-06-2023</td>
+                            <td>دفعة مقدمة لحجز تذاكر</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-info btn-flat btn-sm" title="عرض التفاصيل">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-flat btn-sm" title="تعديل">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-flat btn-sm" title="حذف">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-success btn-flat btn-sm" title="طباعة السند">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-primary">PAY-2023-1258</span></td>
+                            <td><span class="badge bg-danger">سند صرف</span></td>
+                            <td>
+                                <div class="user-block">
+                                    <img class="img-circle img-bordered-sm" src="https://adminlte.io/themes/v3/dist/img/user8-128x128.jpg" alt="User Image">
+                                    <span class="username">محمد عبدالله</span>
+                                    <span class="description text-muted">موظف</span>
+                                </div>
+                            </td>
+                            <td><span class="font-weight-bold">1,200.00 ر.س</span></td>
+                            <td>17-06-2023</td>
+                            <td>مصاريف نثرية</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-info btn-flat btn-sm" title="عرض التفاصيل">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-flat btn-sm" title="تعديل">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-flat btn-sm" title="حذف">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-success btn-flat btn-sm" title="طباعة السند">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-primary">PAY-2023-1302</span></td>
+                            <td><span class="badge bg-danger">سند صرف</span></td>
+                            <td>
+                                <div class="user-block">
+                                    <img class="img-circle img-bordered-sm" src="https://adminlte.io/themes/v3/dist/img/user3-128x128.jpg" alt="User Image">
+                                    <span class="username">مؤسسة السفر العالمية</span>
+                                    <span class="description text-muted">مورد</span>
+                                </div>
+                            </td>
+                            <td><span class="font-weight-bold">15,800.00 ر.س</span></td>
+                            <td>20-06-2023</td>
+                            <td>دفعة مستحقة لتأشيرات العمرة</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-info btn-flat btn-sm" title="عرض التفاصيل">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-flat btn-sm" title="تعديل">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-flat btn-sm" title="حذف">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-success btn-flat btn-sm" title="طباعة السند">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="bg-light">
+                            <th colspan="3" style="text-align:left">الإجمالي</th>
+                            <th>18,000.00 ر.س</th>
+                            <th colspan="3"></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-left">
+                    <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- /.card -->
     </div>
     <!-- /.container-fluid -->
 </section>
