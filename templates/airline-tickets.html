@@ -512,36 +512,22 @@
             </div>
             <div class="modal-body">
                 <form id="airline-ticket-form">
-                    <!-- شريط التقدم + المؤشرات -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <div class="progress flight-progress">
-                                <div class="progress-bar bg-info" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            
-                            <div class="steps-container">
-                                <div class="step-indicator active" data-step="1">
-                                    <div class="step-text">نوع الرحلة والمسار</div>
-                                </div>
-                                <div class="step-indicator" data-step="2">
-                                    <div class="step-text">بيانات المسافرين</div>
-                                </div>
-                                <div class="step-indicator" data-step="3">
-                                    <div class="step-text">تفاصيل الرحلات</div>
-                                </div>
-                                <div class="step-indicator" data-step="4">
-                                    <div class="step-text">الدفع والتأكيد</div>
-                                </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i> املأ جميع البيانات المطلوبة لإتمام حجز تذكرة الطيران.
                             </div>
                         </div>
                     </div>
                     
-                    <!-- القسم 1: نوع الرحلة والمسار -->
-                    <div class="section active" id="section-flight-type">
-                        <div class="form-section">
-                            <h4 class="section-title">
-                                <i class="fas fa-plane-departure ml-2"></i>نوع الرحلة والمسار
-                            </h4>
+                    <!-- بيانات الرحلة والمسار -->
+                    <div class="card card-outline card-primary mb-3">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-plane-departure ml-2"></i> بيانات الرحلة والمسار
+                            </h3>
+                        </div>
+                        <div class="card-body">
                             
                             <div class="row mb-4">
                                 <div class="col-md-4">
