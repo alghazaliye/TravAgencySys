@@ -357,6 +357,22 @@ body.sidebar-collapse .main-header {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
 }
 
+/* تنسيق عرض المبالغ المالية بالكلمات */
+.amount-in-words {
+    color: #6c757d;
+    font-style: italic;
+    margin-top: 0.25rem;
+    display: block;
+    font-size: 90%;
+    padding-right: 8px;
+    font-weight: 400;
+}
+
+/* تنسيق حقول المبالغ المالية */
+input.amount-field:focus + .amount-in-words {
+    color: #495057;
+}
+
 .table-travel thead th {
     background-color: var(--travel-light);
     border-bottom: 2px solid var(--travel-primary);

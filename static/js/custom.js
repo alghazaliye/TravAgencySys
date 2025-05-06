@@ -24,6 +24,9 @@ document.addEventListener("DOMContentLoaded", function() {
     // تهيئة أزرار التنقل في النماذج متعددة الخطوات
     initializeFormNavigation();
     
+    // تهيئة عرض المبالغ المالية كتابة بالحروف العربية
+    initializeAmountToWords();
+    
     // التعامل مع حدث تغيير حجم النافذة
     window.addEventListener('resize', handleWindowResize);
     
@@ -591,5 +594,187 @@ function updateProgressBar(sectionId) {
                 indicator.classList.remove('active');
             }
         });
+    }
+}
+
+/**
+ * تهيئة عرض المبالغ المالية كتابة بالحروف العربية
+ */
+function initializeAmountToWords() {
+    // الاستماع لأحداث تغيير القيمة في حقول المبالغ المالية
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+        // تحقق مما إذا كان حقل مالي (له علامة عملة في العنصر الأب)
+        const hasAmountIndicator = input.closest('.input-group')?.querySelector('.input-group-text')?.textContent.includes('ر.س') || false;
+        
+        if (hasAmountIndicator || input.id.includes('price') || input.id.includes('amount') || input.id.includes('cost')) {
+            // تسجيل الحقل كحقل مالي
+            input.classList.add('amount-field');
+            
+            // إضافة عنصر لعرض المبلغ كتابة
+            const amountInWordsId = input.id + '-text';
+            
+            if (!document.getElementById(amountInWordsId)) {
+                const container = input.closest('.form-group');
+                const amountInWordsElement = document.createElement('small');
+                amountInWordsElement.id = amountInWordsId;
+                amountInWordsElement.className = 'form-text text-muted amount-in-words';
+                amountInWordsElement.style.fontStyle = 'italic';
+                container.appendChild(amountInWordsElement);
+            }
+            
+            // إضافة معالج الحدث للعنصر
+            input.addEventListener('input', function() {
+                updateAmountInWords(this);
+            });
+            
+            // تحديث القيمة الأولية
+            updateAmountInWords(input);
+        }
+    });
+}
+
+/**
+ * تحديث عرض المبلغ كتابة
+ */
+function updateAmountInWords(input) {
+    const value = parseFloat(input.value);
+    const amountInWordsElement = document.getElementById(input.id + '-text');
+    
+    if (amountInWordsElement) {
+        if (!isNaN(value) && value > 0) {
+            const currencyText = getCurrencyText(input);
+            amountInWordsElement.textContent = convertNumberToArabicWords(value) + ' ' + currencyText;
+        } else {
+            amountInWordsElement.textContent = '';
+        }
+    }
+}
+
+/**
+ * الحصول على نص العملة المناسب للحقل
+ */
+function getCurrencyText(input) {
+    // التحقق من وجود حقل اختيار العملة في النموذج
+    const form = input.closest('form') || input.closest('.card-body');
+    const currencySelect = form?.querySelector('#currency') || form?.querySelector('[name="currency"]');
+    
+    if (currencySelect) {
+        const currencyValue = currencySelect.value;
+        
+        switch (currencyValue) {
+            case 'USD':
+                return 'دولار أمريكي فقط لا غير';
+            case 'EUR':
+                return 'يورو فقط لا غير';
+            case 'GBP':
+                return 'جنيه إسترليني فقط لا غير';
+            case 'AED':
+                return 'درهم إماراتي فقط لا غير';
+            case 'KWD':
+                return 'دينار كويتي فقط لا غير';
+            case 'EGP':
+                return 'جنيه مصري فقط لا غير';
+            default:
+                return 'ريال سعودي فقط لا غير';
+        }
+    }
+    
+    // القيمة الافتراضية هي الريال السعودي
+    return 'ريال سعودي فقط لا غير';
+}
+
+/**
+ * تحويل الرقم إلى كلمات عربية
+ */
+function convertNumberToArabicWords(number) {
+    // الأرقام من صفر إلى تسعة عشر
+    const ones = [
+        'صفر', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة',
+        'عشرة', 'أحد عشر', 'اثنا عشر', 'ثلاثة عشر', 'أربعة عشر', 'خمسة عشر', 'ستة عشر', 'سبعة عشر', 'ثمانية عشر', 'تسعة عشر'
+    ];
+    
+    // العشرات
+    const tens = [
+        '', '', 'عشرون', 'ثلاثون', 'أربعون', 'خمسون', 'ستون', 'سبعون', 'ثمانون', 'تسعون'
+    ];
+    
+    // المئات
+    const hundreds = [
+        '', 'مائة', 'مائتان', 'ثلاثمائة', 'أربعمائة', 'خمسمائة', 'ستمائة', 'سبعمائة', 'ثمانمائة', 'تسعمائة'
+    ];
+    
+    // تدرجات الأعداد الكبيرة
+    const scales = [
+        '', 'ألف', 'مليون', 'مليار', 'تريليون'
+    ];
+    
+    // التعامل مع الكسور
+    const truncated = Math.floor(number);
+    const decimal = Math.round((number - truncated) * 100);
+    
+    if (truncated === 0) {
+        if (decimal === 0) {
+            return ones[0]; // صفر
+        }
+        return convertLessThanOneThousand(decimal) + ' هللة';
+    }
+    
+    let words = '';
+    
+    let scaleIndex = 0;
+    let num = truncated;
+    
+    while (num > 0) {
+        const hundreds = num % 1000;
+        if (hundreds > 0) {
+            const scaleWord = scales[scaleIndex];
+            if (words.length > 0) {
+                words = convertLessThanOneThousand(hundreds) + ' ' + scaleWord + ' و ' + words;
+            } else {
+                words = convertLessThanOneThousand(hundreds) + ' ' + scaleWord;
+            }
+        }
+        
+        num = Math.floor(num / 1000);
+        scaleIndex++;
+    }
+    
+    // إضافة الكسور
+    if (decimal > 0) {
+        words += ' و ' + convertLessThanOneThousand(decimal) + ' هللة';
+    }
+    
+    return words;
+    
+    // دالة مساعدة لتحويل الأرقام أقل من 1000
+    function convertLessThanOneThousand(n) {
+        if (n < 20) {
+            return ones[n];
+        }
+        
+        const digit = n % 10;
+        const ten = Math.floor(n / 10) % 10;
+        const hundred = Math.floor(n / 100) % 10;
+        
+        let result = '';
+        
+        if (hundred > 0) {
+            result += hundreds[hundred];
+            if (n % 100 > 0) {
+                result += ' و ';
+            }
+        }
+        
+        if (n % 100 < 20 && n % 100 > 0) {
+            result += ones[n % 100];
+        } else if (n % 100 > 0) {
+            if (digit > 0) {
+                result += ones[digit] + ' و ' + tens[ten];
+            } else {
+                result += tens[ten];
+            }
+        }
+        
+        return result;
     }
 }
