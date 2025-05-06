@@ -1,0 +1,1105 @@
+{% extends "layout.html" %}
+
+{% block title %}يومية البنك{% endblock %}
+
+{% block content %}
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">يومية البنك</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="/dashboard">الرئيسية</a></li>
+                    <li class="breadcrumb-item">الإدارة المالية</li>
+                    <li class="breadcrumb-item active">يومية البنك</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- بطاقات الإحصائيات -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>85,320 <span class="h5">ر.س</span></h3>
+                        <p>الرصيد الإجمالي</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-university"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>12,500 <span class="h5">ر.س</span></h3>
+                        <p>مجموع الإيداعات اليوم</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>5,800 <span class="h5">ر.س</span></h3>
+                        <p>مجموع السحوبات اليوم</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>8</h3>
+                        <p>عدد العمليات البنكية اليوم</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- أدوات التصفية والبحث -->
+        <div class="card card-outline card-primary">
+            <div class="card-header">
+                <h3 class="card-title">البحث والتصفية</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="bankAccount">الحساب البنكي</label>
+                                <select class="form-control" id="bankAccount">
+                                    <option value="all" selected>جميع الحسابات</option>
+                                    <option value="alrajhi">مصرف الراجحي - الحساب الرئيسي</option>
+                                    <option value="alahli">البنك الأهلي - حساب المصروفات</option>
+                                    <option value="riyadh">بنك الرياض - حساب الرواتب</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="dateFrom">من تاريخ</label>
+                                <div class="input-group date" id="dateFromPicker" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" id="dateFrom" data-target="#dateFromPicker" placeholder="DD/MM/YYYY">
+                                    <div class="input-group-append" data-target="#dateFromPicker" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="dateTo">إلى تاريخ</label>
+                                <div class="input-group date" id="dateToPicker" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" id="dateTo" data-target="#dateToPicker" placeholder="DD/MM/YYYY">
+                                    <div class="input-group-append" data-target="#dateToPicker" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="transactionType">نوع العملية</label>
+                                <select class="form-control" id="transactionType">
+                                    <option value="all" selected>جميع العمليات</option>
+                                    <option value="deposit">إيداع</option>
+                                    <option value="withdraw">سحب</option>
+                                    <option value="transfer">تحويل</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="form-group">
+                                <label for="searchKeyword">بحث</label>
+                                <input type="text" class="form-control" id="searchKeyword" placeholder="بحث بالرقم، الوصف، المستفيد...">
+                            </div>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <div class="form-group w-100">
+                                <button type="button" class="btn btn-primary btn-block">
+                                    <i class="fas fa-search ml-1"></i> بحث
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- الأزرار والإجراءات -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-deposit">
+                    <i class="fas fa-plus ml-1"></i> إيداع جديد
+                </button>
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal-withdraw">
+                    <i class="fas fa-minus ml-1"></i> سحب جديد
+                </button>
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modal-transfer">
+                    <i class="fas fa-exchange-alt ml-1"></i> تحويل بين الحسابات البنكية
+                </button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-reconciliation">
+                    <i class="fas fa-check-double ml-1"></i> مطابقة الحساب
+                </button>
+                <button type="button" class="btn btn-warning">
+                    <i class="fas fa-print ml-1"></i> طباعة التقرير
+                </button>
+                <button type="button" class="btn btn-default">
+                    <i class="fas fa-file-export ml-1"></i> تصدير كملف Excel
+                </button>
+            </div>
+        </div>
+        
+        <!-- جدول حركات البنك -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">حركات الحسابات البنكية</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>رقم العملية</th>
+                            <th>التاريخ</th>
+                            <th>الحساب البنكي</th>
+                            <th>نوع العملية</th>
+                            <th>المستفيد/المودع</th>
+                            <th>البيان</th>
+                            <th>رقم الشيك/التحويل</th>
+                            <th>المبلغ</th>
+                            <th>الرصيد</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>BTX-0025</td>
+                            <td>15/06/2023</td>
+                            <td>مصرف الراجحي - الحساب الرئيسي</td>
+                            <td><span class="badge badge-success">إيداع</span></td>
+                            <td>شركة السفر المتحدة</td>
+                            <td>سداد فاتورة خدمات سياحية</td>
+                            <td>TRF-589647</td>
+                            <td class="text-success">+ 8,500 ر.س</td>
+                            <td>85,320 ر.س</td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#modal-view-transaction">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-default btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>BTX-0024</td>
+                            <td>15/06/2023</td>
+                            <td>البنك الأهلي - حساب المصروفات</td>
+                            <td><span class="badge badge-danger">سحب</span></td>
+                            <td>وزارة الخارجية - رسوم تأشيرات</td>
+                            <td>دفع رسوم تأشيرات عمرة</td>
+                            <td>CHK-478956</td>
+                            <td class="text-danger">- 4,200 ر.س</td>
+                            <td>22,600 ر.س</td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-default btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>BTX-0023</td>
+                            <td>14/06/2023</td>
+                            <td>بنك الرياض - حساب الرواتب</td>
+                            <td><span class="badge badge-danger">سحب</span></td>
+                            <td>رواتب الموظفين</td>
+                            <td>دفع رواتب شهر مايو 2023</td>
+                            <td>TRF-589324</td>
+                            <td class="text-danger">- 28,500 ر.س</td>
+                            <td>15,700 ر.س</td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-default btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>BTX-0022</td>
+                            <td>14/06/2023</td>
+                            <td>مصرف الراجحي - الحساب الرئيسي</td>
+                            <td><span class="badge badge-success">إيداع</span></td>
+                            <td>عبدالله محمد السيد</td>
+                            <td>دفعة حجز برنامج سياحي</td>
+                            <td>TRF-589123</td>
+                            <td class="text-success">+ 12,500 ر.س</td>
+                            <td>76,820 ر.س</td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-default btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>BTX-0021</td>
+                            <td>13/06/2023</td>
+                            <td>مصرف الراجحي - الحساب الرئيسي</td>
+                            <td><span class="badge badge-warning">تحويل</span></td>
+                            <td>بنك الرياض - حساب الرواتب</td>
+                            <td>تحويل لحساب الرواتب</td>
+                            <td>TRF-588950</td>
+                            <td class="text-danger">- 30,000 ر.س</td>
+                            <td>64,320 ر.س</td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-default btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-left">
+                    <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- ملخص الحسابات البنكية -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">ملخص الحسابات البنكية</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>اسم الحساب</th>
+                                        <th>البنك</th>
+                                        <th>رقم الحساب</th>
+                                        <th>الرصيد الحالي</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>الحساب الرئيسي</td>
+                                        <td>مصرف الراجحي</td>
+                                        <td>SA98 7654 3210 9876 5432 10</td>
+                                        <td>85,320 ر.س</td>
+                                    </tr>
+                                    <tr>
+                                        <td>حساب المصروفات</td>
+                                        <td>البنك الأهلي</td>
+                                        <td>SA87 6543 2109 8765 4321 09</td>
+                                        <td>22,600 ر.س</td>
+                                    </tr>
+                                    <tr>
+                                        <td>حساب الرواتب</td>
+                                        <td>بنك الرياض</td>
+                                        <td>SA76 5432 1098 7654 3210 98</td>
+                                        <td>15,700 ر.س</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="3">إجمالي الأرصدة</th>
+                                        <th>123,620 ر.س</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">حركات اليوم</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>الحساب</th>
+                                        <th>الإيداعات</th>
+                                        <th>السحوبات</th>
+                                        <th>الرصيد</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>مصرف الراجحي - الحساب الرئيسي</td>
+                                        <td class="text-success">8,500 ر.س</td>
+                                        <td class="text-danger">0 ر.س</td>
+                                        <td>+8,500 ر.س</td>
+                                    </tr>
+                                    <tr>
+                                        <td>البنك الأهلي - حساب المصروفات</td>
+                                        <td class="text-success">0 ر.س</td>
+                                        <td class="text-danger">4,200 ر.س</td>
+                                        <td>-4,200 ر.س</td>
+                                    </tr>
+                                    <tr>
+                                        <td>بنك الرياض - حساب الرواتب</td>
+                                        <td class="text-success">0 ر.س</td>
+                                        <td class="text-danger">0 ر.س</td>
+                                        <td>0 ر.س</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>الإجمالي</th>
+                                        <th class="text-success">8,500 ر.س</th>
+                                        <th class="text-danger">4,200 ر.س</th>
+                                        <th>+4,300 ر.س</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal - إيداع جديد -->
+<div class="modal fade" id="modal-deposit">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h4 class="modal-title">إيداع بنكي جديد</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="depositDate">التاريخ</label>
+                                <div class="input-group date" id="depositDatePicker" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" id="depositDate" data-target="#depositDatePicker" value="{{ current_date }}" required>
+                                    <div class="input-group-append" data-target="#depositDatePicker" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="depositNumber">رقم الإيداع</label>
+                                <input type="text" class="form-control" id="depositNumber" placeholder="يتم إنشاؤه تلقائياً" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="depositBank">الحساب البنكي</label>
+                                <select class="form-control" id="depositBank" required>
+                                    <option value="">اختر الحساب البنكي</option>
+                                    <option value="alrajhi">مصرف الراجحي - الحساب الرئيسي</option>
+                                    <option value="alahli">البنك الأهلي - حساب المصروفات</option>
+                                    <option value="riyadh">بنك الرياض - حساب الرواتب</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="depositAmount">المبلغ</label>
+                                <div class="input-group">
+                                    <input type="number" min="0" step="0.01" class="form-control" id="depositAmount" placeholder="أدخل المبلغ" required>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">ر.س</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="depositSource">مصدر الإيداع</label>
+                                <select class="form-control" id="depositSource" required>
+                                    <option value="">اختر المصدر</option>
+                                    <option value="customer">عميل</option>
+                                    <option value="bank">بنك آخر</option>
+                                    <option value="supplier">مورد</option>
+                                    <option value="employee">موظف</option>
+                                    <option value="other">أخرى</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="depositSourceName">اسم المصدر</label>
+                                <select class="form-control" id="depositSourceName" required>
+                                    <option value="">اختر الاسم</option>
+                                    <option value="1">أحمد محمد السيد</option>
+                                    <option value="2">خالد عمر يوسف</option>
+                                    <option value="3">شركة السفر المتحدة</option>
+                                    <option value="4">البنك الأهلي</option>
+                                    <option value="5">بنك الرياض</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="depositMethod">طريقة الإيداع</label>
+                                <select class="form-control" id="depositMethod" required>
+                                    <option value="">اختر الطريقة</option>
+                                    <option value="transfer">تحويل بنكي</option>
+                                    <option value="check">شيك</option>
+                                    <option value="cash">إيداع نقدي</option>
+                                    <option value="pos">نقاط البيع</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="depositReference">رقم المرجع/الشيك</label>
+                                <input type="text" class="form-control" id="depositReference" placeholder="رقم التحويل أو الشيك">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="depositDescription">بيان الإيداع</label>
+                        <textarea class="form-control" id="depositDescription" rows="3" placeholder="وصف الإيداع وملاحظات إضافية..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="depositAttachment">إرفاق مستند</label>
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="depositAttachment">
+                                <label class="custom-file-label" for="depositAttachment">اختر ملفًا...</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <button type="button" class="btn btn-success">حفظ الإيداع</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- Modal - سحب جديد -->
+<div class="modal fade" id="modal-withdraw">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-danger">
+                <h4 class="modal-title">سحب بنكي جديد</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="withdrawDate">التاريخ</label>
+                                <div class="input-group date" id="withdrawDatePicker" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" id="withdrawDate" data-target="#withdrawDatePicker" value="{{ current_date }}" required>
+                                    <div class="input-group-append" data-target="#withdrawDatePicker" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="withdrawNumber">رقم السحب</label>
+                                <input type="text" class="form-control" id="withdrawNumber" placeholder="يتم إنشاؤه تلقائياً" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="withdrawBank">الحساب البنكي</label>
+                                <select class="form-control" id="withdrawBank" required>
+                                    <option value="">اختر الحساب البنكي</option>
+                                    <option value="alrajhi">مصرف الراجحي - الحساب الرئيسي</option>
+                                    <option value="alahli">البنك الأهلي - حساب المصروفات</option>
+                                    <option value="riyadh">بنك الرياض - حساب الرواتب</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="withdrawAmount">المبلغ</label>
+                                <div class="input-group">
+                                    <input type="number" min="0" step="0.01" class="form-control" id="withdrawAmount" placeholder="أدخل المبلغ" required>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">ر.س</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="withdrawBeneficiary">نوع المستفيد</label>
+                                <select class="form-control" id="withdrawBeneficiary" required>
+                                    <option value="">اختر نوع المستفيد</option>
+                                    <option value="supplier">مورد</option>
+                                    <option value="employee">موظف</option>
+                                    <option value="company">شركة طيران</option>
+                                    <option value="visa">مكتب تأشيرات</option>
+                                    <option value="bank">بنك آخر</option>
+                                    <option value="other">أخرى</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="withdrawBeneficiaryName">اسم المستفيد</label>
+                                <select class="form-control" id="withdrawBeneficiaryName" required>
+                                    <option value="">اختر اسم المستفيد</option>
+                                    <option value="1">شركة الخطوط السعودية</option>
+                                    <option value="2">وزارة الخارجية - رسوم تأشيرات</option>
+                                    <option value="3">رواتب الموظفين</option>
+                                    <option value="4">بنك الرياض</option>
+                                    <option value="5">شركة فنادق المدينة</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="withdrawMethod">طريقة السحب</label>
+                                <select class="form-control" id="withdrawMethod" required>
+                                    <option value="">اختر الطريقة</option>
+                                    <option value="transfer">تحويل بنكي</option>
+                                    <option value="check">شيك</option>
+                                    <option value="cash">سحب نقدي</option>
+                                    <option value="card">بطاقة ائتمان/مدى</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="withdrawReference">رقم المرجع/الشيك</label>
+                                <input type="text" class="form-control" id="withdrawReference" placeholder="رقم التحويل أو الشيك">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="withdrawDescription">بيان السحب</label>
+                        <textarea class="form-control" id="withdrawDescription" rows="3" placeholder="وصف عملية السحب وملاحظات إضافية..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="withdrawAttachment">إرفاق مستند</label>
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="withdrawAttachment">
+                                <label class="custom-file-label" for="withdrawAttachment">اختر ملفًا...</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <button type="button" class="btn btn-danger">حفظ السحب</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- Modal - تحويل بين الحسابات -->
+<div class="modal fade" id="modal-transfer">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h4 class="modal-title">تحويل بين الحسابات البنكية</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="transferDate">التاريخ</label>
+                                <div class="input-group date" id="transferDatePicker" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" id="transferDate" data-target="#transferDatePicker" value="{{ current_date }}" required>
+                                    <div class="input-group-append" data-target="#transferDatePicker" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="transferNumber">رقم التحويل</label>
+                                <input type="text" class="form-control" id="transferNumber" placeholder="يتم إنشاؤه تلقائياً" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="fromBank">من حساب</label>
+                                <select class="form-control" id="fromBank" required>
+                                    <option value="">اختر الحساب</option>
+                                    <option value="alrajhi">مصرف الراجحي - الحساب الرئيسي</option>
+                                    <option value="alahli">البنك الأهلي - حساب المصروفات</option>
+                                    <option value="riyadh">بنك الرياض - حساب الرواتب</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="toBank">إلى حساب</label>
+                                <select class="form-control" id="toBank" required>
+                                    <option value="">اختر الحساب</option>
+                                    <option value="alrajhi">مصرف الراجحي - الحساب الرئيسي</option>
+                                    <option value="alahli">البنك الأهلي - حساب المصروفات</option>
+                                    <option value="riyadh">بنك الرياض - حساب الرواتب</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="transferAmount">المبلغ</label>
+                                <div class="input-group">
+                                    <input type="number" min="0" step="0.01" class="form-control" id="transferAmount" placeholder="أدخل المبلغ" required>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">ر.س</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="transferReference">رقم مرجع التحويل</label>
+                                <input type="text" class="form-control" id="transferReference" placeholder="رقم مرجع التحويل البنكي">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="transferDescription">سبب التحويل</label>
+                        <textarea class="form-control" id="transferDescription" rows="3" placeholder="وصف سبب التحويل بين الحسابات..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="transferAttachment">إرفاق مستند</label>
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="transferAttachment">
+                                <label class="custom-file-label" for="transferAttachment">اختر ملفًا...</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <button type="button" class="btn btn-info">حفظ التحويل</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- Modal - مطابقة الحساب -->
+<div class="modal fade" id="modal-reconciliation">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h4 class="modal-title">مطابقة الحساب البنكي</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="reconciliationBank">الحساب البنكي</label>
+                                <select class="form-control" id="reconciliationBank" required>
+                                    <option value="">اختر الحساب البنكي</option>
+                                    <option value="alrajhi">مصرف الراجحي - الحساب الرئيسي</option>
+                                    <option value="alahli">البنك الأهلي - حساب المصروفات</option>
+                                    <option value="riyadh">بنك الرياض - حساب الرواتب</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="reconciliationDate">تاريخ المطابقة</label>
+                                <div class="input-group date" id="reconciliationDatePicker" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" id="reconciliationDate" data-target="#reconciliationDatePicker" value="{{ current_date }}" required>
+                                    <div class="input-group-append" data-target="#reconciliationDatePicker" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="systemBalance">رصيد النظام</label>
+                                <div class="input-group">
+                                    <input type="number" min="0" step="0.01" class="form-control" id="systemBalance" value="85320" readonly>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">ر.س</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="bankStatementBalance">رصيد كشف الحساب البنكي</label>
+                                <div class="input-group">
+                                    <input type="number" min="0" step="0.01" class="form-control" id="bankStatementBalance" placeholder="أدخل رصيد كشف الحساب" required>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">ر.س</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="statementFile">كشف الحساب (PDF/Excel)</label>
+                                <div class="input-group">
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="statementFile">
+                                        <label class="custom-file-label" for="statementFile">اختر ملف كشف الحساب...</label>
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">
+                                    يرجى تحميل كشف حساب البنك لإجراء المطابقة.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <h5>عمليات التسوية</h5>
+                    <p class="text-muted">حدد العمليات التي لم تظهر في كشف الحساب البنكي:</p>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%">#</th>
+                                    <th>التاريخ</th>
+                                    <th>رقم العملية</th>
+                                    <th>البيان</th>
+                                    <th>المبلغ</th>
+                                    <th>نوع العملية</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="icheck-primary">
+                                            <input type="checkbox" id="adjustment1">
+                                            <label for="adjustment1"></label>
+                                        </div>
+                                    </td>
+                                    <td>15/06/2023</td>
+                                    <td>BTX-0025</td>
+                                    <td>سداد فاتورة خدمات سياحية</td>
+                                    <td>8,500 ر.س</td>
+                                    <td><span class="badge badge-success">إيداع</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="icheck-primary">
+                                            <input type="checkbox" id="adjustment2">
+                                            <label for="adjustment2"></label>
+                                        </div>
+                                    </td>
+                                    <td>14/06/2023</td>
+                                    <td>BTX-0022</td>
+                                    <td>دفعة حجز برنامج سياحي</td>
+                                    <td>12,500 ر.س</td>
+                                    <td><span class="badge badge-success">إيداع</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="icheck-primary">
+                                            <input type="checkbox" id="adjustment3">
+                                            <label for="adjustment3"></label>
+                                        </div>
+                                    </td>
+                                    <td>13/06/2023</td>
+                                    <td>BTX-0021</td>
+                                    <td>تحويل لحساب الرواتب</td>
+                                    <td>30,000 ر.س</td>
+                                    <td><span class="badge badge-warning">تحويل</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <hr>
+                    <h5>إضافة تسوية يدوية</h5>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="newAdjustmentType">نوع التسوية</label>
+                                <select class="form-control" id="newAdjustmentType">
+                                    <option value="">اختر نوع التسوية</option>
+                                    <option value="not_in_bank">عملية في النظام غير موجودة في البنك</option>
+                                    <option value="not_in_system">عملية في البنك غير موجودة في النظام</option>
+                                    <option value="bank_fees">رسوم بنكية</option>
+                                    <option value="interest">فوائد بنكية</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="newAdjustmentAmount">المبلغ</label>
+                                <div class="input-group">
+                                    <input type="number" min="0" step="0.01" class="form-control" id="newAdjustmentAmount" placeholder="أدخل المبلغ">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">ر.س</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="newAdjustmentDate">التاريخ</label>
+                                <div class="input-group date" id="newAdjustmentDatePicker" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" id="newAdjustmentDate" data-target="#newAdjustmentDatePicker" placeholder="DD/MM/YYYY">
+                                    <div class="input-group-append" data-target="#newAdjustmentDatePicker" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="newAdjustmentDescription">وصف التسوية</label>
+                        <textarea class="form-control" id="newAdjustmentDescription" rows="2" placeholder="وصف سبب التسوية..."></textarea>
+                    </div>
+                    <button type="button" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-plus ml-1"></i> إضافة تسوية
+                    </button>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="reconciledBalance">الرصيد بعد المطابقة</label>
+                                <div class="input-group">
+                                    <input type="number" min="0" step="0.01" class="form-control" id="reconciledBalance" value="85320" readonly>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">ر.س</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="balanceDifference">الفرق</label>
+                                <div class="input-group">
+                                    <input type="number" min="0" step="0.01" class="form-control" id="balanceDifference" value="0" readonly>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">ر.س</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reconciliationNotes">ملاحظات</label>
+                        <textarea class="form-control" id="reconciliationNotes" rows="3" placeholder="ملاحظات إضافية عن المطابقة..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <button type="button" class="btn btn-primary">حفظ المطابقة</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- Modal - عرض العملية -->
+<div class="modal fade" id="modal-view-transaction">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h4 class="modal-title">تفاصيل العملية البنكية</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="invoice p-3 mb-3">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>
+                                        <i class="fas fa-university ml-2"></i> عملية بنكية رقم: BTX-0025
+                                        <small class="float-left">التاريخ: 15/06/2023</small>
+                                    </h4>
+                                </div>
+                            </div>
+                            
+                            <div class="row invoice-info mt-3">
+                                <div class="col-sm-4 invoice-col">
+                                    <b>بيانات الحساب البنكي</b><br>
+                                    <strong>البنك:</strong> مصرف الراجحي<br>
+                                    <strong>اسم الحساب:</strong> الحساب الرئيسي<br>
+                                    <strong>رقم الحساب (آيبان):</strong> SA98 7654 3210 9876 5432 10<br>
+                                </div>
+                                
+                                <div class="col-sm-4 invoice-col">
+                                    <b>بيانات المعاملة</b><br>
+                                    <strong>نوع العملية:</strong> <span class="badge badge-success">إيداع</span><br>
+                                    <strong>المبلغ:</strong> 8,500 ر.س<br>
+                                    <strong>تاريخ العملية:</strong> 15/06/2023<br>
+                                    <strong>رقم مرجع التحويل:</strong> TRF-589647<br>
+                                </div>
+                                
+                                <div class="col-sm-4 invoice-col">
+                                    <b>بيانات المودع</b><br>
+                                    <strong>اسم المودع:</strong> شركة السفر المتحدة<br>
+                                    <strong>رقم الحساب المصدر:</strong> SA76 5432 1098 7654 3210 98<br>
+                                    <strong>رقم المرجع في النظام:</strong> INV-2023-154<br>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5 class="mb-3">بيان العملية</h5>
+                                    <div class="callout callout-info">
+                                        <p>سداد فاتورة خدمات سياحية - برنامج عمرة لعدد 5 أشخاص بتاريخ 20-25 رمضان 1444هـ</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <h5 class="mb-3">المستندات المرفقة</h5>
+                                    <ul class="list-group">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            إشعار الإيداع البنكي.pdf
+                                            <button class="btn btn-sm btn-primary">تحميل</button>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            الفاتورة.pdf
+                                            <button class="btn btn-sm btn-primary">تحميل</button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <button type="button" class="btn btn-primary">
+                    <i class="fas fa-print"></i> طباعة
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(function () {
+        // تهيئة جدول البيانات
+        $('table').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Arabic.json"
+            }
+        });
+        
+        // تهيئة أداة اختيار التاريخ
+        $('.date').datetimepicker({
+            format: 'L',
+            locale: 'ar'
+        });
+    });
+</script>
+{% endblock %}

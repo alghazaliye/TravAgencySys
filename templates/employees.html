@@ -1,0 +1,787 @@
+{% extends "layout.html" %}
+
+{% block title %}الموظفين{% endblock %}
+
+{% block content %}
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">إدارة الموظفين</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="/dashboard">الرئيسية</a></li>
+                    <li class="breadcrumb-item active">الموظفين</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- بطاقات الإحصائيات -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>12</h3>
+                        <p>إجمالي الموظفين</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-person"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>7</h3>
+                        <p>موظفين دوام كامل</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-clock"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>5</h3>
+                        <p>موظفين دوام جزئي</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-person-stalker"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>28,500</h3>
+                        <p>إجمالي الرواتب (ر.س)</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-cash"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- قائمة الموظفين -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">قائمة الموظفين</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-travel-primary btn-sm" data-toggle="modal" data-target="#modal-add-employee">
+                                <i class="fas fa-plus"></i> إضافة موظف
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body table-responsive p-0">
+                        <table class="table table-hover text-nowrap">
+                            <thead>
+                                <tr>
+                                    <th>الرقم</th>
+                                    <th>الاسم</th>
+                                    <th>الوظيفة</th>
+                                    <th>تاريخ التعيين</th>
+                                    <th>نوع العمل</th>
+                                    <th>الراتب (ر.س)</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>EMP001</td>
+                                    <td>أحمد محمد علي</td>
+                                    <td>مدير مبيعات</td>
+                                    <td>01/01/2022</td>
+                                    <td><span class="badge badge-success">دوام كامل</span></td>
+                                    <td>6,500</td>
+                                    <td><span class="badge badge-success">نشط</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#modal-view-employee">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal-edit-employee">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-xs">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>EMP002</td>
+                                    <td>سارة عبدالله محمد</td>
+                                    <td>منسقة حجوزات</td>
+                                    <td>15/03/2022</td>
+                                    <td><span class="badge badge-success">دوام كامل</span></td>
+                                    <td>4,800</td>
+                                    <td><span class="badge badge-success">نشط</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-info btn-xs">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-xs">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-xs">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>EMP003</td>
+                                    <td>خالد سعيد عبدالرحمن</td>
+                                    <td>مختص تأشيرات</td>
+                                    <td>10/05/2022</td>
+                                    <td><span class="badge badge-success">دوام كامل</span></td>
+                                    <td>5,200</td>
+                                    <td><span class="badge badge-success">نشط</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-info btn-xs">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-xs">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-xs">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>EMP004</td>
+                                    <td>نورة محمد العتيبي</td>
+                                    <td>محاسبة</td>
+                                    <td>01/06/2022</td>
+                                    <td><span class="badge badge-warning">دوام جزئي</span></td>
+                                    <td>3,000</td>
+                                    <td><span class="badge badge-success">نشط</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-info btn-xs">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-xs">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-xs">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>EMP005</td>
+                                    <td>فهد عبدالله السبيعي</td>
+                                    <td>مندوب</td>
+                                    <td>15/07/2022</td>
+                                    <td><span class="badge badge-warning">دوام جزئي</span></td>
+                                    <td>2,500</td>
+                                    <td><span class="badge badge-danger">إجازة</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-info btn-xs">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-xs">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-xs">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer clearfix">
+                        <ul class="pagination pagination-sm m-0 float-left">
+                            <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
+                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+        
+        <!-- بطاقات المرتبات -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">الرواتب حسب القسم</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart">
+                            <canvas id="salariesDeptChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">أحدث المدفوعات للموظفين</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="products-list product-list-in-card pl-2 pr-2">
+                            <li class="item">
+                                <div class="product-info">
+                                    <a href="javascript:void(0)" class="product-title">أحمد محمد علي
+                                        <span class="badge badge-info float-left">6,500 ر.س</span></a>
+                                    <span class="product-description">
+                                        تم دفع الراتب بتاريخ 01/06/2023
+                                    </span>
+                                </div>
+                            </li>
+                            <li class="item">
+                                <div class="product-info">
+                                    <a href="javascript:void(0)" class="product-title">سارة عبدالله محمد
+                                        <span class="badge badge-info float-left">4,800 ر.س</span></a>
+                                    <span class="product-description">
+                                        تم دفع الراتب بتاريخ 01/06/2023
+                                    </span>
+                                </div>
+                            </li>
+                            <li class="item">
+                                <div class="product-info">
+                                    <a href="javascript:void(0)" class="product-title">خالد سعيد عبدالرحمن
+                                        <span class="badge badge-info float-left">5,200 ر.س</span></a>
+                                    <span class="product-description">
+                                        تم دفع الراتب بتاريخ 01/06/2023
+                                    </span>
+                                </div>
+                            </li>
+                            <li class="item">
+                                <div class="product-info">
+                                    <a href="javascript:void(0)" class="product-title">نورة محمد العتيبي
+                                        <span class="badge badge-info float-left">3,000 ر.س</span></a>
+                                    <span class="product-description">
+                                        تم دفع الراتب بتاريخ 01/06/2023
+                                    </span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="javascript:void(0)" class="uppercase">عرض جميع المدفوعات</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal - إضافة موظف -->
+<div class="modal fade" id="modal-add-employee">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-travel-primary">
+                <h4 class="modal-title">إضافة موظف جديد</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeeId">رقم الموظف</label>
+                                <input type="text" class="form-control" id="employeeId" placeholder="رقم الموظف (سيتم إنشاؤه تلقائياً)" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeeName">اسم الموظف</label>
+                                <input type="text" class="form-control" id="employeeName" placeholder="اسم الموظف الكامل" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeeNationalId">رقم الهوية / الإقامة</label>
+                                <input type="text" class="form-control" id="employeeNationalId" placeholder="رقم الهوية الوطنية أو الإقامة" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeePhone">رقم الجوال</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control" id="employeePhone" placeholder="05xxxxxxxx" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeeEmail">البريد الإلكتروني</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                    </div>
+                                    <input type="email" class="form-control" id="employeeEmail" placeholder="example@email.com">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeePosition">المسمى الوظيفي</label>
+                                <input type="text" class="form-control" id="employeePosition" placeholder="المسمى الوظيفي" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employmentDate">تاريخ التعيين</label>
+                                <div class="input-group date" id="employmentDatePicker" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" id="employmentDate" data-target="#employmentDatePicker" placeholder="DD/MM/YYYY" required>
+                                    <div class="input-group-append" data-target="#employmentDatePicker" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employmentType">نوع العمل</label>
+                                <select class="form-control" id="employmentType" required>
+                                    <option value="">اختر نوع العمل</option>
+                                    <option value="fulltime">دوام كامل</option>
+                                    <option value="parttime">دوام جزئي</option>
+                                    <option value="contract">عقد مؤقت</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="department">القسم</label>
+                                <select class="form-control" id="department" required>
+                                    <option value="">اختر القسم</option>
+                                    <option value="sales">المبيعات</option>
+                                    <option value="visas">التأشيرات</option>
+                                    <option value="tickets">الحجوزات</option>
+                                    <option value="finance">المالية</option>
+                                    <option value="admin">الإدارة</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="salary">الراتب (ر.س)</label>
+                                <div class="input-group">
+                                    <input type="number" min="0" step="100" class="form-control" id="salary" placeholder="راتب الموظف الشهري" required>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">ر.س</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="bankName">اسم البنك</label>
+                                <select class="form-control" id="bankName">
+                                    <option value="">اختر البنك</option>
+                                    <option value="alrajhi">مصرف الراجحي</option>
+                                    <option value="alahli">البنك الأهلي</option>
+                                    <option value="samba">سامبا</option>
+                                    <option value="riyadh">بنك الرياض</option>
+                                    <option value="other">بنك آخر</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="bankAccount">رقم الحساب (آيبان)</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">SA</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="bankAccount" placeholder="رقم الحساب البنكي">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes">ملاحظات</label>
+                        <textarea class="form-control" id="notes" rows="3" placeholder="ملاحظات إضافية..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <button type="button" class="btn btn-travel-primary">حفظ</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- Modal - عرض بيانات الموظف -->
+<div class="modal fade" id="modal-view-employee">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h4 class="modal-title">بيانات الموظف</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="invoice p-3 mb-3">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>
+                                        <i class="fas fa-user-tie ml-2"></i> أحمد محمد علي
+                                        <small class="float-left">تاريخ التعيين: 01/01/2022</small>
+                                    </h4>
+                                </div>
+                            </div>
+                            
+                            <div class="row invoice-info mt-3">
+                                <div class="col-sm-4 invoice-col">
+                                    <b>البيانات الشخصية</b><br>
+                                    <strong>رقم الهوية:</strong> 1234567890<br>
+                                    <strong>رقم الجوال:</strong> 0501234567<br>
+                                    <strong>البريد الإلكتروني:</strong> ahmed@example.com<br>
+                                </div>
+                                
+                                <div class="col-sm-4 invoice-col">
+                                    <b>بيانات العمل</b><br>
+                                    <strong>رقم الموظف:</strong> EMP001<br>
+                                    <strong>المسمى الوظيفي:</strong> مدير مبيعات<br>
+                                    <strong>القسم:</strong> المبيعات<br>
+                                    <strong>نوع العمل:</strong> <span class="badge badge-success">دوام كامل</span>
+                                </div>
+                                
+                                <div class="col-sm-4 invoice-col">
+                                    <b>البيانات المالية</b><br>
+                                    <strong>الراتب الشهري:</strong> 6,500 ر.س<br>
+                                    <strong>البنك:</strong> مصرف الراجحي<br>
+                                    <strong>رقم الحساب:</strong> SA123456789012345678<br>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5 class="mb-3">سجل الرواتب</h5>
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>الشهر</th>
+                                                <th>تاريخ الدفع</th>
+                                                <th>المبلغ</th>
+                                                <th>حالة الدفع</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>يونيو 2023</td>
+                                                <td>01/06/2023</td>
+                                                <td>6,500 ر.س</td>
+                                                <td><span class="badge badge-success">تم الدفع</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>مايو 2023</td>
+                                                <td>01/05/2023</td>
+                                                <td>6,500 ر.س</td>
+                                                <td><span class="badge badge-success">تم الدفع</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>أبريل 2023</td>
+                                                <td>01/04/2023</td>
+                                                <td>6,500 ر.س</td>
+                                                <td><span class="badge badge-success">تم الدفع</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>مارس 2023</td>
+                                                <td>01/03/2023</td>
+                                                <td>6,500 ر.س</td>
+                                                <td><span class="badge badge-success">تم الدفع</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <h5 class="mb-3">معلومات إضافية</h5>
+                                    <div class="callout callout-info">
+                                        <p>موظف متميز في المبيعات، حاصل على جائزة أفضل موظف لشهر مايو 2023. لديه خبرة سابقة في مجال السياحة والسفر تمتد لـ 5 سنوات.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <div>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#modal-edit-employee">
+                        <i class="fas fa-edit"></i> تعديل البيانات
+                    </button>
+                    <button type="button" class="btn btn-success">
+                        <i class="fas fa-print"></i> طباعة البيانات
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- Modal - تعديل بيانات الموظف -->
+<div class="modal fade" id="modal-edit-employee">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h4 class="modal-title">تعديل بيانات الموظف</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- نفس نموذج إضافة الموظف مع تعبئة البيانات الحالية -->
+                <form>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editEmployeeId">رقم الموظف</label>
+                                <input type="text" class="form-control" id="editEmployeeId" value="EMP001" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editEmployeeName">اسم الموظف</label>
+                                <input type="text" class="form-control" id="editEmployeeName" value="أحمد محمد علي" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- باقي الحقول بنفس الطريقة مع تعبئة البيانات الحالية -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editEmployeeNationalId">رقم الهوية / الإقامة</label>
+                                <input type="text" class="form-control" id="editEmployeeNationalId" value="1234567890" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editEmployeePhone">رقم الجوال</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control" id="editEmployeePhone" value="0501234567" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editEmployeeEmail">البريد الإلكتروني</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                    </div>
+                                    <input type="email" class="form-control" id="editEmployeeEmail" value="ahmed@example.com">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editEmployeePosition">المسمى الوظيفي</label>
+                                <input type="text" class="form-control" id="editEmployeePosition" value="مدير مبيعات" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editEmploymentDate">تاريخ التعيين</label>
+                                <div class="input-group date" id="editEmploymentDatePicker" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" id="editEmploymentDate" data-target="#editEmploymentDatePicker" value="01/01/2022" required>
+                                    <div class="input-group-append" data-target="#editEmploymentDatePicker" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editEmploymentType">نوع العمل</label>
+                                <select class="form-control" id="editEmploymentType" required>
+                                    <option value="">اختر نوع العمل</option>
+                                    <option value="fulltime" selected>دوام كامل</option>
+                                    <option value="parttime">دوام جزئي</option>
+                                    <option value="contract">عقد مؤقت</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editDepartment">القسم</label>
+                                <select class="form-control" id="editDepartment" required>
+                                    <option value="">اختر القسم</option>
+                                    <option value="sales" selected>المبيعات</option>
+                                    <option value="visas">التأشيرات</option>
+                                    <option value="tickets">الحجوزات</option>
+                                    <option value="finance">المالية</option>
+                                    <option value="admin">الإدارة</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editSalary">الراتب (ر.س)</label>
+                                <div class="input-group">
+                                    <input type="number" min="0" step="100" class="form-control" id="editSalary" value="6500" required>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">ر.س</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editNotes">ملاحظات</label>
+                        <textarea class="form-control" id="editNotes" rows="3">موظف متميز في المبيعات، حاصل على جائزة أفضل موظف لشهر مايو 2023. لديه خبرة سابقة في مجال السياحة والسفر تمتد لـ 5 سنوات.</textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <button type="button" class="btn btn-primary">حفظ التعديلات</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(function () {
+        // تهيئة جدول البيانات
+        $('table').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Arabic.json"
+            }
+        });
+        
+        // تهيئة مخطط الرواتب حسب القسم
+        const ctxSalaries = document.getElementById('salariesDeptChart').getContext('2d');
+        const salariesDeptChart = new Chart(ctxSalaries, {
+            type: 'pie',
+            data: {
+                labels: ['المبيعات', 'التأشيرات', 'الحجوزات', 'المالية', 'الإدارة'],
+                datasets: [{
+                    data: [11500, 9800, 8200, 6000, 13000],
+                    backgroundColor: [
+                        'rgba(60, 141, 188, 0.8)',
+                        'rgba(210, 214, 222, 0.8)',
+                        'rgba(0, 166, 90, 0.8)',
+                        'rgba(243, 156, 18, 0.8)',
+                        'rgba(221, 75, 57, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(60, 141, 188, 1)',
+                        'rgba(210, 214, 222, 1)',
+                        'rgba(0, 166, 90, 1)',
+                        'rgba(243, 156, 18, 1)',
+                        'rgba(221, 75, 57, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += context.parsed.toLocaleString() + ' ر.س';
+                                return label;
+                            }
+                        }
+                    },
+                    legend: {
+                        position: 'right',
+                        rtl: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -285,13 +285,13 @@
                     </div>
                     
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="ticketPrice">سعر التذكرة (البيع)</label>
                                 <div class="input-group">
                                     <input type="number" min="0" step="0.01" class="form-control" id="ticketPrice" placeholder="سعر البيع للعميل" required>
-                                    <div class="input-group-append">
-                                        <div class="input-group-text">ر.س</div>
+                                    <div class="input-group-append currency-append">
+                                        <div class="input-group-text" id="currencyTextSell">ر.س</div>
                                     </div>
                                     <div class="invalid-feedback">
                                         الرجاء إدخال سعر التذكرة
@@ -299,18 +299,64 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="ticketCost">سعر شراء التذكرة</label>
                                 <div class="input-group">
                                     <input type="number" min="0" step="0.01" class="form-control" id="ticketCost" placeholder="سعر الشراء من الشركة" required>
-                                    <div class="input-group-append">
-                                        <div class="input-group-text">ر.س</div>
+                                    <div class="input-group-append currency-append">
+                                        <div class="input-group-text" id="currencyTextBuy">ر.س</div>
                                     </div>
                                     <div class="invalid-feedback">
                                         الرجاء إدخال سعر شراء التذكرة
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="currencyType">العملة</label>
+                                <select class="form-control" id="currencyType" onchange="handleCurrencyChange()">
+                                    <option value="SAR" selected>ريال سعودي (ر.س)</option>
+                                    <option value="USD">دولار أمريكي ($)</option>
+                                    <option value="EUR">يورو (€)</option>
+                                    <option value="AED">درهم إماراتي (د.إ)</option>
+                                    <option value="KWD">دينار كويتي (د.ك)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- معلومات الربح والحساب -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="profitDisplay">الربح</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-success text-white"><i class="fas fa-calculator"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control bg-light" id="profitDisplay" placeholder="0.00" readonly>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text" id="currencyTextProfit">ر.س</div>
+                                    </div>
+                                </div>
+                                <small id="profitPercentage" class="form-text text-muted">نسبة الربح: 0%</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group" id="supplierPaymentGroup">
+                                <label for="supplierPayment">مبلغ الدفع للمورد</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-danger text-white"><i class="fas fa-money-bill-wave"></i></span>
+                                    </div>
+                                    <input type="number" min="0" step="0.01" class="form-control" id="supplierPayment" placeholder="مبلغ الدفع للمورد">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text" id="currencyTextSupplier">ر.س</div>
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">المبلغ المراد دفعه للمورد من قيمة الشراء</small>
                             </div>
                         </div>
                     </div>
