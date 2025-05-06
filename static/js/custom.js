@@ -112,16 +112,16 @@ $(function () {
                     intersect: true
                 },
                 scales: {
-                    xAxes: [{
-                        gridLines: {
-                            display: false,
+                    x: {
+                        grid: {
+                            display: false
                         }
-                    }],
-                    yAxes: [{
-                        gridLines: {
-                            display: true,
+                    },
+                    y: {
+                        grid: {
+                            display: true
                         }
-                    }]
+                    }
                 }
             }
         });
