@@ -290,11 +290,49 @@
                             <div class="form-group">
                                 <label for="initialBalance">الرصيد الافتتاحي</label>
                                 <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-coins"></i></span>
+                                    </div>
                                     <input type="number" step="0.01" class="form-control" id="initialBalance" placeholder="0.00">
                                     <div class="input-group-append">
-                                        <div class="input-group-text">ر.س</div>
+                                        <div class="input-group-text" id="balance-currency-symbol">ر.س</div>
                                     </div>
                                 </div>
+                                <small class="form-text text-muted" id="initial-balance-in-words"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="customerCurrency">العملة الافتراضية</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                    </div>
+                                    <select class="form-control select2" id="customerCurrency" name="customerCurrency" required>
+                                        <option value="SAR" selected>ريال سعودي (SAR)</option>
+                                        <option value="USD">دولار أمريكي (USD)</option>
+                                        <option value="EUR">يورو (EUR)</option>
+                                        <option value="GBP">جنيه إسترليني (GBP)</option>
+                                        <option value="AED">درهم إماراتي (AED)</option>
+                                    </select>
+                                </div>
+                                <small class="form-text text-muted">العملة الافتراضية للحساب</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="allowedCurrencies">العملات المسموحة</label>
+                                <select class="form-control select2" id="allowedCurrencies" name="allowedCurrencies[]" multiple="multiple" data-placeholder="اختر العملات المسموحة">
+                                    <option value="SAR" selected>ريال سعودي (SAR)</option>
+                                    <option value="USD">دولار أمريكي (USD)</option>
+                                    <option value="EUR">يورو (EUR)</option>
+                                    <option value="GBP">جنيه إسترليني (GBP)</option>
+                                    <option value="AED">درهم إماراتي (AED)</option>
+                                </select>
+                                <small class="form-text text-muted">العملات التي يمكن للعميل التعامل بها</small>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -370,8 +408,17 @@
                                 
                                 <div class="col-sm-4 invoice-col">
                                     <b>المعلومات المالية</b><br>
-                                    <strong>الرصيد الحالي:</strong> 1,500 ر.س<br>
-                                    <strong>إجمالي المشتريات:</strong> 15,000 ر.س<br>
+                                    <strong>الرصيد الحالي:</strong> 
+                                    <ul class="list-unstyled mb-1">
+                                        <li><i class="fas fa-money-bill-wave ml-1"></i> 1,500 ر.س (الريال السعودي)</li>
+                                        <li><i class="fas fa-money-bill-wave ml-1"></i> 400 $ (الدولار الأمريكي)</li>
+                                    </ul>
+                                    <strong>العملة الافتراضية:</strong> الريال السعودي<br>
+                                    <strong>العملات المسموحة:</strong> 
+                                    <div class="mt-1 mb-2">
+                                        <span class="badge badge-info">الريال السعودي</span>
+                                        <span class="badge badge-info">الدولار الأمريكي</span>
+                                    </div>
                                     <strong>آخر معاملة:</strong> 01-06-2023<br>
                                     <strong>الحالة:</strong> <span class="badge badge-success">نشط</span>
                                 </div>

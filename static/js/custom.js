@@ -641,7 +641,17 @@ function initializeAmountToWords() {
  */
 function updateAmountInWords(input) {
     const value = parseFloat(input.value);
-    const amountInWordsElement = document.getElementById(input.id + '-text');
+    let amountInWordsElement;
+    
+    // محاولة العثور على العنصر الذي يعرض المبلغ كتابةً
+    if (input.id === 'receipt-amount') {
+        amountInWordsElement = document.getElementById('receipt-amount-in-words');
+    } else if (input.id === 'amount') {
+        amountInWordsElement = document.getElementById('amount-in-words');
+    } else {
+        amountInWordsElement = document.getElementById(input.id + '-text') || 
+                             document.getElementById(input.id + '-in-words');
+    }
     
     if (amountInWordsElement) {
         if (!isNaN(value) && value > 0) {
@@ -659,10 +669,27 @@ function updateAmountInWords(input) {
 function getCurrencyText(input) {
     // التحقق من وجود حقل اختيار العملة في النموذج
     const form = input.closest('form') || input.closest('.card-body');
-    const currencySelect = form?.querySelector('#currency') || form?.querySelector('[name="currency"]');
+    let currencySelect;
+    
+    // محاولة العثور على حقل العملة لسند الصرف أو سند القبض أو أي نموذج آخر
+    if (form) {
+        currencySelect = form.querySelector('#currency-type') || 
+                        form.querySelector('#receipt-currency-type') || 
+                        form.querySelector('[name="currency"]') ||
+                        form.querySelector('[name="currency-type"]') ||
+                        form.querySelector('[name="receipt-currency-type"]');
+    }
     
     if (currencySelect) {
         const currencyValue = currencySelect.value;
+        
+        // استخدام كائن العملات العالمي إذا كان متاحاً
+        if (window.multiCurrency && window.multiCurrency.currencyNames) {
+            const currencyName = window.multiCurrency.currencyNames[currencyValue];
+            if (currencyName) {
+                return currencyName + ' فقط لا غير';
+            }
+        }
         
         switch (currencyValue) {
             case 'USD':
