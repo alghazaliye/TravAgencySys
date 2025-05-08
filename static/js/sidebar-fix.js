@@ -1,100 +1,88 @@
 /**
- * ملف مخصص لإصلاح مشكلة زر القائمة الجانبية في تطبيق وكالة السفر
+ * إصلاح بسيط لزر القائمة الجانبية في تطبيق وكالة السفر
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    // الحصول على زر القائمة الجانبية
-    const sidebarToggleBtn = document.querySelector('[data-widget="pushmenu"]');
-    
-    if (sidebarToggleBtn) {
-        // إزالة أي مستمعات حدث مضافة سابقًا
-        const newSidebarToggleBtn = sidebarToggleBtn.cloneNode(true);
-        sidebarToggleBtn.parentNode.replaceChild(newSidebarToggleBtn, sidebarToggleBtn);
-        
-        // إضافة معالج حدث جديد
-        newSidebarToggleBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
+    // إضافة معالج نقر على زر القائمة الجانبية
+    document.body.addEventListener('click', function(event) {
+        // البحث عن الزر بناءً على الخصائص
+        if (event.target.closest('[data-widget="pushmenu"]')) {
+            console.log('تم النقر على زر القائمة الجانبية');
             
-            // تبديل حالة الجسم
-            if (document.body.classList.contains('sidebar-collapse')) {
-                document.body.classList.remove('sidebar-collapse');
-                document.body.classList.add('sidebar-open');
-            } else {
-                document.body.classList.remove('sidebar-open');
-                document.body.classList.add('sidebar-collapse');
-            }
+            // تبديل حالة القائمة
+            toggleSidebar();
             
-            // تغيير أنماط CSS الخاصة بالشريط الجانبي والمحتوى
-            adjustSidebarAndContent();
-            
-            // تخزين الحالة في localStorage
-            localStorage.setItem('sidebar-state', 
-                document.body.classList.contains('sidebar-collapse') ? 'collapsed' : 'expanded');
-        });
-        
-        // استعادة حالة الشريط الجانبي من localStorage عند تحميل الصفحة
-        const savedState = localStorage.getItem('sidebar-state');
-        if (savedState === 'collapsed') {
-            document.body.classList.add('sidebar-collapse');
-            document.body.classList.remove('sidebar-open');
-        } else if (savedState === 'expanded') {
-            document.body.classList.remove('sidebar-collapse');
-            document.body.classList.add('sidebar-open');
+            // منع السلوك الافتراضي
+            event.preventDefault();
+            event.stopPropagation();
         }
-        
-        // تعديل الأنماط الأولية
-        adjustSidebarAndContent();
+    });
+    
+    // إضافة مستمع للنقر المباشر على الزر أيضًا
+    const pushmenuButton = document.querySelector('[data-widget="pushmenu"]');
+    if (pushmenuButton) {
+        pushmenuButton.onclick = function(event) {
+            console.log('تم النقر على زر القائمة الجانبية - المعالج المباشر');
+            toggleSidebar();
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        };
     }
     
-    // مراقبة تغييرات الشاشة
-    window.addEventListener('resize', adjustSidebarAndContent);
+    // وسم مخصص للنقر السريع
+    const quickFix = document.createElement('div');
+    quickFix.style.position = 'fixed';
+    quickFix.style.top = '10px';
+    quickFix.style.right = '10px';
+    quickFix.style.zIndex = '9999';
+    quickFix.style.padding = '5px 10px';
+    quickFix.style.background = '#f8f9fa';
+    quickFix.style.border = '1px solid #ddd';
+    quickFix.style.borderRadius = '4px';
+    quickFix.style.cursor = 'pointer';
+    quickFix.innerHTML = '<span style="font-size: 16px;"><i class="fas fa-bars"></i></span>';
+    quickFix.title = 'تبديل القائمة الجانبية';
+    
+    quickFix.addEventListener('click', function() {
+        console.log('تم النقر على زر الإصلاح السريع');
+        toggleSidebar();
+    });
+    
+    document.body.appendChild(quickFix);
 });
 
 /**
- * ضبط مظهر الشريط الجانبي والمحتوى بناءً على حالة القائمة
+ * تبديل حالة القائمة الجانبية
  */
-function adjustSidebarAndContent() {
+function toggleSidebar() {
+    // تبديل الفئات في الجسم
+    document.body.classList.toggle('sidebar-collapse');
+    
+    if (document.body.classList.contains('sidebar-collapse')) {
+        // عند إغلاق القائمة
+        document.body.classList.remove('sidebar-open');
+        
+        // تعديل هوامش المحتوى
+        setContentMargins('0');
+    } else {
+        // عند فتح القائمة
+        document.body.classList.add('sidebar-open');
+        
+        // تعديل هوامش المحتوى
+        setContentMargins('250px');
+    }
+}
+
+/**
+ * ضبط هوامش المحتوى
+ */
+function setContentMargins(margin) {
     const contentWrapper = document.querySelector('.content-wrapper');
     const mainHeader = document.querySelector('.main-header');
     const mainFooter = document.querySelector('.main-footer');
-    const mainSidebar = document.querySelector('.main-sidebar');
     
-    // إذا كانت الشاشة صغيرة (وضع الهاتف)
-    if (window.innerWidth <= 767.98) {
-        // إعدادات الهاتف
-        if (mainSidebar) {
-            mainSidebar.style.position = 'fixed';
-            mainSidebar.style.right = document.body.classList.contains('sidebar-open') ? '0' : '-250px';
-            mainSidebar.style.transition = 'right 0.3s ease-in-out';
-        }
-        
-        if (contentWrapper) contentWrapper.style.marginRight = '0';
-        if (mainHeader) mainHeader.style.marginRight = '0';
-        if (mainFooter) mainFooter.style.marginRight = '0';
-    } else {
-        // إعدادات الكمبيوتر
-        if (mainSidebar) {
-            mainSidebar.style.position = 'fixed';
-            mainSidebar.style.right = '0';
-        }
-        
-        // تطبيق الهوامش بناءً على حالة الشريط الجانبي
-        const margin = document.body.classList.contains('sidebar-collapse') ? '0' : '250px';
-        
-        if (contentWrapper) {
-            contentWrapper.style.marginRight = margin;
-            contentWrapper.style.transition = 'margin-right 0.3s ease-in-out';
-        }
-        
-        if (mainHeader) {
-            mainHeader.style.marginRight = margin;
-            mainHeader.style.transition = 'margin-right 0.3s ease-in-out';
-        }
-        
-        if (mainFooter) {
-            mainFooter.style.marginRight = margin;
-            mainFooter.style.transition = 'margin-right 0.3s ease-in-out';
-        }
-    }
+    if (contentWrapper) contentWrapper.style.marginRight = margin;
+    if (mainHeader) mainHeader.style.marginRight = margin;
+    if (mainFooter) mainFooter.style.marginRight = margin;
 }
