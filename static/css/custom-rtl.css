@@ -214,14 +214,35 @@ body, h1, h2, h3, h4, h5, h6, p,
 
 /* Fix for brand logo area */
 .brand-link {
-    display: flex;
-    align-items: center;
+    display: flex !important;
+    align-items: center !important;
+    color: #fff !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 0.8rem 1rem !important;
+}
+
+.brand-link:hover {
+    color: #fff !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.brand-link i {
+    margin-left: 0.5rem !important;
+    margin-right: 0 !important;
+    font-size: 1.25rem !important;
+    color: #fff !important;
 }
 
 .brand-link .brand-image {
     float: right !important;
     margin-left: 0.8rem !important;
     margin-right: 0 !important;
+}
+
+.brand-link .brand-text {
+    margin-right: 0.5rem !important;
+    font-weight: 400 !important;
+    color: #fff !important;
 }
 
 /* Fix RTL sidebar - global */
@@ -291,8 +312,15 @@ body.sidebar-collapse .main-header {
 }
 
 /* Mobile responsive sidebar fixes */
+/* تحسينات عامة للخط والاتجاه */
+* {
+    letter-spacing: 0 !important;
+    font-family: 'Tajawal', sans-serif !important;
+}
+
+/* تحسين توافق الشاشات الصغيرة */
 @media (max-width: 767.98px) {
-    /* Global fixes for mobile */
+    /* إصلاحات عامة للموبايل */
     .main-sidebar, .main-sidebar::before {
         box-shadow: 0 10px 3px rgba(0, 0, 0, 0.1) !important;
         margin-right: -250px !important;
@@ -303,6 +331,73 @@ body.sidebar-collapse .main-header {
         top: 0 !important;
         z-index: 1100 !important;
     }
+    
+    /* تحسين عرض النماذج */
+    .form-group {
+        margin-bottom: 0.5rem;
+    }
+    
+    /* تحسين عرض الأزرار */
+    .btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+    
+    /* تحسين عرض الجداول */
+    .table td, .table th {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* تحسين توافق الشاشات المتوسطة */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .content-wrapper {
+        margin-right: 200px;
+        width: calc(100% - 200px);
+    }
+    
+    .main-sidebar {
+        width: 200px;
+    }
+}
+
+/* تحسين توافق الشاشات الكبيرة */
+@media (min-width: 992px) {
+    .container-fluid {
+        padding-right: 2rem;
+        padding-left: 2rem;
+    }
+}
+
+/* تحسينات إضافية للغة العربية */
+.dropdown-menu {
+    text-align: right;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    float: right;
+    padding-left: 0.5rem;
+    padding-right: 0;
+}
+
+.form-control {
+    text-align: right;
+}
+
+/* تحسين عرض التنبيهات */
+.alert {
+    text-align: right;
+}
+
+/* تحسين عرض المودال */
+.modal-header .close {
+    margin: -1rem auto -1rem -1rem;
+}
+
+.modal-footer {
+    justify-content: flex-start;
+}
 
     .sidebar-open .main-sidebar, 
     .sidebar-open .main-sidebar::before {
