@@ -99,6 +99,14 @@ def cash_journal():
 def bank_journal():
     return render_template('bank-journal.html')
 
+@app.route('/countries-cities')
+def countries_cities():
+    return render_template('countries-cities.html')
+
+@app.route('/id-types')
+def id_types():
+    return render_template('id-types.html')
+
 @app.route('/daily-journal')
 def daily_journal():
     return render_template('daily-journal.html')

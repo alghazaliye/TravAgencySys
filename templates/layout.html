@@ -658,6 +658,35 @@
                                 <p>التقارير</p>
                             </a>
                         </li>
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-cogs"></i>
+                                <p>
+                                    الإعدادات
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ url_for('countries_cities') }}" class="nav-link">
+                                        <i class="fas fa-globe-asia nav-icon"></i>
+                                        <p>الدول والمدن</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ url_for('id_types') }}" class="nav-link">
+                                        <i class="fas fa-id-card nav-icon"></i>
+                                        <p>أنواع الهوية</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ url_for('currencies') }}" class="nav-link">
+                                        <i class="fas fa-money-bill-wave nav-icon"></i>
+                                        <p>العملات</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                         <li class="nav-item">
                             <a href="{{ url_for('login') }}" class="nav-link">
                                 <i class="nav-icon fas fa-sign-out-alt"></i>
