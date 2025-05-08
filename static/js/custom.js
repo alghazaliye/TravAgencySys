@@ -94,24 +94,62 @@ function fixRtlSidebar() {
         link.style.alignItems = 'center';
         link.style.color = '#c2c7d0';
         
-        // إصلاح جميع أنواع الأيقونات
-        const icon = link.querySelector('.nav-icon, .fas, .fa');
-        const text = link.querySelector('p');
+        // إصلاح جميع أنواع الأيقونات بإضافة كود HTML مباشر
+        const iconElement = link.querySelector('.nav-icon, .fas, .fa');
+        const textElement = link.querySelector('p');
         
-        if (icon) {
-            icon.style.marginLeft = '10px';
-            icon.style.marginRight = '0';
-            icon.style.color = 'inherit';
-            icon.style.width = '20px';
-            icon.style.textAlign = 'center';
-            icon.style.display = 'inline-block';
+        // إذا لم يتم العثور على أيقونة، نتحقق من النص لإضافة الأيقونة المخفية
+        if (!iconElement && textElement) {
+            // نستخرج نوع الأيقونة من النص
+            let iconClass = '';
+            const text = textElement.textContent.trim().toLowerCase();
+            
+            // تخصيص أيقونة بناءً على النص
+            if (text.includes('تحكم')) {
+                iconClass = 'fas fa-tachometer-alt';
+            } else if (text.includes('حجوزات') || text.includes('تذاكر')) {
+                iconClass = 'fas fa-ticket-alt';
+            } else if (text.includes('تأشيرات')) {
+                iconClass = 'fas fa-passport';
+            } else if (text.includes('بريد')) {
+                iconClass = 'fas fa-envelope';
+            } else if (text.includes('عملاء')) {
+                iconClass = 'fas fa-user-friends';
+            } else if (text.includes('موردين')) {
+                iconClass = 'fas fa-truck';
+            } else if (text.includes('مالية')) {
+                iconClass = 'fas fa-money-check-alt';
+            } else {
+                iconClass = 'fas fa-circle'; // أيقونة افتراضية
+            }
+            
+            // إضافة الأيقونة قبل النص
+            const newIcon = document.createElement('i');
+            newIcon.className = `nav-icon ${iconClass}`;
+            newIcon.style.marginLeft = '10px';
+            newIcon.style.marginRight = '0';
+            newIcon.style.color = 'inherit';
+            newIcon.style.width = '20px';
+            newIcon.style.textAlign = 'center';
+            newIcon.style.display = 'inline-block';
+            
+            // إضافة الأيقونة قبل النص
+            textElement.parentNode.insertBefore(newIcon, textElement);
+        } else if (iconElement) {
+            // تعديل الأيقونة الموجودة
+            iconElement.style.marginLeft = '10px';
+            iconElement.style.marginRight = '0';
+            iconElement.style.color = 'inherit';
+            iconElement.style.width = '20px';
+            iconElement.style.textAlign = 'center';
+            iconElement.style.display = 'inline-block';
         }
         
-        if (text) {
-            text.style.margin = '0';
-            text.style.marginRight = '5px';
-            text.style.color = 'inherit';
-            text.style.display = 'inline-block';
+        if (textElement) {
+            textElement.style.margin = '0';
+            textElement.style.marginRight = '5px';
+            textElement.style.color = 'inherit';
+            textElement.style.display = 'inline-block';
         }
     });
     

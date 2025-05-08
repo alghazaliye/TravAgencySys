@@ -8,7 +8,9 @@
     <title>{% block title %}نظام إدارة وكالة السياحة والسفر{% endblock %}</title>
 
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Ensuring Font Awesome loads properly -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
     <!-- AdminLTE RTL -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1.0/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1.0/dist/css/alt/adminlte.components.min.css">
@@ -33,6 +35,8 @@
             transition: margin-right .3s ease-in-out;
             right: 0;
             left: auto;
+            background-color: #343a40 !important;
+            color: #fff !important;
         }
         
         .layout-fixed .main-sidebar {
@@ -66,6 +70,34 @@
             .sidebar-open .main-sidebar, .sidebar-open .main-sidebar::before {
                 margin-right: 0;
             }
+        }
+        
+        /* إصلاح مشكلة الأيقونات في الشريط الجانبي */
+        .nav-sidebar .nav-link {
+            display: flex !important;
+            align-items: center !important;
+            color: #c2c7d0 !important;
+        }
+        
+        .nav-sidebar .nav-link:hover {
+            color: #fff !important;
+        }
+        
+        .nav-sidebar .nav-icon, 
+        .nav-sidebar .fa, 
+        .nav-sidebar .fas {
+            color: inherit !important;
+            width: 1.6rem !important;
+            margin-left: 0.5rem !important;
+            margin-right: 0 !important;
+            text-align: center !important;
+            font-size: 1.1rem !important;
+        }
+        
+        .nav-sidebar .nav-link p {
+            color: inherit !important;
+            margin-right: 0.5rem !important;
+            display: inline-block !important;
         }
         
         /* تم نقل هذه الأنماط إلى ملف custom-rtl.css */
