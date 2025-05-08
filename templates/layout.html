@@ -138,9 +138,11 @@
             transition: margin-right .3s ease-in-out;
         }
         
+        /* إصلاح حالة القائمة المغلقة */
         body.sidebar-collapse .main-sidebar {
             margin-right: -250px;
             margin-left: 0;
+            transition: margin-right 0.3s ease;
         }
         
         body.sidebar-collapse .content-wrapper, 
@@ -148,15 +150,69 @@
         body.sidebar-collapse .main-header {
             margin-right: 0;
             margin-left: 0;
+            transition: margin-right 0.3s ease;
+        }
+        
+        /* إصلاح حالة القائمة المفتوحة */
+        body.sidebar-open .main-sidebar {
+            margin-right: 0;
+            margin-left: 0;
+            transition: margin-right 0.3s ease;
+        }
+        
+        body.sidebar-open .content-wrapper,
+        body.sidebar-open .main-footer,
+        body.sidebar-open .main-header {
+            margin-right: 250px;
+            margin-left: 0;
+            transition: margin-right 0.3s ease;
         }
         
         @media (max-width: 767.98px) {
+            /* إعدادات الهاتف المحمول */
             .content-wrapper, .main-footer, .main-header {
-                margin-right: 0;
+                margin-right: 0 !important;
+                margin-left: 0 !important;
             }
             
-            .sidebar-open .main-sidebar, .sidebar-open .main-sidebar::before {
-                margin-right: 0;
+            /* القائمة الجانبية المفتوحة على الهاتف المحمول */
+            body.sidebar-open .main-sidebar, 
+            body.sidebar-open .main-sidebar::before {
+                margin-right: 0 !important;
+                transform: translateX(0) !important;
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            }
+            
+            /* القائمة الجانبية المغلقة على الهاتف المحمول */
+            body.sidebar-collapse .main-sidebar, 
+            body.sidebar-collapse .main-sidebar::before {
+                margin-right: -250px !important;
+                transform: translateX(0) !important;
+            }
+            
+            /* محتوى الصفحة في وضع القائمة المفتوحة */
+            body.sidebar-open .content-wrapper,
+            body.sidebar-open .main-footer,
+            body.sidebar-open .main-header {
+                margin-right: 0 !important;
+            }
+            
+            /* طبقة شفافة عند فتح القائمة على الأجهزة الصغيرة */
+            body.sidebar-open::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 1000;
+                animation: fadeIn 0.2s ease;
+            }
+            
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
             }
         }
         

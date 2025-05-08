@@ -161,7 +161,34 @@ function fixRtlSidebar() {
         
         // نعيد تعريف الزر بعد استبداله
         const newPushMenuButton = document.querySelector('[data-widget="pushmenu"]');
-        // لا نضيف مستمعًا خاصًا، ونترك AdminLTE يتعامل مع الأمر
+        
+        // إضافة مستمع يدوي لضمان عمل الزر
+        newPushMenuButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // تبديل حالة القائمة
+            if (document.body.classList.contains('sidebar-collapse')) {
+                document.body.classList.remove('sidebar-collapse');
+                document.body.classList.add('sidebar-open');
+            } else {
+                document.body.classList.remove('sidebar-open');
+                document.body.classList.add('sidebar-collapse');
+            }
+            
+            // تخزين الحالة في localStorage لضمان التناسق
+            localStorage.setItem('sidebar-state', 
+                document.body.classList.contains('sidebar-collapse') ? 'collapsed' : 'expanded');
+        });
+        
+        // استعادة حالة الشريط الجانبي من localStorage
+        const savedState = localStorage.getItem('sidebar-state');
+        if (savedState === 'collapsed') {
+            document.body.classList.add('sidebar-collapse');
+            document.body.classList.remove('sidebar-open');
+        } else if (savedState === 'expanded') {
+            document.body.classList.remove('sidebar-collapse');
+            document.body.classList.add('sidebar-open');
+        }
     }
     
     // معالجة مشكلة القائمة المنسدلة في الهاتف المحمول
