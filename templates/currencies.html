@@ -19,6 +19,9 @@
                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-currency-modal">
                         <i class="fas fa-plus ml-1"></i> إضافة عملة جديدة
                     </button>
+                    <button type="button" class="btn btn-info btn-sm mr-2" data-toggle="modal" data-target="#account-currency-modal">
+                        <i class="fas fa-cog ml-1"></i> إعدادات العملات للحسابات
+                    </button>
                 </div>
             </div>
             <!-- /.card-header -->
@@ -39,6 +42,7 @@
                                 <th>اسم العملة</th>
                                 <th>الرمز</th>
                                 <th>سعر الصرف (مقابل الريال)</th>
+                                <th>العملة الافتراضية</th>
                                 <th>آخر تحديث</th>
                                 <th>الإجراءات</th>
                             </tr>
@@ -50,6 +54,7 @@
                                 <td>ريال سعودي</td>
                                 <td>ر.س</td>
                                 <td>1.00</td>
+                                <td><span class="badge badge-success">نعم</span></td>
                                 <td>01-05-2023</td>
                                 <td>
                                     <button class="btn btn-primary btn-sm" title="تعديل" data-toggle="modal" data-target="#edit-currency-modal"><i class="fas fa-edit"></i></button>
@@ -61,9 +66,11 @@
                                 <td>دولار أمريكي</td>
                                 <td>$</td>
                                 <td>0.27</td>
+                                <td><span class="badge badge-secondary">لا</span></td>
                                 <td>01-05-2023</td>
                                 <td>
                                     <button class="btn btn-primary btn-sm" title="تعديل" data-toggle="modal" data-target="#edit-currency-modal"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-success btn-sm" title="تعيين كافتراضي"><i class="fas fa-check-circle"></i></button>
                                     <button class="btn btn-danger btn-sm" title="حذف"><i class="fas fa-trash"></i></button>
                                 </td>
                             </tr>
@@ -73,9 +80,11 @@
                                 <td>يورو</td>
                                 <td>€</td>
                                 <td>0.24</td>
+                                <td><span class="badge badge-secondary">لا</span></td>
                                 <td>01-05-2023</td>
                                 <td>
                                     <button class="btn btn-primary btn-sm" title="تعديل" data-toggle="modal" data-target="#edit-currency-modal"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-success btn-sm" title="تعيين كافتراضي"><i class="fas fa-check-circle"></i></button>
                                     <button class="btn btn-danger btn-sm" title="حذف"><i class="fas fa-trash"></i></button>
                                 </td>
                             </tr>
@@ -85,9 +94,11 @@
                                 <td>جنيه إسترليني</td>
                                 <td>£</td>
                                 <td>0.21</td>
+                                <td><span class="badge badge-secondary">لا</span></td>
                                 <td>01-05-2023</td>
                                 <td>
                                     <button class="btn btn-primary btn-sm" title="تعديل" data-toggle="modal" data-target="#edit-currency-modal"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-success btn-sm" title="تعيين كافتراضي"><i class="fas fa-check-circle"></i></button>
                                     <button class="btn btn-danger btn-sm" title="حذف"><i class="fas fa-trash"></i></button>
                                 </td>
                             </tr>
@@ -97,9 +108,11 @@
                                 <td>درهم إماراتي</td>
                                 <td>د.إ</td>
                                 <td>0.98</td>
+                                <td><span class="badge badge-secondary">لا</span></td>
                                 <td>01-05-2023</td>
                                 <td>
                                     <button class="btn btn-primary btn-sm" title="تعديل" data-toggle="modal" data-target="#edit-currency-modal"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-success btn-sm" title="تعيين كافتراضي"><i class="fas fa-check-circle"></i></button>
                                     <button class="btn btn-danger btn-sm" title="حذف"><i class="fas fa-trash"></i></button>
                                 </td>
                             </tr>
@@ -114,6 +127,251 @@
     <!-- /.col -->
 </div>
 <!-- /.row -->
+
+<!-- إعدادات العملات للحسابات -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card card-outline card-info">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-link ml-2"></i>
+                    ربط العملات بالحسابات
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle ml-2"></i>
+                    يمكنك تعيين العملات المتاحة لكل نوع من أنواع الحسابات. سيتمكن كل حساب من استخدام العملات المحددة في المعاملات المالية.
+                </div>
+                <ul class="nav nav-tabs" id="accountTypeTabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="customer-tab" data-toggle="tab" href="#customer-currencies" role="tab" aria-controls="customer-currencies" aria-selected="true">العملاء</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="supplier-tab" data-toggle="tab" href="#supplier-currencies" role="tab" aria-controls="supplier-currencies" aria-selected="false">الموردين</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="bank-tab" data-toggle="tab" href="#bank-currencies" role="tab" aria-controls="bank-currencies" aria-selected="false">البنوك</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="cashbox-tab" data-toggle="tab" href="#cashbox-currencies" role="tab" aria-controls="cashbox-currencies" aria-selected="false">الصناديق</a>
+                    </li>
+                </ul>
+                <div class="tab-content mt-3" id="accountTypeTabsContent">
+                    <!-- حسابات العملاء -->
+                    <div class="tab-pane fade show active" id="customer-currencies" role="tabpanel" aria-labelledby="customer-tab">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40%;">العميل</th>
+                                        <th style="width: 40%;">العملات المتاحة</th>
+                                        <th style="width: 20%;">العملة الافتراضية</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <select class="form-control select2" style="width: 100%;">
+                                                <option selected>-- اختر العميل --</option>
+                                                <option>شركة السفر العالمية</option>
+                                                <option>مؤسسة الرحلات المميزة</option>
+                                                <option>أحمد محمد علي</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-control select2" multiple="multiple" data-placeholder="اختر العملات المتاحة" style="width: 100%;">
+                                                <option selected>ريال سعودي (SAR)</option>
+                                                <option selected>دولار أمريكي (USD)</option>
+                                                <option>يورو (EUR)</option>
+                                                <option>جنيه إسترليني (GBP)</option>
+                                                <option>درهم إماراتي (AED)</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-control">
+                                                <option selected>ريال سعودي (SAR)</option>
+                                                <option>دولار أمريكي (USD)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">
+                                            <button class="btn btn-sm btn-primary">تطبيق التغييرات</button>
+                                            <button class="btn btn-sm btn-info float-left" data-toggle="modal" data-target="#bulk-currency-modal">
+                                                <i class="fas fa-cogs ml-1"></i> تعيين العملات لجميع العملاء
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- حسابات الموردين -->
+                    <div class="tab-pane fade" id="supplier-currencies" role="tabpanel" aria-labelledby="supplier-tab">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40%;">المورد</th>
+                                        <th style="width: 40%;">العملات المتاحة</th>
+                                        <th style="width: 20%;">العملة الافتراضية</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <select class="form-control select2" style="width: 100%;">
+                                                <option selected>-- اختر المورد --</option>
+                                                <option>شركة التوريدات العالمية</option>
+                                                <option>شركة الخطوط السعودية</option>
+                                                <option>مؤسسة الإمداد التجارية</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-control select2" multiple="multiple" data-placeholder="اختر العملات المتاحة" style="width: 100%;">
+                                                <option selected>ريال سعودي (SAR)</option>
+                                                <option selected>دولار أمريكي (USD)</option>
+                                                <option selected>يورو (EUR)</option>
+                                                <option>جنيه إسترليني (GBP)</option>
+                                                <option>درهم إماراتي (AED)</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-control">
+                                                <option>ريال سعودي (SAR)</option>
+                                                <option selected>دولار أمريكي (USD)</option>
+                                                <option>يورو (EUR)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">
+                                            <button class="btn btn-sm btn-primary">تطبيق التغييرات</button>
+                                            <button class="btn btn-sm btn-info float-left" data-toggle="modal" data-target="#bulk-currency-modal">
+                                                <i class="fas fa-cogs ml-1"></i> تعيين العملات لجميع الموردين
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- حسابات البنوك -->
+                    <div class="tab-pane fade" id="bank-currencies" role="tabpanel" aria-labelledby="bank-tab">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40%;">البنك</th>
+                                        <th style="width: 40%;">العملات المتاحة</th>
+                                        <th style="width: 20%;">العملة الافتراضية</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <select class="form-control select2" style="width: 100%;">
+                                                <option selected>-- اختر البنك --</option>
+                                                <option>البنك الأهلي</option>
+                                                <option>مصرف الراجحي</option>
+                                                <option>بنك الرياض</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-control select2" multiple="multiple" data-placeholder="اختر العملات المتاحة" style="width: 100%;">
+                                                <option selected>ريال سعودي (SAR)</option>
+                                                <option selected>دولار أمريكي (USD)</option>
+                                                <option selected>يورو (EUR)</option>
+                                                <option selected>جنيه إسترليني (GBP)</option>
+                                                <option>درهم إماراتي (AED)</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-control">
+                                                <option selected>ريال سعودي (SAR)</option>
+                                                <option>دولار أمريكي (USD)</option>
+                                                <option>يورو (EUR)</option>
+                                                <option>جنيه إسترليني (GBP)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">
+                                            <button class="btn btn-sm btn-primary">تطبيق التغييرات</button>
+                                            <button class="btn btn-sm btn-info float-left" data-toggle="modal" data-target="#bulk-currency-modal">
+                                                <i class="fas fa-cogs ml-1"></i> تعيين العملات لجميع البنوك
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- حسابات الصناديق -->
+                    <div class="tab-pane fade" id="cashbox-currencies" role="tabpanel" aria-labelledby="cashbox-tab">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40%;">الصندوق</th>
+                                        <th style="width: 40%;">العملات المتاحة</th>
+                                        <th style="width: 20%;">العملة الافتراضية</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <select class="form-control select2" style="width: 100%;">
+                                                <option selected>-- اختر الصندوق --</option>
+                                                <option>الصندوق الرئيسي</option>
+                                                <option>صندوق الفرع الأول</option>
+                                                <option>صندوق الفرع الثاني</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-control select2" multiple="multiple" data-placeholder="اختر العملات المتاحة" style="width: 100%;">
+                                                <option selected>ريال سعودي (SAR)</option>
+                                                <option selected>دولار أمريكي (USD)</option>
+                                                <option selected>يورو (EUR)</option>
+                                                <option>جنيه إسترليني (GBP)</option>
+                                                <option selected>درهم إماراتي (AED)</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-control">
+                                                <option selected>ريال سعودي (SAR)</option>
+                                                <option>دولار أمريكي (USD)</option>
+                                                <option>يورو (EUR)</option>
+                                                <option>درهم إماراتي (AED)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">
+                                            <button class="btn btn-sm btn-primary">تطبيق التغييرات</button>
+                                            <button class="btn btn-sm btn-info float-left" data-toggle="modal" data-target="#bulk-currency-modal">
+                                                <i class="fas fa-cogs ml-1"></i> تعيين العملات لجميع الصناديق
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Modal إضافة عملة جديدة -->
 <div class="modal fade" id="add-currency-modal" tabindex="-1" role="dialog" aria-labelledby="addCurrencyModalLabel" aria-hidden="true">
@@ -168,7 +426,7 @@
 <div class="modal fade" id="edit-currency-modal" tabindex="-1" role="dialog" aria-labelledby="editCurrencyModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-primary">
                 <h5 class="modal-title" id="editCurrencyModalLabel">تعديل العملة</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -178,22 +436,40 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="edit_currency_code">رمز العملة (ISO)</label>
-                        <input type="text" class="form-control" id="edit_currency_code" value="USD" readonly>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-code"></i></span>
+                            </div>
+                            <input type="text" class="form-control" id="edit_currency_code" value="USD" readonly>
+                        </div>
                         <small class="form-text text-muted">لا يمكن تعديل رمز العملة</small>
                     </div>
                     <div class="form-group">
                         <label for="edit_currency_name">اسم العملة</label>
-                        <input type="text" class="form-control" id="edit_currency_name" value="دولار أمريكي" required>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-money-bill"></i></span>
+                            </div>
+                            <input type="text" class="form-control" id="edit_currency_name" value="دولار أمريكي" required>
+                        </div>
                         <div class="invalid-feedback">يرجى إدخال اسم العملة</div>
                     </div>
                     <div class="form-group">
                         <label for="edit_currency_symbol">رمز العملة (الشكل)</label>
-                        <input type="text" class="form-control" id="edit_currency_symbol" value="$" required>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                            </div>
+                            <input type="text" class="form-control" id="edit_currency_symbol" value="$" required>
+                        </div>
                         <div class="invalid-feedback">يرجى إدخال رمز العملة</div>
                     </div>
                     <div class="form-group">
                         <label for="edit_exchange_rate">سعر الصرف (مقابل الريال السعودي)</label>
                         <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-exchange-alt"></i></span>
+                            </div>
                             <input type="number" step="0.0001" class="form-control" id="edit_exchange_rate" value="0.27" required>
                             <div class="input-group-append">
                                 <span class="input-group-text">ريال سعودي</span>
@@ -202,12 +478,227 @@
                         <div class="invalid-feedback">يرجى إدخال سعر الصرف</div>
                         <small class="form-text text-muted">قيمة العملة مقابل الريال السعودي. مثال: 1 دولار = 3.75 ريال، أدخل 0.27</small>
                     </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="is_default_currency">
+                            <label class="custom-control-label" for="is_default_currency">تعيين كعملة افتراضية للنظام</label>
+                        </div>
+                        <small class="form-text text-warning">ملاحظة: تعيين هذه العملة كافتراضية سيؤدي إلى إلغاء تعيين العملة الافتراضية الحالية</small>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
-                    <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times ml-1"></i> إلغاء
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save ml-1"></i> حفظ التغييرات
+                    </button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal إعدادات العملات للحسابات -->
+<div class="modal fade" id="account-currency-modal" tabindex="-1" role="dialog" aria-labelledby="accountCurrencyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h5 class="modal-title" id="accountCurrencyModalLabel">
+                    <i class="fas fa-cog ml-1"></i>
+                    إعدادات العملات للحسابات
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle ml-2"></i>
+                    حدد أنواع الحسابات التي يمكنها استخدام العملات المتعددة، وما هي الحسابات التي ستستخدم العملة الافتراضية فقط.
+                </div>
+                
+                <div class="form-group">
+                    <label>أنواع الحسابات التي تدعم العملات المتعددة:</label>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="multi_currency_customers" checked>
+                                <label class="custom-control-label" for="multi_currency_customers">العملاء</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="multi_currency_suppliers" checked>
+                                <label class="custom-control-label" for="multi_currency_suppliers">الموردين</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="multi_currency_banks" checked>
+                                <label class="custom-control-label" for="multi_currency_banks">البنوك</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="multi_currency_cashboxes" checked>
+                                <label class="custom-control-label" for="multi_currency_cashboxes">الصناديق</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>إعدادات متقدمة:</label>
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="allow_currency_conversion" checked>
+                        <label class="custom-control-label" for="allow_currency_conversion">السماح بتحويل العملات في المعاملات المالية</label>
+                    </div>
+                    <small class="form-text text-muted">عند تفعيل هذا الخيار، يمكن إجراء معاملات بين حسابات بعملات مختلفة مع التحويل التلقائي</small>
+                </div>
+                
+                <div class="form-group">
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="auto_update_rates">
+                        <label class="custom-control-label" for="auto_update_rates">تحديث أسعار الصرف تلقائياً يومياً</label>
+                    </div>
+                    <small class="form-text text-muted">سيتم تحديث أسعار الصرف تلقائياً من المصدر الذي يتم تحديده في إعدادات النظام</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="exchange_rate_source">مصدر تحديث أسعار الصرف:</label>
+                    <select class="form-control" id="exchange_rate_source">
+                        <option value="saudi_central_bank" selected>مؤسسة النقد العربي السعودي</option>
+                        <option value="open_exchange_rates">Open Exchange Rates API</option>
+                        <option value="manual">تحديث يدوي</option>
+                    </select>
+                </div>
+                
+                <hr>
+                
+                <div class="form-group">
+                    <label>تعيين العملات المسموحة:</label>
+                    <div class="mb-2">
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="select-all-currencies">تحديد الكل</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="deselect-all-currencies">إلغاء تحديد الكل</button>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="allowed_currency_sar" checked>
+                                <label class="custom-control-label" for="allowed_currency_sar">ريال سعودي (SAR)</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="allowed_currency_usd" checked>
+                                <label class="custom-control-label" for="allowed_currency_usd">دولار أمريكي (USD)</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="allowed_currency_eur" checked>
+                                <label class="custom-control-label" for="allowed_currency_eur">يورو (EUR)</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="allowed_currency_gbp" checked>
+                                <label class="custom-control-label" for="allowed_currency_gbp">جنيه إسترليني (GBP)</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="allowed_currency_aed" checked>
+                                <label class="custom-control-label" for="allowed_currency_aed">درهم إماراتي (AED)</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fas fa-times ml-1"></i> إلغاء
+                </button>
+                <button type="button" class="btn btn-info" id="save-account-currency-settings">
+                    <i class="fas fa-save ml-1"></i> حفظ الإعدادات
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal تعيين العملات لكل الحسابات -->
+<div class="modal fade" id="bulk-currency-modal" tabindex="-1" role="dialog" aria-labelledby="bulkCurrencyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h5 class="modal-title" id="bulkCurrencyModalLabel">
+                    <i class="fas fa-cogs ml-1"></i>
+                    تعيين العملات لجميع الحسابات
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle ml-2"></i>
+                    سيتم تطبيق هذه الإعدادات على كافة الحسابات من النوع المحدد. هذا سيؤدي إلى استبدال إعدادات العملات الحالية لجميع الحسابات من هذا النوع.
+                </div>
+                
+                <div class="form-group">
+                    <label>نوع الحسابات:</label>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="account_type_customers" name="account_type" class="custom-control-input" checked>
+                        <label class="custom-control-label" for="account_type_customers">العملاء</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="account_type_suppliers" name="account_type" class="custom-control-input">
+                        <label class="custom-control-label" for="account_type_suppliers">الموردين</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="account_type_banks" name="account_type" class="custom-control-input">
+                        <label class="custom-control-label" for="account_type_banks">البنوك</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="account_type_cashboxes" name="account_type" class="custom-control-input">
+                        <label class="custom-control-label" for="account_type_cashboxes">الصناديق</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>العملات المتاحة:</label>
+                    <select class="form-control select2" multiple="multiple" data-placeholder="اختر العملات المتاحة" style="width: 100%;">
+                        <option selected>ريال سعودي (SAR)</option>
+                        <option selected>دولار أمريكي (USD)</option>
+                        <option>يورو (EUR)</option>
+                        <option>جنيه إسترليني (GBP)</option>
+                        <option>درهم إماراتي (AED)</option>
+                    </select>
+                    <small class="form-text text-muted">سيتم تعيين هذه العملات كعملات متاحة لجميع الحسابات من النوع المحدد</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>العملة الافتراضية:</label>
+                    <select class="form-control">
+                        <option selected>ريال سعودي (SAR)</option>
+                        <option>دولار أمريكي (USD)</option>
+                        <option>يورو (EUR)</option>
+                        <option>جنيه إسترليني (GBP)</option>
+                        <option>درهم إماراتي (AED)</option>
+                    </select>
+                    <small class="form-text text-muted">سيتم تعيين هذه العملة كعملة افتراضية لجميع الحسابات من النوع المحدد</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fas fa-times ml-1"></i> إلغاء
+                </button>
+                <button type="button" class="btn btn-info" id="apply-bulk-currency-settings">
+                    <i class="fas fa-check ml-1"></i> تطبيق التغييرات
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -216,6 +707,12 @@
 {% block scripts %}
 <script>
     $(document).ready(function() {
+        // تهيئة select2
+        $('.select2').select2({
+            dir: 'rtl',
+            language: 'ar'
+        });
+        
         // تحديث أسعار الصرف
         $('#update-exchange-rates').on('click', function() {
             // هنا يمكن إضافة كود لتحديث أسعار الصرف من API خارجي
@@ -243,6 +740,84 @@
                     }
                 });
             }, 2000);
+        });
+        
+        // تحديد/إلغاء تحديد كل العملات
+        $('#select-all-currencies').on('click', function() {
+            $('input[id^="allowed_currency_"]').prop('checked', true);
+        });
+        
+        $('#deselect-all-currencies').on('click', function() {
+            $('input[id^="allowed_currency_"]').prop('checked', false);
+            // إبقاء العملة الافتراضية (الريال) محددة
+            $('#allowed_currency_sar').prop('checked', true);
+        });
+        
+        // حفظ إعدادات العملات للحسابات
+        $('#save-account-currency-settings').on('click', function() {
+            Swal.fire({
+                title: 'جاري الحفظ...',
+                text: 'يتم الآن حفظ إعدادات العملات',
+                icon: 'info',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                willOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
+            // محاكاة عملية الحفظ
+            setTimeout(function() {
+                Swal.fire({
+                    title: 'تم الحفظ!',
+                    text: 'تم حفظ إعدادات العملات بنجاح',
+                    icon: 'success',
+                    confirmButtonText: 'حسناً'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $('#account-currency-modal').modal('hide');
+                    }
+                });
+            }, 1500);
+        });
+        
+        // تطبيق تغييرات العملات على جميع الحسابات من نوع معين
+        $('#apply-bulk-currency-settings').on('click', function() {
+            Swal.fire({
+                title: 'تأكيد التطبيق',
+                text: 'هل أنت متأكد من تطبيق هذه الإعدادات على جميع الحسابات من النوع المحدد؟',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'نعم، طبق الإعدادات',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'جاري التطبيق...',
+                        text: 'يتم الآن تطبيق إعدادات العملات',
+                        icon: 'info',
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        willOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    
+                    // محاكاة عملية التطبيق
+                    setTimeout(function() {
+                        Swal.fire({
+                            title: 'تم التطبيق!',
+                            text: 'تم تطبيق إعدادات العملات بنجاح على جميع الحسابات من النوع المحدد',
+                            icon: 'success',
+                            confirmButtonText: 'حسناً'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $('#bulk-currency-modal').modal('hide');
+                            }
+                        });
+                    }, 1500);
+                }
+            });
         });
     });
 </script>

@@ -471,14 +471,22 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
                                             </div>
-                                            <select class="form-control" id="receipt-currency-type" name="receipt-currency-type" required>
+                                            <select class="form-control select2" id="receipt-currency-type" name="receipt-currency-type" required>
                                                 <option value="SAR" selected>ريال سعودي (SAR)</option>
                                                 <option value="USD">دولار أمريكي (USD)</option>
                                                 <option value="EUR">يورو (EUR)</option>
                                                 <option value="GBP">جنيه إسترليني (GBP)</option>
                                                 <option value="AED">درهم إماراتي (AED)</option>
                                             </select>
+                                            <div class="input-group-append">
+                                                <button type="button" class="btn btn-info" data-toggle="tooltip" title="تحديث أسعار الصرف">
+                                                    <i class="fas fa-sync-alt"></i>
+                                                </button>
+                                            </div>
                                         </div>
+                                        <small class="form-text text-muted">
+                                            <span id="exchange-rate-info">١ ريال سعودي = ١ ريال سعودي</span>
+                                        </small>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
