@@ -27,6 +27,10 @@ def airline_tickets():
 def bus_tickets():
     return render_template('bus-tickets.html')
 
+@app.route('/bus-tickets-new')
+def bus_tickets_new():
+    return render_template('bus-tickets-new.html')
+
 @app.route('/work-visa')
 def work_visa():
     return render_template('work-visa.html')

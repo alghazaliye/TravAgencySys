@@ -572,10 +572,8 @@
                                         <div class="form-group">
                                             <label for="account">الحساب :</label>
                                             <select class="form-control" id="account">
-                                                <option value="main-safe">الصندوق الرئيسي</option>
-                                                <option value="sales-safe">صندوق المبيعات</option>
-                                                <option value="bank-alrajhi">حساب بنك الراجحي</option>
-                                                <option value="bank-ahli">حساب البنك الأهلي</option>
+                                                <!-- سيتم ملء هذه القائمة ديناميكياً بناءً على نوع التوصيل -->
+                                                <option value="">اختر الحساب المالي</option>
                                             </select>
                                         </div>
                                     </div>
@@ -695,6 +693,58 @@
                 maintainAspectRatio: false
             }
         });
+        
+        // تحديث حقل الحساب بناءً على نوع التوصيل
+        $('#paymentType').on('change', function() {
+            var accountSelect = $('#account');
+            accountSelect.empty(); // مسح الخيارات السابقة
+            accountSelect.append('<option value="">اختر الحساب المالي</option>');
+            
+            // إعادة تهيئة Select2 للحقل
+            accountSelect.select2('destroy');
+            
+            // تحديث القائمة حسب نوع التوصيل
+            switch ($(this).val()) {
+                case 'cash': // نقد
+                    // إضافة خيارات الصندوق
+                    accountSelect.append('<option value="main-safe">الصندوق الرئيسي</option>');
+                    accountSelect.append('<option value="sales-safe">صندوق المبيعات</option>');
+                    accountSelect.append('<option value="petty-cash">الصندوق النثري</option>');
+                    break;
+                    
+                case 'credit': // آجل
+                    // إضافة خيارات العملاء
+                    accountSelect.append('<option value="customer-1">محمد أحمد عبدالله</option>');
+                    accountSelect.append('<option value="customer-2">خالد محمد السيد</option>');
+                    accountSelect.append('<option value="customer-3">عبدالله ناصر العتيبي</option>');
+                    accountSelect.append('<option value="customer-4">فهد سعد الغامدي</option>');
+                    accountSelect.append('<option value="customer-5">علي حسن الشمري</option>');
+                    break;
+                    
+                case 'transfer': // تحويل بنكي
+                case 'bank': // أو أي نوع بنك آخر
+                    // إضافة خيارات البنوك
+                    accountSelect.append('<option value="bank-1">بنك الراجحي</option>');
+                    accountSelect.append('<option value="bank-2">البنك الأهلي السعودي</option>');
+                    accountSelect.append('<option value="bank-3">بنك الإنماء</option>');
+                    accountSelect.append('<option value="bank-4">بنك سامبا</option>');
+                    accountSelect.append('<option value="bank-5">بنك الرياض</option>');
+                    break;
+                    
+                default:
+                    // لا تضيف أي خيارات إضافية
+                    break;
+            }
+            
+            // إعادة تهيئة Select2 بعد تحديث الخيارات
+            accountSelect.select2({
+                dir: "rtl",
+                language: "ar"
+            });
+        });
+        
+        // تنفيذ التغيير الأولي لتحديث القائمة حسب القيمة الافتراضية
+        $('#paymentType').trigger('change');
         
         // معالجة حدث النقر على زر الحفظ
         $('#complete-reservation').click(function() {
