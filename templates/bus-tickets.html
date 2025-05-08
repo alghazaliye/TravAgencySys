@@ -1134,14 +1134,15 @@
             }
         });
         
-        // التنقل بين خطوات النموذج
-        $('.next-step').click(function() {
-            var currentSection = $(this).closest('.section');
-            var nextSectionId = $(this).data('next');
-            
-            // التحقق من صحة الحقول في القسم الحالي
+        // تم تعديل النموذج ليصبح صفحة واحدة بدون تنقل بين الخطوات
+        
+        // إخفاء أزرار التنقل بين الخطوات
+        $('.next-step, .prev-step').hide();
+        
+        // تعديل سلوك التحقق من صحة النموذج
+        function validateFormSection(section) {
             var isValid = true;
-            currentSection.find('[required]').each(function() {
+            section.find('[required]').each(function() {
                 if ($(this).val() === '') {
                     isValid = false;
                     $(this).addClass('is-invalid');
@@ -1149,27 +1150,41 @@
                     $(this).removeClass('is-invalid');
                 }
             });
-            
-            if (isValid) {
-                currentSection.hide();
-                $('#' + nextSectionId).show();
-                
-                // تحديث شريط التقدم
-                updateProgressBar(nextSectionId);
-            } else {
-                alert('يرجى ملء جميع الحقول المطلوبة');
-            }
-        });
+            return isValid;
+        }
         
-        $('.prev-step').click(function() {
-            var currentSection = $(this).closest('.section');
-            var prevSectionId = $(this).data('prev');
+        // تمكين زر الحفظ ليتحقق من جميع الحقول الإلزامية
+        $('#complete-reservation').click(function() {
+            // التحقق من جميع الأقسام
+            var personalValid = validateFormSection($('#section-personal'));
+            var identityValid = validateFormSection($('#section-identity'));
+            var tripValid = validateFormSection($('#section-trip'));
+            var financialValid = validateFormSection($('#section-financial'));
             
-            currentSection.hide();
-            $('#' + prevSectionId).show();
-            
-            // تحديث شريط التقدم
-            updateProgressBar(prevSectionId);
+            if (personalValid && identityValid && tripValid && financialValid) {
+                // إرسال النموذج أو معالجة البيانات هنا
+                alert('تم حفظ بيانات الحجز بنجاح!');
+                $('#modal-add-ticket').modal('hide');
+            } else {
+                // التمرير إلى أول قسم به خطأ
+                if (!personalValid) {
+                    $('html, body').animate({
+                        scrollTop: $('#section-personal').offset().top - 100
+                    }, 500);
+                } else if (!identityValid) {
+                    $('html, body').animate({
+                        scrollTop: $('#section-identity').offset().top - 100
+                    }, 500);
+                } else if (!tripValid) {
+                    $('html, body').animate({
+                        scrollTop: $('#section-trip').offset().top - 100
+                    }, 500);
+                } else if (!financialValid) {
+                    $('html, body').animate({
+                        scrollTop: $('#section-financial').offset().top - 100
+                    }, 500);
+                }
+            }
         });
         
         // تحديث شريط التقدم
@@ -1215,31 +1230,7 @@
             }
         }
         
-        // حفظ الحجز
-        $('#complete-reservation').click(function() {
-            var isValid = true;
-            $('#section-financial').find('[required]').each(function() {
-                if ($(this).val() === '') {
-                    isValid = false;
-                    $(this).addClass('is-invalid');
-                } else {
-                    $(this).removeClass('is-invalid');
-                }
-            });
-            
-            if (isValid) {
-                alert('تم حفظ الحجز بنجاح');
-                $('#modal-add-reservation').modal('hide');
-                
-                // إعادة تعيين النموذج
-                $('#busTicketForm')[0].reset();
-                $('.section').hide();
-                $('#section-personal').show();
-                updateProgressBar('section-personal');
-            } else {
-                alert('يرجى ملء جميع الحقول المطلوبة');
-            }
-        });
+        // تم دمج كود حفظ الحجز مع الدالة السابقة
         
         // تهيئة الرسوم البيانية
         var citiesCtx = document.getElementById('citiesChart').getContext('2d');
