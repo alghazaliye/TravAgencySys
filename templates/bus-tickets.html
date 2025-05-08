@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <!-- صفحة حجز تذاكر الباص CSS -->
 <link rel="stylesheet" href="{{ url_for('static', filename='css/bus-tickets.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bus-tickets-form.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -361,144 +362,322 @@
             </div>
             <div class="modal-body">
                 <form id="busTicketForm">
-                    <!-- رأس النموذج -->
-                    <div class="alert alert-info">
-                        <h5><i class="fas fa-info-circle ml-2"></i> تعليمات الحجز</h5>
-                        <p>يرجى تعبئة كافة البيانات المطلوبة أدناه لإتمام عملية حجز تذكرة الباص. الحقول المميزة بـ <span class="text-danger">*</span> إلزامية.</p>
-                    </div>
+                    <h2 class="form-header">شاشة إدخال بيانات حجز تذاكر باصات</h2>
 
-                    <!-- نموذج الحجز الموحد -->
-                    <div class="reservation-form">
-                        <!-- 1. البيانات الشخصية -->
-                        <div class="section" id="section-personal">
-                            <div class="card card-primary">
-                                <div class="card-header">
-                                    <h3 class="card-title">
-                                        <i class="fas fa-user ml-2"></i>
-                                        البيانات الشخصية للمسافر
-                                    </h3>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                <label for="passengerName">
-                                                    <i class="fas fa-user ml-1"></i>
-                                                    اسم المسافر <span class="text-danger">*</span>
-                                                </label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                                    </div>
-                                                    <input type="text" class="form-control" id="passengerName" placeholder="أدخل الاسم بالكامل" required>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                <label for="phoneNumber">
-                                                    <i class="fas fa-phone ml-1"></i>
-                                                    رقم الهاتف <span class="text-danger">*</span>
-                                                </label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                                                    </div>
-                                                    <input type="text" class="form-control" id="phoneNumber" placeholder="05xxxxxxxx" required>
-                                                </div>
-                                            </div>
+                    <!-- نموذج الحجز المشابه للصورة المرفقة -->
+                    <div class="form-section">
+                        <div class="section-title">المعرف :</div>
+                        
+                        <!-- قسم البيانات الشخصية -->
+                        <div class="row form-section">
+                            <div class="section-title">البيانات الشخصية</div>
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="passengerName" class="required-field">اسم المسافر الرباعي :</label>
+                                            <input type="text" class="form-control" id="passengerName" required>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                <label for="birthPlace">
-                                                    <i class="fas fa-map-marker-alt ml-1"></i>
-                                                    مكان الميلاد
-                                                </label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
-                                                    </div>
-                                                    <input type="text" class="form-control" id="birthPlace" placeholder="أدخل مكان الميلاد">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                <label for="birthDate">
-                                                    <i class="fas fa-calendar-alt ml-1"></i>
-                                                    تاريخ الميلاد
-                                                </label>
-                                                <div class="input-group date" id="birthDatePicker" data-target-input="nearest">
-                                                    <div class="input-group-prepend" data-target="#birthDatePicker" data-toggle="datetimepicker">
-                                                        <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                                                    </div>
-                                                    <input type="text" class="form-control datetimepicker-input" id="birthDate" data-target="#birthDatePicker" placeholder="DD/MM/YYYY">
-                                                </div>
-                                            </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="mobileNumber">رقم الموبايل :</label>
+                                            <input type="text" class="form-control" id="mobileNumber">
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                <label>
-                                                    <i class="fas fa-venus-mars ml-1"></i>
-                                                    الجنس <span class="text-danger">*</span>
-                                                </label>
-                                                <div class="d-flex">
-                                                    <div class="custom-control custom-radio mr-3">
-                                                        <input class="custom-control-input" type="radio" id="genderMale" name="gender" value="male" checked>
-                                                        <label for="genderMale" class="custom-control-label">ذكر</label>
-                                                    </div>
-                                                    <div class="custom-control custom-radio">
-                                                        <input class="custom-control-input" type="radio" id="genderFemale" name="gender" value="female">
-                                                        <label for="genderFemale" class="custom-control-label">أنثى</label>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="birthPlace">مكان الميلاد :</label>
+                                            <input type="text" class="form-control" id="birthPlace">
                                         </div>
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                <label for="email">
-                                                    <i class="fas fa-envelope ml-1"></i>
-                                                    البريد الإلكتروني
-                                                </label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                                    </div>
-                                                    <input type="email" class="form-control" id="email" placeholder="البريد الإلكتروني (اختياري)">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="birthDate">تاريخ الميلاد :</label>
+                                            <div class="input-group date" id="birthDatePicker" data-target-input="nearest">
+                                                <input type="text" class="form-control datetimepicker-input" id="birthDate" data-target="#birthDatePicker" value="08  مايو , 2025">
+                                                <div class="input-group-append" data-target="#birthDatePicker" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-footer">
-                                    <div class="d-flex justify-content-between">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">
-                                            <i class="fas fa-times ml-1"></i> إلغاء
-                                        </button>
-                                        <button type="button" class="btn btn-primary next-step" data-next="section-identity">
-                                            التالي <i class="fas fa-arrow-left ml-1"></i>
-                                        </button>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="gender">الجنس :</label>
+                                            <select class="form-control" id="gender">
+                                                <option value="male">ذكر</option>
+                                                <option value="female">أنثى</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="idType">نوع الهوية :</label>
+                                            <select class="form-control" id="idType">
+                                                <option value="national-id">الهوية الوطنية</option>
+                                                <option value="passport">جواز سفر</option>
+                                                <option value="iqama">إقامة</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="idNumber">رقم الهوية :</label>
+                                            <input type="text" class="form-control" id="idNumber">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="nationality">الجنسية :</label>
+                                            <select class="form-control" id="nationality">
+                                                <option value="saudi">سعودي</option>
+                                                <option value="egyptian">مصري</option>
+                                                <option value="jordanian">أردني</option>
+                                                <option value="syrian">سوري</option>
+                                                <option value="yemeni">يمني</option>
+                                                <option value="other">أخرى</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="issueDate">تاريخ الإصدار :</label>
+                                            <div class="input-group date" id="issueDatePicker" data-target-input="nearest">
+                                                <input type="text" class="form-control datetimepicker-input" id="issueDate" data-target="#issueDatePicker" value="08  مايو , 2025">
+                                                <div class="input-group-append" data-target="#issueDatePicker" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="issuePlace">مكان الإصدار :</label>
+                                            <input type="text" class="form-control" id="issuePlace">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- 2. بيانات الهوية -->
-                        <div class="section" id="section-identity">
-                            <div class="card card-primary">
-                                <div class="card-header">
-                                    <h3 class="card-title">بيانات الهوية</h3>
+                        
+                        <!-- بيانات الحجز -->
+                        <div class="row form-section">
+                            <div class="section-title">بيانات الحجز</div>
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="tripReserved">هل تم الحجز :</label>
+                                            <div class="mt-2">
+                                                <div class="custom-control custom-radio custom-control-inline">
+                                                    <input type="radio" id="tripReservedYes" name="tripReserved" class="custom-control-input" value="yes" checked>
+                                                    <label class="custom-control-label" for="tripReservedYes">نعم</label>
+                                                </div>
+                                                <div class="custom-control custom-radio custom-control-inline">
+                                                    <input type="radio" id="tripReservedNo" name="tripReserved" class="custom-control-input" value="no">
+                                                    <label class="custom-control-label" for="tripReservedNo">لا</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="departureCountry">دولة إنطلاق الرحلة :</label>
+                                            <select class="form-control" id="departureCountry">
+                                                <option value="saudi">المملكة العربية السعودية</option>
+                                                <option value="egypt">مصر</option>
+                                                <option value="jordan">الأردن</option>
+                                                <option value="uae">الإمارات العربية المتحدة</option>
+                                                <option value="kuwait">الكويت</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="departureCity">مدينة الإنطلاق :</label>
+                                            <select class="form-control" id="departureCity">
+                                                <option value="riyadh">الرياض</option>
+                                                <option value="jeddah">جدة</option>
+                                                <option value="dammam">الدمام</option>
+                                                <option value="medina">المدينة المنورة</option>
+                                                <option value="makkah">مكة المكرمة</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="destinationCountry">دولة إتجاه الرحلة :</label>
+                                            <select class="form-control" id="destinationCountry">
+                                                <option value="saudi">المملكة العربية السعودية</option>
+                                                <option value="egypt">مصر</option>
+                                                <option value="jordan">الأردن</option>
+                                                <option value="uae">الإمارات العربية المتحدة</option>
+                                                <option value="kuwait">الكويت</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="idType">نوع الهوية <span class="text-danger">*</span></label>
-                                                <select class="form-control" id="idType" required>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="destinationCity">مدينة إتجاه الرحلة :</label>
+                                            <select class="form-control" id="destinationCity">
+                                                <option value="riyadh">الرياض</option>
+                                                <option value="jeddah">جدة</option>
+                                                <option value="dammam">الدمام</option>
+                                                <option value="medina">المدينة المنورة</option>
+                                                <option value="makkah">مكة المكرمة</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="transportCompany">وكيل نقل :</label>
+                                            <select class="form-control" id="transportCompany">
+                                                <option value="saptco">الشركة السعودية للنقل الجماعي (سابتكو)</option>
+                                                <option value="alrajhi">شركة الراجحي للنقل</option>
+                                                <option value="almajid">شركة المجيد للنقل</option>
+                                                <option value="najm">شركة نجم السفر للنقل</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="tripType">نوع الرحلة :</label>
+                                            <select class="form-control" id="tripType">
+                                                <option value="local">محلي</option>
+                                                <option value="international">دولي</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="reservationDate">تاريخ موعد الحجز :</label>
+                                            <div class="input-group date" id="reservationDatePicker" data-target-input="nearest">
+                                                <input type="text" class="form-control datetimepicker-input" id="reservationDate" data-target="#reservationDatePicker" value="08  مايو , 2025">
+                                                <div class="input-group-append" data-target="#reservationDatePicker" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="purpose">الغرض :</label>
+                                            <input type="text" class="form-control" id="purpose">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="form-group">
+                                            <label for="notes">الملاحظات :</label>
+                                            <input type="text" class="form-control" id="notes">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- بيانات التوصيل -->
+                        <div class="row form-section">
+                            <div class="section-title">بيانات التوصيل</div>
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="transactionDate">تاريخ العملية :</label>
+                                            <div class="input-group date" id="transactionDatePicker" data-target-input="nearest">
+                                                <input type="text" class="form-control datetimepicker-input" id="transactionDate" data-target="#transactionDatePicker" value="08  مايو , 2025">
+                                                <div class="input-group-append" data-target="#transactionDatePicker" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="currency">العملة :</label>
+                                            <select class="form-control" id="currency">
+                                                <option value="sar">ريال سعودي</option>
+                                                <option value="usd">دولار أمريكي</option>
+                                                <option value="eur">يورو</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="sellPrice">الإجمالي سعر البيع :</label>
+                                            <input type="text" class="form-control" id="sellPrice">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="costPrice">إجمالي سعر التكلفة :</label>
+                                            <input type="text" class="form-control" id="costPrice">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="receivedAmount">المبلغ الواصل :</label>
+                                            <input type="text" class="form-control" id="receivedAmount">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="paymentType">نوع التوصيل :</label>
+                                            <select class="form-control" id="paymentType">
+                                                <option value="cash">نقد</option>
+                                                <option value="credit">أجل</option>
+                                                <option value="transfer">تحويل بنكي</option>
+                                                <option value="credit-card">بطاقة ائتمان</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="account">الحساب :</label>
+                                            <select class="form-control" id="account">
+                                                <option value="main-safe">الصندوق الرئيسي</option>
+                                                <option value="sales-safe">صندوق المبيعات</option>
+                                                <option value="bank-alrajhi">حساب بنك الراجحي</option>
+                                                <option value="bank-ahli">حساب البنك الأهلي</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="form-group">
+                                            <label for="statement">البيان :</label>
+                                            <input type="text" class="form-control" id="statement">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group mt-4">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="registerReceipt">
+                                                <label class="custom-control-label" for="registerReceipt">تسجيل حركة إستحقاق قيد مزود الخدمة</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- أزرار النموذج -->
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                            <button type="button" class="btn btn-success" id="complete-reservation">حفظ</button>
+                        </div>
+                        
                                                     <option value="">اختر نوع الهوية</option>
                                                     <option value="national-id">الهوية الوطنية</option>
                                                     <option value="passport">جواز سفر</option>

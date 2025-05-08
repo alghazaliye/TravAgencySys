@@ -1,0 +1,714 @@
+{% extends "layout.html" %}
+
+{% block title %}حجز تذاكر الباص{% endblock %}
+
+{% block styles %}
+<!-- DateTimePicker CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/css/tempusdominus-bootstrap-4.min.css">
+<!-- Select2 CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css">
+<!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<!-- صفحة حجز تذاكر الباص CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bus-tickets.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bus-tickets-form.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">حجز تذاكر الباص</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="/dashboard">الرئيسية</a></li>
+                    <li class="breadcrumb-item">خدمات النقل</li>
+                    <li class="breadcrumb-item active">حجز تذاكر الباص</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- نظرة عامة -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>150</h3>
+                        <p>حجوزات هذا الشهر</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-bus"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>53<sup style="font-size: 20px">%</sup></h3>
+                        <p>نسبة الإشغال</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>15</h3>
+                        <p>رحلات اليوم</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>12,500</h3>
+                        <p>إجمالي المبيعات (ر.س)</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- أزرار الإجراءات -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-add-reservation">
+                    <i class="fas fa-plus ml-1"></i> حجز جديد
+                </button>
+                <button type="button" class="btn btn-primary">
+                    <i class="fas fa-search ml-1"></i> استعلام عن الرحلات
+                </button>
+                <button type="button" class="btn btn-info">
+                    <i class="fas fa-print ml-1"></i> طباعة تذكرة
+                </button>
+                <button type="button" class="btn btn-warning">
+                    <i class="fas fa-exchange-alt ml-1"></i> تعديل حجز
+                </button>
+                <button type="button" class="btn btn-danger">
+                    <i class="fas fa-ban ml-1"></i> إلغاء حجز
+                </button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <i class="fas fa-filter ml-1"></i> تصفية
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">جميع الحجوزات</a>
+                        <a class="dropdown-item" href="#">حجوزات اليوم</a>
+                        <a class="dropdown-item" href="#">الرحلات القادمة</a>
+                        <a class="dropdown-item" href="#">الرحلات المنتهية</a>
+                        <a class="dropdown-item" href="#">الحجوزات الملغاة</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- جدول الحجوزات -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">حجوزات تذاكر الباص</h3>
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 250px;">
+                        <input type="text" name="table_search" class="form-control float-right" placeholder="بحث...">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-default">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>اسم المسافر</th>
+                            <th>رقم الهاتف</th>
+                            <th>من</th>
+                            <th>إلى</th>
+                            <th>نوع الرحلة</th>
+                            <th>نوع الباص</th>
+                            <th>تاريخ السفر</th>
+                            <th>المبلغ</th>
+                            <th>طريقة الدفع</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>محمد أحمد عبدالله</td>
+                            <td>0512345678</td>
+                            <td>الرياض</td>
+                            <td>مكة المكرمة</td>
+                            <td>ذهاب وعودة</td>
+                            <td>سياحي</td>
+                            <td>15/06/2023</td>
+                            <td>350 ر.س</td>
+                            <td>نقد الصندوق</td>
+                            <td><span class="badge badge-success">مؤكد</span></td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal-view-ticket">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button type="button" class="btn btn-warning btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>فاطمة محمد سعيد</td>
+                            <td>0523456789</td>
+                            <td>جدة</td>
+                            <td>المدينة المنورة</td>
+                            <td>ذهاب</td>
+                            <td>عادي</td>
+                            <td>16/06/2023</td>
+                            <td>120 ر.س</td>
+                            <td>تحويل بنكي</td>
+                            <td><span class="badge badge-success">مؤكد</span></td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button type="button" class="btn btn-warning btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>عبدالرحمن خالد العمري</td>
+                            <td>0534567890</td>
+                            <td>الدمام</td>
+                            <td>الرياض</td>
+                            <td>ذهاب</td>
+                            <td>سياحي</td>
+                            <td>17/06/2023</td>
+                            <td>200 ر.س</td>
+                            <td>أجل العميل</td>
+                            <td><span class="badge badge-warning">قيد الانتظار</span></td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-xs">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-info btn-xs">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button type="button" class="btn btn-warning btn-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- المزيد من الصفوف هنا -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-left">
+                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- الإحصائيات -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">إحصائيات المدن</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="citiesChart" style="min-height: 250px; height: 250px; max-height: 250px;"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">إحصائيات الحجوزات</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="bookingsChart" style="min-height: 250px; height: 250px; max-height: 250px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal - حجز جديد -->
+<div class="modal fade" id="modal-add-reservation">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h4 class="modal-title">حجز تذكرة باص جديدة</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="busTicketForm">
+                    <h2 class="form-header">شاشة إدخال بيانات حجز تذاكر باصات</h2>
+
+                    <!-- نموذج الحجز المشابه للصورة المرفقة -->
+                    <div class="form-section">
+                        <div class="section-title">المعرف :</div>
+                        
+                        <!-- قسم البيانات الشخصية -->
+                        <div class="row form-section">
+                            <div class="section-title">البيانات الشخصية</div>
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="passengerName" class="required-field">اسم المسافر الرباعي :</label>
+                                            <input type="text" class="form-control" id="passengerName" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="mobileNumber">رقم الموبايل :</label>
+                                            <input type="text" class="form-control" id="mobileNumber">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="birthPlace">مكان الميلاد :</label>
+                                            <input type="text" class="form-control" id="birthPlace">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="birthDate">تاريخ الميلاد :</label>
+                                            <div class="input-group date" id="birthDatePicker" data-target-input="nearest">
+                                                <input type="text" class="form-control datetimepicker-input" id="birthDate" data-target="#birthDatePicker" value="08  مايو , 2025">
+                                                <div class="input-group-append" data-target="#birthDatePicker" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="gender">الجنس :</label>
+                                            <select class="form-control" id="gender">
+                                                <option value="male">ذكر</option>
+                                                <option value="female">أنثى</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="idType">نوع الهوية :</label>
+                                            <select class="form-control" id="idType">
+                                                <option value="national-id">الهوية الوطنية</option>
+                                                <option value="passport">جواز سفر</option>
+                                                <option value="iqama">إقامة</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="idNumber">رقم الهوية :</label>
+                                            <input type="text" class="form-control" id="idNumber">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="nationality">الجنسية :</label>
+                                            <select class="form-control" id="nationality">
+                                                <option value="saudi">سعودي</option>
+                                                <option value="egyptian">مصري</option>
+                                                <option value="jordanian">أردني</option>
+                                                <option value="syrian">سوري</option>
+                                                <option value="yemeni">يمني</option>
+                                                <option value="other">أخرى</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="issueDate">تاريخ الإصدار :</label>
+                                            <div class="input-group date" id="issueDatePicker" data-target-input="nearest">
+                                                <input type="text" class="form-control datetimepicker-input" id="issueDate" data-target="#issueDatePicker" value="08  مايو , 2025">
+                                                <div class="input-group-append" data-target="#issueDatePicker" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="issuePlace">مكان الإصدار :</label>
+                                            <input type="text" class="form-control" id="issuePlace">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- بيانات الحجز -->
+                        <div class="row form-section">
+                            <div class="section-title">بيانات الحجز</div>
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="tripReserved">هل تم الحجز :</label>
+                                            <div class="mt-2">
+                                                <div class="custom-control custom-radio custom-control-inline">
+                                                    <input type="radio" id="tripReservedYes" name="tripReserved" class="custom-control-input" value="yes" checked>
+                                                    <label class="custom-control-label" for="tripReservedYes">نعم</label>
+                                                </div>
+                                                <div class="custom-control custom-radio custom-control-inline">
+                                                    <input type="radio" id="tripReservedNo" name="tripReserved" class="custom-control-input" value="no">
+                                                    <label class="custom-control-label" for="tripReservedNo">لا</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="departureCountry">دولة إنطلاق الرحلة :</label>
+                                            <select class="form-control" id="departureCountry">
+                                                <option value="saudi">المملكة العربية السعودية</option>
+                                                <option value="egypt">مصر</option>
+                                                <option value="jordan">الأردن</option>
+                                                <option value="uae">الإمارات العربية المتحدة</option>
+                                                <option value="kuwait">الكويت</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="departureCity">مدينة الإنطلاق :</label>
+                                            <select class="form-control" id="departureCity">
+                                                <option value="riyadh">الرياض</option>
+                                                <option value="jeddah">جدة</option>
+                                                <option value="dammam">الدمام</option>
+                                                <option value="medina">المدينة المنورة</option>
+                                                <option value="makkah">مكة المكرمة</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="destinationCountry">دولة إتجاه الرحلة :</label>
+                                            <select class="form-control" id="destinationCountry">
+                                                <option value="saudi">المملكة العربية السعودية</option>
+                                                <option value="egypt">مصر</option>
+                                                <option value="jordan">الأردن</option>
+                                                <option value="uae">الإمارات العربية المتحدة</option>
+                                                <option value="kuwait">الكويت</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="destinationCity">مدينة إتجاه الرحلة :</label>
+                                            <select class="form-control" id="destinationCity">
+                                                <option value="riyadh">الرياض</option>
+                                                <option value="jeddah">جدة</option>
+                                                <option value="dammam">الدمام</option>
+                                                <option value="medina">المدينة المنورة</option>
+                                                <option value="makkah">مكة المكرمة</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="transportCompany">وكيل نقل :</label>
+                                            <select class="form-control" id="transportCompany">
+                                                <option value="saptco">الشركة السعودية للنقل الجماعي (سابتكو)</option>
+                                                <option value="alrajhi">شركة الراجحي للنقل</option>
+                                                <option value="almajid">شركة المجيد للنقل</option>
+                                                <option value="najm">شركة نجم السفر للنقل</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="tripType">نوع الرحلة :</label>
+                                            <select class="form-control" id="tripType">
+                                                <option value="local">محلي</option>
+                                                <option value="international">دولي</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="reservationDate">تاريخ موعد الحجز :</label>
+                                            <div class="input-group date" id="reservationDatePicker" data-target-input="nearest">
+                                                <input type="text" class="form-control datetimepicker-input" id="reservationDate" data-target="#reservationDatePicker" value="08  مايو , 2025">
+                                                <div class="input-group-append" data-target="#reservationDatePicker" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="purpose">الغرض :</label>
+                                            <input type="text" class="form-control" id="purpose">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="form-group">
+                                            <label for="notes">الملاحظات :</label>
+                                            <input type="text" class="form-control" id="notes">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- بيانات التوصيل -->
+                        <div class="row form-section">
+                            <div class="section-title">بيانات التوصيل</div>
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="transactionDate">تاريخ العملية :</label>
+                                            <div class="input-group date" id="transactionDatePicker" data-target-input="nearest">
+                                                <input type="text" class="form-control datetimepicker-input" id="transactionDate" data-target="#transactionDatePicker" value="08  مايو , 2025">
+                                                <div class="input-group-append" data-target="#transactionDatePicker" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="currency">العملة :</label>
+                                            <select class="form-control" id="currency">
+                                                <option value="sar">ريال سعودي</option>
+                                                <option value="usd">دولار أمريكي</option>
+                                                <option value="eur">يورو</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="sellPrice">الإجمالي سعر البيع :</label>
+                                            <input type="text" class="form-control" id="sellPrice">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="costPrice">إجمالي سعر التكلفة :</label>
+                                            <input type="text" class="form-control" id="costPrice">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="receivedAmount">المبلغ الواصل :</label>
+                                            <input type="text" class="form-control" id="receivedAmount">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="paymentType">نوع التوصيل :</label>
+                                            <select class="form-control" id="paymentType">
+                                                <option value="cash">نقد</option>
+                                                <option value="credit">أجل</option>
+                                                <option value="transfer">تحويل بنكي</option>
+                                                <option value="credit-card">بطاقة ائتمان</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="account">الحساب :</label>
+                                            <select class="form-control" id="account">
+                                                <option value="main-safe">الصندوق الرئيسي</option>
+                                                <option value="sales-safe">صندوق المبيعات</option>
+                                                <option value="bank-alrajhi">حساب بنك الراجحي</option>
+                                                <option value="bank-ahli">حساب البنك الأهلي</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="form-group">
+                                            <label for="statement">البيان :</label>
+                                            <input type="text" class="form-control" id="statement">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group mt-4">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="registerReceipt">
+                                                <label class="custom-control-label" for="registerReceipt">تسجيل حركة إستحقاق قيد مزود الخدمة</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- أزرار النموذج -->
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                            <button type="button" class="btn btn-success" id="complete-reservation">حفظ</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- moment.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/ar.min.js"></script>
+
+<!-- DateTimePicker -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/js/tempusdominus-bootstrap-4.min.js"></script>
+
+<!-- Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/i18n/ar.js"></script>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- صفحة حجز تذاكر الباص JS -->
+<script src="{{ url_for('static', filename='js/bus-tickets.js') }}"></script>
+
+<script>
+    $(function () {
+        // تهيئة جميع أدوات التاريخ
+        $('#birthDatePicker, #issueDatePicker, #reservationDatePicker, #transactionDatePicker').datetimepicker({
+            format: 'DD  MMMM , YYYY',
+            locale: 'ar',
+            icons: {
+                time: 'far fa-clock',
+                date: 'far fa-calendar',
+                up: 'fas fa-arrow-up',
+                down: 'fas fa-arrow-down',
+                previous: 'fas fa-chevron-right',
+                next: 'fas fa-chevron-left',
+                today: 'fas fa-calendar-day',
+                clear: 'far fa-trash-alt',
+                close: 'far fa-times-circle'
+            }
+        });
+
+        // تهيئة جميع القوائم المنسدلة بشكل جميل
+        $('select').select2({
+            dir: "rtl",
+            language: "ar"
+        });
+
+        // تهيئة الرسوم البيانية
+        var citiesCtx = document.getElementById('citiesChart').getContext('2d');
+        var bookingsCtx = document.getElementById('bookingsChart').getContext('2d');
+        
+        // رسم بياني للمدن
+        var citiesChart = new Chart(citiesCtx, {
+            type: 'pie',
+            data: {
+                labels: ['الرياض', 'جدة', 'مكة المكرمة', 'المدينة المنورة', 'الدمام', 'أخرى'],
+                datasets: [{
+                    data: [30, 20, 25, 15, 5, 5],
+                    backgroundColor: [
+                        '#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+        
+        // رسم بياني للحجوزات
+        var bookingsChart = new Chart(bookingsCtx, {
+            type: 'line',
+            data: {
+                labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
+                datasets: [{
+                    label: 'عدد الحجوزات',
+                    data: [65, 59, 80, 81, 56, 150],
+                    fill: false,
+                    borderColor: '#00a65a',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+        
+        // معالجة حدث النقر على زر الحفظ
+        $('#complete-reservation').click(function() {
+            Swal.fire({
+                title: 'تم الحفظ!',
+                text: 'تم حفظ بيانات الحجز بنجاح',
+                icon: 'success',
+                confirmButtonText: 'موافق'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#modal-add-reservation').modal('hide');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

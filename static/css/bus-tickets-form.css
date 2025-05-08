@@ -1,0 +1,117 @@
+/* تنسيق نموذج حجز تذاكر الباصات */
+
+/* العنوان والقسم الرئيسي */
+.form-header {
+    background-color: #4a4a4a;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 0;
+    border-bottom: 2px solid #2c2c2c;
+}
+
+.form-title {
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+/* أقسام النموذج */
+.form-section {
+    background-color: #e9ecef;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #d6d6d6;
+}
+
+.section-title {
+    background-color: #4a4a4a;
+    color: white;
+    padding: 8px;
+    margin: -10px -10px 10px -10px;
+    font-weight: bold;
+}
+
+/* حقول الإدخال */
+.form-control {
+    border: 1px solid #aaa;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* علامة الحقول الإلزامية */
+.required-field::after {
+    content: " *";
+    color: red;
+    font-weight: bold;
+}
+
+/* تنسيق أزرار الاختيار */
+.custom-radio-group {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.custom-radio-group .custom-control {
+    margin-left: 15px;
+}
+
+/* تنسيق القوائم المنسدلة */
+select.form-control {
+    padding-right: 30px;
+}
+
+/* تنسيق مختار التاريخ */
+.input-group.date .input-group-text {
+    background-color: #f8f9fa;
+}
+
+/* تنسيق أزرار الإرسال */
+.form-actions {
+    text-align: center;
+    margin-top: 20px;
+    padding: 15px;
+    border-top: 1px solid #ddd;
+}
+
+.form-actions .btn {
+    margin: 0 5px;
+    min-width: 120px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+}
+
+.btn-success {
+    background-color: #28a745;
+}
+
+/* تنسيق للشاشات الصغيرة */
+@media (max-width: 768px) {
+    .form-section {
+        padding: 10px 5px;
+    }
+    
+    .section-title {
+        font-size: 14px;
+    }
+    
+    .form-group label {
+        font-size: 13px;
+    }
+}
+
+/* تنسيق الملاحظات */
+.form-notes {
+    font-size: 0.9rem;
+    color: #666;
+}
