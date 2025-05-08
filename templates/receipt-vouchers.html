@@ -1085,3 +1085,484 @@
     <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
+
+{% block scripts %}
+<script>
+    // تهيئة النماذج عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', function() {
+        // تهيئة رقم السند عند فتح النموذج
+        $('#modal-add-receipt-voucher').on('show.bs.modal', function (e) {
+            // توليد رقم سند افتراضي (في النظام الحقيقي سيتم جلبه من الخادم)
+            const randomVoucherNumber = 'REC-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('receipt-voucher-number').value = randomVoucherNumber;
+            document.getElementById('receipt-voucher-number-value').textContent = randomVoucherNumber;
+        });
+        
+        // تسجيل مستمعي الأحداث لتحديث البيان تلقائياً
+        const statementFields = [
+            'receipt-account-type', 'receipt-account-name', 'receipt-other-account-type', 
+            'receipt-other-account-name', 'receipt-reference-type', 'receipt-reference-number'
+        ];
+        
+        statementFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.addEventListener('change', updateReceiptVoucherStatement);
+                // بالنسبة للحقول النصية مثل نوع المرجع، نحتاج أيضًا إلى مراقبة حدث input
+                if (field.type === 'text' || field.type === 'textarea') {
+                    field.addEventListener('input', updateReceiptVoucherStatement);
+                }
+            }
+        });
+        
+        // تعامل مع تغيير نوع الحساب
+        document.getElementById('receipt-account-type').addEventListener('change', function() {
+            const accountType = this.value;
+            const accountNameDropdown = document.getElementById('receipt-account-name');
+            
+            // إعادة تعيين الخيارات
+            accountNameDropdown.innerHTML = '<option value="">يرجى اختيار الحساب</option>';
+            
+            if (accountType) {
+                accountNameDropdown.disabled = false;
+                
+                // إضافة خيارات حسب نوع الحساب
+                if (accountType === 'bank') {
+                    // بيانات البنوك
+                    const banks = [
+                        { id: 'bank1', name: 'البنك الأهلي' },
+                        { id: 'bank2', name: 'مصرف الراجحي' },
+                        { id: 'bank3', name: 'بنك الرياض' }
+                    ];
+                    
+                    banks.forEach(bank => {
+                        const option = document.createElement('option');
+                        option.value = bank.id;
+                        option.textContent = bank.name;
+                        accountNameDropdown.appendChild(option);
+                    });
+                } else if (accountType === 'cashbox') {
+                    // بيانات الصناديق
+                    const cashboxes = [
+                        { id: 'cash1', name: 'الصندوق الرئيسي' },
+                        { id: 'cash2', name: 'صندوق الفرع الأول' },
+                        { id: 'cash3', name: 'صندوق الفرع الثاني' }
+                    ];
+                    
+                    cashboxes.forEach(cashbox => {
+                        const option = document.createElement('option');
+                        option.value = cashbox.id;
+                        option.textContent = cashbox.name;
+                        accountNameDropdown.appendChild(option);
+                    });
+                }
+                
+                // تحديث البيان بعد تغيير نوع الحساب
+                setTimeout(updateReceiptVoucherStatement, 100);
+            } else {
+                accountNameDropdown.disabled = true;
+            }
+        });
+        
+        // تعامل مع تغيير نوع الحساب الآخر
+        document.getElementById('receipt-other-account-type').addEventListener('change', function() {
+            const accountType = this.value;
+            const accountNameDropdown = document.getElementById('receipt-other-account-name');
+            
+            // إعادة تعيين الخيارات
+            accountNameDropdown.innerHTML = '<option value="">يرجى اختيار الحساب</option>';
+            
+            if (accountType) {
+                accountNameDropdown.disabled = false;
+                
+                // إضافة خيارات حسب نوع الحساب
+                switch(accountType) {
+                    case 'supplier':
+                        const suppliers = [
+                            { id: 'sup1', name: 'شركة التوريدات العالمية' },
+                            { id: 'sup2', name: 'مؤسسة الإمداد التجارية' },
+                            { id: 'sup3', name: 'مكتب الخدمات المتكاملة' }
+                        ];
+                        
+                        suppliers.forEach(supplier => {
+                            const option = document.createElement('option');
+                            option.value = supplier.id;
+                            option.textContent = supplier.name;
+                            accountNameDropdown.appendChild(option);
+                        });
+                        break;
+                    
+                    case 'employee':
+                        const employees = [
+                            { id: 'emp1', name: 'محمد أحمد' },
+                            { id: 'emp2', name: 'عبدالله محمد' },
+                            { id: 'emp3', name: 'خالد عبدالرحمن' }
+                        ];
+                        
+                        employees.forEach(employee => {
+                            const option = document.createElement('option');
+                            option.value = employee.id;
+                            option.textContent = employee.name;
+                            accountNameDropdown.appendChild(option);
+                        });
+                        break;
+                    
+                    case 'customer':
+                        const customers = [
+                            { id: 'cust1', name: 'شركة السفر العالمية' },
+                            { id: 'cust2', name: 'مؤسسة الرحلات المميزة' },
+                            { id: 'cust3', name: 'أحمد محمد علي' }
+                        ];
+                        
+                        customers.forEach(customer => {
+                            const option = document.createElement('option');
+                            option.value = customer.id;
+                            option.textContent = customer.name;
+                            accountNameDropdown.appendChild(option);
+                        });
+                        break;
+                    
+                    case 'bank':
+                        const banks = [
+                            { id: 'bank1', name: 'البنك الأهلي' },
+                            { id: 'bank2', name: 'مصرف الراجحي' },
+                            { id: 'bank3', name: 'بنك الرياض' }
+                        ];
+                        
+                        banks.forEach(bank => {
+                            const option = document.createElement('option');
+                            option.value = bank.id;
+                            option.textContent = bank.name;
+                            accountNameDropdown.appendChild(option);
+                        });
+                        break;
+                    
+                    case 'cashbox':
+                        const cashboxes = [
+                            { id: 'cash1', name: 'الصندوق الرئيسي' },
+                            { id: 'cash2', name: 'صندوق الفرع الأول' },
+                            { id: 'cash3', name: 'صندوق الفرع الثاني' }
+                        ];
+                        
+                        cashboxes.forEach(cashbox => {
+                            const option = document.createElement('option');
+                            option.value = cashbox.id;
+                            option.textContent = cashbox.name;
+                            accountNameDropdown.appendChild(option);
+                        });
+                        break;
+                }
+                
+                // تحديث البيان بعد تغيير نوع الحساب
+                setTimeout(updateReceiptVoucherStatement, 100);
+            } else {
+                accountNameDropdown.disabled = true;
+            }
+        });
+        
+        // تحديث رمز العملة وتحديث المبلغ بالحروف
+        document.getElementById('receipt-currency-type').addEventListener('change', function() {
+            const currencyType = this.value;
+            const currencySymbol = document.getElementById('receipt-currency-symbol');
+            
+            switch(currencyType) {
+                case 'SAR':
+                    currencySymbol.textContent = 'ر.س';
+                    break;
+                case 'USD':
+                    currencySymbol.textContent = '$';
+                    break;
+                case 'EUR':
+                    currencySymbol.textContent = '€';
+                    break;
+                case 'GBP':
+                    currencySymbol.textContent = '£';
+                    break;
+                case 'AED':
+                    currencySymbol.textContent = 'د.إ';
+                    break;
+                default:
+                    currencySymbol.textContent = 'ر.س';
+            }
+            
+            // تحديث المبلغ بالحروف
+            updateReceiptAmountInWords();
+        });
+        
+        // تحديث المبلغ بالحروف عند تغيير قيمة المبلغ
+        document.getElementById('receipt-amount').addEventListener('input', function() {
+            updateReceiptAmountInWords();
+        });
+        
+        document.getElementById('receipt-voucher-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // إزالة صفة القراءة فقط من وصف العملية لإرسال البيانات
+            document.getElementById('receipt-description').readOnly = false;
+            
+            // هنا سيتم إرسال البيانات للخادم (سيتم تنفيذه لاحقاً)
+            alert('تم حفظ سند القبض بنجاح!');
+            $('#modal-add-receipt-voucher').modal('hide');
+            
+            // إعادة تعيين صفة القراءة فقط
+            document.getElementById('receipt-description').readOnly = true;
+        });
+    });
+    
+    // وظيفة للحصول على النص العربي لنوع الحساب
+    function getAccountTypeText(accountType) {
+        switch(accountType) {
+            case 'bank':
+                return 'بنك';
+            case 'cashbox':
+                return 'صندوق';
+            case 'supplier':
+                return 'مورد';
+            case 'employee':
+                return 'موظف';
+            case 'customer':
+                return 'عميل';
+            default:
+                return accountType || '';
+        }
+    }
+    
+    // وظيفة لتحويل المبلغ إلى كلمات عربية
+    function convertNumberToArabicWords(number, currency = 'SAR') {
+        if (!number || isNaN(number)) {
+            return '';
+        }
+        
+        // تقريب الرقم إلى رقمين عشريين
+        number = parseFloat(parseFloat(number).toFixed(2));
+        
+        // كتابة الأرقام بالحروف (مبسطة)
+        const ones = ['', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة', 'عشرة'];
+        const teens = ['عشر', 'أحد عشر', 'اثنا عشر', 'ثلاثة عشر', 'أربعة عشر', 'خمسة عشر', 'ستة عشر', 'سبعة عشر', 'ثمانية عشر', 'تسعة عشر'];
+        const tens = ['', 'عشرة', 'عشرون', 'ثلاثون', 'أربعون', 'خمسون', 'ستون', 'سبعون', 'ثمانون', 'تسعون'];
+        const hundreds = ['', 'مائة', 'مائتان', 'ثلاثمائة', 'أربعمائة', 'خمسمائة', 'ستمائة', 'سبعمائة', 'ثمانمائة', 'تسعمائة'];
+        const thousands = ['', 'ألف', 'ألفان', 'آلاف', 'آلاف', 'آلاف', 'آلاف', 'آلاف', 'آلاف', 'آلاف', 'آلاف'];
+        
+        // أسماء العملات
+        const currencyNames = {
+            'SAR': 'ريال سعودي',
+            'USD': 'دولار أمريكي',
+            'EUR': 'يورو',
+            'GBP': 'جنيه إسترليني',
+            'AED': 'درهم إماراتي'
+        };
+        
+        // اسم العملة باللغة العربية كما هو معروض في واجهة المستخدم (بدون الرمز)
+        const currencyDisplayNames = {
+            'SAR': function() {
+                const optionText = document.querySelector('#receipt-currency-type option[value="SAR"]')?.textContent.trim() || 'ريال سعودي (SAR)';
+                return optionText.replace(/\s*\([^)]*\)\s*$/, ''); // إزالة النص بين قوسين في النهاية
+            },
+            'USD': function() {
+                const optionText = document.querySelector('#receipt-currency-type option[value="USD"]')?.textContent.trim() || 'دولار أمريكي (USD)';
+                return optionText.replace(/\s*\([^)]*\)\s*$/, '');
+            },
+            'EUR': function() {
+                const optionText = document.querySelector('#receipt-currency-type option[value="EUR"]')?.textContent.trim() || 'يورو (EUR)';
+                return optionText.replace(/\s*\([^)]*\)\s*$/, '');
+            },
+            'GBP': function() {
+                const optionText = document.querySelector('#receipt-currency-type option[value="GBP"]')?.textContent.trim() || 'جنيه إسترليني (GBP)';
+                return optionText.replace(/\s*\([^)]*\)\s*$/, '');
+            },
+            'AED': function() {
+                const optionText = document.querySelector('#receipt-currency-type option[value="AED"]')?.textContent.trim() || 'درهم إماراتي (AED)';
+                return optionText.replace(/\s*\([^)]*\)\s*$/, '');
+            }
+        };
+        
+        // تنفيذ مبسط - لأغراض العرض فقط
+        const integerPart = Math.floor(number);
+        const decimalPart = Math.round((number - integerPart) * 100);
+        
+        let result = '';
+        
+        if (integerPart === 0) {
+            result = 'صفر';
+        } else if (integerPart < 11) {
+            result = ones[integerPart];
+        } else if (integerPart < 20) {
+            result = teens[integerPart - 10];
+        } else if (integerPart < 100) {
+            const oneDigit = integerPart % 10;
+            const tenDigit = Math.floor(integerPart / 10);
+            
+            if (oneDigit === 0) {
+                result = tens[tenDigit];
+            } else {
+                result = ones[oneDigit] + ' و' + tens[tenDigit];
+            }
+        } else if (integerPart < 1000) {
+            const hundredDigit = Math.floor(integerPart / 100);
+            const remainder = integerPart % 100;
+            
+            result = hundreds[hundredDigit];
+            
+            if (remainder > 0) {
+                if (remainder < 11) {
+                    result += ' و' + ones[remainder];
+                } else if (remainder < 20) {
+                    result += ' و' + teens[remainder - 10];
+                } else {
+                    const oneDigit = remainder % 10;
+                    const tenDigit = Math.floor(remainder / 10);
+                    
+                    if (oneDigit === 0) {
+                        result += ' و' + tens[tenDigit];
+                    } else {
+                        result += ' و' + ones[oneDigit] + ' و' + tens[tenDigit];
+                    }
+                }
+            }
+        } else if (integerPart < 10000) {
+            const thousandDigit = Math.floor(integerPart / 1000);
+            const remainder = integerPart % 1000;
+            
+            if (thousandDigit === 1) {
+                result = thousands[1];
+            } else if (thousandDigit === 2) {
+                result = thousands[2];
+            } else {
+                result = ones[thousandDigit] + ' ' + thousands[3];
+            }
+            
+            if (remainder > 0) {
+                // إضافة باقي الأرقام بشكل مماثل (مبسط هنا)
+                result += ' و' + convertNumberToArabicWords(remainder, '');
+            }
+        } else {
+            // للأرقام الأكبر من 10000 - مبسط
+            result = integerPart.toLocaleString('ar-SA');
+        }
+        
+        // إضافة اسم العملة
+        if (currency) {
+            // استخدام اسم العملة من واجهة المستخدم بدلاً من القيمة المحددة مسبقاً
+            const currencyDisplayName = currencyDisplayNames[currency] ? currencyDisplayNames[currency]() : currencyNames[currency] || currencyNames['SAR'];
+            result += ' ' + currencyDisplayName;
+            
+            // إضافة الهللات أو السنتات إذا وجدت
+            if (decimalPart > 0) {
+                let decimalWord = '';
+                
+                if (decimalPart < 11) {
+                    decimalWord = ones[decimalPart];
+                } else if (decimalPart < 20) {
+                    decimalWord = teens[decimalPart - 10];
+                } else {
+                    const oneDigit = decimalPart % 10;
+                    const tenDigit = Math.floor(decimalPart / 10);
+                    
+                    if (oneDigit === 0) {
+                        decimalWord = tens[tenDigit];
+                    } else {
+                        decimalWord = ones[oneDigit] + ' و' + tens[tenDigit];
+                    }
+                }
+                
+                let subUnit = '';
+                switch(currency) {
+                    case 'SAR':
+                        subUnit = 'هللة';
+                        break;
+                    case 'USD':
+                    case 'GBP':
+                        subUnit = 'سنت';
+                        break;
+                    case 'EUR':
+                        subUnit = 'سنت يورو';
+                        break;
+                    case 'AED':
+                        subUnit = 'فلس';
+                        break;
+                    default:
+                        subUnit = 'جزء';
+                }
+                
+                result += ' و' + decimalWord + ' ' + subUnit;
+            }
+        }
+        
+        return currency ? ('فقط ' + result + ' لا غير') : result;
+    }
+    
+    // وظيفة لتحديث المبلغ بالحروف لسند القبض
+    function updateReceiptAmountInWords() {
+        const amountInput = document.getElementById('receipt-amount');
+        const currencySelect = document.getElementById('receipt-currency-type');
+        const amountInWordsElem = document.getElementById('receipt-amount-in-words');
+        
+        if (!amountInput || !currencySelect || !amountInWordsElem) {
+            return;
+        }
+        
+        const amount = parseFloat(amountInput.value);
+        const currency = currencySelect.value;
+        
+        if (!isNaN(amount) && amount > 0) {
+            const amountInWords = convertNumberToArabicWords(amount, currency);
+            amountInWordsElem.textContent = 'المبلغ بالحروف: ' + amountInWords;
+        } else {
+            amountInWordsElem.textContent = 'المبلغ بالحروف: ';
+        }
+    }
+    
+    // وظيفة لتحديث البيان تلقائياً لسند القبض
+    function updateReceiptVoucherStatement() {
+        // الحصول على القيم من الحقول
+        const accountTypeSelect = document.getElementById('receipt-account-type');
+        const accountNameSelect = document.getElementById('receipt-account-name');
+        const otherAccountTypeSelect = document.getElementById('receipt-other-account-type');
+        const otherAccountNameSelect = document.getElementById('receipt-other-account-name');
+        const referenceTypeInput = document.getElementById('receipt-reference-type');
+        const referenceNumberInput = document.getElementById('receipt-reference-number');
+        const descriptionTextarea = document.getElementById('receipt-description');
+        
+        // التحقق من وجود القيم المطلوبة
+        if (!accountTypeSelect || !accountNameSelect || !otherAccountTypeSelect || 
+            !otherAccountNameSelect || !descriptionTextarea) {
+            return;
+        }
+        
+        // القيم المحددة
+        const accountType = accountTypeSelect.value;
+        const accountName = accountNameSelect.options[accountNameSelect.selectedIndex]?.text || '';
+        const otherAccountType = otherAccountTypeSelect.value;
+        const otherAccountName = otherAccountNameSelect.options[otherAccountNameSelect.selectedIndex]?.text || '';
+        const referenceType = referenceTypeInput.value.trim();
+        const referenceNumber = referenceNumberInput.value.trim();
+        
+        // ترجمة أنواع الحسابات إلى العربية
+        const accountTypeText = getAccountTypeText(accountType);
+        const otherAccountTypeText = getAccountTypeText(otherAccountType);
+        
+        // توليد البيان بناءً على البيانات المدخلة
+        let statement = '';
+        
+        if (accountType && accountName && otherAccountType && otherAccountName) {
+            statement = `سند قبض من ${otherAccountTypeText} ${otherAccountName} إلى ${accountTypeText} ${accountName}`;
+            
+            // إضافة المرجع إذا كان موجوداً
+            if (referenceType && referenceNumber) {
+                statement += ` عبر ${referenceType} برقم ${referenceNumber}`;
+            } else if (referenceType) {
+                statement += ` عبر ${referenceType}`;
+            }
+        }
+        
+        // تحديث حقل البيان
+        descriptionTextarea.value = statement;
+        
+        // إلغاء صفة القراءة فقط مؤقتاً للسماح بالتعديل
+        descriptionTextarea.readOnly = false;
+        // إعادة تعيين صفة القراءة فقط بعد لحظة
+        setTimeout(() => {
+            descriptionTextarea.readOnly = true;
+        }, 100);
+    }
+</script>
+{% endblock %}

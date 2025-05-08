@@ -306,192 +306,6 @@
 </section>
 <!-- /.content -->
 
-<!-- Modal - إضافة سند صرف جديد -->
-<div class="modal fade" id="modal-add-payment-voucher">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-success">
-                <h4 class="modal-title">
-                    إضافة سند صرف جديد
-                    <span id="voucher-number-display" class="badge badge-light ml-2">رقم السند: <span id="voucher-number-value">تلقائي</span></span>
-                </h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="payment-voucher-form">
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="alert alert-info alert-dismissible">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                <h5><i class="icon fas fa-info"></i> معلومات عن سند الصرف!</h5>
-                                <p>يستخدم سند الصرف عند دفع مبلغ من المكتب لمستفيد (مورد، موظف، عميل، صندوق أو بنك).</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- الحساب المصدر (الحساب الأول) -->
-                    <div class="card card-outline card-primary mb-3">
-                        <div class="card-header">
-                            <h3 class="card-title">الحساب المصدر</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="account-type">نوع الحساب <span class="text-danger">*</span></label>
-                                        <select class="form-control" id="account-type" name="account-type" required>
-                                            <option value="">اختر نوع الحساب</option>
-                                            <option value="bank">بنك</option>
-                                            <option value="cashbox">صندوق</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="account-name">الحساب <span class="text-danger">*</span></label>
-                                        <select class="form-control" id="account-name" name="account-name" required disabled>
-                                            <option value="">يرجى اختيار نوع الحساب أولاً</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- الحساب المستفيد (الحساب الآخر) -->
-                    <div class="card card-outline card-success mb-3">
-                        <div class="card-header">
-                            <h3 class="card-title">الحساب المستفيد</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="other-account-type">نوع الحساب الآخر <span class="text-danger">*</span></label>
-                                        <select class="form-control" id="other-account-type" name="other-account-type" required>
-                                            <option value="">اختر نوع الحساب</option>
-                                            <option value="supplier">مورد</option>
-                                            <option value="employee">موظف</option>
-                                            <option value="customer">عميل</option>
-                                            <option value="bank">بنك</option>
-                                            <option value="cashbox">صندوق</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="other-account-name">الحساب الآخر <span class="text-danger">*</span></label>
-                                        <select class="form-control" id="other-account-name" name="other-account-name" required disabled>
-                                            <option value="">يرجى اختيار نوع الحساب الآخر أولاً</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- بيانات المعاملة -->
-                    <div class="card card-outline card-info mb-3">
-                        <div class="card-header">
-                            <h3 class="card-title">بيانات المعاملة</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="currency-type">نوع العملة <span class="text-danger">*</span></label>
-                                        <select class="form-control" id="currency-type" name="currency-type" required>
-                                            <option value="SAR" selected>ريال سعودي (SAR)</option>
-                                            <option value="USD">دولار أمريكي (USD)</option>
-                                            <option value="EUR">يورو (EUR)</option>
-                                            <option value="GBP">جنيه إسترليني (GBP)</option>
-                                            <option value="AED">درهم إماراتي (AED)</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="amount">المبلغ <span class="text-danger">*</span></label>
-                                        <div class="input-group">
-                                            <input type="number" min="0" step="0.01" class="form-control" id="amount" name="amount" placeholder="أدخل المبلغ" required>
-                                            <div class="input-group-append">
-                                                <span class="input-group-text" id="currency-symbol">ر.س</span>
-                                            </div>
-                                        </div>
-                                        <small class="text-muted" id="amount-in-words"></small>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="reference-type">نوع المرجع</label>
-                                        <input type="text" class="form-control" id="reference-type" name="reference-type" placeholder="أدخل نوع المرجع (مثلاً: فاتورة شراء، مصروف تشغيلي)">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="reference-number">رقم المرجع</label>
-                                        <input type="text" class="form-control" id="reference-number" name="reference-number" placeholder="أدخل رقم المستند المرجعي">
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="operation-date">تاريخ العملية <span class="text-danger">*</span></label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                                            </div>
-                                            <input type="date" class="form-control" id="operation-date" name="operation-date" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="voucher-number">رقم السند</label>
-                                        <input type="text" class="form-control" id="voucher-number" name="voucher-number" placeholder="سيتم إنشاؤه تلقائياً" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- البيان والملاحظات -->
-                    <div class="card card-outline card-secondary mb-3">
-                        <div class="card-header">
-                            <h3 class="card-title">البيان والملاحظات</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="form-group">
-                                <label for="description">البيان (وصف العملية) <span class="text-danger">*</span></label>
-                                <textarea class="form-control" id="description" name="description" rows="3" required readonly></textarea>
-                                <small class="text-info">يتم إنشاء البيان تلقائياً بناءً على البيانات المدخلة، يمكنك تعديله عند الحاجة.</small>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="notes">ملاحظات إضافية</label>
-                                <textarea class="form-control" id="notes" name="notes" rows="2" placeholder="أدخل أي ملاحظات إضافية"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">إلغاء</button>
-                    <button type="submit" class="btn btn-success">حفظ السند</button>
-                </div>
-            </form>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
 
 {% endblock %}
 
@@ -979,4 +793,266 @@
         }, 100);
     }
 </script>
-{% endblock %}
+{% endblock %}<!-- Modal - إضافة سند صرف جديد -->
+<div class="modal fade" id="modal-add-payment-voucher">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-gradient-success">
+                <h4 class="modal-title">
+                    <i class="fas fa-file-invoice-dollar ml-2"></i>
+                    إضافة سند صرف جديد
+                    <span id="voucher-number-display" class="badge badge-light ml-2">رقم السند: <span id="voucher-number-value">تلقائي</span></span>
+                </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="payment-voucher-form">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="callout callout-success">
+                                <h5><i class="fas fa-info-circle ml-2"></i> معلومات عن سند الصرف</h5>
+                                <p>يستخدم سند الصرف عند دفع مبلغ من المكتب لمستفيد (مورد، موظف، عميل، صندوق أو بنك). يتم خصم المبلغ من الحساب المصدر.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- الحساب المصدر (الحساب الأول) -->
+                    <div class="card card-outline card-success mb-3">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-money-bill-wave ml-2"></i> الحساب المصدر</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="account-type">نوع الحساب <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-university"></i></span>
+                                            </div>
+                                            <select class="form-control" id="account-type" name="account-type" required>
+                                                <option value="">اختر نوع الحساب</option>
+                                                <option value="bank">بنك</option>
+                                                <option value="cashbox">صندوق</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="account-name">الحساب <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-list"></i></span>
+                                            </div>
+                                            <select class="form-control" id="account-name" name="account-name" required disabled>
+                                                <option value="">يرجى اختيار نوع الحساب أولاً</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- الحساب المستفيد (الحساب الآخر) -->
+                    <div class="card card-outline card-primary mb-3">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-hand-holding-usd ml-2"></i> الحساب المستفيد</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="other-account-type">نوع الحساب الآخر <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-users"></i></span>
+                                            </div>
+                                            <select class="form-control" id="other-account-type" name="other-account-type" required>
+                                                <option value="">اختر نوع الحساب</option>
+                                                <option value="supplier">مورد</option>
+                                                <option value="employee">موظف</option>
+                                                <option value="customer">عميل</option>
+                                                <option value="bank">بنك</option>
+                                                <option value="cashbox">صندوق</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="other-account-name">الحساب الآخر <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                            </div>
+                                            <select class="form-control" id="other-account-name" name="other-account-name" required disabled>
+                                                <option value="">يرجى اختيار نوع الحساب الآخر أولاً</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- بيانات المعاملة -->
+                    <div class="card card-outline card-info mb-3">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-file-invoice ml-2"></i> بيانات المعاملة</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="currency-type">نوع العملة <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                            </div>
+                                            <select class="form-control" id="currency-type" name="currency-type" required>
+                                                <option value="SAR" selected>ريال سعودي (SAR)</option>
+                                                <option value="USD">دولار أمريكي (USD)</option>
+                                                <option value="EUR">يورو (EUR)</option>
+                                                <option value="GBP">جنيه إسترليني (GBP)</option>
+                                                <option value="AED">درهم إماراتي (AED)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="amount">المبلغ <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-coins"></i></span>
+                                            </div>
+                                            <input type="number" min="0" step="0.01" class="form-control" id="amount" name="amount" placeholder="أدخل المبلغ" required>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text" id="currency-symbol">ر.س</span>
+                                            </div>
+                                        </div>
+                                        <small class="text-muted" id="amount-in-words"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="reference-type">نوع المرجع</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="reference-type" name="reference-type" placeholder="أدخل نوع المرجع (مثلاً: فاتورة شراء، مصروف تشغيلي)">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="reference-number">رقم المرجع</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="reference-number" name="reference-number" placeholder="أدخل رقم المستند المرجعي">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="operation-date">تاريخ العملية <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                            </div>
+                                            <input type="date" class="form-control" id="operation-date" name="operation-date" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="voucher-number">رقم السند</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="voucher-number" name="voucher-number" placeholder="سيتم إنشاؤه تلقائياً" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- البيان والملاحظات -->
+                    <div class="card card-outline card-secondary mb-3">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-comment-alt ml-2"></i> البيان والملاحظات</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="description">البيان (وصف العملية) <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-edit"></i></span>
+                                    </div>
+                                    <textarea class="form-control" id="description" name="description" rows="3" required readonly></textarea>
+                                </div>
+                                <small class="text-info"><i class="fas fa-info-circle ml-1"></i> يتم إنشاء البيان تلقائياً بناءً على البيانات المدخلة، يمكنك تعديله عند الحاجة.</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="notes">ملاحظات إضافية</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+                                    </div>
+                                    <textarea class="form-control" id="notes" name="notes" rows="2" placeholder="أدخل أي ملاحظات إضافية"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        <i class="fas fa-times ml-1"></i> إلغاء
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save ml-1"></i> حفظ السند
+                    </button>
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
