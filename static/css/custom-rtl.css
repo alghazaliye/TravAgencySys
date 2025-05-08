@@ -3,55 +3,205 @@
 /* Arabic font */
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap');
 
-body, h1, h2, h3, h4, h5, h6, p, 
-.main-sidebar, .nav-sidebar, .card-title, 
-.card-header, .form-control, .btn, .modal-title,
-.dropdown-item, .page-link, .nav-link, td, th {
+* {
     font-family: 'Tajawal', sans-serif !important;
+    letter-spacing: 0 !important;
 }
 
-/* RTL specific adjustments */
-.content-header h1 {
-    margin-right: 0;
-    margin-left: auto;
+/* RTL Base Styles */
+body {
+    direction: rtl;
+    text-align: right;
 }
 
-.content-header .breadcrumb {
+/* Header & Navigation */
+.main-header {
+    margin-right: 250px;
+    margin-left: 0;
+    direction: rtl;
+}
+
+.navbar-nav {
     padding-right: 0;
-    padding-left: 0.5rem;
 }
 
-.card-tools {
-    float: left;
+.nav-sidebar {
+    padding-right: 0;
 }
 
-/* إصلاح عرض الأيقونات في القائمة الجانبية */
-.nav-sidebar .nav-link>.right, 
-.nav-sidebar .nav-link>p>.right {
+.nav-sidebar .nav-link > .right, 
+.nav-sidebar .nav-link > p > .right {
     left: 1rem;
     right: auto;
 }
 
-.nav-sidebar .nav-item>.nav-link .nav-icon {
-    margin-left: .5rem;
-    margin-right: 0;
+/* Sidebar Improvements */
+.main-sidebar {
+    right: 0;
+    left: auto;
+    text-align: right;
+    direction: rtl;
 }
 
-/* إصلاح عرض الأيقونات في لوحة التحكم */
-.nav-icon, .fa, .fas {
-    text-align: center;
-    width: 1.25rem;
+.nav-sidebar .nav-link {
+    display: flex !important;
+    align-items: center !important;
+    padding: 0.8rem 1rem !important;
 }
 
+.nav-sidebar .nav-icon,
+.nav-sidebar .nav-link i {
+    margin-left: 0.7rem !important;
+    margin-right: 0 !important;
+    width: 1.6rem !important;
+    text-align: center !important;
+}
+
+/* Content Area */
+.content-wrapper {
+    margin-right: 250px;
+    margin-left: 0;
+}
+
+/* Forms & Inputs */
+.form-group {
+    text-align: right;
+}
+
+.input-group > .form-control {
+    text-align: right;
+}
+
+.custom-control {
+    padding-right: 1.5rem;
+    padding-left: 0;
+}
+
+/* Tables */
+.table th, 
+.table td {
+    text-align: right;
+}
+
+/* Cards */
 .card-header .card-tools {
-    margin-left: -0.5rem;
+    float: left;
+}
+
+.card-title {
+    float: right;
+}
+
+/* Dropdown Menus */
+.dropdown-menu {
+    text-align: right;
+    left: 0;
+    right: auto;
+}
+
+.dropdown-item {
+    text-align: right;
+}
+
+/* Modal Dialogs */
+.modal-header .close {
+    margin: -1rem auto -1rem -1rem;
+}
+
+.modal-footer {
+    justify-content: flex-start;
+}
+
+/* Alerts & Messages */
+.alert {
+    text-align: right;
+}
+
+/* Breadcrumbs */
+.breadcrumb-item + .breadcrumb-item::before {
+    float: right;
+    padding-left: 0.5rem;
+    padding-right: 0;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 767.98px) {
+    .main-sidebar, 
+    .main-sidebar::before {
+        right: -250px;
+        left: auto;
+    }
+
+    .sidebar-open .main-sidebar, 
+    .sidebar-open .main-sidebar::before {
+        right: 0;
+        left: auto;
+    }
+
+    .content-wrapper,
+    .main-header {
+        margin-right: 0;
+    }
+}
+
+/* Footer */
+.main-footer {
+    margin-right: 250px;
+    margin-left: 0;
+    text-align: right;
+}
+
+/* Fix for RTL Dashboard Cards */
+.small-box .icon {
+    right: auto;
+    left: 10px;
+}
+
+.small-box .inner {
+    padding-right: 15px;
+}
+
+/* Fix for Charts */
+.chart-container {
+    direction: ltr;
+}
+
+/* DataTables RTL Support */
+div.dataTables_wrapper div.dataTables_filter {
+    text-align: left;
+}
+
+div.dataTables_wrapper div.dataTables_filter input {
+    margin-right: 0.5em;
+    margin-left: 0;
+}
+
+/* Select2 RTL Support */
+.select2-container--default .select2-selection--single {
+    text-align: right;
+}
+
+.select2-results {
+    text-align: right;
+}
+
+/* Fix Font Awesome Icons */
+.fa, .fas, .far, .fab {
+    margin-left: 0.3rem;
     margin-right: 0;
 }
 
-/* إصلاح محاذاة الأيقونات في الأزرار */
-.btn i, .btn .fas, .btn .fa {
-    margin-left: 0.5rem;
-    margin-right: 0;
+/* Fix for Bootstrap Components */
+.input-group > .input-group-append > .btn,
+.input-group > .input-group-append > .input-group-text,
+.input-group > .input-group-prepend:not(:first-child) > .btn,
+.input-group > .input-group-prepend:not(:first-child) > .input-group-text,
+.input-group > .input-group-prepend:first-child > .btn:not(:first-child),
+.input-group > .input-group-prepend:first-child > .input-group-text:not(:first-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
 }
 
 /* Custom color scheme for travel agency */
@@ -284,7 +434,8 @@ body, h1, h2, h3, h4, h5, h6, p,
     color: #fff;
 }
 
-/* تحسين عرض الأيقونات في الشريط الجانبي */
+
+/*  Preserving original sidebar styling  */
 .nav-sidebar .nav-link {
     display: flex !important;
     align-items: center !important;
@@ -325,7 +476,7 @@ body, h1, h2, h3, h4, h5, h6, p,
     padding-left: 1rem !important;
 }
 
-/* تحسين عرض الشريط الجانبي */
+/* Preserving original main-sidebar styling */
 .main-sidebar {
     width: 250px !important;
     background-color: #343a40 !important;
@@ -346,7 +497,6 @@ body, h1, h2, h3, h4, h5, h6, p,
     width: 1.6rem !important;
 }
 
-/* تحسين عرض الأيقونات في القائمة المنسدلة */
 .nav-sidebar .nav-item.has-treeview > .nav-link > .right {
     position: absolute !important;
     left: 1rem !important;
@@ -377,13 +527,11 @@ body, h1, h2, h3, h4, h5, h6, p,
     font-size: 1.1rem !important;
 }
 
-/* Fix for active menu items */
 .nav-sidebar .nav-item.menu-open > .nav-link {
     color: #fff !important;
     background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
-/* Fix angle icons in dropdowns */
 .nav-sidebar .has-treeview > .nav-link > .right,
 .nav-sidebar .has-treeview > .nav-link > .fas.fa-angle-left {
     position: absolute !important;
@@ -392,7 +540,6 @@ body, h1, h2, h3, h4, h5, h6, p,
     top: 0.8rem !important;
 }
 
-/* Fix for brand logo area */
 .brand-link {
     display: flex !important;
     align-items: center !important;
@@ -425,7 +572,6 @@ body, h1, h2, h3, h4, h5, h6, p,
     color: #fff !important;
 }
 
-/* Fix RTL sidebar - global */
 .main-sidebar, .main-sidebar::before {
     transition: margin-right .3s ease-in-out, width .3s ease-in-out;
     right: 0;
@@ -462,7 +608,6 @@ body, h1, h2, h3, h4, h5, h6, p,
     width: calc(100% - 250px);
 }
 
-/* Fix for COLLAPSED state */
 body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper, 
 body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer, 
 body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header {
@@ -485,22 +630,13 @@ body.sidebar-collapse .main-header {
     transition: margin-right .3s ease-in-out, width .3s ease-in-out;
 }
 
-/* Fix for sidebar mini specific */
 .sidebar-mini .main-sidebar .nav-sidebar.nav-child-indent .nav-treeview {
     padding-right: 1rem !important;
     padding-left: 0 !important;
 }
 
 /* Mobile responsive sidebar fixes */
-/* تحسينات عامة للخط والاتجاه */
-* {
-    letter-spacing: 0 !important;
-    font-family: 'Tajawal', sans-serif !important;
-}
-
-/* تحسين توافق الشاشات الصغيرة */
 @media (max-width: 767.98px) {
-    /* إصلاحات عامة للموبايل */
     .main-sidebar, .main-sidebar::before {
         box-shadow: 0 10px 3px rgba(0, 0, 0, 0.1) !important;
         margin-right: -250px !important;
@@ -512,25 +648,21 @@ body.sidebar-collapse .main-header {
         z-index: 1100 !important;
     }
     
-    /* تحسين عرض النماذج */
     .form-group {
         margin-bottom: 0.5rem;
     }
     
-    /* تحسين عرض الأزرار */
     .btn {
         padding: 0.4rem 0.8rem;
         font-size: 0.9rem;
     }
     
-    /* تحسين عرض الجداول */
     .table td, .table th {
         padding: 0.5rem;
         font-size: 0.9rem;
     }
 }
 
-/* تحسين توافق الشاشات المتوسطة */
 @media (min-width: 768px) and (max-width: 991.98px) {
     .content-wrapper {
         margin-right: 200px;
@@ -542,7 +674,6 @@ body.sidebar-collapse .main-header {
     }
 }
 
-/* تحسين توافق الشاشات الكبيرة */
 @media (min-width: 992px) {
     .container-fluid {
         padding-right: 2rem;
@@ -550,7 +681,6 @@ body.sidebar-collapse .main-header {
     }
 }
 
-/* تحسينات إضافية للغة العربية */
 .dropdown-menu {
     text-align: right;
 }
@@ -565,12 +695,10 @@ body.sidebar-collapse .main-header {
     text-align: right;
 }
 
-/* تحسين عرض التنبيهات */
 .alert {
     text-align: right;
 }
 
-/* تحسين عرض المودال */
 .modal-header .close {
     margin: -1rem auto -1rem -1rem;
 }
@@ -579,117 +707,106 @@ body.sidebar-collapse .main-header {
     justify-content: flex-start;
 }
 
-    .sidebar-open .main-sidebar, 
-    .sidebar-open .main-sidebar::before {
-        margin-right: 0 !important;
-    }
-
-    .content-wrapper, .main-footer, .main-header {
-        margin-right: 0 !important;
-        width: 100% !important;
-    }
-    
-    body.sidebar-open .content-wrapper,
-    body.sidebar-open .main-footer,
-    body.sidebar-open .main-header {
-        width: 100% !important;
-    }
-    
-    /* Element specific fixes */
-    .main-sidebar {
-        width: 250px;
-    }
-    
-    .sidebar {
-        height: calc(100% - 3.5rem) !important;
-        overflow-y: auto !important;
-    }
-    
-    .nav-sidebar .nav-link p {
-        margin-right: 0;
-        display: inline-block;
-    }
-    
-    .nav-sidebar .nav-treeview {
-        padding-right: 15px;
-        margin-right: 0;
-    }
-    
-    /* Fix for push menu button on mobile */
-    .main-header .navbar-nav.float-sm-right {
-        float: none !important;
-    }
-    
-    /* تحسينات عرض النماذج على الجوال */
-    .card-body {
-        padding: 0.75rem;
-    }
-    
-    .form-group {
-        margin-bottom: 0.75rem;
-    }
-    
-    .form-control {
-        font-size: 0.95rem;
-    }
-    
-    /* تحسين الأزرار للأجهزة المحمولة */
-    .btn {
-        padding: 0.375rem 0.5rem;
-        font-size: 0.95rem;
-    }
-    
-    .btn i, .btn .fas, .btn .fa {
-        margin-left: 0.3rem;
-    }
-    
-    /* تحسين الجداول للأجهزة المحمولة */
-    .table td, .table th {
-        padding: 0.5rem;
-        white-space: nowrap;
-    }
-    
-    /* تحسين أداء البطاقات على الموبايل */
-    .card {
-        margin-bottom: 1rem;
-    }
-    
-    /* تحسين عرض مؤشرات الخطوات في النماذج متعددة الخطوات */
-    .steps-container {
-        flex-wrap: wrap;
-    }
-    
-    .step-indicator {
-        margin-bottom: 0.5rem;
-        font-size: 0.85rem;
-        width: 100%;
-    }
-    
-    /* أزرار الإجراءات في الجداول - موبايل */
-    .table .btn-sm {
-        width: 30px;
-        height: 30px;
-        padding: 0;
-        margin: 0.1rem;
-    }
-    
-    .table .btn-sm i {
-        margin: 0;
-        font-size: 0.85rem;
-    }
-    
-    /* تحسين أزرار التنقل في النماذج متعددة الخطوات */
-    .modal-footer, .step-navigation {
-        flex-direction: column;
-    }
-    
-    .modal-footer > .btn, .step-navigation > .btn {
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
+.sidebar-open .main-sidebar, 
+.sidebar-open .main-sidebar::before {
+    margin-right: 0 !important;
 }
 
-/* Improve RTL menu layout */
+.content-wrapper, .main-footer, .main-header {
+    margin-right: 0 !important;
+    width: 100% !important;
+}
+
+body.sidebar-open .content-wrapper,
+body.sidebar-open .main-footer,
+body.sidebar-open .main-header {
+    width: 100% !important;
+}
+
+.main-sidebar {
+    width: 250px;
+}
+
+.sidebar {
+    height: calc(100% - 3.5rem) !important;
+    overflow-y: auto !important;
+}
+
+.nav-sidebar .nav-link p {
+    margin-right: 0;
+    display: inline-block;
+}
+
+.nav-sidebar .nav-treeview {
+    padding-right: 15px;
+    margin-right: 0;
+}
+
+.main-header .navbar-nav.float-sm-right {
+    float: none !important;
+}
+
+.card-body {
+    padding: 0.75rem;
+}
+
+.form-group {
+    margin-bottom: 0.75rem;
+}
+
+.form-control {
+    font-size: 0.95rem;
+}
+
+.btn {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.95rem;
+}
+
+.btn i, .btn .fas, .btn .fa {
+    margin-left: 0.3rem;
+}
+
+.table td, .table th {
+    padding: 0.5rem;
+    white-space: nowrap;
+}
+
+.card {
+    margin-bottom: 1rem;
+}
+
+.steps-container {
+    flex-wrap: wrap;
+}
+
+.step-indicator {
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    width: 100%;
+}
+
+.table .btn-sm {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    margin: 0.1rem;
+}
+
+.table .btn-sm i {
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+.modal-footer, .step-navigation {
+    flex-direction: column;
+}
+
+.modal-footer > .btn, .step-navigation > .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
 .sidebar .nav-sidebar .nav-link>.right, 
 .sidebar .nav-sidebar .nav-link>p>.right {
     position: absolute;
@@ -710,7 +827,6 @@ body.sidebar-collapse .main-header {
     transform: rotate(-90deg);
 }
 
-/* Fix for dropdown menus */
 .dropdown-menu-left {
     right: auto !important;
     left: 0 !important;
@@ -721,7 +837,6 @@ body.sidebar-collapse .main-header {
     right: 0 !important;
 }
 
-/* Fix header for mobile */
 @media (max-width: 767.98px) {
     .main-header {
         position: fixed;
@@ -735,7 +850,6 @@ body.sidebar-collapse .main-header {
     }
 }
 
-/* Print styles for reports */
 @media print {
     .no-print {
         display: none !important;
@@ -765,12 +879,10 @@ body.sidebar-collapse .main-header {
     }
 }
 
-/* Hide print-only elements when not printing */
 .print-only {
     display: none;
 }
 
-/* Form styling */
 .form-control, .form-control:focus {
     border-radius: 6px;
 }
@@ -779,14 +891,12 @@ body.sidebar-collapse .main-header {
     border-radius: 6px;
 }
 
-/* Custom table styles */
 .table-travel {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
 }
 
-/* تحسينات أزرار الإجراءات */
 .btn-action {
     width: 38px;
     height: 38px;
@@ -809,7 +919,6 @@ body.sidebar-collapse .main-header {
     font-size: 0.85rem;
 }
 
-/* تنسيق مؤشرات الخطوات للنماذج متعددة المراحل */
 .steps-container {
     display: flex;
     justify-content: space-between;
@@ -851,7 +960,6 @@ body.sidebar-collapse .main-header {
     font-size: 14px;
 }
 
-/* ضبط تخطيط أزرار التنقل للنماذج متعددة المراحل */
 .step-navigation {
     margin-top: 30px;
     padding-top: 15px;
@@ -860,7 +968,6 @@ body.sidebar-collapse .main-header {
     justify-content: space-between;
 }
 
-/* تخصيص الأزرار لتعمل بشكل أفضل على الشاشات الكبيرة */
 @media (min-width: 992px) {
     .form-card {
         max-width: 90%;
@@ -898,7 +1005,6 @@ body.sidebar-collapse .main-header {
     }
 }
 
-/* تنسيق عرض المبالغ المالية بالكلمات */
 .amount-in-words {
     color: #6c757d;
     font-style: italic;
@@ -909,7 +1015,6 @@ body.sidebar-collapse .main-header {
     font-weight: 400;
 }
 
-/* تنسيق حقول المبالغ المالية */
 input.amount-field:focus + .amount-in-words {
     color: #495057;
 }
@@ -925,7 +1030,6 @@ input.amount-field:focus + .amount-in-words {
     background-color: rgba(44, 123, 229, 0.05);
 }
 
-/* Status badges */
 .badge-pending {
     background-color: #ffbc42;
     color: #212529;
@@ -946,7 +1050,6 @@ input.amount-field:focus + .amount-in-words {
     color: white;
 }
 
-/* Select2 RTL fixes */
 .select2-container--default .select2-selection--single {
     height: calc(2.25rem + 2px);
     padding: .375rem .75rem;
@@ -961,7 +1064,6 @@ input.amount-field:focus + .amount-in-words {
     height: calc(2.25rem + 2px);
 }
 
-/* Dashboard charts */
 .chart-container {
     position: relative;
     margin: auto;
