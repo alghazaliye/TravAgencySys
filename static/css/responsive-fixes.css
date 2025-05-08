@@ -248,3 +248,34 @@
 .has-treeview .nav-treeview {
     margin-right: 1rem;
 }
+
+/* تحسينات النموذج الموحد لحجز تذاكر الباص */
+.reservation-form .section {
+    margin-bottom: 1.5rem;
+}
+
+.reservation-form .card {
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.reservation-form .card:hover {
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.reservation-form .card-header {
+    padding: 0.75rem 1.25rem;
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.reservation-form .card-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+@media (max-width: 767.98px) {
+    .reservation-form .card-footer .btn {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.9rem;
+    }
+}
