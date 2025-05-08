@@ -41,6 +41,26 @@ document.addEventListener("DOMContentLoaded", function() {
  * تصحيح مشكلة القائمة الجانبية في الاتجاه من اليمين إلى اليسار
  */
 function fixRtlSidebar() {
+    // التأكد من أن الشريط الجانبي يملأ ارتفاع الصفحة
+    const mainSidebar = document.querySelector('.main-sidebar');
+    if (mainSidebar) {
+        mainSidebar.style.minHeight = '100vh';
+        mainSidebar.style.height = '100%';
+        
+        // التأكد من ضبط وضع position بشكل صحيح
+        mainSidebar.style.position = 'fixed';
+    }
+    
+    // إصلاح مشكلة التمرير في الشريط الجانبي
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+        sidebar.style.height = 'calc(100% - 4.5rem)';
+        sidebar.style.overflowY = 'auto';
+        sidebar.style.paddingBottom = '0';
+        sidebar.style.paddingRight = '0.5rem';
+        sidebar.style.paddingLeft = '0.5rem';
+    }
+    
     // إعادة تعيين علامات التبويب في القائمة الجانبية
     const navItems = document.querySelectorAll('.nav-sidebar .nav-item');
     
@@ -103,16 +123,29 @@ function fixMobileSidebar() {
     document.body.classList.add('sidebar-closed', 'sidebar-collapse');
     
     // تعديل أسلوب العرض لمنع مشكلة التمرير في الأجهزة المحمولة
-    const sidebar = document.querySelector('.main-sidebar');
+    const mainSidebar = document.querySelector('.main-sidebar');
+    if (mainSidebar) {
+        mainSidebar.style.overflow = 'hidden';
+        mainSidebar.style.height = '100%';
+        mainSidebar.style.minHeight = '100vh';
+        mainSidebar.style.position = 'fixed';
+        mainSidebar.style.top = '0';
+        mainSidebar.style.zIndex = '1100';
+    }
+    
+    // تعديل .sidebar للتمرير
+    const sidebar = document.querySelector('.sidebar');
     if (sidebar) {
-        sidebar.style.overflow = 'auto';
-        sidebar.style.height = '100%';
+        sidebar.style.height = 'calc(100% - 3.5rem)';
+        sidebar.style.overflowY = 'auto';
+        sidebar.style.paddingBottom = '1rem';
     }
     
     // إصلاح مشكلة رأس الشاشة على الأجهزة المحمولة
     const header = document.querySelector('.main-header');
     if (header) {
         header.style.position = 'fixed';
+        header.style.top = '0';
         header.style.width = '100%';
         header.style.zIndex = '1001';
     }
