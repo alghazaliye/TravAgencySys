@@ -3,7 +3,7 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('تم تحميل ملف sidebar-fix.js');
+    console.log('تم تحميل ملف sidebar-fix.js - الإصدار المحسن');
     
     // إضافة مستمع للنقر المباشر على الزر الجديد المضاف
     const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
@@ -61,12 +61,32 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     document.body.appendChild(quickFix);
+    
+    // مراقبة تغيير حجم النافذة لتطبيق الإعدادات المستجيبة
+    window.addEventListener('resize', function() {
+        console.log('تم تغيير حجم النافذة');
+        applyResponsiveSettings(window.innerWidth);
+    });
+    
+    // استعادة حالة القائمة من التخزين المحلي عند التحميل
+    restoreMenuState();
+    
+    // تطبيق الإعدادات الأولية للتجاوب
+    applyResponsiveSettings(window.innerWidth);
+    
+    // إضافة فئة إلى الجسم للإشارة إلى أن الجافاسكريبت قد تم تحميله
+    document.body.classList.add('js-sidebar-fix-loaded');
 });
 
 /**
  * تبديل حالة القائمة الجانبية
  */
 function toggleSidebar() {
+    console.log('بدء تبديل حالة القائمة');
+    
+    // الحصول على حجم النافذة الحالي
+    const windowWidth = window.innerWidth;
+    
     // تبديل الفئات في الجسم
     document.body.classList.toggle('sidebar-collapse');
     
@@ -74,15 +94,29 @@ function toggleSidebar() {
         // عند إغلاق القائمة
         document.body.classList.remove('sidebar-open');
         
-        // تعديل هوامش المحتوى
-        setContentMargins('0');
+        // تعديل هوامش المحتوى حسب حجم الشاشة
+        if (windowWidth >= 992) {
+            // سطح المكتب - نظهر القائمة المصغرة
+            setContentMargins('4.6rem');
+        } else {
+            // الأجهزة الصغيرة - نغلق القائمة تمامًا
+            setContentMargins('0');
+        }
     } else {
         // عند فتح القائمة
         document.body.classList.add('sidebar-open');
         
-        // تعديل هوامش المحتوى
-        setContentMargins('250px');
+        // تعديل هوامش المحتوى - للشاشات الكبيرة فقط
+        if (windowWidth >= 768) {
+            setContentMargins('250px');
+        }
     }
+    
+    // تطبيق التعديلات المناسبة حسب حجم الشاشة
+    applyResponsiveSettings(windowWidth);
+    
+    // تذكر حالة القائمة
+    saveMenuState();
 }
 
 /**
@@ -93,7 +127,99 @@ function setContentMargins(margin) {
     const mainHeader = document.querySelector('.main-header');
     const mainFooter = document.querySelector('.main-footer');
     
-    if (contentWrapper) contentWrapper.style.marginRight = margin;
-    if (mainHeader) mainHeader.style.marginRight = margin;
-    if (mainFooter) mainFooter.style.marginRight = margin;
+    // تطبيق الهوامش فقط للشاشات المتوسطة والكبيرة
+    if (window.innerWidth >= 768) {
+        if (contentWrapper) contentWrapper.style.marginRight = margin;
+        if (mainHeader) mainHeader.style.marginRight = margin;
+        if (mainFooter) mainFooter.style.marginRight = margin;
+    }
+}
+
+/**
+ * تطبيق الإعدادات المستجيبة حسب حجم الشاشة
+ */
+function applyResponsiveSettings(windowWidth) {
+    const mainSidebar = document.querySelector('.main-sidebar');
+    
+    if (!mainSidebar) return;
+    
+    if (windowWidth < 768) {
+        // الشاشات الصغيرة (الجوال)
+        mainSidebar.style.width = '250px';
+        mainSidebar.style.position = 'fixed';
+        
+        if (document.body.classList.contains('sidebar-open')) {
+            mainSidebar.style.right = '0';
+        } else {
+            mainSidebar.style.right = '-250px';
+        }
+        
+    } else if (windowWidth >= 768 && windowWidth < 992) {
+        // الشاشات المتوسطة (تابلت)
+        if (document.body.classList.contains('sidebar-collapse')) {
+            mainSidebar.style.width = '0';
+            mainSidebar.style.overflow = 'hidden';
+        } else {
+            mainSidebar.style.width = '250px';
+            mainSidebar.style.overflow = 'visible';
+        }
+        
+        mainSidebar.style.right = '0';
+        
+    } else {
+        // الشاشات الكبيرة (سطح المكتب)
+        mainSidebar.style.right = '0';
+        
+        if (document.body.classList.contains('sidebar-collapse')) {
+            mainSidebar.style.width = '4.6rem';
+        } else {
+            mainSidebar.style.width = '250px';
+        }
+    }
+}
+
+/**
+ * حفظ حالة القائمة في التخزين المحلي
+ */
+function saveMenuState() {
+    const state = document.body.classList.contains('sidebar-collapse') ? 'collapsed' : 'expanded';
+    localStorage.setItem('sidebar-state', state);
+}
+
+/**
+ * استعادة حالة القائمة من التخزين المحلي
+ */
+function restoreMenuState() {
+    const savedState = localStorage.getItem('sidebar-state');
+    const windowWidth = window.innerWidth;
+    
+    // لا نستعيد الحالة للشاشات الصغيرة، نجعل القائمة مغلقة دائمًا
+    if (windowWidth < 768) {
+        document.body.classList.remove('sidebar-open');
+        document.body.classList.add('sidebar-collapse');
+        return;
+    }
+    
+    if (savedState === 'collapsed') {
+        document.body.classList.add('sidebar-collapse');
+        document.body.classList.remove('sidebar-open');
+        
+        // تعديل هوامش المحتوى حسب حجم الشاشة
+        if (windowWidth >= 992) {
+            setContentMargins('4.6rem');
+        } else {
+            setContentMargins('0');
+        }
+    } else if (savedState === 'expanded') {
+        document.body.classList.remove('sidebar-collapse');
+        document.body.classList.add('sidebar-open');
+        
+        // تعديل الهوامش - للشاشات الكبيرة فقط
+        if (windowWidth >= 768) {
+            setContentMargins('250px');
+        }
+    }
+    
+    // تطبيق الإعدادات المستجيبة
+    applyResponsiveSettings(windowWidth);
 }
