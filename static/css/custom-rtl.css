@@ -150,6 +150,7 @@ body, h1, h2, h3, h4, h5, h6, p,
     min-height: 100vh;
     height: 100%;
     position: fixed;
+    color: #fff;
 }
 
 .sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active {
@@ -158,6 +159,33 @@ body, h1, h2, h3, h4, h5, h6, p,
 
 .sidebar-dark-primary .nav-treeview > .nav-item > .nav-link.active {
     background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Fix icons display in sidebar */
+.nav-sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    color: #c2c7d0;
+}
+
+.nav-sidebar .nav-link:hover {
+    color: #fff;
+}
+
+.nav-sidebar .nav-link p {
+    margin-right: 0.5rem;
+    color: inherit;
+}
+
+.nav-sidebar .nav-icon, 
+.nav-sidebar .fas, 
+.nav-sidebar .fa {
+    margin-left: 0.5rem;
+    margin-right: 0;
+    color: inherit;
+    display: inline-block;
+    width: 1.6rem;
+    text-align: center;
 }
 
 /* Fix for brand logo area */
