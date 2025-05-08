@@ -107,6 +107,19 @@
         .main-header .navbar {
             display: flex !important;
             width: 100%;
+            direction: rtl !important;
+            justify-content: space-between !important;
+        }
+        
+        /* تحسين ظهور اسم المستخدم في القائمة العلوية */
+        .user-menu .nav-link {
+            padding: 0.5rem 0.8rem !important;
+        }
+        
+        /* تعديل محاذاة القوائم المنسدلة في RTL */
+        .dropdown-menu-right {
+            right: auto !important;
+            left: 0 !important;
         }
         
         /* تحسينات الشعار */
@@ -357,9 +370,30 @@
             font-size: 1.2rem;
         }
         
-        /* لضمان ظهور زر القائمة الجانبية */
+        /* تعريف الفئة الخاصة بمحاذاة شريط التنقل لتناسب واجهة RTL */
+        .mr-auto-navbav {
+            margin-left: 0 !important;
+            margin-right: auto !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+        
+        /* التأكد من ظهور زر القائمة الجانبية والعناصر الأخرى */
         .navbar-nav {
             display: flex !important;
+            align-items: center !important;
+        }
+        
+        /* تعديل محاذاة العناصر في الشريط العلوي */
+        .navbar-nav .nav-item {
+            display: flex !important;
+            align-items: center !important;
+        }
+        
+        /* تعديل توسيط النص مع الأيقونة في شريط التنقل */
+        .navbar-nav .nav-link {
+            display: flex !important;
+            align-items: center !important;
         }
         
         /* إصلاح أيقونات الأزرار */
@@ -422,7 +456,7 @@
             </ul>
 
             <!-- Right navbar links -->
-            <ul class="navbar-nav ml-auto">
+            <ul class="navbar-nav mr-auto-navbav">
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
                         <i class="far fa-bell"></i>
@@ -446,10 +480,10 @@
                 </li>
                 <li class="nav-item dropdown user-menu">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-                        <i class="fas fa-user-circle fa-lg"></i>
+                        <i class="fas fa-user-circle fa-lg ml-1"></i>
                         <span class="d-none d-md-inline">أحمد محمد</span>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-left">
+                    <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                         <li class="user-header bg-primary">
                             <i class="fas fa-user-circle fa-5x text-white"></i>
                             <p>
