@@ -115,7 +115,7 @@ $(function () {
         $('#cashAmount, #receiptNumber').prop('required', false);
         
         // تحديث قائمة الحسابات المالية حسب نوع التوصيل
-        var accountSelect = $('#accountId');
+        var accountSelect = $('#account');
         accountSelect.empty(); // مسح الخيارات السابقة
         accountSelect.append('<option value="">اختر الحساب المالي</option>');
         
@@ -280,7 +280,7 @@ function initializeDateTimePickers() {
  * تهيئة أدوات Select2
  */
 function initializeSelect2() {
-    $('#fromCity, #toCity, #nationality, #idType, #currency, #paymentType, #supplierId, #accountId').select2({
+    $('#fromCity, #toCity, #nationality, #idType, #currency, #paymentType, #supplierId, #account').select2({
         dir: "rtl",
         language: "ar",
         width: '100%'
