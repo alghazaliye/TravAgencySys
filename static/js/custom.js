@@ -153,60 +153,8 @@ function fixRtlSidebar() {
         }
     });
     
-    // إصلاح مشكلة تبديل القائمة الجانبية في وضع الجوال
-    const pushMenuButton = document.querySelector('[data-widget="pushmenu"]');
-    if (pushMenuButton) {
-        // نزيل المستمع السابق إذا كان موجودًا
-        pushMenuButton.replaceWith(pushMenuButton.cloneNode(true));
-        
-        // نعيد تعريف الزر بعد استبداله
-        const newPushMenuButton = document.querySelector('[data-widget="pushmenu"]');
-        
-        // إضافة مستمع يدوي لضمان عمل الزر
-        newPushMenuButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // تبديل حالة القائمة
-            if (document.body.classList.contains('sidebar-collapse')) {
-                document.body.classList.remove('sidebar-collapse');
-                document.body.classList.add('sidebar-open');
-            } else {
-                document.body.classList.remove('sidebar-open');
-                document.body.classList.add('sidebar-collapse');
-            }
-            
-            // تخزين الحالة في localStorage لضمان التناسق
-            localStorage.setItem('sidebar-state', 
-                document.body.classList.contains('sidebar-collapse') ? 'collapsed' : 'expanded');
-                
-            // إضافة التعديلات على عرض المحتوى
-            const contentWrapper = document.querySelector('.content-wrapper');
-            const mainHeader = document.querySelector('.main-header');
-            const mainFooter = document.querySelector('.main-footer');
-            
-            // إذا كان الشريط الجانبي مفتوحًا، تأكد من الحفاظ على عرض المحتوى كاملًا
-            if (document.body.classList.contains('sidebar-open') || 
-                !document.body.classList.contains('sidebar-collapse')) {
-                if (contentWrapper) contentWrapper.style.width = 'calc(100% - 250px)';
-                if (mainHeader) mainHeader.style.width = 'calc(100% - 250px)';
-                if (mainFooter) mainFooter.style.width = 'calc(100% - 250px)';
-            } else {
-                if (contentWrapper) contentWrapper.style.width = '100%';
-                if (mainHeader) mainHeader.style.width = '100%';
-                if (mainFooter) mainFooter.style.width = '100%';
-            }
-        });
-        
-        // استعادة حالة الشريط الجانبي من localStorage
-        const savedState = localStorage.getItem('sidebar-state');
-        if (savedState === 'collapsed') {
-            document.body.classList.add('sidebar-collapse');
-            document.body.classList.remove('sidebar-open');
-        } else if (savedState === 'expanded') {
-            document.body.classList.remove('sidebar-collapse');
-            document.body.classList.add('sidebar-open');
-        }
-    }
+    // الاعتماد على النظام الأساسي (AdminLTE) للتعامل مع تبديل القائمة الجانبية
+    // لن نقوم بتعديل أي سلوك هنا وسنترك مكتبة AdminLTE تتولى المهمة
     
     // معالجة مشكلة القائمة المنسدلة في الهاتف المحمول
     if (window.innerWidth <= 767.98) {
@@ -594,22 +542,7 @@ function fixUIIssues() {
         }
     }
     
-    // نهيئ عرض المحتوى استنادًا على حالة الشريط الجانبي الحالية
-    const contentWrapper = document.querySelector('.content-wrapper');
-    const mainHeader = document.querySelector('.main-header');
-    const mainFooter = document.querySelector('.main-footer');
-    
-    // إذا كان الشريط الجانبي مفتوحًا، تأكد من الحفاظ على عرض المحتوى كاملًا
-    if (document.body.classList.contains('sidebar-open') || 
-        !document.body.classList.contains('sidebar-collapse')) {
-        if (contentWrapper) contentWrapper.style.width = 'calc(100% - 250px)';
-        if (mainHeader) mainHeader.style.width = 'calc(100% - 250px)';
-        if (mainFooter) mainFooter.style.width = 'calc(100% - 250px)';
-    } else {
-        if (contentWrapper) contentWrapper.style.width = '100%';
-        if (mainHeader) mainHeader.style.width = '100%';
-        if (mainFooter) mainFooter.style.width = '100%';
-    }
+    // سنترك التعامل مع عرض المحتوى لمكتبة AdminLTE
     
     // إصلاح مشكلة أيقونات الأزرار
     document.querySelectorAll('.btn i').forEach(icon => {
