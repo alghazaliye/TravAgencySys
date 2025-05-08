@@ -494,6 +494,28 @@ function fixUIIssues() {
         }
     }
     
+    // إصلاح عرض المحتوى عند فتح الشريط الجانبي
+    const pushMenuButton = document.querySelector('[data-widget="pushmenu"]');
+    if (pushMenuButton) {
+        pushMenuButton.addEventListener('click', function() {
+            const contentWrapper = document.querySelector('.content-wrapper');
+            const mainHeader = document.querySelector('.main-header');
+            const mainFooter = document.querySelector('.main-footer');
+            
+            // إذا كان الشريط الجانبي مفتوحًا، تأكد من الحفاظ على عرض المحتوى كاملًا
+            if (document.body.classList.contains('sidebar-open') || 
+                !document.body.classList.contains('sidebar-collapse')) {
+                if (contentWrapper) contentWrapper.style.width = 'calc(100% - 250px)';
+                if (mainHeader) mainHeader.style.width = 'calc(100% - 250px)';
+                if (mainFooter) mainFooter.style.width = 'calc(100% - 250px)';
+            } else {
+                if (contentWrapper) contentWrapper.style.width = '100%';
+                if (mainHeader) mainHeader.style.width = '100%';
+                if (mainFooter) mainFooter.style.width = '100%';
+            }
+        });
+    }
+    
     // إصلاح مشكلة أيقونات الأزرار
     document.querySelectorAll('.btn i').forEach(icon => {
         if (getComputedStyle(icon).marginLeft === '0px') {

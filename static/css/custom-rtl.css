@@ -199,12 +199,14 @@ body, h1, h2, h3, h4, h5, h6, p,
     margin-right: 250px;
     margin-left: 0;
     transition: margin-right .3s ease-in-out;
+    width: calc(100% - 250px);
 }
 
 .content-wrapper, .main-footer {
     margin-right: 250px;
     margin-left: 0;
     transition: margin-right .3s ease-in-out;
+    width: calc(100% - 250px);
 }
 
 /* Fix for COLLAPSED state */
@@ -226,7 +228,8 @@ body.sidebar-collapse .main-footer,
 body.sidebar-collapse .main-header {
     margin-right: 0;
     margin-left: 0;
-    transition: margin-right .3s ease-in-out;
+    width: 100%;
+    transition: margin-right .3s ease-in-out, width .3s ease-in-out;
 }
 
 /* Fix for sidebar mini specific */
@@ -256,6 +259,13 @@ body.sidebar-collapse .main-header {
 
     .content-wrapper, .main-footer, .main-header {
         margin-right: 0 !important;
+        width: 100% !important;
+    }
+    
+    body.sidebar-open .content-wrapper,
+    body.sidebar-open .main-footer,
+    body.sidebar-open .main-header {
+        width: 100% !important;
     }
     
     /* Element specific fixes */
