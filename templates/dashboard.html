@@ -8,73 +8,297 @@
 <li class="breadcrumb-item active">لوحة التحكم</li>
 {% endblock %}
 
+{% block styles %}
+<style>
+    /* أنماط خاصة بلوحة التحكم */
+    .stat-box {
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+    
+    .stat-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stat-box .inner {
+        padding: 20px;
+    }
+    
+    .stat-box h3 {
+        font-size: 30px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    
+    .stat-box p {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 0;
+    }
+    
+    .stat-box .icon {
+        position: absolute;
+        top: 20px;
+        left: 15px;
+        font-size: 40px;
+        opacity: 0.3;
+        transition: all 0.3s ease;
+    }
+    
+    .stat-box:hover .icon {
+        opacity: 0.5;
+        transform: scale(1.1);
+    }
+    
+    .stat-box .small-box-footer {
+        padding: 8px 0;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .stat-box .small-box-footer:hover {
+        padding-right: 15px;
+    }
+    
+    .stat-trend {
+        font-size: 12px;
+        padding: 2px 6px;
+        border-radius: 5px;
+        margin-right: 8px;
+        font-weight: bold;
+        display: inline-block;
+    }
+    
+    .stat-trend i {
+        margin-left: 3px;
+    }
+    
+    .trend-up {
+        background-color: rgba(40, 167, 69, 0.1);
+        color: #28a745;
+    }
+    
+    .trend-down {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+    }
+    
+    .progress {
+        height: 6px;
+        margin-top: 10px;
+        margin-bottom: 0;
+        border-radius: 3px;
+    }
+    
+    .card-travel {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 1.5rem;
+    }
+    
+    .card-travel .card-header {
+        padding: 1rem 1.25rem;
+        font-weight: 600;
+    }
+    
+    .task-item {
+        padding: 12px 15px;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        align-items: center;
+    }
+    
+    .task-item:last-child {
+        border-bottom: none;
+    }
+    
+    .task-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 15px;
+        flex-shrink: 0;
+    }
+    
+    .task-text {
+        flex-grow: 1;
+    }
+    
+    .chart-container {
+        position: relative;
+        margin: auto;
+        height: 300px;
+    }
+    
+    .top-destinations {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -5px;
+    }
+    
+    .destination-item {
+        flex: 0 0 48%;
+        margin: 5px;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .destination-icon {
+        width: 40px;
+        height: 40px;
+        background-color: rgba(44, 123, 229, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 10px;
+        color: #2c7be5;
+        flex-shrink: 0;
+    }
+    
+    .destination-info {
+        flex-grow: 1;
+    }
+    
+    .destination-name {
+        font-weight: 600;
+        margin-bottom: 3px;
+    }
+    
+    .destination-count {
+        font-size: 12px;
+        color: #6c757d;
+    }
+
+    @media (max-width: 767.98px) {
+        .destination-item {
+            flex: 0 0 100%;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
+<!-- نظرة عامة على الإحصائيات -->
 <div class="row">
     <div class="col-lg-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-travel-primary">
+        <!-- إحصائية تذاكر الطيران -->
+        <div class="small-box bg-travel-primary stat-box">
             <div class="inner">
                 <h3>150</h3>
                 <p>تذاكر الطيران</p>
+                <div class="d-flex align-items-center mt-2">
+                    <span class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> 12%</span>
+                    <small>مقارنة بالشهر السابق</small>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar bg-white" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
             </div>
             <div class="icon">
                 <i class="fas fa-plane"></i>
             </div>
-            <a href="{{ url_for('airline_tickets') }}" class="small-box-footer">المزيد <i class="fas fa-arrow-circle-left"></i></a>
+            <a href="{{ url_for('airline_tickets') }}" class="small-box-footer">إدارة التذاكر <i class="fas fa-arrow-circle-left"></i></a>
         </div>
     </div>
     <!-- ./col -->
     <div class="col-lg-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-travel-success">
+        <!-- إحصائية التأشيرات -->
+        <div class="small-box bg-travel-success stat-box">
             <div class="inner">
                 <h3>53</h3>
-                <p>تأشيرات</p>
+                <p>التأشيرات النشطة</p>
+                <div class="d-flex align-items-center mt-2">
+                    <span class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> 8%</span>
+                    <small>مقارنة بالشهر السابق</small>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar bg-white" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
             </div>
             <div class="icon">
                 <i class="fas fa-passport"></i>
             </div>
-            <a href="{{ url_for('work_visa') }}" class="small-box-footer">المزيد <i class="fas fa-arrow-circle-left"></i></a>
+            <a href="{{ url_for('work_visa') }}" class="small-box-footer">إدارة التأشيرات <i class="fas fa-arrow-circle-left"></i></a>
         </div>
     </div>
     <!-- ./col -->
     <div class="col-lg-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-travel-info">
+        <!-- إحصائية العملاء -->
+        <div class="small-box bg-travel-info stat-box">
             <div class="inner">
                 <h3>44</h3>
-                <p>العملاء</p>
+                <p>العملاء النشطين</p>
+                <div class="d-flex align-items-center mt-2">
+                    <span class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> 5%</span>
+                    <small>مقارنة بالشهر السابق</small>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar bg-white" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
             </div>
             <div class="icon">
                 <i class="fas fa-users"></i>
             </div>
-            <a href="{{ url_for('customers') }}" class="small-box-footer">المزيد <i class="fas fa-arrow-circle-left"></i></a>
+            <a href="{{ url_for('customers') }}" class="small-box-footer">إدارة العملاء <i class="fas fa-arrow-circle-left"></i></a>
         </div>
     </div>
     <!-- ./col -->
     <div class="col-lg-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-travel-secondary">
+        <!-- إحصائية الإيرادات -->
+        <div class="small-box bg-travel-secondary stat-box">
             <div class="inner">
-                <h3>65,000 ر.س</h3>
-                <p>الإيرادات</p>
+                <h3>65,000 <small style="font-size: 16px;">ر.س</small></h3>
+                <p>الإيرادات الشهرية</p>
+                <div class="d-flex align-items-center mt-2">
+                    <span class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> 15%</span>
+                    <small>مقارنة بالشهر السابق</small>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar bg-white" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
             </div>
             <div class="icon">
                 <i class="fas fa-money-bill-wave"></i>
             </div>
-            <a href="{{ url_for('reports') }}" class="small-box-footer">المزيد <i class="fas fa-arrow-circle-left"></i></a>
+            <a href="{{ url_for('reports') }}" class="small-box-footer">عرض التقارير <i class="fas fa-arrow-circle-left"></i></a>
         </div>
     </div>
     <!-- ./col -->
 </div>
 <!-- /.row -->
 
+<!-- صف المخططات الرئيسية -->
 <div class="row">
+    <!-- مخطط الإيرادات -->
     <div class="col-md-8">
         <div class="card card-travel">
             <div class="card-header bg-travel-primary">
-                <h3 class="card-title">الإيرادات الشهرية</h3>
+                <h3 class="card-title"><i class="fas fa-chart-line ml-2"></i> الإيرادات الشهرية</h3>
                 <div class="card-tools">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-light dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-filter"></i> تصفية
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-left" style="min-width: 180px;">
+                            <a class="dropdown-item active" href="#"><i class="fas fa-calendar-alt ml-2"></i> السنة الحالية</a>
+                            <a class="dropdown-item" href="#"><i class="fas fa-calendar-week ml-2"></i> الستة أشهر الأخيرة</a>
+                            <a class="dropdown-item" href="#"><i class="fas fa-calendar-day ml-2"></i> الثلاثة أشهر الأخيرة</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#"><i class="fas fa-cog ml-2"></i> إعداد مخصص</a>
+                        </div>
+                    </div>
                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
                         <i class="fas fa-minus"></i>
                     </button>
@@ -85,6 +309,29 @@
                 <div class="chart-container">
                     <canvas id="salesChart"></canvas>
                 </div>
+                <div class="row mt-4 text-center">
+                    <div class="col-4">
+                        <div class="d-flex flex-column">
+                            <span class="text-muted">إجمالي الإيرادات</span>
+                            <span class="h5 font-weight-bold">584,350 ر.س</span>
+                            <span class="text-success"><i class="fas fa-arrow-up"></i> 12%</span>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="d-flex flex-column">
+                            <span class="text-muted">متوسط شهري</span>
+                            <span class="h5 font-weight-bold">48,695 ر.س</span>
+                            <span class="text-success"><i class="fas fa-arrow-up"></i> 8%</span>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="d-flex flex-column">
+                            <span class="text-muted">معدل النمو</span>
+                            <span class="h5 font-weight-bold">15%</span>
+                            <span class="text-success"><i class="fas fa-arrow-up"></i> 3%</span>
+                        </div>
+                    </div>
+                </div>
             </div>
             <!-- /.card-body -->
         </div>
@@ -92,10 +339,11 @@
     </div>
     <!-- /.col -->
     
+    <!-- مخطط توزيع العملاء -->
     <div class="col-md-4">
         <div class="card card-travel">
             <div class="card-header bg-travel-success">
-                <h3 class="card-title">توزيع العملاء حسب الخدمة</h3>
+                <h3 class="card-title"><i class="fas fa-chart-pie ml-2"></i> توزيع العملاء حسب الخدمة</h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
                         <i class="fas fa-minus"></i>
@@ -107,6 +355,33 @@
                 <div class="chart-container" style="height: 250px;">
                     <canvas id="pieChart"></canvas>
                 </div>
+                <div class="mt-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>تذاكر طيران</span>
+                        <span class="text-primary">35%</span>
+                    </div>
+                    <div class="progress" style="height: 5px;">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 35%;" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>تأشيرات عمرة</span>
+                        <span class="text-success">25%</span>
+                    </div>
+                    <div class="progress" style="height: 5px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>تأشيرات أخرى</span>
+                        <span class="text-info">40%</span>
+                    </div>
+                    <div class="progress" style="height: 5px;">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: 40%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
             </div>
             <!-- /.card-body -->
         </div>
@@ -116,11 +391,141 @@
 </div>
 <!-- /.row -->
 
+<!-- صف الوجهات والتأشيرات -->
 <div class="row">
+    <!-- كارت أكثر الوجهات طلباً -->
+    <div class="col-md-5">
+        <div class="card card-travel">
+            <div class="card-header bg-travel-info">
+                <h3 class="card-title"><i class="fas fa-map-marked-alt ml-2"></i> أكثر الوجهات طلباً</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="top-destinations">
+                    <div class="destination-item">
+                        <div class="destination-icon">
+                            <i class="fas fa-plane"></i>
+                        </div>
+                        <div class="destination-info">
+                            <div class="destination-name">دبي</div>
+                            <div class="destination-count">120 حجز</div>
+                        </div>
+                        <div class="ml-2">
+                            <span class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> 15%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="destination-item">
+                        <div class="destination-icon">
+                            <i class="fas fa-plane"></i>
+                        </div>
+                        <div class="destination-info">
+                            <div class="destination-name">القاهرة</div>
+                            <div class="destination-count">85 حجز</div>
+                        </div>
+                        <div class="ml-2">
+                            <span class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> 8%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="destination-item">
+                        <div class="destination-icon">
+                            <i class="fas fa-plane"></i>
+                        </div>
+                        <div class="destination-info">
+                            <div class="destination-name">إسطنبول</div>
+                            <div class="destination-count">78 حجز</div>
+                        </div>
+                        <div class="ml-2">
+                            <span class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> 12%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="destination-item">
+                        <div class="destination-icon">
+                            <i class="fas fa-plane"></i>
+                        </div>
+                        <div class="destination-info">
+                            <div class="destination-name">كوالالمبور</div>
+                            <div class="destination-count">65 حجز</div>
+                        </div>
+                        <div class="ml-2">
+                            <span class="stat-trend trend-down"><i class="fas fa-arrow-down"></i> 3%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="destination-item">
+                        <div class="destination-icon">
+                            <i class="fas fa-plane"></i>
+                        </div>
+                        <div class="destination-info">
+                            <div class="destination-name">لندن</div>
+                            <div class="destination-count">52 حجز</div>
+                        </div>
+                        <div class="ml-2">
+                            <span class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> 5%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="destination-item">
+                        <div class="destination-icon">
+                            <i class="fas fa-plane"></i>
+                        </div>
+                        <div class="destination-info">
+                            <div class="destination-name">باريس</div>
+                            <div class="destination-count">45 حجز</div>
+                        </div>
+                        <div class="ml-2">
+                            <span class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> 2%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer text-center">
+                <a href="{{ url_for('airline_tickets') }}" class="btn btn-sm btn-info">عرض جميع الوجهات <i class="fas fa-arrow-circle-left ml-1"></i></a>
+            </div>
+        </div>
+    </div>
+    <!-- /.col -->
+    
+    <!-- كارت مخطط التأشيرات -->
+    <div class="col-md-7">
+        <div class="card card-travel">
+            <div class="card-header bg-travel-secondary">
+                <h3 class="card-title"><i class="fas fa-chart-line ml-2"></i> معدل إصدار التأشيرات</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="visasChart"></canvas>
+                </div>
+            </div>
+            <!-- /.card-footer -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+
+<!-- صف الجداول -->
+<div class="row">
+    <!-- كارت أحدث التأشيرات -->
     <div class="col-md-6">
         <div class="card card-travel">
             <div class="card-header bg-travel-info">
-                <h3 class="card-title">أحدث التأشيرات</h3>
+                <h3 class="card-title"><i class="fas fa-passport ml-2"></i> أحدث التأشيرات</h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
                         <i class="fas fa-minus"></i>
@@ -176,7 +581,7 @@
             </div>
             <!-- /.card-body -->
             <div class="card-footer clearfix">
-                <a href="{{ url_for('work_visa') }}" class="btn btn-sm btn-info float-left">عرض الكل</a>
+                <a href="{{ url_for('work_visa') }}" class="btn btn-sm btn-info float-left">عرض الكل <i class="fas fa-arrow-circle-left ml-1"></i></a>
             </div>
             <!-- /.card-footer -->
         </div>
@@ -184,10 +589,11 @@
     </div>
     <!-- /.col -->
     
+    <!-- كارت أحدث الحجوزات -->
     <div class="col-md-6">
         <div class="card card-travel">
-            <div class="card-header bg-travel-secondary">
-                <h3 class="card-title">أحدث الحجوزات</h3>
+            <div class="card-header bg-travel-primary">
+                <h3 class="card-title"><i class="fas fa-ticket-alt ml-2"></i> أحدث الحجوزات</h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
                         <i class="fas fa-minus"></i>
@@ -243,7 +649,7 @@
             </div>
             <!-- /.card-body -->
             <div class="card-footer clearfix">
-                <a href="{{ url_for('airline_tickets') }}" class="btn btn-sm btn-info float-left">عرض الكل</a>
+                <a href="{{ url_for('airline_tickets') }}" class="btn btn-sm btn-info float-left">عرض الكل <i class="fas fa-arrow-circle-left ml-1"></i></a>
             </div>
             <!-- /.card-footer -->
         </div>
@@ -252,4 +658,34 @@
     <!-- /.col -->
 </div>
 <!-- /.row -->
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // إضافة بعض التفاعلات الإضافية للوحة التحكم
+    $(document).ready(function() {
+        // تفعيل التأثيرات المرئية على البطاقات
+        $('.card-travel').hover(
+            function() {
+                $(this).addClass('shadow-sm');
+            },
+            function() {
+                $(this).removeClass('shadow-sm');
+            }
+        );
+        
+        // تحديث الإحصائيات في الوقت الحقيقي (محاكاة)
+        setInterval(function() {
+            // محاكاة تغيير الإحصائيات بقيم عشوائية صغيرة
+            $('.stat-box h3').each(function() {
+                // استثناء القيمة المالية
+                if (!$(this).text().includes('ر.س')) {
+                    let currentValue = parseInt($(this).text());
+                    let change = Math.floor(Math.random() * 3) - 1; // -1, 0, or 1
+                    $(this).text(currentValue + change);
+                }
+            });
+        }, 10000); // كل 10 ثواني
+    });
+</script>
 {% endblock %}

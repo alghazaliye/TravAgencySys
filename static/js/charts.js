@@ -6,7 +6,19 @@
 document.addEventListener("DOMContentLoaded", function() {
     // تهيئة المخططات
     initializeCharts();
+    
+    // تنفيذ تحديثات المخططات (محاكاة بيانات حقيقية)
+    setInterval(function() {
+        if (window.dashboardChartsInitialized) {
+            updateCharts();
+        }
+    }, 5000);
 });
+
+// متغيرات لتخزين المخططات لتمكين التحديث لاحقًا
+let salesChartInstance = null;
+let pieChartInstance = null;
+let visasChartInstance = null;
 
 /**
  * تهيئة جميع المخططات
@@ -25,6 +37,38 @@ function initializeCharts() {
     // مخطط التأشيرات (إذا كان موجودًا)
     if (document.getElementById('visasChart')) {
         initializeVisasChart();
+    }
+    
+    // تعيين علامة أن المخططات تم تهيئتها
+    window.dashboardChartsInitialized = true;
+}
+
+/**
+ * تحديث المخططات بشكل دوري (محاكاة بيانات حية)
+ */
+function updateCharts() {
+    // تحديث مخطط المبيعات (إضافة تغييرات عشوائية طفيفة)
+    if (salesChartInstance) {
+        const data = salesChartInstance.data.datasets[0].data;
+        for (let i = 0; i < data.length; i++) {
+            // تغيير عشوائي صغير (+/- 2%)
+            const change = data[i] * (Math.random() * 0.04 - 0.02);
+            data[i] = Math.max(0, data[i] + change);
+        }
+        salesChartInstance.update();
+    }
+
+    // تحديث مخطط التأشيرات (إذا كان موجودًا)
+    if (visasChartInstance) {
+        visasChartInstance.data.datasets.forEach(dataset => {
+            const data = dataset.data;
+            for (let i = 0; i < data.length; i++) {
+                // تغيير عشوائي صغير (+/- 2%)
+                const change = data[i] * (Math.random() * 0.04 - 0.02);
+                data[i] = Math.max(0, data[i] + change);
+            }
+        });
+        visasChartInstance.update();
     }
 }
 
@@ -123,12 +167,16 @@ function initializeSalesChart() {
                 },
                 displayColors: false,
                 caretPadding: 10
+            },
+            animation: {
+                duration: 1000,
+                easing: 'easeOutQuart'
             }
         }
     };
     
-    // إنشاء المخطط
-    new Chart(ctx, {
+    // إنشاء المخطط وتخزينه للتحديث لاحقًا
+    salesChartInstance = new Chart(ctx, {
         type: 'line',
         data: data,
         options: options
@@ -182,12 +230,17 @@ function initializeCustomerPieChart() {
                     x: 15,
                     y: 15
                 }
+            },
+            animation: {
+                duration: 800,
+                animateRotate: true,
+                animateScale: true
             }
         }
     };
     
-    // إنشاء المخطط
-    new Chart(ctx, {
+    // إنشاء المخطط وتخزينه للتحديث لاحقًا
+    pieChartInstance = new Chart(ctx, {
         type: 'pie',
         data: data,
         options: options
@@ -206,24 +259,33 @@ function initializeVisasChart() {
         datasets: [
             {
                 label: "تأشيرات العمرة",
-                backgroundColor: "#4e73df",
+                backgroundColor: "rgba(78, 115, 223, 0.1)",
                 borderColor: "#4e73df",
+                pointBackgroundColor: "#4e73df",
+                pointBorderColor: "#4e73df",
                 data: [45, 50, 38, 41, 35, 28, 32, 35, 50, 65, 75, 80],
-                fill: false
+                fill: true,
+                tension: 0.3
             },
             {
                 label: "تأشيرات العمل",
-                backgroundColor: "#1cc88a",
+                backgroundColor: "rgba(28, 200, 138, 0.1)",
                 borderColor: "#1cc88a",
+                pointBackgroundColor: "#1cc88a",
+                pointBorderColor: "#1cc88a",
                 data: [20, 25, 30, 35, 40, 45, 40, 35, 30, 25, 20, 15],
-                fill: false
+                fill: true,
+                tension: 0.3
             },
             {
                 label: "تأشيرات الزيارة",
-                backgroundColor: "#f6c23e",
+                backgroundColor: "rgba(246, 194, 62, 0.1)",
                 borderColor: "#f6c23e",
+                pointBackgroundColor: "#f6c23e",
+                pointBorderColor: "#f6c23e",
                 data: [30, 32, 28, 30, 35, 25, 22, 20, 25, 30, 35, 40],
-                fill: false
+                fill: true,
+                tension: 0.3
             }
         ]
     };
@@ -301,12 +363,20 @@ function initializeVisasChart() {
                 },
                 displayColors: false,
                 caretPadding: 10
+            },
+            animation: {
+                duration: 1000,
+                easing: 'easeOutQuart'
             }
+        },
+        interaction: {
+            intersect: false,
+            mode: 'index'
         }
     };
     
-    // إنشاء المخطط
-    new Chart(ctx, {
+    // إنشاء المخطط وتخزينه للتحديث لاحقًا
+    visasChartInstance = new Chart(ctx, {
         type: 'line',
         data: data,
         options: options

@@ -445,9 +445,11 @@ div.dataTables_wrapper div.dataTables_filter input {
     position: relative !important;
 }
 
+/* إصلاح الأيقونات في القائمة الجانبية */
 .nav-sidebar .nav-link .nav-icon,
 .nav-sidebar .nav-link .fas,
-.nav-sidebar .nav-link .fa {
+.nav-sidebar .nav-link .fa,
+.nav-sidebar .nav-link i {
     width: 1.6rem !important;
     text-align: center !important;
     margin-left: 0.7rem !important;
@@ -456,6 +458,35 @@ div.dataTables_wrapper div.dataTables_filter input {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
+    color: inherit !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* إصلاح الأيقونات في الأزرار */
+.btn i,
+.btn .fas,
+.btn .fa {
+    margin-left: 0.5rem !important;
+    margin-right: 0 !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* إصلاح الأيقونات في العناوين */
+.card-header i,
+.card-title i,
+h1 i, h2 i, h3 i, h4 i, h5 i,
+.card-header .fas,
+.card-title .fas {
+    margin-left: 0.5rem !important;
+    margin-right: 0 !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 .nav-sidebar .nav-link p {
