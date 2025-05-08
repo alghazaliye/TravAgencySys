@@ -165,13 +165,71 @@ body, h1, h2, h3, h4, h5, h6, p,
     color: #fff;
 }
 
-/* Fix icons display in sidebar */
+/* تحسين عرض الأيقونات في الشريط الجانبي */
 .nav-sidebar .nav-link {
     display: flex !important;
     align-items: center !important;
     color: #c2c7d0 !important;
-    padding: 0.5rem 1rem !important;
+    padding: 0.8rem 1rem !important;
     transition: all 0.2s ease-in-out !important;
+    position: relative !important;
+}
+
+.nav-sidebar .nav-link .nav-icon,
+.nav-sidebar .nav-link .fas,
+.nav-sidebar .nav-link .fa {
+    width: 1.6rem !important;
+    text-align: center !important;
+    margin-left: 0.7rem !important;
+    margin-right: 0 !important;
+    font-size: 1.1rem !important;
+}
+
+.nav-sidebar .nav-link p {
+    margin: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.nav-sidebar .nav-treeview {
+    padding-right: 1rem !important;
+    padding-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.nav-sidebar .nav-treeview .nav-link {
+    padding-right: 1rem !important;
+    padding-left: 1rem !important;
+}
+
+/* تحسين عرض الشريط الجانبي */
+.main-sidebar {
+    width: 250px !important;
+    background-color: #343a40 !important;
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 1100 !important;
+    overflow-x: hidden !important;
+    transition: all 0.3s ease-in-out !important;
+}
+
+.nav-sidebar > .nav-item .nav-icon {
+    margin-left: 0.7rem !important;
+    margin-right: 0 !important;
+    font-size: 1.1rem !important;
+    text-align: center !important;
+    width: 1.6rem !important;
+}
+
+/* تحسين عرض الأيقونات في القائمة المنسدلة */
+.nav-sidebar .nav-item.has-treeview > .nav-link > .right {
+    position: absolute !important;
+    left: 1rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
 }
 
 .nav-sidebar .nav-link:hover {
