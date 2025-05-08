@@ -1,0 +1,57 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Flask instance related
+instance/
+
+# Environment variables
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+
+# Replit specific
+.breakpoints
+.replit
+replit.nix
+poetry.lock
+.upm/
+
+# Logs
+logs/
+*.log
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Cache directories
+.cache/
+.pytest_cache/
