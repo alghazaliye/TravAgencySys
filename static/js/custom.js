@@ -89,11 +89,29 @@ function fixRtlSidebar() {
     
     // إصلاح مشكلة الأيقونات في القائمة للـ RTL
     document.querySelectorAll('.nav-sidebar .nav-link').forEach(link => {
-        const icon = link.querySelector('.nav-icon');
+        // التأكد من عرض الروابط بشكل flex
+        link.style.display = 'flex';
+        link.style.alignItems = 'center';
+        link.style.color = '#c2c7d0';
+        
+        // إصلاح جميع أنواع الأيقونات
+        const icon = link.querySelector('.nav-icon, .fas, .fa');
+        const text = link.querySelector('p');
+        
         if (icon) {
-            link.classList.add('d-flex');
             icon.style.marginLeft = '10px';
             icon.style.marginRight = '0';
+            icon.style.color = 'inherit';
+            icon.style.width = '20px';
+            icon.style.textAlign = 'center';
+            icon.style.display = 'inline-block';
+        }
+        
+        if (text) {
+            text.style.margin = '0';
+            text.style.marginRight = '5px';
+            text.style.color = 'inherit';
+            text.style.display = 'inline-block';
         }
     });
     
