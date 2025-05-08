@@ -135,12 +135,131 @@ body, h1, h2, h3, h4, h5, h6, p,
 /* Dashboard stats */
 .small-box {
     border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    margin-bottom: 20px;
     transition: all 0.3s ease;
+    color: #fff;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-.small-box:hover {
-    transform: translateY(-5px);
+.small-box.bg-visitors {
+    background-color: #dc3545;
+}
+
+.small-box.bg-registrations {
+    background-color: #ffc107;
+}
+
+.small-box.bg-bounce {
+    background-color: #28a745;
+}
+
+.small-box.bg-orders {
+    background-color: #17a2b8;
+}
+
+.small-box .inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.small-box h3 {
+    font-size: 38px;
+    margin: 0;
+    font-weight: bold;
+}
+
+.small-box p {
+    margin: 0;
+    font-size: 16px;
+}
+
+.small-box .icon {
+    font-size: 70px;
+    opacity: 0.3;
+    position: absolute;
+    right: 15px;
+    top: 10px;
+}
+
+.small-box .more-info {
+    display: flex;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    margin-top: 10px;
+}
+
+.small-box .more-info i {
+    margin-left: 5px;
+}
+
+/* Map and Chart Section */
+.map-chart-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.world-map-card {
+    background-color: #007bff;
+    border-radius: 10px;
+    padding: 20px;
+    color: white;
+}
+
+.world-map {
+    width: 100%;
+    height: 300px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+
+.stats-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.stat-item {
+    text-align: center;
+    flex: 1;
+}
+
+.chart-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.chart-type-selector {
+    display: flex;
+    gap: 10px;
+}
+
+.chart-type-selector button {
+    padding: 5px 15px;
+    border-radius: 5px;
+    border: none;
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+.chart-type-selector button.active {
+    background-color: #007bff;
+    color: white;
 }
 
 /* Custom sidebar styling */
