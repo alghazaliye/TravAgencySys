@@ -1,0 +1,146 @@
+/* تنسيق صفحة حجز تذاكر الباص */
+
+/* خريطة المقاعد */
+.bus-seat-map {
+    margin: 0 auto;
+    max-width: 400px;
+}
+
+.bus-direction {
+    margin-bottom: 20px;
+}
+
+.bus-front {
+    background-color: #f8f9fa;
+    border-radius: 10px 10px 0 0;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.bus-front i {
+    color: #3c8dbc;
+    margin-bottom: 5px;
+}
+
+/* نمط المقاعد */
+.seat-map {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.seat-row {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.seat {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.seat:hover:not(.reserved):not(.aisle) {
+    background-color: #d1d7dc;
+}
+
+.seat.reserved {
+    background-color: #e74c3c;
+    color: white;
+    cursor: not-allowed;
+}
+
+.seat.selected {
+    background-color: #28a745;
+    color: white;
+}
+
+.seat.aisle {
+    background-color: transparent;
+    border: none;
+    font-size: 12px;
+    color: #6c757d;
+    cursor: default;
+}
+
+/* راهنما المقاعد */
+.seat-legend {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.seat-legend .seat {
+    width: 25px;
+    height: 25px;
+    cursor: default;
+    margin-left: 5px;
+}
+
+.legend-label {
+    font-size: 0.9rem;
+}
+
+/* تصميم قسم الرحلات المتاحة */
+#availableTripsTable {
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+#availableTripsTable thead th {
+    background-color: #f4f6f9;
+}
+
+#availableTripsTable tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* تفاصيل الرحلة المحددة */
+#selectedTripDetails {
+    margin-top: 20px;
+}
+
+/* تنسيقات استجابية للشاشات الصغيرة */
+@media (max-width: 768px) {
+    .seat {
+        width: 35px;
+        height: 35px;
+        font-size: 0.8rem;
+    }
+    
+    .seat-row {
+        gap: 3px;
+    }
+    
+    .bus-front {
+        padding: 5px;
+    }
+    
+    #availableTripsTable {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .seat {
+        width: 30px;
+        height: 30px;
+        font-size: 0.75rem;
+    }
+    
+    .bus-seat-map {
+        max-width: 300px;
+    }
+}
