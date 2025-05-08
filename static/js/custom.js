@@ -27,6 +27,9 @@ document.addEventListener("DOMContentLoaded", function() {
     // تهيئة عرض المبالغ المالية كتابة بالحروف العربية
     initializeAmountToWords();
     
+    // تهيئة دعم العملات المتعددة
+    initializeMultiCurrencySupport();
+    
     // التعامل مع حدث تغيير حجم النافذة
     window.addEventListener('resize', handleWindowResize);
     
@@ -777,4 +780,195 @@ function convertNumberToArabicWords(number) {
         
         return result;
     }
+}
+
+/**
+ * تهيئة إدارة العملات المتعددة
+ */
+function initializeMultiCurrencySupport() {
+    // أسعار صرف العملات مقابل الريال السعودي (للأغراض التوضيحية فقط)
+    const exchangeRates = {
+        'SAR': 1.0,      // ريال سعودي (عملة الأساس)
+        'USD': 0.27,     // دولار أمريكي
+        'EUR': 0.24,     // يورو
+        'GBP': 0.21,     // جنيه إسترليني
+        'AED': 0.98      // درهم إماراتي
+    };
+    
+    // أسماء العملات بالعربي مع رموزها
+    const currencyNames = {
+        'SAR': 'ريال سعودي',
+        'USD': 'دولار أمريكي',
+        'EUR': 'يورو',
+        'GBP': 'جنيه إسترليني',
+        'AED': 'درهم إماراتي'
+    };
+    
+    // رموز العملات
+    const currencySymbols = {
+        'SAR': 'ر.س',
+        'USD': '$',
+        'EUR': '€',
+        'GBP': '£',
+        'AED': 'د.إ'
+    };
+    
+    // تحديث معلومات سعر الصرف في سند القبض
+    function updateReceiptExchangeRateInfo() {
+        const currencySelect = document.getElementById('receipt-currency-type');
+        const exchangeRateInfoElem = document.getElementById('exchange-rate-info');
+        
+        if (!currencySelect || !exchangeRateInfoElem) {
+            return;
+        }
+        
+        const selectedCurrency = currencySelect.value;
+        const currencyName = currencyNames[selectedCurrency] || selectedCurrency;
+        const rate = exchangeRates[selectedCurrency] || 1.0;
+        
+        if (selectedCurrency === 'SAR') {
+            exchangeRateInfoElem.textContent = `١ ${currencyName} = ١ ريال سعودي`;
+        } else {
+            const sarEquivalent = (1 / rate).toFixed(2);
+            exchangeRateInfoElem.textContent = `١ ${currencyName} = ${sarEquivalent} ريال سعودي`;
+        }
+    }
+    
+    // تحديث معلومات سعر الصرف في سند الصرف
+    function updatePaymentExchangeRateInfo() {
+        const currencySelect = document.getElementById('currency-type');
+        const exchangeRateInfoElem = document.getElementById('payment-exchange-rate-info');
+        
+        if (!currencySelect || !exchangeRateInfoElem) {
+            return;
+        }
+        
+        const selectedCurrency = currencySelect.value;
+        const currencyName = currencyNames[selectedCurrency] || selectedCurrency;
+        const rate = exchangeRates[selectedCurrency] || 1.0;
+        
+        if (selectedCurrency === 'SAR') {
+            exchangeRateInfoElem.textContent = `١ ${currencyName} = ١ ريال سعودي`;
+        } else {
+            const sarEquivalent = (1 / rate).toFixed(2);
+            exchangeRateInfoElem.textContent = `١ ${currencyName} = ${sarEquivalent} ريال سعودي`;
+        }
+    }
+    
+    // تحويل مبلغ بين العملات
+    function convertAmountBetweenCurrencies(amount, fromCurrency, toCurrency) {
+        if (!amount || isNaN(amount) || amount <= 0) {
+            return 0;
+        }
+        
+        const fromRate = exchangeRates[fromCurrency] || 1.0;
+        const toRate = exchangeRates[toCurrency] || 1.0;
+        
+        // تحويل من العملة المصدر إلى الريال السعودي، ثم إلى العملة الهدف
+        const amountInSAR = amount / fromRate;
+        const amountInTargetCurrency = amountInSAR * toRate;
+        
+        return amountInTargetCurrency.toFixed(2);
+    }
+    
+    // تسجيل مستمعي الأحداث
+    function registerCurrencyEventListeners() {
+        // سند القبض
+        const receiptCurrencySelect = document.getElementById('receipt-currency-type');
+        if (receiptCurrencySelect) {
+            receiptCurrencySelect.addEventListener('change', function() {
+                updateReceiptExchangeRateInfo();
+                
+                // تحديث رمز العملة
+                const currencySymbol = document.getElementById('receipt-currency-symbol');
+                if (currencySymbol) {
+                    currencySymbol.textContent = currencySymbols[this.value] || this.value;
+                }
+                
+                // إعادة حساب المبلغ بالكلمات
+                const amountInput = document.getElementById('receipt-amount');
+                if (amountInput) {
+                    const event = new Event('input', { bubbles: true });
+                    amountInput.dispatchEvent(event);
+                }
+            });
+            
+            // تهيئة أولية
+            updateReceiptExchangeRateInfo();
+        }
+        
+        // سند الصرف
+        const paymentCurrencySelect = document.getElementById('currency-type');
+        if (paymentCurrencySelect) {
+            paymentCurrencySelect.addEventListener('change', function() {
+                updatePaymentExchangeRateInfo();
+                
+                // تحديث رمز العملة
+                const currencySymbol = document.getElementById('currency-symbol');
+                if (currencySymbol) {
+                    currencySymbol.textContent = currencySymbols[this.value] || this.value;
+                }
+                
+                // إعادة حساب المبلغ بالكلمات
+                const amountInput = document.getElementById('amount');
+                if (amountInput) {
+                    const event = new Event('input', { bubbles: true });
+                    amountInput.dispatchEvent(event);
+                }
+            });
+            
+            // تهيئة أولية
+            updatePaymentExchangeRateInfo();
+        }
+        
+        // أزرار تحديث أسعار الصرف
+        const updateExchangeRateButtons = document.querySelectorAll('button[title="تحديث أسعار الصرف"]');
+        updateExchangeRateButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                Swal.fire({
+                    title: 'جاري التحديث...',
+                    text: 'يتم الآن تحديث أسعار الصرف من المصادر الرسمية',
+                    icon: 'info',
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                
+                // محاكاة عملية التحديث (في التطبيق الحقيقي، سيتم استدعاء API)
+                setTimeout(function() {
+                    // تحديث افتراضي للقيم بغرض العرض
+                    exchangeRates['USD'] = 0.266;
+                    exchangeRates['EUR'] = 0.245;
+                    exchangeRates['GBP'] = 0.208;
+                    exchangeRates['AED'] = 0.979;
+                    
+                    // تحديث معلومات سعر الصرف
+                    updateReceiptExchangeRateInfo();
+                    updatePaymentExchangeRateInfo();
+                    
+                    Swal.fire({
+                        title: 'تم التحديث!',
+                        text: 'تم تحديث أسعار الصرف بنجاح',
+                        icon: 'success',
+                        confirmButtonText: 'حسناً'
+                    });
+                }, 1500);
+            });
+        });
+    }
+    
+    // تصدير الدوال للاستخدام العام
+    window.multiCurrency = {
+        exchangeRates: exchangeRates,
+        currencyNames: currencyNames,
+        currencySymbols: currencySymbols,
+        convert: convertAmountBetweenCurrencies,
+        updateReceiptExchangeRateInfo: updateReceiptExchangeRateInfo,
+        updatePaymentExchangeRateInfo: updatePaymentExchangeRateInfo
+    };
+    
+    // تسجيل مستمعي الأحداث عند تهيئة الصفحة
+    registerCurrencyEventListeners();
 }
