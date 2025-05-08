@@ -108,6 +108,57 @@ $(function () {
         }, 500);
     });
     
+    // تحديث قائمة الحسابات بناءً على نوع التوصيل
+    $('#paymentType').on('change', function() {
+        // إعادة تعيين الحقول
+        $('#cash-fields').hide();
+        $('#cashAmount, #receiptNumber').prop('required', false);
+        
+        // تحديث قائمة الحسابات المالية حسب نوع التوصيل
+        var accountSelect = $('#accountId');
+        accountSelect.empty(); // مسح الخيارات السابقة
+        accountSelect.append('<option value="">اختر الحساب المالي</option>');
+        
+        // إظهار الحقول المناسبة حسب نوع التوصيل
+        switch ($(this).val()) {
+            case 'cash':
+                // إظهار حقول الصندوق
+                $('#cash-fields').show();
+                $('#cashAmount, #receiptNumber').prop('required', true);
+                
+                // إضافة حسابات الصندوق
+                accountSelect.append('<option value="101">الصندوق الرئيسي</option>');
+                accountSelect.append('<option value="102">صندوق المبيعات</option>');
+                accountSelect.append('<option value="103">الصندوق النثري</option>');
+                break;
+                
+            case 'credit':
+                // إضافة حسابات العملاء
+                accountSelect.append('<option value="201">محمد أحمد عبدالله</option>');
+                accountSelect.append('<option value="202">خالد محمد السيد</option>');
+                accountSelect.append('<option value="203">عبدالله ناصر العتيبي</option>');
+                accountSelect.append('<option value="204">فهد سعد الغامدي</option>');
+                accountSelect.append('<option value="205">علي حسن الشمري</option>');
+                break;
+                
+            case 'transfer':
+            case 'bank':
+                // إضافة حسابات البنوك
+                accountSelect.append('<option value="301">بنك الراجحي</option>');
+                accountSelect.append('<option value="302">البنك الأهلي السعودي</option>');
+                accountSelect.append('<option value="303">بنك الإنماء</option>');
+                accountSelect.append('<option value="304">بنك سامبا</option>');
+                accountSelect.append('<option value="305">بنك الرياض</option>');
+                break;
+        }
+        
+        // تحديث قائمة Select2
+        accountSelect.trigger('change');
+    });
+    
+    // تنفيذ التغيير الأولي لتحديث القائمة حسب القيمة الافتراضية عند تحميل الصفحة
+    $('#paymentType').trigger('change');
+    
     // إكمال الحجز
     $('#complete-reservation').on('click', function() {
         // التحقق من صحة النموذج بالكامل
