@@ -89,9 +89,9 @@
         <!-- أزرار الإجراءات -->
         <div class="row mb-3">
             <div class="col-md-12">
-                <a href="{{ url_for('bus_tickets_new') }}" class="btn btn-success">
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-add-reservation">
                     <i class="fas fa-plus ml-1"></i> حجز جديد
-                </a>
+                </button>
                 <button type="button" class="btn btn-primary">
                     <i class="fas fa-search ml-1"></i> استعلام عن الرحلات
                 </button>
@@ -358,6 +358,361 @@
         </div>
     </div>
 </div>
+
+<!-- Modal - حجز جديد -->
+<div class="modal fade" id="modal-add-reservation">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h4 class="modal-title">حجز تذكرة باص جديدة</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- نموذج البحث عن الرحلات -->
+                <div class="search-form mb-4">
+                    <form id="trip-search-form">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="search-from">من</label>
+                                    <select class="form-control select2" id="search-from" style="width: 100%;">
+                                        <option value="">اختر مدينة المغادرة</option>
+                                        <option value="1">الرياض</option>
+                                        <option value="2">جدة</option>
+                                        <option value="3">مكة المكرمة</option>
+                                        <option value="4">المدينة المنورة</option>
+                                        <option value="5">الدمام</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="search-to">إلى</label>
+                                    <select class="form-control select2" id="search-to" style="width: 100%;">
+                                        <option value="">اختر مدينة الوصول</option>
+                                        <option value="1">الرياض</option>
+                                        <option value="2">جدة</option>
+                                        <option value="3">مكة المكرمة</option>
+                                        <option value="4">المدينة المنورة</option>
+                                        <option value="5">الدمام</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="search-date">تاريخ السفر</label>
+                                    <div class="input-group date" id="trip-date" data-target-input="nearest">
+                                        <input type="text" class="form-control datetimepicker-input" data-target="#trip-date" id="search-date"/>
+                                        <div class="input-group-append" data-target="#trip-date" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-primary btn-block btn-search" id="search-trips">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- نتائج البحث عن الرحلات المتاحة -->
+                <div id="search-results" style="display: none;">
+                    <h5 class="mt-4 mb-3">الرحلات المتاحة</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>شركة النقل</th>
+                                    <th>من</th>
+                                    <th>إلى</th>
+                                    <th>وقت المغادرة</th>
+                                    <th>وقت الوصول</th>
+                                    <th>نوع الباص</th>
+                                    <th>السعر</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>شركة النقل السعودية (سابتكو)</td>
+                                    <td>الرياض</td>
+                                    <td>مكة المكرمة</td>
+                                    <td>08:30 صباحاً</td>
+                                    <td>12:30 ظهراً</td>
+                                    <td>VIP مكيف</td>
+                                    <td>120 ر.س</td>
+                                    <td>
+                                        <button type="button" class="btn btn-success btn-sm select-trip">
+                                            اختيار <i class="fas fa-arrow-left mr-1"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>شركة النقل السعودية (سابتكو)</td>
+                                    <td>الرياض</td>
+                                    <td>مكة المكرمة</td>
+                                    <td>10:00 صباحاً</td>
+                                    <td>14:00 ظهراً</td>
+                                    <td>عادي مكيف</td>
+                                    <td>90 ر.س</td>
+                                    <td>
+                                        <button type="button" class="btn btn-success btn-sm select-trip">
+                                            اختيار <i class="fas fa-arrow-left mr-1"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>شركة النقل السعودية (سابتكو)</td>
+                                    <td>الرياض</td>
+                                    <td>مكة المكرمة</td>
+                                    <td>14:00 ظهراً</td>
+                                    <td>18:00 مساءً</td>
+                                    <td>VIP مكيف</td>
+                                    <td>120 ر.س</td>
+                                    <td>
+                                        <button type="button" class="btn btn-success btn-sm select-trip">
+                                            اختيار <i class="fas fa-arrow-left mr-1"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- نموذج الحجز (عند اختيار رحلة) -->
+                <div id="booking-form-container" style="display: none;">
+                    <h5 class="mt-4 mb-3">بيانات الحجز</h5>
+                    <form id="booking-form">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-info">
+                                    <h6><i class="icon fas fa-info"></i> معلومات الرحلة</h6>
+                                    <p id="trip-details-text">
+                                        من الرياض إلى مكة المكرمة - 08:30 صباحاً - شركة النقل السعودية (سابتكو) - VIP مكيف
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="passenger-name">اسم المسافر <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="passenger-name" placeholder="الاسم كما في الهوية" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="mobile">رقم الجوال <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="mobile" placeholder="05xxxxxxxx" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="id-type">نوع الهوية <span class="text-danger">*</span></label>
+                                    <select class="form-control select2" id="id-type" style="width: 100%;" required>
+                                        <option value="">اختر نوع الهوية</option>
+                                        <option value="national-id">الهوية الوطنية</option>
+                                        <option value="residence-id">الإقامة</option>
+                                        <option value="passport">جواز سفر</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="id-number">رقم الهوية <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="id-number" placeholder="رقم الهوية/الإقامة/الجواز" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="nationality">الجنسية <span class="text-danger">*</span></label>
+                                    <select class="form-control select2" id="nationality" style="width: 100%;" required>
+                                        <option value="">اختر الجنسية</option>
+                                        <option value="saudi">سعودي</option>
+                                        <option value="yemeni">يمني</option>
+                                        <option value="egyptian">مصري</option>
+                                        <option value="syrian">سوري</option>
+                                        <option value="jordanian">أردني</option>
+                                        <option value="pakistani">باكستاني</option>
+                                        <option value="indian">هندي</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label>الغرض من السفر</label>
+                                    <select class="form-control select2" id="travel-purpose" style="width: 100%;">
+                                        <option value="">اختر الغرض من السفر</option>
+                                        <option value="tourism">سياحة</option>
+                                        <option value="umrah">عمرة</option>
+                                        <option value="work">عمل</option>
+                                        <option value="family">زيارة عائلية</option>
+                                        <option value="study">دراسة</option>
+                                        <option value="other">أخرى</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="seat-number">رقم المقعد</label>
+                                    <input type="text" class="form-control" id="seat-number" readonly>
+                                    <button type="button" class="btn btn-outline-primary btn-sm mt-1" id="select-seat">
+                                        <i class="fas fa-chair ml-1"></i> اختيار المقعد
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="ticket-price">سعر التذكرة <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="ticket-price" value="120" readonly>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">ر.س</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="payment-method">طريقة الدفع <span class="text-danger">*</span></label>
+                                    <select class="form-control select2" id="payment-method" style="width: 100%;" required>
+                                        <option value="">اختر طريقة الدفع</option>
+                                        <option value="cash">نقداً</option>
+                                        <option value="bank-transfer">تحويل بنكي</option>
+                                        <option value="credit">دفع آجل</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4" id="paid-amount-container">
+                                <div class="form-group">
+                                    <label for="paid-amount">المبلغ المدفوع <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="paid-amount" placeholder="أدخل المبلغ المدفوع">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">ر.س</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="notes">ملاحظات</label>
+                                    <textarea class="form-control" id="notes" rows="2" placeholder="أي ملاحظات إضافية"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- مخطط المقاعد (عند الضغط على اختيار المقعد) -->
+                <div id="seat-map-container" style="display: none;">
+                    <h5 class="mb-3">اختيار المقعد</h5>
+                    <div class="bus-seat-map">
+                        <div class="bus-front">
+                            <i class="fas fa-bus fa-2x"></i>
+                            <span>مقدمة الباص</span>
+                        </div>
+                        <div class="seat-map">
+                            <div class="seat-row">
+                                <div class="seat" data-seat="A1">A1</div>
+                                <div class="seat" data-seat="A2">A2</div>
+                                <div class="seat aisle">ممر</div>
+                                <div class="seat" data-seat="A3">A3</div>
+                                <div class="seat" data-seat="A4">A4</div>
+                            </div>
+                            <div class="seat-row">
+                                <div class="seat" data-seat="B1">B1</div>
+                                <div class="seat" data-seat="B2">B2</div>
+                                <div class="seat aisle">ممر</div>
+                                <div class="seat" data-seat="B3">B3</div>
+                                <div class="seat" data-seat="B4">B4</div>
+                            </div>
+                            <div class="seat-row">
+                                <div class="seat" data-seat="C1">C1</div>
+                                <div class="seat reserved" data-seat="C2">C2</div>
+                                <div class="seat aisle">ممر</div>
+                                <div class="seat" data-seat="C3">C3</div>
+                                <div class="seat" data-seat="C4">C4</div>
+                            </div>
+                            <div class="seat-row">
+                                <div class="seat" data-seat="D1">D1</div>
+                                <div class="seat" data-seat="D2">D2</div>
+                                <div class="seat aisle">ممر</div>
+                                <div class="seat reserved" data-seat="D3">D3</div>
+                                <div class="seat" data-seat="D4">D4</div>
+                            </div>
+                            <div class="seat-row">
+                                <div class="seat" data-seat="E1">E1</div>
+                                <div class="seat" data-seat="E2">E2</div>
+                                <div class="seat aisle">ممر</div>
+                                <div class="seat" data-seat="E3">E3</div>
+                                <div class="seat" data-seat="E4">E4</div>
+                            </div>
+                            <div class="seat-row">
+                                <div class="seat" data-seat="F1">F1</div>
+                                <div class="seat" data-seat="F2">F2</div>
+                                <div class="seat" data-seat="F3">F3</div>
+                                <div class="seat" data-seat="F4">F4</div>
+                                <div class="seat" data-seat="F5">F5</div>
+                            </div>
+                        </div>
+                        <div class="seat-legend mt-3">
+                            <div class="d-flex align-items-center ml-3">
+                                <div class="seat mr-2">مقعد</div>
+                                <div>متاح</div>
+                            </div>
+                            <div class="d-flex align-items-center ml-3">
+                                <div class="seat selected mr-2">مقعد</div>
+                                <div>محدد</div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="seat reserved mr-2">مقعد</div>
+                                <div>محجوز</div>
+                            </div>
+                        </div>
+                        <div class="text-center mt-3">
+                            <button type="button" class="btn btn-primary" id="confirm-seat">تأكيد اختيار المقعد</button>
+                            <button type="button" class="btn btn-default" id="cancel-seat-selection">إلغاء</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                <button type="button" class="btn btn-primary" id="continue-to-booking" style="display: none;">
+                    متابعة الحجز <i class="fas fa-arrow-left ml-1"></i>
+                </button>
+                <button type="button" class="btn btn-success" id="complete-booking" style="display: none;">
+                    تأكيد الحجز <i class="fas fa-check ml-1"></i>
+                </button>
+                <button type="button" class="btn btn-default" id="back-to-search" style="display: none;">
+                    <i class="fas fa-arrow-right ml-1"></i> العودة للبحث
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
@@ -368,6 +723,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/js/tempusdominus-bootstrap-4.min.js"></script>
 <!-- Select2 JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<!-- Sweet Alert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Custom JS -->
+<script src="{{ url_for('static', filename='js/bus-tickets-modal.js') }}"></script>
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
 <!-- SweetAlert2 JS -->
