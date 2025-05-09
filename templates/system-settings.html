@@ -430,6 +430,27 @@ $(document).ready(function() {
         $('.secondary-button').css('background-color', color);
     });
     
+    // معالجة ألوان الوضع الليلي
+    $('#dark_primary_color').on('input', function() {
+        var color = $(this).val();
+        $('#dark_primary_color_preview').css('background-color', color);
+    });
+    
+    $('#dark_text_color').on('input', function() {
+        var color = $(this).val();
+        $('#dark_text_color_preview').css('background-color', color);
+    });
+    
+    // إدارة إعدادات الوضع الليلي
+    $('#dark_mode').on('change', function() {
+        var selectedMode = $(this).val();
+        if (selectedMode === 'light') {
+            $('#dark_mode_colors').hide();
+        } else {
+            $('#dark_mode_colors').show();
+        }
+    });
+    
     // تحديث معاينة اسم النظام وشعاره
     $('#system_name').on('input', function() {
         $('#preview_title').text($(this).val());
@@ -450,6 +471,50 @@ $(document).ready(function() {
         // تحديث المعاينة
         $('#preview_icon').attr('class', iconClass);
     });
+    
+    // التبديل بين الشعار المخصص والأيقونة
+    $('#use_custom_logo').on('change', function() {
+        if (this.checked) {
+            $('#logo_icon_container').hide();
+            $('#custom_logo_container').show();
+            
+            // تحديث المعاينة إذا كان هناك شعار مخصص
+            if ($('#custom_logo_url').val()) {
+                updateLogoPreview($('#custom_logo_url').val());
+            }
+        } else {
+            $('#logo_icon_container').show();
+            $('#custom_logo_container').hide();
+            
+            // إعادة عرض الأيقونة في المعاينة
+            $('.preview-logo #preview_custom_logo').remove();
+            $('.preview-logo #preview_icon').show();
+        }
+    });
+    
+    // تحديث معاينة الشعار المخصص عند تغيير الرابط
+    $('#custom_logo_url').on('input', function() {
+        var url = $(this).val();
+        if (url) {
+            updateLogoPreview(url);
+        } else {
+            // إذا كان الرابط فارغًا، عرض الأيقونة الافتراضية
+            $('.preview-logo #preview_custom_logo').remove();
+            $('.preview-logo #preview_icon').show();
+        }
+    });
+    
+    // دالة لتحديث معاينة الشعار المخصص
+    function updateLogoPreview(url) {
+        // إخفاء الأيقونة
+        $('.preview-logo #preview_icon').hide();
+        
+        // إزالة أي شعار مخصص سابق
+        $('.preview-logo #preview_custom_logo').remove();
+        
+        // إضافة الشعار المخصص الجديد
+        $('.preview-logo').append('<img id="preview_custom_logo" src="' + url + '" alt="شعار مخصص" style="max-height: 50px; max-width: 150px;">');
+    }
     
     // ضبط متغيرات CSS للألوان
     document.documentElement.style.setProperty('--primary-color', $('#primary_color').val());
@@ -523,6 +588,16 @@ $(document).ready(function() {
     // تفعيل/تعطيل خيار عرض التاريخين معاً عند تحميل الصفحة
     if (!$('#use_hijri_dates').is(':checked')) {
         $('#show_both_dates').prop('disabled', true);
+    }
+    
+    // تهيئة معاينة الشعار المخصص عند تحميل الصفحة
+    if ($('#use_custom_logo').is(':checked') && $('#custom_logo_url').val()) {
+        updateLogoPreview($('#custom_logo_url').val());
+    }
+    
+    // تهيئة إظهار/إخفاء خيارات الوضع الليلي عند تحميل الصفحة
+    if ($('#dark_mode').val() === 'light') {
+        $('#dark_mode_colors').hide();
     }
 });
 </script>

@@ -66,7 +66,8 @@
             --body-bg: #f8f9fc;
             --card-bg: #ffffff;
             --card-border: rgba(0, 0, 0, 0.05);
-            --header-bg: #ffffff;
+            --header-bg: {{ settings.navbar_color|default('#ffffff') }};
+            --header-text: {{ settings.navbar_text_color|default('#333333') }};
             --dropdown-bg: #ffffff;
             --dropdown-hover: #f8f9fc;
             --input-bg: #ffffff;
@@ -92,7 +93,8 @@
                 --body-bg: #121212;
                 --card-bg: #1e1e1e;
                 --card-border: rgba(255, 255, 255, 0.05);
-                --header-bg: #1e1e1e;
+                --header-bg: {{ settings.navbar_dark_color|default('#1e1e1e') }};
+                --header-text: {{ settings.navbar_dark_text_color|default('#e1e1e1') }};
                 --dropdown-bg: #252525;
                 --dropdown-hover: #333333;
                 --input-bg: #2a2a2a;
@@ -112,7 +114,8 @@
             --body-bg: #121212;
             --card-bg: #1e1e1e;
             --card-border: rgba(255, 255, 255, 0.05);
-            --header-bg: #1e1e1e;
+            --header-bg: {{ settings.navbar_dark_color|default('#1e1e1e') }};
+            --header-text: {{ settings.navbar_dark_text_color|default('#e1e1e1') }};
             --dropdown-bg: #252525;
             --dropdown-hover: #333333;
             --input-bg: #2a2a2a;
@@ -202,13 +205,30 @@
         
         /* تحسينات شريط التنقل العلوي */
         .main-header {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            background-color: var(--header-bg) !important;
+            color: var(--header-text) !important;
+            box-shadow: {{ "0 2px 10px rgba(0, 0, 0, 0.05)" if settings.navbar_shadow|default('true') == 'true' else 'none' }};
             border: none;
             display: flex !important;
             align-items: center !important;
             height: 56px;
+            position: {{ "fixed" if settings.navbar_fixed|default('true') == 'true' else 'relative' }};
+            top: {{ "0" if settings.navbar_fixed|default('true') == 'true' else 'auto' }};
+            width: {{ "calc(100% - 250px)" if settings.navbar_fixed|default('true') == 'true' else '100%' }};
+            z-index: {{ "1030" if settings.navbar_fixed|default('true') == 'true' else 'auto' }};
+            {% if settings.navbar_transparent|default('false') == 'true' %}
+            background-color: rgba(var(--header-bg-rgb, 255, 255, 255), 0.8) !important;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            {% endif %}
         }
+        
+        /* تعديل محتوى الصفحة عند تثبيت شريط التنقل */
+        {% if settings.navbar_fixed|default('true') == 'true' %}
+        .content-wrapper {
+            padding-top: 56px;
+        }
+        {% endif %}
         
         /* التأكد من ظهور الروابط في شريط التنقل العلوي */
         .main-header .navbar {

@@ -619,7 +619,14 @@ def before_request():
             'dark_sidebar': 'true',
             'dark_primary_color': '#375bbb',
             'dark_sidebar_color': '#1a1a2e',
-            'dark_text_color': '#e1e1e1'
+            'dark_text_color': '#e1e1e1',
+            'navbar_color': '#ffffff',
+            'navbar_text_color': '#333333',
+            'navbar_dark_color': '#1e1e1e',
+            'navbar_dark_text_color': '#e1e1e1',
+            'navbar_fixed': 'true',
+            'navbar_transparent': 'false',
+            'navbar_shadow': 'true'
         }
         
         # تهيئة قاموس الإعدادات
@@ -771,6 +778,41 @@ def system_settings():
             'value': '#e1e1e1',
             'type': 'color',
             'description': 'لون النص في الوضع الليلي'
+        },
+        'navbar_color': {
+            'value': '#ffffff',
+            'type': 'color',
+            'description': 'لون خلفية شريط التنقل العلوي'
+        },
+        'navbar_text_color': {
+            'value': '#333333',
+            'type': 'color',
+            'description': 'لون النص في شريط التنقل العلوي'
+        },
+        'navbar_dark_color': {
+            'value': '#1e1e1e',
+            'type': 'color',
+            'description': 'لون خلفية شريط التنقل في الوضع الليلي'
+        },
+        'navbar_dark_text_color': {
+            'value': '#e1e1e1',
+            'type': 'color',
+            'description': 'لون النص في شريط التنقل (الوضع الليلي)'
+        },
+        'navbar_fixed': {
+            'value': 'true',
+            'type': 'boolean',
+            'description': 'تثبيت شريط التنقل العلوي عند التمرير'
+        },
+        'navbar_transparent': {
+            'value': 'false',
+            'type': 'boolean',
+            'description': 'شريط تنقل شفاف'
+        },
+        'navbar_shadow': {
+            'value': 'true',
+            'type': 'boolean',
+            'description': 'إظهار ظل لشريط التنقل'
         },
         
         # إعدادات مالية
