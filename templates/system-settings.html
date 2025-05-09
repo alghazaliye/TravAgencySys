@@ -1,0 +1,357 @@
+{% extends 'layout.html' %}
+
+{% block title %}إعدادات النظام{% endblock %}
+
+{% block styles %}
+<style>
+    .settings-section {
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .settings-section h3 {
+        border-bottom: 1px solid #e3e6f0;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        color: #334152;
+    }
+    
+    .color-preview {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 10px;
+        border: 1px solid #ddd;
+        vertical-align: middle;
+    }
+    
+    .icon-option {
+        display: inline-block;
+        padding: 10px;
+        margin: 5px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+        width: 60px;
+    }
+    
+    .icon-option i {
+        font-size: 20px;
+        color: #4e73df;
+    }
+    
+    .icon-option.selected {
+        background-color: #e8f0fe;
+        border-color: #4e73df;
+    }
+    
+    .settings-preview {
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-top: 20px;
+        text-align: center;
+    }
+    
+    .preview-title {
+        font-size: 24px;
+        margin-bottom: 10px;
+        color: var(--primary-color, #4e73df);
+    }
+    
+    .preview-slogan {
+        font-size: 16px;
+        color: #6c757d;
+        margin-bottom: 15px;
+    }
+    
+    .preview-logo {
+        font-size: 36px;
+        margin-bottom: 20px;
+        color: var(--primary-color, #4e73df);
+    }
+    
+    .preview-buttons {
+        margin-top: 20px;
+    }
+    
+    .preview-button {
+        display: inline-block;
+        padding: 8px 16px;
+        margin: 0 5px;
+        border-radius: 4px;
+        font-size: 14px;
+        color: white;
+    }
+    
+    .primary-button {
+        background-color: var(--primary-color, #4e73df);
+    }
+    
+    .secondary-button {
+        background-color: var(--secondary-color, #1cc88a);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- عنوان الصفحة -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">إعدادات النظام</h1>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="row">
+        <div class="col-lg-8">
+            <form method="post" enctype="multipart/form-data">
+                <!-- إعدادات عامة للنظام -->
+                <div class="settings-section">
+                    <h3><i class="fas fa-cogs ml-2"></i>الإعدادات العامة</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="system_name">اسم النظام</label>
+                                <input type="text" class="form-control" id="system_name" name="system_name" 
+                                    value="{{ settings.system_name }}" placeholder="أدخل اسم النظام">
+                                <small class="form-text text-muted">{{ setting_descriptions.system_name.description }}</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="system_slogan">شعار النظام</label>
+                                <input type="text" class="form-control" id="system_slogan" name="system_slogan" 
+                                    value="{{ settings.system_slogan }}" placeholder="أدخل شعار النظام">
+                                <small class="form-text text-muted">{{ setting_descriptions.system_slogan.description }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dashboard_title">عنوان لوحة التحكم</label>
+                                <input type="text" class="form-control" id="dashboard_title" name="dashboard_title" 
+                                    value="{{ settings.dashboard_title }}" placeholder="أدخل عنوان لوحة التحكم">
+                                <small class="form-text text-muted">{{ setting_descriptions.dashboard_title.description }}</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="default_currency">العملة الافتراضية</label>
+                                <select class="form-control" id="default_currency" name="default_currency">
+                                    {% for option in setting_descriptions.default_currency.options.split(',') %}
+                                        <option value="{{ option }}" {% if settings.default_currency == option %}selected{% endif %}>
+                                            {% if option == 'SAR' %}ريال سعودي (SAR)
+                                            {% elif option == 'USD' %}دولار أمريكي (USD)
+                                            {% elif option == 'EUR' %}يورو (EUR)
+                                            {% elif option == 'YER' %}ريال يمني (YER)
+                                            {% else %}{{ option }}{% endif %}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <small class="form-text text-muted">{{ setting_descriptions.default_currency.description }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- إعدادات المظهر والألوان -->
+                <div class="settings-section">
+                    <h3><i class="fas fa-palette ml-2"></i>المظهر والألوان</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="primary_color">
+                                    <span class="color-preview" id="primary_color_preview" style="background-color: {{ settings.primary_color }};"></span>
+                                    اللون الرئيسي
+                                </label>
+                                <input type="color" class="form-control" id="primary_color" name="primary_color" 
+                                    value="{{ settings.primary_color }}">
+                                <small class="form-text text-muted">{{ setting_descriptions.primary_color.description }}</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="secondary_color">
+                                    <span class="color-preview" id="secondary_color_preview" style="background-color: {{ settings.secondary_color }};"></span>
+                                    اللون الثانوي
+                                </label>
+                                <input type="color" class="form-control" id="secondary_color" name="secondary_color" 
+                                    value="{{ settings.secondary_color }}">
+                                <small class="form-text text-muted">{{ setting_descriptions.secondary_color.description }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>أيقونة الشعار</label>
+                        <input type="hidden" id="logo_icon" name="logo_icon" value="{{ settings.logo_icon }}">
+                        <div class="icon-options">
+                            {% for icon in icon_options %}
+                                <div class="icon-option {% if settings.logo_icon == icon %}selected{% endif %}" data-icon="{{ icon }}">
+                                    <i class="{{ icon }}"></i>
+                                    <div class="small mt-1">{{ icon.split(' ')[1] }}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <small class="form-text text-muted">{{ setting_descriptions.logo_icon.description }}</small>
+                    </div>
+                    
+                    <!-- مستقبلاً: إضافة حقل لتحميل شعار مخصص -->
+                    <!-- <div class="form-group">
+                        <label for="logo_file">شعار مخصص (اختياري)</label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="logo_file" name="logo_file">
+                            <label class="custom-file-label" for="logo_file">اختر ملف...</label>
+                        </div>
+                        <small class="form-text text-muted">يرجى اختيار صورة بحجم مناسب (200×200 بكسل)</small>
+                    </div> -->
+                </div>
+                
+                <!-- إعدادات الإشعارات -->
+                <div class="settings-section">
+                    <h3><i class="fas fa-bell ml-2"></i>إعدادات الإشعارات</h3>
+                    
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="show_notifications" name="show_notifications" 
+                                {% if settings.show_notifications == 'true' %}checked{% endif %}>
+                            <label class="custom-control-label" for="show_notifications">إظهار الإشعارات في الشريط العلوي</label>
+                        </div>
+                        <small class="form-text text-muted">{{ setting_descriptions.show_notifications.description }}</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="enable_emails" name="enable_emails" 
+                                {% if settings.enable_emails == 'true' %}checked{% endif %}>
+                            <label class="custom-control-label" for="enable_emails">تفعيل إرسال الإشعارات عبر البريد الإلكتروني</label>
+                        </div>
+                        <small class="form-text text-muted">{{ setting_descriptions.enable_emails.description }}</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="enable_sms" name="enable_sms" 
+                                {% if settings.enable_sms == 'true' %}checked{% endif %}>
+                            <label class="custom-control-label" for="enable_sms">تفعيل إرسال الإشعارات عبر الرسائل القصيرة</label>
+                        </div>
+                        <small class="form-text text-muted">{{ setting_descriptions.enable_sms.description }}</small>
+                    </div>
+                </div>
+                
+                <!-- أزرار الإجراءات -->
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save ml-1"></i>حفظ الإعدادات
+                    </button>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                        <i class="fas fa-times ml-1"></i>إلغاء
+                    </a>
+                </div>
+            </form>
+        </div>
+        
+        <!-- معاينة الإعدادات -->
+        <div class="col-lg-4">
+            <div class="settings-section">
+                <h3><i class="fas fa-eye ml-2"></i>معاينة الإعدادات</h3>
+                
+                <div class="settings-preview">
+                    <div class="preview-logo">
+                        <i id="preview_icon" class="{{ settings.logo_icon }}"></i>
+                    </div>
+                    <div class="preview-title" id="preview_title">{{ settings.system_name }}</div>
+                    <div class="preview-slogan" id="preview_slogan">{{ settings.system_slogan }}</div>
+                    
+                    <div class="preview-buttons">
+                        <span class="preview-button primary-button">زر رئيسي</span>
+                        <span class="preview-button secondary-button">زر ثانوي</span>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="alert alert-info">
+                        <h5><i class="fas fa-info-circle ml-1"></i>ملاحظة</h5>
+                        <p>سيتم تطبيق الإعدادات فور الحفظ على جميع صفحات النظام.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // تحديث معاينة الألوان عند تغييرها
+    $('#primary_color').on('input', function() {
+        var color = $(this).val();
+        $('#primary_color_preview').css('background-color', color);
+        document.documentElement.style.setProperty('--primary-color', color);
+        $('.preview-title, .preview-logo, .primary-button').css('color', color);
+        $('.primary-button').css('background-color', color);
+    });
+    
+    $('#secondary_color').on('input', function() {
+        var color = $(this).val();
+        $('#secondary_color_preview').css('background-color', color);
+        document.documentElement.style.setProperty('--secondary-color', color);
+        $('.secondary-button').css('background-color', color);
+    });
+    
+    // تحديث معاينة اسم النظام وشعاره
+    $('#system_name').on('input', function() {
+        $('#preview_title').text($(this).val());
+    });
+    
+    $('#system_slogan').on('input', function() {
+        $('#preview_slogan').text($(this).val());
+    });
+    
+    // اختيار أيقونة الشعار
+    $('.icon-option').on('click', function() {
+        $('.icon-option').removeClass('selected');
+        $(this).addClass('selected');
+        
+        var iconClass = $(this).data('icon');
+        $('#logo_icon').val(iconClass);
+        
+        // تحديث المعاينة
+        $('#preview_icon').attr('class', iconClass);
+    });
+    
+    // ضبط متغيرات CSS للألوان
+    document.documentElement.style.setProperty('--primary-color', $('#primary_color').val());
+    document.documentElement.style.setProperty('--secondary-color', $('#secondary_color').val());
+    
+    // تهيئة حقل اختيار الملف
+    $('.custom-file-input').on('change', function() {
+        var fileName = $(this).val().split('\\').pop();
+        $(this).next('.custom-file-label').html(fileName);
+    });
+});
+</script>
+{% endblock %}
