@@ -63,7 +63,7 @@
                                             <div class="form-group">
                                                 <label for="fiscal-year-start">بداية السنة المالية</label>
                                                 <div class="input-group date" id="fiscal-year-start-date" data-target-input="nearest">
-                                                    <input type="text" class="form-control datetimepicker-input" id="fiscal-year-start" data-target="#fiscal-year-start-date" value="{{ financial_settings.fiscal_year_start|date if financial_settings.fiscal_year_start else '01/01/2025' }}">
+                                                    <input type="text" class="form-control datetimepicker-input" id="fiscal-year-start" data-target="#fiscal-year-start-date" value="{{ financial_settings.fiscal_year_start|date if financial_settings and financial_settings.fiscal_year_start else '01/01/2025' }}">
                                                     <div class="input-group-append" data-target="#fiscal-year-start-date" data-toggle="datetimepicker">
                                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                                     </div>
@@ -427,8 +427,8 @@
                                                 <tr>
                                                     <td>{{ period.id }}</td>
                                                     <td>{{ period.name }}</td>
-                                                    <td>{{ period.start_date }}</td>
-                                                    <td>{{ period.end_date }}</td>
+                                                    <td>{{ period.start_date|date if period.start_date else '' }}</td>
+                                                    <td>{{ period.end_date|date if period.end_date else '' }}</td>
                                                     <td>
                                                         {% if period.is_closed %}
                                                         <span class="badge badge-danger">مغلقة</span>
@@ -436,7 +436,7 @@
                                                         <span class="badge badge-success">مفتوحة</span>
                                                         {% endif %}
                                                     </td>
-                                                    <td>{{ period.closed_at if period.closed_at else 'لا يوجد' }}</td>
+                                                    <td>{{ period.closed_at|date('%d/%m/%Y %H:%M') if period.closed_at else 'لا يوجد' }}</td>
                                                     <td>
                                                         <button class="btn btn-sm btn-primary edit-period" data-id="{{ period.id }}">
                                                             <i class="fas fa-edit"></i>

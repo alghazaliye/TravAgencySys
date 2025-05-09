@@ -12,6 +12,19 @@ logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "default_secret_key")
 
+# إضافة فلتر مخصص لتنسيق التاريخ
+@app.template_filter('date')
+def date_filter(value, format='%d/%m/%Y'):
+    """فلتر لتنسيق التاريخ في قوالب Jinja"""
+    if value is None:
+        return ""
+    if isinstance(value, str):
+        try:
+            value = datetime.strptime(value, '%Y-%m-%d')
+        except ValueError:
+            return value
+    return value.strftime(format)
+
 # Configure database
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///travelagency.db")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
