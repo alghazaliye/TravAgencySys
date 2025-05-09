@@ -721,6 +721,78 @@ def create_bus_booking():
         
         # Add booking to the database
         db.session.add(booking)
+        db.session.flush()  # احصل على معرف الحجز قبل الالتزام النهائي
+        
+        # إضافة المعاملات المالية بناءً على طريقة الدفع
+        try:
+            # العملة المحددة
+            currency_code = booking.currency
+            currency = Currency.query.filter_by(code=currency_code).first()
+            
+            if not currency:
+                currency = Currency.query.filter_by(code='SAR').first()  # العملة الافتراضية
+            
+            # 1. في حالة الدفع الآجل: إضافة المبلغ الإجمالي إلى حساب العميل
+            if booking.payment_type == 'credit':
+                customer_id = booking.account
+                if customer_id:
+                    # إضافة حركة مالية للعميل (سعر التكلفة الإجمالي)
+                    customer_transaction = AccountTransaction()
+                    customer_transaction.transaction_type = 'debit'  # مدين
+                    customer_transaction.amount = booking.selling_price
+                    customer_transaction.balance_after = booking.selling_price  # يحتاج تحديث لاحقاً
+                    customer_transaction.source_type = 'customer'
+                    customer_transaction.source_id = int(customer_id)
+                    customer_transaction.description = f"حجز تذكرة باص رقم {booking.booking_number} - {booking.passenger_name}"
+                    customer_transaction.reference = booking.booking_number
+                    customer_transaction.transaction_date = datetime.utcnow()
+                    db.session.add(customer_transaction)
+            
+            # 2. في حالة الدفع النقدي: إضافة المبلغ المستلم إلى الصندوق المحدد
+            elif booking.payment_type == 'cash':
+                cash_register_id = booking.account
+                if cash_register_id:
+                    # إضافة حركة مالية للصندوق (المبلغ الواصل)
+                    cash_transaction = AccountTransaction()
+                    cash_transaction.transaction_type = 'deposit'  # إيداع
+                    cash_transaction.amount = booking.received_amount
+                    cash_transaction.balance_after = booking.received_amount  # يحتاج تحديث لاحقاً
+                    cash_transaction.source_type = 'cash'
+                    cash_transaction.source_id = int(cash_register_id)
+                    cash_transaction.description = f"حجز تذكرة باص رقم {booking.booking_number} - {booking.passenger_name}"
+                    cash_transaction.reference = booking.booking_number
+                    cash_transaction.transaction_date = datetime.utcnow()
+                    db.session.add(cash_transaction)
+                    
+                    # تحديث رصيد الصندوق
+                    cash_register = CashRegister.query.get(int(cash_register_id))
+                    if cash_register:
+                        cash_register.balance += booking.received_amount
+            
+            # 3. في حالة التحويل البنكي: إضافة المبلغ المستلم إلى البنك المحدد
+            elif booking.payment_type == 'bank-transfer':
+                bank_account_id = booking.account
+                if bank_account_id:
+                    # إضافة حركة مالية للبنك (المبلغ الواصل)
+                    bank_transaction = AccountTransaction()
+                    bank_transaction.transaction_type = 'deposit'  # إيداع
+                    bank_transaction.amount = booking.received_amount
+                    bank_transaction.balance_after = booking.received_amount  # يحتاج تحديث لاحقاً
+                    bank_transaction.source_type = 'bank'
+                    bank_transaction.source_id = int(bank_account_id)
+                    bank_transaction.description = f"حجز تذكرة باص رقم {booking.booking_number} - {booking.passenger_name}"
+                    bank_transaction.reference = booking.booking_number
+                    bank_transaction.transaction_date = datetime.utcnow()
+                    db.session.add(bank_transaction)
+                    
+                    # تحديث رصيد البنك
+                    bank_account = BankAccount.query.get(int(bank_account_id))
+                    if bank_account:
+                        bank_account.balance += booking.received_amount
+        
+        except Exception as financial_error:
+            logging.error(f"خطأ في إضافة المعاملات المالية: {str(financial_error)}")
+            # استمر في العملية حتى لو فشلت العمليات المالية
         
         # Commit all changes
         db.session.commit()
