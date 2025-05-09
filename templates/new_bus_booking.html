@@ -67,8 +67,8 @@
 <script>
 $(document).ready(function() {
     // إظهار/إخفاء حقل تاريخ العودة حسب نوع الرحلة
-    $('input[name="tripType"]').on('change', function() {
-        if ($('#tripTypeRoundTrip').is(':checked')) {
+    $('input[name="journeyType"]').on('change', function() {
+        if ($('#journeyTypeRoundTrip').is(':checked')) {
             $('.return-date-container').removeClass('d-none');
         } else {
             $('.return-date-container').addClass('d-none');
@@ -169,6 +169,23 @@ $(document).ready(function() {
         calculateRemainingAmount();
     });
     
+    // توليد البيان التلقائي عندما تتغير البيانات المتعلقة
+    $('#departureCity, #destinationCity, #passengerName').on('change', function() {
+        updateStatement();
+    });
+    
+    // توليد البيان التلقائي
+    function updateStatement() {
+        var departureCity = $('#departureCity').val();
+        var destinationCity = $('#destinationCity').val();
+        var passengerName = $('#passengerName').val();
+        
+        if (departureCity && destinationCity && passengerName) {
+            var statement = "حجز تذكرة من " + departureCity + " إلى " + destinationCity + " للمسافر " + passengerName;
+            $('#statement').val(statement);
+        }
+    }
+    
     // إرسال النموذج عند النقر على زر الحفظ
     $('#complete-reservation').on('click', function() {
         // التحقق من صحة البيانات
@@ -240,9 +257,14 @@ $(document).ready(function() {
         });
         
         // التحقق من حقول إضافية حسب نوع الرحلة
-        if ($('#tripTypeRoundTrip').is(':checked') && !$('#returnDate').val()) {
+        if ($('#journeyTypeRoundTrip').is(':checked') && !$('#returnDate').val()) {
             showFieldError('#returnDate', 'يرجى تحديد تاريخ العودة');
             isValid = false;
+        }
+        
+        // التحقق من قيمة البيان
+        if (!$('#statement').val()) {
+            updateStatement(); // توليد البيان إذا كان فارغاً
         }
         
         return isValid;
