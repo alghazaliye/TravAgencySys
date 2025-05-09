@@ -797,9 +797,46 @@ def banks():
     # الحصول على الحسابات البنكية
     bank_accounts = BankAccount.query.all()
     
-    # حساب الإجماليات
-    total_cash = sum(register.balance if register.balance else 0 for register in cash_registers)
-    total_bank = sum(account.current_balance if account.current_balance else 0 for account in bank_accounts)
+    # الحصول على العملات
+    currencies = Currency.query.filter_by(is_active=True).all()
+    
+    # الحصول على أرصدة كل عملة
+    currency_totals = {}
+    base_currency = Currency.query.filter_by(is_base_currency=True).first()
+    base_currency_code = base_currency.code if base_currency else 'SAR'
+    
+    # تهيئة القاموس بجميع العملات وقيمها صفر
+    for currency in currencies:
+        currency_totals[currency.code] = {
+            'cash': 0,
+            'bank': 0,
+            'total': 0,
+            'symbol': currency.symbol,
+            'name': currency.name,
+            'id': currency.id
+        }
+    
+    # حساب إجمالي الصناديق لكل عملة
+    for register in cash_registers:
+        currency_code = register.currency.code if register.currency else base_currency_code
+        if currency_code in currency_totals:
+            currency_totals[currency_code]['cash'] += register.balance if register.balance else 0
+            currency_totals[currency_code]['total'] += register.balance if register.balance else 0
+    
+    # حساب إجمالي البنوك لكل عملة
+    for account in bank_accounts:
+        currency_code = account.currency.code if account.currency else base_currency_code
+        if currency_code in currency_totals:
+            currency_totals[currency_code]['bank'] += account.current_balance if account.current_balance else 0
+            currency_totals[currency_code]['total'] += account.current_balance if account.current_balance else 0
+    
+    # حساب الإجمالي الكلي بالعملة الأساسية
+    total_in_base_currency = 0
+    for code, data in currency_totals.items():
+        currency = next((c for c in currencies if c.code == code), None)
+        if currency and currency.exchange_rate:
+            # تحويل المبلغ إلى العملة الأساسية
+            total_in_base_currency += data['total'] / currency.exchange_rate
     
     # الحصول على حركات الحسابات الأخيرة (10 حركات)
     # في المستقبل سيتم استبدال هذا بحركات حقيقية من قاعدة البيانات
@@ -808,9 +845,10 @@ def banks():
     return render_template('banks.html', 
                           cash_registers=cash_registers,
                           bank_accounts=bank_accounts,
-                          total_cash=total_cash,
-                          total_bank=total_bank,
-                          total_balance=total_cash + total_bank,
+                          currencies=currencies,
+                          currency_totals=currency_totals,
+                          base_currency=base_currency,
+                          total_in_base_currency=total_in_base_currency,
                           recent_transactions=recent_transactions)
 
 @app.route('/api/bank-accounts', methods=['GET', 'POST'])
