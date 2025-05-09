@@ -196,6 +196,54 @@ class BookingPayment(db.Model):
     booking = db.relationship('BusBooking', backref='payments')
     user = db.relationship('User', foreign_keys=[created_by])
 
+class SystemSettings(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    setting_key = db.Column(db.String(50), unique=True, nullable=False)
+    setting_value = db.Column(db.Text)
+    setting_type = db.Column(db.String(20), default='text')  # text, image, boolean, json
+    description = db.Column(db.String(200))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    @classmethod
+    def get_value(cls, key, default=None):
+        """Get a setting value by key"""
+        setting = cls.query.filter_by(setting_key=key).first()
+        if setting:
+            if setting.setting_type == 'boolean':
+                return setting.setting_value.lower() in ('true', '1', 'yes')
+            elif setting.setting_type == 'json':
+                try:
+                    import json
+                    return json.loads(setting.setting_value)
+                except:
+                    return default
+            else:
+                return setting.setting_value
+        return default
+        
+    @classmethod
+    def set_value(cls, key, value, setting_type='text', description=None):
+        """Set a setting value by key"""
+        setting = cls.query.filter_by(setting_key=key).first()
+        if setting:
+            setting.setting_value = str(value)
+            setting.updated_at = datetime.utcnow()
+            if setting_type:
+                setting.setting_type = setting_type
+            if description:
+                setting.description = description
+        else:
+            setting = cls(
+                setting_key=key,
+                setting_value=str(value),
+                setting_type=setting_type,
+                description=description
+            )
+            db.session.add(setting)
+        db.session.commit()
+        return setting
+
 # Create all tables
 with app.app_context():
     db.create_all()
@@ -522,9 +570,128 @@ def employees():
 def account_statements():
     return render_template('account-statements.html')
 
-@app.route('/system-settings')
+@app.route('/system-settings', methods=['GET', 'POST'])
 def system_settings():
-    return render_template('system-settings.html')
+    # Define default system settings if not exist
+    default_settings = {
+        'system_name': {
+            'value': 'وكالة السفر المتميزة',
+            'type': 'text',
+            'description': 'اسم النظام الذي يظهر في العنوان والشعار'
+        },
+        'system_slogan': {
+            'value': 'للسفر والسياحة والخدمات',
+            'type': 'text',
+            'description': 'شعار النظام النصي'
+        },
+        'primary_color': {
+            'value': '#4e73df',
+            'type': 'color',
+            'description': 'اللون الرئيسي للنظام'
+        },
+        'secondary_color': {
+            'value': '#1cc88a',
+            'type': 'color',
+            'description': 'اللون الثانوي للنظام'
+        },
+        'logo_icon': {
+            'value': 'fas fa-plane-departure',
+            'type': 'icon',
+            'description': 'الأيقونة المستخدمة في الشعار (Font Awesome)'
+        },
+        'dashboard_title': {
+            'value': 'نظام إدارة وكالة السياحة والسفر',
+            'type': 'text',
+            'description': 'عنوان لوحة التحكم'
+        },
+        'show_notifications': {
+            'value': 'true',
+            'type': 'boolean',
+            'description': 'إظهار الإشعارات في الشريط العلوي'
+        },
+        'enable_emails': {
+            'value': 'false',
+            'type': 'boolean',
+            'description': 'تفعيل إرسال الإشعارات عبر البريد الإلكتروني'
+        },
+        'enable_sms': {
+            'value': 'false',
+            'type': 'boolean',
+            'description': 'تفعيل إرسال الإشعارات عبر الرسائل القصيرة'
+        },
+        'default_currency': {
+            'value': 'SAR',
+            'type': 'select',
+            'description': 'العملة الافتراضية للنظام',
+            'options': 'SAR,USD,EUR,YER'
+        }
+    }
+    
+    # Initialize settings if they don't exist
+    for key, data in default_settings.items():
+        setting = SystemSettings.query.filter_by(setting_key=key).first()
+        if not setting:
+            SystemSettings.set_value(
+                key=key,
+                value=data['value'],
+                setting_type=data['type'],
+                description=data['description']
+            )
+    
+    # Handle form submission
+    if request.method == 'POST':
+        try:
+            # Gather all form data
+            for key in default_settings.keys():
+                if key in request.form:
+                    value = request.form.get(key, default_settings[key]['value'])
+                    setting_type = default_settings[key]['type']
+                    description = default_settings[key]['description']
+                    
+                    # Update the setting
+                    SystemSettings.set_value(
+                        key=key,
+                        value=value,
+                        setting_type=setting_type,
+                        description=description
+                    )
+            
+            # Handle file uploads if needed
+            # if 'logo_file' in request.files:
+            #     file = request.files['logo_file']
+            #     if file and file.filename:
+            #         # Save file logic here
+            
+            flash('تم حفظ الإعدادات بنجاح', 'success')
+            return redirect(url_for('system_settings'))
+        except Exception as e:
+            flash(f'حدث خطأ أثناء حفظ الإعدادات: {str(e)}', 'danger')
+    
+    # Get current settings to display in the form
+    settings = {}
+    for key in default_settings.keys():
+        settings[key] = SystemSettings.get_value(key, default_settings[key]['value'])
+    
+    # Available icon options for logo
+    icon_options = [
+        'fas fa-plane-departure',
+        'fas fa-plane',
+        'fas fa-globe-asia',
+        'fas fa-map-marked-alt',
+        'fas fa-building',
+        'fas fa-hotel',
+        'fas fa-passport',
+        'fas fa-suitcase-rolling',
+        'fas fa-bus',
+        'fas fa-car',
+        'fas fa-ship',
+        'fas fa-umbrella-beach'
+    ]
+    
+    return render_template('system-settings.html', 
+                         settings=settings,
+                         icon_options=icon_options,
+                         setting_descriptions=default_settings)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
