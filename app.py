@@ -732,13 +732,28 @@ def create_bus_booking():
             if not currency:
                 currency = Currency.query.filter_by(code='SAR').first()  # العملة الافتراضية
             
+            # في كل الحالات: إضافة سعر التكلفة الإجمالي كمديونية للمورد (مزود الخدمة)
+            supplier_id = booking.service_provider
+            if supplier_id:
+                # إضافة حركة مالية للمورد (سعر التكلفة الإجمالي)
+                supplier_transaction = AccountTransaction()
+                supplier_transaction.transaction_type = 'credit'  # دائن (عليه لنا)
+                supplier_transaction.amount = booking.cost_price
+                supplier_transaction.balance_after = booking.cost_price  # يحتاج تحديث لاحقاً
+                supplier_transaction.source_type = 'supplier'
+                supplier_transaction.source_id = int(supplier_id)
+                supplier_transaction.description = f"تكلفة حجز تذكرة باص رقم {booking.booking_number} - {booking.passenger_name}"
+                supplier_transaction.reference = booking.booking_number
+                supplier_transaction.transaction_date = datetime.utcnow()
+                db.session.add(supplier_transaction)
+            
             # 1. في حالة الدفع الآجل: إضافة المبلغ الإجمالي إلى حساب العميل
             if booking.payment_type == 'credit':
                 customer_id = booking.account
                 if customer_id:
-                    # إضافة حركة مالية للعميل (سعر التكلفة الإجمالي)
+                    # إضافة حركة مالية للعميل (سعر البيع الإجمالي)
                     customer_transaction = AccountTransaction()
-                    customer_transaction.transaction_type = 'debit'  # مدين
+                    customer_transaction.transaction_type = 'debit'  # مدين (لنا عليه)
                     customer_transaction.amount = booking.selling_price
                     customer_transaction.balance_after = booking.selling_price  # يحتاج تحديث لاحقاً
                     customer_transaction.source_type = 'customer'
