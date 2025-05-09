@@ -149,9 +149,9 @@ class BusTrip(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    # Relationships
-    bookings = db.relationship('BusBooking', foreign_keys='BusBooking.trip_id', backref='trip', lazy=True)
-    return_bookings = db.relationship('BusBooking', foreign_keys='BusBooking.return_trip_id', backref='return_trip', lazy=True)
+    # Relationships - without backref to avoid conflicts
+    bookings = db.relationship('BusBooking', foreign_keys='BusBooking.trip_id', lazy=True)
+    return_bookings = db.relationship('BusBooking', foreign_keys='BusBooking.return_trip_id', lazy=True)
 
 class BusBooking(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -176,7 +176,9 @@ class BusBooking(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    return_trip = db.relationship('BusTrip', foreign_keys=[return_trip_id], backref='return_bookings')
+    # Use foreign_keys without backref to avoid conflicts
+    outbound_trip = db.relationship('BusTrip', foreign_keys=[trip_id])
+    return_trip = db.relationship('BusTrip', foreign_keys=[return_trip_id])
     created_user = db.relationship('User', foreign_keys=[created_by])
 
 class BookingPayment(db.Model):
