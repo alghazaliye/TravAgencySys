@@ -290,6 +290,95 @@
                     </div>
                 </div>
                 
+                <!-- إعدادات شريط التنقل -->
+                <div class="settings-section">
+                    <h3><i class="fas fa-bars ml-2"></i>إعدادات شريط التنقل</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="navbar_color">
+                                    <span class="color-preview" id="navbar_color_preview" style="background-color: {{ settings.navbar_color }};"></span>
+                                    لون خلفية شريط التنقل
+                                </label>
+                                <input type="color" class="form-control" id="navbar_color" name="navbar_color" 
+                                    value="{{ settings.navbar_color }}">
+                                <small class="form-text text-muted">{{ setting_descriptions.navbar_color.description }}</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="navbar_text_color">
+                                    <span class="color-preview" id="navbar_text_color_preview" style="background-color: {{ settings.navbar_text_color }};"></span>
+                                    لون النص في شريط التنقل
+                                </label>
+                                <input type="color" class="form-control" id="navbar_text_color" name="navbar_text_color" 
+                                    value="{{ settings.navbar_text_color }}">
+                                <small class="form-text text-muted">{{ setting_descriptions.navbar_text_color.description }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="navbar_dark_color">
+                                    <span class="color-preview" id="navbar_dark_color_preview" style="background-color: {{ settings.navbar_dark_color }};"></span>
+                                    لون خلفية شريط التنقل (الوضع الليلي)
+                                </label>
+                                <input type="color" class="form-control" id="navbar_dark_color" name="navbar_dark_color" 
+                                    value="{{ settings.navbar_dark_color }}">
+                                <small class="form-text text-muted">{{ setting_descriptions.navbar_dark_color.description }}</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="navbar_dark_text_color">
+                                    <span class="color-preview" id="navbar_dark_text_color_preview" style="background-color: {{ settings.navbar_dark_text_color }};"></span>
+                                    لون النص في شريط التنقل (الوضع الليلي)
+                                </label>
+                                <input type="color" class="form-control" id="navbar_dark_text_color" name="navbar_dark_text_color" 
+                                    value="{{ settings.navbar_dark_text_color }}">
+                                <small class="form-text text-muted">{{ setting_descriptions.navbar_dark_text_color.description }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <div class="form-group form-check">
+                                <input type="checkbox" class="form-check-input" id="navbar_fixed" name="navbar_fixed" value="true"
+                                    {% if settings.navbar_fixed == 'true' %}checked{% endif %}>
+                                <label class="form-check-label" for="navbar_fixed">تثبيت شريط التنقل عند التمرير</label>
+                                <small class="form-text text-muted d-block">{{ setting_descriptions.navbar_fixed.description }}</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group form-check">
+                                <input type="checkbox" class="form-check-input" id="navbar_transparent" name="navbar_transparent" value="true"
+                                    {% if settings.navbar_transparent == 'true' %}checked{% endif %}>
+                                <label class="form-check-label" for="navbar_transparent">شريط تنقل شفاف</label>
+                                <small class="form-text text-muted d-block">{{ setting_descriptions.navbar_transparent.description }}</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group form-check">
+                                <input type="checkbox" class="form-check-input" id="navbar_shadow" name="navbar_shadow" value="true"
+                                    {% if settings.navbar_shadow == 'true' %}checked{% endif %}>
+                                <label class="form-check-label" for="navbar_shadow">إظهار ظل لشريط التنقل</label>
+                                <small class="form-text text-muted d-block">{{ setting_descriptions.navbar_shadow.description }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle ml-2"></i>
+                            يمكنك تخصيص مظهر شريط التنقل العلوي بما يتناسب مع هوية الشركة. التغييرات ستظهر مباشرة بعد حفظ الإعدادات.
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- إعدادات التاريخ -->
                 <div class="settings-section">
                     <h3><i class="fas fa-calendar-alt ml-2"></i>إعدادات التاريخ</h3>
@@ -599,6 +688,27 @@ $(document).ready(function() {
     if ($('#dark_mode').val() === 'light') {
         $('#dark_mode_colors').hide();
     }
+    
+    // تحديث معاينة ألوان شريط التنقل
+    $('#navbar_color').on('input', function() {
+        var color = $(this).val();
+        $('#navbar_color_preview').css('background-color', color);
+    });
+    
+    $('#navbar_text_color').on('input', function() {
+        var color = $(this).val();
+        $('#navbar_text_color_preview').css('background-color', color);
+    });
+    
+    $('#navbar_dark_color').on('input', function() {
+        var color = $(this).val();
+        $('#navbar_dark_color_preview').css('background-color', color);
+    });
+    
+    $('#navbar_dark_text_color').on('input', function() {
+        var color = $(this).val();
+        $('#navbar_dark_text_color_preview').css('background-color', color);
+    });
 });
 </script>
 {% endblock %}
