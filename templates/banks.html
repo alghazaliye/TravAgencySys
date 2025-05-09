@@ -86,7 +86,7 @@
                                 <td>{{ register.name }}</td>
                                 <td>صندوق</td>
                                 <td>-</td>
-                                <td>{{ "{:,.2f}".format(register.current_balance) }} ر.س</td>
+                                <td>{{ "{:,.2f}".format(register.balance if register.balance else 0) }} ر.س</td>
                                 <td>{{ register.updated_at|date if register.updated_at else '' }}</td>
                                 <td>
                                     <span class="badge badge-{{ 'success' if register.is_active else 'warning' }}">
@@ -113,7 +113,7 @@
                                 <td>{{ account.name }}</td>
                                 <td>بنك</td>
                                 <td>{{ account.account_number }}</td>
-                                <td>{{ "{:,.2f}".format(account.current_balance) }} ر.س</td>
+                                <td>{{ "{:,.2f}".format(account.current_balance if account.current_balance else 0) }} ر.س</td>
                                 <td>{{ account.updated_at|date if account.updated_at else '' }}</td>
                                 <td>
                                     <span class="badge badge-{{ 'success' if account.is_active else 'warning' }}">

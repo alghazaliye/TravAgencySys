@@ -477,8 +477,7 @@ class CashRegister(db.Model):
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
     name = db.Column(db.String(100), nullable=False)
     location = db.Column(db.String(100))
-    balance = db.Column(db.Float, default=0)  # رصيد الصندوق (للتوافق مع الكود القديم)
-    current_balance = db.Column(db.Float, default=0)  # رصيد الصندوق الحالي
+    balance = db.Column(db.Float, default=0)  # رصيد الصندوق
     is_main_register = db.Column(db.Boolean, default=False)  # هل هذا هو الصندوق الرئيسي
     is_active = db.Column(db.Boolean, default=True)  # حالة الصندوق نشط/غير نشط
     responsible_person = db.Column(db.String(100))  # الشخص المسؤول
@@ -493,6 +492,11 @@ class CashRegister(db.Model):
     account = db.relationship('Account', foreign_keys=[account_id])
     responsible_user = db.relationship('User', foreign_keys=[responsible_user_id])
     currency = db.relationship('Currency', foreign_keys=[currency_id])
+    
+    @property
+    def current_balance(self):
+        """للتوافق مع الكود الحالي، نعيد قيمة balance كـ current_balance"""
+        return self.balance
 
 class AccountTransaction(db.Model):
     """حركات الحسابات والصناديق"""
@@ -794,8 +798,8 @@ def banks():
     bank_accounts = BankAccount.query.all()
     
     # حساب الإجماليات
-    total_cash = sum(register.balance for register in cash_registers)
-    total_bank = sum(account.current_balance for account in bank_accounts)
+    total_cash = sum(register.balance if register.balance else 0 for register in cash_registers)
+    total_bank = sum(account.current_balance if account.current_balance else 0 for account in bank_accounts)
     
     # الحصول على حركات الحسابات الأخيرة (10 حركات)
     # في المستقبل سيتم استبدال هذا بحركات حقيقية من قاعدة البيانات
