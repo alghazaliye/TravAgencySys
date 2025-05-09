@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="{{ settings.dark_mode|default('auto') }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,14 +28,26 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom-rtl.css') }}">
     <!-- CSS مستجيب للشاشات المختلفة -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive-fixes.css') }}">
-    <!-- Google Font: Tajawal -->
+    <!-- Google Font: المحدد من الإعدادات -->
+    {% if settings.font_family == 'Tajawal' %}
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    {% elif settings.font_family == 'Cairo' %}
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    {% elif settings.font_family == 'Almarai' %}
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700&display=swap" rel="stylesheet">
+    {% elif settings.font_family == 'Amiri' %}
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    {% elif settings.font_family == 'Scheherazade' %}
+    <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+    {% else %}
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    {% endif %}
     
     <!-- إصلاحات RTL مباشرة -->
     <style>
         /* ألوان مخصصة للتطبيق */
         :root {
-            /* الألوان الرئيسية */
+            /* الألوان الرئيسية (وضع النهار) */
             --primary-travel: {{ settings.primary_color|default('#4e73df') }};
             --primary-light: color-mix(in srgb, {{ settings.primary_color|default('#4e73df') }} 70%, white);
             --primary-dark: color-mix(in srgb, {{ settings.primary_color|default('#4e73df') }} 70%, black);
@@ -47,15 +59,99 @@
             --light-travel: #f8f9fc;
             --dark-travel: #3a3b45;
             
-            /* ألوان خاصة بالواجهة */
+            /* ألوان خاصة بالواجهة (وضع النهار) */
             --sidebar-bg: {{ settings.sidebar_color|default('#2c3e50') }};
             --sidebar-dark: color-mix(in srgb, {{ settings.sidebar_color|default('#2c3e50') }} 70%, black);
             --text-primary: {{ settings.text_primary_color|default('#333333') }};
+            --body-bg: #f8f9fc;
+            --card-bg: #ffffff;
+            --card-border: rgba(0, 0, 0, 0.05);
+            --header-bg: #ffffff;
+            --dropdown-bg: #ffffff;
+            --dropdown-hover: #f8f9fc;
+            --input-bg: #ffffff;
+            --input-border: #d1d3e2;
+            --input-focus-border: #a9b0d2;
             
             /* متغيرات التخطيط */
             --rtl-enabled: {{ settings.rtl_layout|default('true') }};
             --animation-enabled: {{ settings.enable_animations|default('true') }};
             --font-family: {{ settings.font_family|default('Tajawal') }}, sans-serif;
+        }
+        
+        /* وضع الليل */
+        @media (prefers-color-scheme: dark) {
+            html[data-theme='auto'],
+            html[data-theme='dark'] {
+                --primary-travel: {{ settings.dark_primary_color|default('#375bbb') }};
+                --primary-light: color-mix(in srgb, {{ settings.dark_primary_color|default('#375bbb') }} 60%, white);
+                --primary-dark: color-mix(in srgb, {{ settings.dark_primary_color|default('#375bbb') }} 60%, black);
+                --sidebar-bg: {{ settings.dark_sidebar_color|default('#1a1a2e') }};
+                --sidebar-dark: color-mix(in srgb, {{ settings.dark_sidebar_color|default('#1a1a2e') }} 60%, black);
+                --text-primary: {{ settings.dark_text_color|default('#e1e1e1') }};
+                --body-bg: #121212;
+                --card-bg: #1e1e1e;
+                --card-border: rgba(255, 255, 255, 0.05);
+                --header-bg: #1e1e1e;
+                --dropdown-bg: #252525;
+                --dropdown-hover: #333333;
+                --input-bg: #2a2a2a;
+                --input-border: #444444;
+                --input-focus-border: #555555;
+            }
+        }
+        
+        /* وضع الليل المعين */
+        html[data-theme='dark'] {
+            --primary-travel: {{ settings.dark_primary_color|default('#375bbb') }};
+            --primary-light: color-mix(in srgb, {{ settings.dark_primary_color|default('#375bbb') }} 60%, white);
+            --primary-dark: color-mix(in srgb, {{ settings.dark_primary_color|default('#375bbb') }} 60%, black);
+            --sidebar-bg: {{ settings.dark_sidebar_color|default('#1a1a2e') }};
+            --sidebar-dark: color-mix(in srgb, {{ settings.dark_sidebar_color|default('#1a1a2e') }} 60%, black);
+            --text-primary: {{ settings.dark_text_color|default('#e1e1e1') }};
+            --body-bg: #121212;
+            --card-bg: #1e1e1e;
+            --card-border: rgba(255, 255, 255, 0.05);
+            --header-bg: #1e1e1e;
+            --dropdown-bg: #252525;
+            --dropdown-hover: #333333;
+            --input-bg: #2a2a2a;
+            --input-border: #444444;
+            --input-focus-border: #555555;
+        }
+        
+        /* تطبيق المتغيرات على العناصر */
+        body {
+            font-family: var(--font-family);
+            background-color: var(--body-bg);
+            color: var(--text-primary);
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-color: var(--card-border);
+        }
+        
+        .main-header {
+            background-color: var(--header-bg) !important;
+        }
+        
+        .dropdown-menu {
+            background-color: var(--dropdown-bg);
+        }
+        
+        .dropdown-item:hover {
+            background-color: var(--dropdown-hover);
+        }
+        
+        .form-control {
+            background-color: var(--input-bg);
+            border-color: var(--input-border);
+            color: var(--text-primary);
+        }
+        
+        .form-control:focus {
+            border-color: var(--input-focus-border);
         }
         
         /* أنماط خاصة بالعناصر */
@@ -489,6 +585,15 @@
                         <i class="fas fa-expand-arrows-alt"></i>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="theme-toggle-btn" href="#" role="button" title="تبديل الوضع (ليلي/نهاري)">
+                        {% if settings.dark_mode == 'dark' %}
+                            <i class="fas fa-sun"></i>
+                        {% else %}
+                            <i class="fas fa-moon"></i>
+                        {% endif %}
+                    </a>
+                </li>
                 <li class="nav-item dropdown user-menu">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
                         <i class="fas fa-user-circle fa-lg ml-1"></i>
@@ -516,7 +621,11 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
             <a href="{{ url_for('dashboard') }}" class="brand-link">
-                <i class="{{ settings.logo_icon|default('fas fa-plane-departure') }} ml-2"></i>
+                {% if settings.use_custom_logo == 'true' and settings.custom_logo_url %}
+                    <img src="{{ settings.custom_logo_url }}" alt="{{ settings.system_name|default('وكالة السفر المتميزة') }}" class="brand-image elevation-2 ml-2" style="max-height: 36px; opacity: 0.9;">
+                {% else %}
+                    <i class="{{ settings.logo_icon|default('fas fa-plane-departure') }} ml-2"></i>
+                {% endif %}
                 <span class="brand-text font-weight-light">{{ settings.system_name|default('وكالة السفر المتميزة') }}</span>
             </a>
 

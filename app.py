@@ -609,10 +609,17 @@ def before_request():
             'sidebar_color': '#2c3e50',
             'text_primary_color': '#333333',
             'logo_icon': 'fas fa-plane-departure',
+            'use_custom_logo': 'false',
+            'custom_logo_url': '',
             'default_currency': 'SAR',
             'rtl_layout': 'true',
             'font_family': 'Tajawal',
-            'enable_animations': 'true'
+            'enable_animations': 'true',
+            'dark_mode': 'auto',
+            'dark_sidebar': 'true',
+            'dark_primary_color': '#375bbb',
+            'dark_sidebar_color': '#1a1a2e',
+            'dark_text_color': '#e1e1e1'
         }
         
         # تهيئة قاموس الإعدادات
@@ -713,6 +720,16 @@ def system_settings():
             'type': 'icon',
             'description': 'الأيقونة المستخدمة في الشعار (Font Awesome)'
         },
+        'use_custom_logo': {
+            'value': 'false',
+            'type': 'boolean',
+            'description': 'استخدام شعار مخصص بدلاً من الأيقونة'
+        },
+        'custom_logo_url': {
+            'value': '',
+            'type': 'text',
+            'description': 'رابط الشعار المخصص (إذا كان use_custom_logo مفعل)'
+        },
         'rtl_layout': {
             'value': 'true',
             'type': 'boolean',
@@ -728,6 +745,32 @@ def system_settings():
             'value': 'true',
             'type': 'boolean',
             'description': 'تفعيل التأثيرات الحركية في الواجهة'
+        },
+        'dark_mode': {
+            'value': 'auto',
+            'type': 'select',
+            'description': 'وضع العرض (ليلي/نهاري)',
+            'options': 'light,dark,auto'
+        },
+        'dark_sidebar': {
+            'value': 'true',
+            'type': 'boolean',
+            'description': 'استخدام خلفية داكنة للقائمة الجانبية'
+        },
+        'dark_primary_color': {
+            'value': '#375bbb',
+            'type': 'color',
+            'description': 'اللون الرئيسي في الوضع الليلي'
+        },
+        'dark_sidebar_color': {
+            'value': '#1a1a2e',
+            'type': 'color',
+            'description': 'لون القائمة الجانبية في الوضع الليلي'
+        },
+        'dark_text_color': {
+            'value': '#e1e1e1',
+            'type': 'color',
+            'description': 'لون النص في الوضع الليلي'
         },
         
         # إعدادات مالية
