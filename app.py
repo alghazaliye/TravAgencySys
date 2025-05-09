@@ -748,7 +748,319 @@ def suppliers():
 
 @app.route('/banks')
 def banks():
-    return render_template('banks.html')
+    """عرض صفحة إدارة الصناديق والبنوك"""
+    # الحصول على الصناديق النقدية
+    cash_registers = CashRegister.query.all()
+    
+    # الحصول على الحسابات البنكية
+    bank_accounts = BankAccount.query.all()
+    
+    # حساب الإجماليات
+    total_cash = sum(register.balance for register in cash_registers)
+    total_bank = sum(account.balance for account in bank_accounts)
+    
+    # الحصول على حركات الحسابات الأخيرة (10 حركات)
+    # في المستقبل سيتم استبدال هذا بحركات حقيقية من قاعدة البيانات
+    recent_transactions = []
+    
+    return render_template('banks.html', 
+                          cash_registers=cash_registers,
+                          bank_accounts=bank_accounts,
+                          total_cash=total_cash,
+                          total_bank=total_bank,
+                          total_balance=total_cash + total_bank,
+                          recent_transactions=recent_transactions)
+
+@app.route('/api/bank-accounts', methods=['GET', 'POST'])
+def api_bank_accounts():
+    """واجهة برمجية لإدارة الحسابات البنكية"""
+    if request.method == 'POST':
+        # إضافة حساب بنكي جديد
+        try:
+            data = request.json
+            bank_account = BankAccount(
+                name=data.get('name'),
+                account_number=data.get('account_number'),
+                iban=data.get('iban'),
+                bank_name=data.get('bank_name'),
+                branch_name=data.get('branch_name'),
+                swift_code=data.get('swift_code'),
+                contact_person=data.get('contact_person'),
+                contact_phone=data.get('contact_phone'),
+                is_active=data.get('is_active', True),
+                balance=data.get('balance', 0),
+                notes=data.get('notes', '')
+            )
+            db.session.add(bank_account)
+            db.session.commit()
+            return jsonify({'success': True, 'id': bank_account.id, 'message': 'تم إضافة الحساب البنكي بنجاح'})
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'success': False, 'message': str(e)}), 400
+    
+    # الحصول على قائمة الحسابات البنكية
+    bank_accounts = BankAccount.query.all()
+    accounts_list = [{
+        'id': account.id,
+        'name': account.name,
+        'account_number': account.account_number,
+        'iban': account.iban,
+        'bank_name': account.bank_name,
+        'balance': account.balance,
+        'is_active': account.is_active
+    } for account in bank_accounts]
+    
+    return jsonify({'success': True, 'accounts': accounts_list})
+
+@app.route('/api/bank-accounts/<int:account_id>', methods=['GET', 'PUT', 'DELETE'])
+def api_bank_account(account_id):
+    """واجهة برمجية للعمليات على حساب بنكي محدد"""
+    account = BankAccount.query.get_or_404(account_id)
+    
+    if request.method == 'GET':
+        # إرجاع تفاصيل الحساب البنكي
+        account_data = {
+            'id': account.id,
+            'name': account.name,
+            'account_number': account.account_number,
+            'iban': account.iban,
+            'bank_name': account.bank_name,
+            'branch_name': account.branch_name,
+            'swift_code': account.swift_code,
+            'contact_person': account.contact_person,
+            'contact_phone': account.contact_phone,
+            'is_active': account.is_active,
+            'balance': account.balance,
+            'notes': account.notes,
+            'created_at': account.created_at.strftime('%Y-%m-%d %H:%M:%S') if account.created_at else None,
+            'updated_at': account.updated_at.strftime('%Y-%m-%d %H:%M:%S') if account.updated_at else None
+        }
+        return jsonify({'success': True, 'account': account_data})
+    
+    elif request.method == 'PUT':
+        # تحديث بيانات الحساب البنكي
+        try:
+            data = request.json
+            account.name = data.get('name', account.name)
+            account.account_number = data.get('account_number', account.account_number)
+            account.iban = data.get('iban', account.iban)
+            account.bank_name = data.get('bank_name', account.bank_name)
+            account.branch_name = data.get('branch_name', account.branch_name)
+            account.swift_code = data.get('swift_code', account.swift_code)
+            account.contact_person = data.get('contact_person', account.contact_person)
+            account.contact_phone = data.get('contact_phone', account.contact_phone)
+            account.is_active = data.get('is_active', account.is_active)
+            account.notes = data.get('notes', account.notes)
+            
+            if 'balance' in data:
+                # إذا تم تحديث الرصيد، يمكن إضافة سجل حركة
+                new_balance = float(data.get('balance'))
+                if new_balance != account.balance:
+                    # إنشاء سجل حركة (في المستقبل)
+                    pass
+                account.balance = new_balance
+            
+            account.updated_at = datetime.utcnow()
+            db.session.commit()
+            return jsonify({'success': True, 'message': 'تم تحديث الحساب البنكي بنجاح'})
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'success': False, 'message': str(e)}), 400
+    
+    elif request.method == 'DELETE':
+        # حذف الحساب البنكي
+        try:
+            # قبل الحذف، نتحقق من عدم وجود حركات مرتبطة بالحساب
+            # في المستقبل سيتم إضافة هذا التحقق
+            
+            db.session.delete(account)
+            db.session.commit()
+            return jsonify({'success': True, 'message': 'تم حذف الحساب البنكي بنجاح'})
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'success': False, 'message': str(e)}), 400
+
+@app.route('/api/cash-registers', methods=['GET', 'POST'])
+def api_cash_registers():
+    """واجهة برمجية لإدارة الصناديق النقدية"""
+    if request.method == 'POST':
+        # إضافة صندوق نقدي جديد
+        try:
+            data = request.json
+            cash_register = CashRegister(
+                name=data.get('name'),
+                location=data.get('location'),
+                responsible_person=data.get('responsible_person'),
+                is_main_register=data.get('is_main_register', False),
+                is_active=data.get('is_active', True),
+                balance=data.get('balance', 0),
+                notes=data.get('notes', '')
+            )
+            
+            # إذا كان هذا هو الصندوق الرئيسي، نجعل الصناديق الأخرى ليست رئيسية
+            if cash_register.is_main_register:
+                for register in CashRegister.query.filter_by(is_main_register=True).all():
+                    register.is_main_register = False
+            
+            db.session.add(cash_register)
+            db.session.commit()
+            return jsonify({'success': True, 'id': cash_register.id, 'message': 'تم إضافة الصندوق النقدي بنجاح'})
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'success': False, 'message': str(e)}), 400
+    
+    # الحصول على قائمة الصناديق النقدية
+    cash_registers = CashRegister.query.all()
+    registers_list = [{
+        'id': register.id,
+        'name': register.name,
+        'location': register.location,
+        'responsible_person': register.responsible_person,
+        'is_main_register': register.is_main_register,
+        'balance': register.balance,
+        'is_active': register.is_active
+    } for register in cash_registers]
+    
+    return jsonify({'success': True, 'registers': registers_list})
+
+@app.route('/api/cash-registers/<int:register_id>', methods=['GET', 'PUT', 'DELETE'])
+def api_cash_register(register_id):
+    """واجهة برمجية للعمليات على صندوق نقدي محدد"""
+    register = CashRegister.query.get_or_404(register_id)
+    
+    if request.method == 'GET':
+        # إرجاع تفاصيل الصندوق النقدي
+        register_data = {
+            'id': register.id,
+            'name': register.name,
+            'location': register.location,
+            'responsible_person': register.responsible_person,
+            'is_main_register': register.is_main_register,
+            'is_active': register.is_active,
+            'balance': register.balance,
+            'notes': register.notes,
+            'created_at': register.created_at.strftime('%Y-%m-%d %H:%M:%S') if register.created_at else None,
+            'updated_at': register.updated_at.strftime('%Y-%m-%d %H:%M:%S') if register.updated_at else None
+        }
+        return jsonify({'success': True, 'register': register_data})
+    
+    elif request.method == 'PUT':
+        # تحديث بيانات الصندوق النقدي
+        try:
+            data = request.json
+            register.name = data.get('name', register.name)
+            register.location = data.get('location', register.location)
+            register.responsible_person = data.get('responsible_person', register.responsible_person)
+            
+            # التحقق من حالة الصندوق الرئيسي
+            new_is_main = data.get('is_main_register', register.is_main_register)
+            if new_is_main and not register.is_main_register:
+                # إذا تم تعيين هذا الصندوق كرئيسي، نقوم بإلغاء الصناديق الرئيسية الأخرى
+                for other_register in CashRegister.query.filter_by(is_main_register=True).all():
+                    if other_register.id != register.id:
+                        other_register.is_main_register = False
+            
+            register.is_main_register = new_is_main
+            register.is_active = data.get('is_active', register.is_active)
+            register.notes = data.get('notes', register.notes)
+            
+            if 'balance' in data:
+                # إذا تم تحديث الرصيد، يمكن إضافة سجل حركة
+                new_balance = float(data.get('balance'))
+                if new_balance != register.balance:
+                    # إنشاء سجل حركة (في المستقبل)
+                    pass
+                register.balance = new_balance
+            
+            register.updated_at = datetime.utcnow()
+            db.session.commit()
+            return jsonify({'success': True, 'message': 'تم تحديث الصندوق النقدي بنجاح'})
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'success': False, 'message': str(e)}), 400
+    
+    elif request.method == 'DELETE':
+        # حذف الصندوق النقدي
+        try:
+            # قبل الحذف، نتحقق من عدم وجود حركات مرتبطة بالصندوق
+            # في المستقبل سيتم إضافة هذا التحقق
+            
+            db.session.delete(register)
+            db.session.commit()
+            return jsonify({'success': True, 'message': 'تم حذف الصندوق النقدي بنجاح'})
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'success': False, 'message': str(e)}), 400
+
+@app.route('/api/transfer-money', methods=['POST'])
+def api_transfer_money():
+    """واجهة برمجية للتحويل بين الحسابات والصناديق"""
+    try:
+        data = request.json
+        source_type = data.get('source_type') # 'bank' or 'cash'
+        source_id = data.get('source_id', type=int)
+        destination_type = data.get('destination_type') # 'bank' or 'cash'
+        destination_id = data.get('destination_id', type=int)
+        amount = data.get('amount', type=float)
+        description = data.get('description', '')
+        reference = data.get('reference', '')
+        
+        # التحقق من صحة البيانات
+        if not source_type or not source_id or not destination_type or not destination_id or not amount:
+            return jsonify({'success': False, 'message': 'يرجى توفير جميع البيانات المطلوبة'}), 400
+        
+        if source_type == destination_type and source_id == destination_id:
+            return jsonify({'success': False, 'message': 'لا يمكن التحويل إلى نفس الحساب'}), 400
+        
+        if amount <= 0:
+            return jsonify({'success': False, 'message': 'يجب أن يكون المبلغ أكبر من صفر'}), 400
+        
+        # الحصول على الحساب المصدر
+        source = None
+        if source_type == 'bank':
+            source = BankAccount.query.get(source_id)
+        elif source_type == 'cash':
+            source = CashRegister.query.get(source_id)
+        
+        if not source:
+            return jsonify({'success': False, 'message': 'الحساب المصدر غير موجود'}), 404
+        
+        # الحصول على الحساب الوجهة
+        destination = None
+        if destination_type == 'bank':
+            destination = BankAccount.query.get(destination_id)
+        elif destination_type == 'cash':
+            destination = CashRegister.query.get(destination_id)
+        
+        if not destination:
+            return jsonify({'success': False, 'message': 'الحساب الوجهة غير موجود'}), 404
+        
+        # التحقق من الرصيد الكافي
+        if source.balance < amount:
+            return jsonify({'success': False, 'message': 'الرصيد غير كافٍ للتحويل'}), 400
+        
+        # إجراء التحويل
+        source.balance -= amount
+        destination.balance += amount
+        
+        # تحديث تاريخ التحديث
+        source.updated_at = datetime.utcnow()
+        destination.updated_at = datetime.utcnow()
+        
+        # في المستقبل، سنقوم بإضافة سجل الحركة في جدول الحركات
+        
+        db.session.commit()
+        
+        return jsonify({
+            'success': True, 
+            'message': 'تم التحويل بنجاح',
+            'source_balance': source.balance,
+            'destination_balance': destination.balance
+        })
+    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': str(e)}), 400
 
 @app.route('/payment-vouchers')
 def payment_vouchers():

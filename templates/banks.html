@@ -23,7 +23,7 @@
                     <span class="info-box-icon"><i class="fas fa-cash-register"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text">رصيد الصندوق</span>
-                        <span class="info-box-number">25,000 ر.س</span>
+                        <span class="info-box-number">{{ "{:,.2f}".format(total_cash) }} ر.س</span>
                     </div>
                 </div>
                 
@@ -31,7 +31,7 @@
                     <span class="info-box-icon"><i class="fas fa-university"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text">رصيد البنوك</span>
-                        <span class="info-box-number">150,000 ر.س</span>
+                        <span class="info-box-number">{{ "{:,.2f}".format(total_bank) }} ر.س</span>
                     </div>
                 </div>
                 
@@ -39,7 +39,7 @@
                     <span class="info-box-icon"><i class="fas fa-money-bill-wave"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text">إجمالي الأرصدة</span>
-                        <span class="info-box-number">175,000 ر.س</span>
+                        <span class="info-box-number">{{ "{:,.2f}".format(total_balance) }} ر.س</span>
                     </div>
                 </div>
                 
@@ -80,106 +80,65 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% for register in cash_registers %}
                             <tr>
-                                <td>1</td>
-                                <td>الصندوق الرئيسي</td>
+                                <td>{{ register.id }}</td>
+                                <td>{{ register.name }}</td>
                                 <td>صندوق</td>
                                 <td>-</td>
-                                <td>25,000 ر.س</td>
-                                <td>15-06-2023</td>
-                                <td><span class="badge badge-success">نشط</span></td>
+                                <td>{{ "{:,.2f}".format(register.balance) }} ر.س</td>
+                                <td>{{ register.updated_at|date if register.updated_at else '' }}</td>
                                 <td>
-                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-bank">
+                                    <span class="badge badge-{{ 'success' if register.is_active else 'warning' }}">
+                                        {{ 'نشط' if register.is_active else 'غير نشط' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-bank" data-id="{{ register.id }}" data-type="cash">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-bank">
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-bank" data-id="{{ register.id }}" data-type="cash">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button type="button" class="btn btn-danger btn-sm">
+                                    <button type="button" class="btn btn-danger btn-sm" data-id="{{ register.id }}" data-type="cash">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>
                             </tr>
+                            {% endfor %}
+                            
+                            {% for account in bank_accounts %}
                             <tr>
-                                <td>2</td>
-                                <td>بنك الراجحي - الحساب الرئيسي</td>
+                                <td>{{ account.id }}</td>
+                                <td>{{ account.name }}</td>
                                 <td>بنك</td>
-                                <td>SA12 3456 7890 1234 5678 90</td>
-                                <td>80,000 ر.س</td>
-                                <td>16-06-2023</td>
-                                <td><span class="badge badge-success">نشط</span></td>
+                                <td>{{ account.account_number }}</td>
+                                <td>{{ "{:,.2f}".format(account.balance) }} ر.س</td>
+                                <td>{{ account.updated_at|date if account.updated_at else '' }}</td>
                                 <td>
-                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-bank">
+                                    <span class="badge badge-{{ 'success' if account.is_active else 'warning' }}">
+                                        {{ 'نشط' if account.is_active else 'غير نشط' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-bank" data-id="{{ account.id }}" data-type="bank">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-bank">
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-bank" data-id="{{ account.id }}" data-type="bank">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button type="button" class="btn btn-danger btn-sm">
+                                    <button type="button" class="btn btn-danger btn-sm" data-id="{{ account.id }}" data-type="bank">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>
                             </tr>
+                            {% endfor %}
+                            
+                            {% if not cash_registers and not bank_accounts %}
                             <tr>
-                                <td>3</td>
-                                <td>البنك الأهلي</td>
-                                <td>بنك</td>
-                                <td>SA98 7654 3210 9876 5432 10</td>
-                                <td>45,000 ر.س</td>
-                                <td>12-06-2023</td>
-                                <td><span class="badge badge-success">نشط</span></td>
-                                <td>
-                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-bank">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-bank">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
+                                <td colspan="8" class="text-center">لا توجد حسابات مسجلة حالياً</td>
                             </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>بنك الرياض</td>
-                                <td>بنك</td>
-                                <td>SA45 6789 0123 4567 8901 23</td>
-                                <td>25,000 ر.س</td>
-                                <td>10-06-2023</td>
-                                <td><span class="badge badge-success">نشط</span></td>
-                                <td>
-                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-bank">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-bank">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>صندوق فرع جدة</td>
-                                <td>صندوق</td>
-                                <td>-</td>
-                                <td>0 ر.س</td>
-                                <td>01-06-2023</td>
-                                <td><span class="badge badge-warning">غير نشط</span></td>
-                                <td>
-                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-view-bank">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-add-bank">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
+                            {% endif %}
                         </tbody>
                     </table>
                 </div>
