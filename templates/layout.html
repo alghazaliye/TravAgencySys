@@ -35,9 +35,10 @@
     <style>
         /* ألوان مخصصة للتطبيق */
         :root {
+            /* الألوان الرئيسية */
             --primary-travel: {{ settings.primary_color|default('#4e73df') }};
-            --primary-light: {{ settings.primary_color|default('#6f8ae4') }};
-            --primary-dark: {{ settings.primary_color|default('#3a5ccc') }};
+            --primary-light: color-mix(in srgb, {{ settings.primary_color|default('#4e73df') }} 70%, white);
+            --primary-dark: color-mix(in srgb, {{ settings.primary_color|default('#4e73df') }} 70%, black);
             --success-travel: {{ settings.secondary_color|default('#1cc88a') }};
             --info-travel: #36b9cc;
             --warning-travel: #f6c23e;
@@ -45,8 +46,16 @@
             --secondary-travel: #6c757d;
             --light-travel: #f8f9fc;
             --dark-travel: #3a3b45;
-            --sidebar-bg: {{ settings.primary_color|default('#2c3e50') }};
-            --sidebar-dark: #1a252f;
+            
+            /* ألوان خاصة بالواجهة */
+            --sidebar-bg: {{ settings.sidebar_color|default('#2c3e50') }};
+            --sidebar-dark: color-mix(in srgb, {{ settings.sidebar_color|default('#2c3e50') }} 70%, black);
+            --text-primary: {{ settings.text_primary_color|default('#333333') }};
+            
+            /* متغيرات التخطيط */
+            --rtl-enabled: {{ settings.rtl_layout|default('true') }};
+            --animation-enabled: {{ settings.enable_animations|default('true') }};
+            --font-family: {{ settings.font_family|default('Tajawal') }}, sans-serif;
         }
         
         /* أنماط خاصة بالعناصر */

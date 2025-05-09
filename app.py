@@ -565,16 +565,64 @@ def account_statements():
 def before_request():
     # تجنب تنفيذ هذا الكود للطلبات الخاصة بالملفات الثابتة
     if not request.path.startswith('/static/'):
-        # استرجاع إعدادات النظام الأساسية
-        g.settings = {
-            'system_name': SystemSettings.get_value('system_name', 'وكالة السفر المتميزة'),
-            'system_slogan': SystemSettings.get_value('system_slogan', 'للسفر والسياحة والخدمات'),
-            'primary_color': SystemSettings.get_value('primary_color', '#4e73df'),
-            'secondary_color': SystemSettings.get_value('secondary_color', '#1cc88a'),
-            'logo_icon': SystemSettings.get_value('logo_icon', 'fas fa-plane-departure'),
-            'dashboard_title': SystemSettings.get_value('dashboard_title', 'نظام إدارة وكالة السياحة والسفر'),
-            'default_currency': SystemSettings.get_value('default_currency', 'SAR')
+        # استرجاع جميع إعدادات النظام
+        settings_keys = [
+            # إعدادات عامة للنظام
+            'system_name', 'system_slogan', 'dashboard_title', 
+            'company_name', 'company_cr', 'company_vat', 'company_address',
+            'company_phone', 'company_email', 'company_website',
+            
+            # إعدادات المظهر والألوان
+            'primary_color', 'secondary_color', 'sidebar_color', 'text_primary_color',
+            'logo_icon', 'rtl_layout', 'font_family', 'enable_animations',
+            
+            # إعدادات مالية
+            'default_currency', 'vat_rate', 'show_vat_in_reports',
+            'currency_display_format', 'enable_multi_currency',
+            'decimal_places', 'show_amounts_in_words',
+            
+            # إعدادات التاريخ والوقت
+            'date_format', 'time_format', 'use_hijri_dates', 
+            'show_both_dates', 'week_start_day', 'timezone',
+            
+            # إعدادات الإشعارات والتنبيهات
+            'show_notifications', 'enable_emails', 'enable_sms',
+            'notification_refresh_interval', 'low_stock_threshold',
+            'ticket_expiry_alert_days', 'visa_expiry_alert_days',
+            
+            # إعدادات الطباعة والمستندات
+            'invoice_prefix', 'receipt_prefix', 'booking_prefix', 'payment_prefix',
+            'invoice_footer_text', 'invoice_terms', 'print_logo_on_documents',
+            
+            # إعدادات النظام والأمان
+            'auto_logout_minutes', 'password_expiry_days', 'password_min_length',
+            'enable_audit_log', 'backup_frequency', 'maintenance_mode'
+        ]
+        
+        # تعريف القيم الافتراضية للإعدادات الأساسية
+        default_values = {
+            'system_name': 'وكالة السفر المتميزة',
+            'system_slogan': 'للسفر والسياحة والخدمات',
+            'dashboard_title': 'نظام إدارة وكالة السياحة والسفر',
+            'primary_color': '#4e73df',
+            'secondary_color': '#1cc88a',
+            'sidebar_color': '#2c3e50',
+            'text_primary_color': '#333333',
+            'logo_icon': 'fas fa-plane-departure',
+            'default_currency': 'SAR',
+            'rtl_layout': 'true',
+            'font_family': 'Tajawal',
+            'enable_animations': 'true'
         }
+        
+        # تهيئة قاموس الإعدادات
+        g.settings = {}
+        
+        # استرجاع جميع الإعدادات من قاعدة البيانات
+        for key in settings_keys:
+            # الحصول على قيمة كل إعداد مع قيم افتراضية
+            default_value = default_values.get(key, '')
+            g.settings[key] = SystemSettings.get_value(key, default_value)
 
 # استخدام context_processor لإتاحة الإعدادات في جميع القوالب
 @app.context_processor
@@ -587,6 +635,7 @@ def inject_settings():
 def system_settings():
     # Define default system settings if not exist
     default_settings = {
+        # إعدادات عامة للنظام
         'system_name': {
             'value': 'وكالة السفر المتميزة',
             'type': 'text',
@@ -597,6 +646,48 @@ def system_settings():
             'type': 'text',
             'description': 'شعار النظام النصي'
         },
+        'dashboard_title': {
+            'value': 'نظام إدارة وكالة السياحة والسفر',
+            'type': 'text',
+            'description': 'عنوان لوحة التحكم'
+        },
+        'company_name': {
+            'value': 'شركة السفر والسياحة',
+            'type': 'text',
+            'description': 'اسم الشركة الرسمي للعرض في التقارير والمستندات'
+        },
+        'company_cr': {
+            'value': '',
+            'type': 'text',
+            'description': 'رقم السجل التجاري للشركة'
+        },
+        'company_vat': {
+            'value': '',
+            'type': 'text',
+            'description': 'الرقم الضريبي للشركة'
+        },
+        'company_address': {
+            'value': 'المملكة العربية السعودية',
+            'type': 'text',
+            'description': 'عنوان الشركة'
+        },
+        'company_phone': {
+            'value': '',
+            'type': 'text',
+            'description': 'رقم هاتف الشركة'
+        },
+        'company_email': {
+            'value': '',
+            'type': 'text',
+            'description': 'البريد الإلكتروني للشركة'
+        },
+        'company_website': {
+            'value': '',
+            'type': 'text',
+            'description': 'موقع الويب للشركة'
+        },
+        
+        # إعدادات المظهر والألوان
         'primary_color': {
             'value': '#4e73df',
             'type': 'color',
@@ -607,16 +698,115 @@ def system_settings():
             'type': 'color',
             'description': 'اللون الثانوي للنظام'
         },
+        'sidebar_color': {
+            'value': '#2c3e50',
+            'type': 'color',
+            'description': 'لون القائمة الجانبية'
+        },
+        'text_primary_color': {
+            'value': '#333333',
+            'type': 'color',
+            'description': 'لون النص الرئيسي'
+        },
         'logo_icon': {
             'value': 'fas fa-plane-departure',
             'type': 'icon',
             'description': 'الأيقونة المستخدمة في الشعار (Font Awesome)'
         },
-        'dashboard_title': {
-            'value': 'نظام إدارة وكالة السياحة والسفر',
-            'type': 'text',
-            'description': 'عنوان لوحة التحكم'
+        'rtl_layout': {
+            'value': 'true',
+            'type': 'boolean',
+            'description': 'استخدام تخطيط من اليمين إلى اليسار (RTL)'
         },
+        'font_family': {
+            'value': 'Tajawal',
+            'type': 'select',
+            'description': 'الخط المستخدم في النظام',
+            'options': 'Tajawal,Cairo,Almarai,Amiri,Scheherazade'
+        },
+        'enable_animations': {
+            'value': 'true',
+            'type': 'boolean',
+            'description': 'تفعيل التأثيرات الحركية في الواجهة'
+        },
+        
+        # إعدادات مالية
+        'default_currency': {
+            'value': 'SAR',
+            'type': 'select',
+            'description': 'العملة الافتراضية للنظام',
+            'options': 'SAR,USD,EUR,YER,AED,QAR,BHD,KWD,OMR,JOD,EGP'
+        },
+        'vat_rate': {
+            'value': '15',
+            'type': 'text',
+            'description': 'نسبة ضريبة القيمة المضافة (%)'
+        },
+        'show_vat_in_reports': {
+            'value': 'true',
+            'type': 'boolean',
+            'description': 'إظهار ضريبة القيمة المضافة في التقارير'
+        },
+        'currency_display_format': {
+            'value': 'symbol_after',
+            'type': 'select',
+            'description': 'طريقة عرض العملات',
+            'options': 'symbol_after,symbol_before,code_after,code_before'
+        },
+        'enable_multi_currency': {
+            'value': 'true',
+            'type': 'boolean',
+            'description': 'تفعيل دعم العملات المتعددة'
+        },
+        'decimal_places': {
+            'value': '2',
+            'type': 'select',
+            'description': 'عدد الخانات العشرية في عرض المبالغ',
+            'options': '0,1,2,3'
+        },
+        'show_amounts_in_words': {
+            'value': 'true',
+            'type': 'boolean',
+            'description': 'عرض المبالغ كتابة بالحروف العربية'
+        },
+                
+        # إعدادات التاريخ والوقت
+        'date_format': {
+            'value': 'DD/MM/YYYY',
+            'type': 'select',
+            'description': 'صيغة عرض التاريخ في النظام',
+            'options': 'DD/MM/YYYY,YYYY/MM/DD,DD-MM-YYYY,YYYY-MM-DD,DD MMMM, YYYY'
+        },
+        'time_format': {
+            'value': 'HH:mm',
+            'type': 'select',
+            'description': 'صيغة عرض الوقت في النظام',
+            'options': 'HH:mm,HH:mm:ss,hh:mm A,hh:mm:ss A'
+        },
+        'use_hijri_dates': {
+            'value': 'false',
+            'type': 'boolean',
+            'description': 'استخدام التاريخ الهجري بدلاً من الميلادي'
+        },
+        'show_both_dates': {
+            'value': 'false',
+            'type': 'boolean',
+            'description': 'عرض التاريخ الهجري والميلادي معاً'
+        },
+        'week_start_day': {
+            'value': 'saturday',
+            'type': 'select',
+            'description': 'اليوم الأول في الأسبوع',
+            'options': 'saturday,sunday,monday'
+        },
+        'timezone': {
+            'value': 'Asia/Riyadh',
+            'type': 'select',
+            'description': 'المنطقة الزمنية',
+            'options': 'Asia/Riyadh,Asia/Jeddah,Asia/Dubai,Asia/Kuwait,Asia/Qatar,Asia/Bahrain,Asia/Aden,Asia/Damascus,Asia/Amman,Asia/Cairo'
+        },
+        
+        # إعدادات الإشعارات والتنبيهات
         'show_notifications': {
             'value': 'true',
             'type': 'boolean',
@@ -632,27 +822,97 @@ def system_settings():
             'type': 'boolean',
             'description': 'تفعيل إرسال الإشعارات عبر الرسائل القصيرة'
         },
-        'default_currency': {
-            'value': 'SAR',
+        'notification_refresh_interval': {
+            'value': '60',
             'type': 'select',
-            'description': 'العملة الافتراضية للنظام',
-            'options': 'SAR,USD,EUR,YER'
+            'description': 'الفاصل الزمني لتحديث الإشعارات (بالثواني)',
+            'options': '30,60,120,300,600'
         },
-        'date_format': {
-            'value': 'DD/MM/YYYY',
+        'low_stock_threshold': {
+            'value': '5',
+            'type': 'text',
+            'description': 'عتبة التنبيه للمخزون المنخفض'
+        },
+        'ticket_expiry_alert_days': {
+            'value': '3',
+            'type': 'text',
+            'description': 'عدد أيام التنبيه قبل انتهاء التذاكر'
+        },
+        'visa_expiry_alert_days': {
+            'value': '7',
+            'type': 'text',
+            'description': 'عدد أيام التنبيه قبل انتهاء التأشيرات'
+        },
+        
+        # إعدادات الطباعة والمستندات
+        'invoice_prefix': {
+            'value': 'INV-',
+            'type': 'text',
+            'description': 'بادئة رقم الفاتورة'
+        },
+        'receipt_prefix': {
+            'value': 'REC-',
+            'type': 'text',
+            'description': 'بادئة رقم الإيصال'
+        },
+        'booking_prefix': {
+            'value': 'BK-',
+            'type': 'text',
+            'description': 'بادئة رقم الحجز'
+        },
+        'payment_prefix': {
+            'value': 'PAY-',
+            'type': 'text',
+            'description': 'بادئة رقم سند الصرف'
+        },
+        'invoice_footer_text': {
+            'value': 'شكراً لاختياركم وكالة السفر المتميزة',
+            'type': 'text',
+            'description': 'النص الظاهر في أسفل الفاتورة'
+        },
+        'invoice_terms': {
+            'value': 'تطبق الشروط والأحكام',
+            'type': 'textarea',
+            'description': 'شروط وأحكام الفاتورة'
+        },
+        'print_logo_on_documents': {
+            'value': 'true',
+            'type': 'boolean',
+            'description': 'طباعة شعار الشركة على المستندات'
+        },
+        
+        # إعدادات النظام والأمان
+        'auto_logout_minutes': {
+            'value': '30',
             'type': 'select',
-            'description': 'صيغة عرض التاريخ في النظام',
-            'options': 'DD/MM/YYYY,YYYY/MM/DD,DD-MM-YYYY,YYYY-MM-DD,DD MMMM, YYYY'
+            'description': 'وقت الخروج التلقائي بعد عدم النشاط (بالدقائق)',
+            'options': '15,30,60,120,240,0'
         },
-        'use_hijri_dates': {
+        'password_expiry_days': {
+            'value': '90',
+            'type': 'text',
+            'description': 'عدد أيام انتهاء صلاحية كلمة المرور (0 للتعطيل)'
+        },
+        'password_min_length': {
+            'value': '8',
+            'type': 'text',
+            'description': 'الحد الأدنى لطول كلمة المرور'
+        },
+        'enable_audit_log': {
+            'value': 'true',
+            'type': 'boolean',
+            'description': 'تفعيل سجل التدقيق لمراقبة النشاطات'
+        },
+        'backup_frequency': {
+            'value': 'daily',
+            'type': 'select',
+            'description': 'تكرار النسخ الاحتياطي التلقائي',
+            'options': 'daily,weekly,monthly,manual'
+        },
+        'maintenance_mode': {
             'value': 'false',
             'type': 'boolean',
-            'description': 'استخدام التاريخ الهجري بدلاً من الميلادي'
-        },
-        'show_both_dates': {
-            'value': 'false',
-            'type': 'boolean',
-            'description': 'عرض التاريخ الهجري والميلادي معاً'
+            'description': 'تفعيل وضع الصيانة (يمنع دخول المستخدمين غير المدراء)'
         }
     }
     
