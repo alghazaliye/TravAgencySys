@@ -277,6 +277,8 @@ function setupButtonEvents() {
         $('#selling-price').val('');     // تفريغ سعر البيع الإجمالي
         $('#cost-price').val('');       // تفريغ سعر التكلفة الإجمالي
         $('#received-amount').val('');  // تفريغ المبلغ الواصل
+        
+        console.log('تم تفريغ الحقول المالية');
     });
     
     // زر إلغاء/إخفاء نموذج الحجز

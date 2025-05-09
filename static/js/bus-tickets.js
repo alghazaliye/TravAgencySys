@@ -160,7 +160,7 @@ $(function () {
     $('#paymentType').trigger('change');
     
     // إضافة وظيفة لإظهار/إخفاء حقل المبلغ الواصل حسب نوع التوصيل
-    $('#paymentType').on('change', function() {
+    $('#payment-method').on('change', function() {
         var paymentType = $(this).val();
         
         // إظهار حقل المبلغ الواصل عند اختيار "نقد" أو "تحويل بنكي"
@@ -168,12 +168,12 @@ $(function () {
             $('#receivedAmountContainer').show();
         } else {
             $('#receivedAmountContainer').hide();
-            $('#receivedAmount').val(''); // مسح القيمة عند الإخفاء
+            $('#received-amount').val(''); // مسح القيمة عند الإخفاء
         }
     });
     
     // تشغيل الوظيفة عند تحميل الصفحة
-    $('#paymentType').trigger('change');
+    $('#payment-method').trigger('change');
     
     // إكمال الحجز
     $('#complete-reservation').on('click', function() {
