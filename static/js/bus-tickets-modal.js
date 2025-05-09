@@ -49,6 +49,25 @@ $(function () {
         };
         return symbols[currencyCode] || currencyCode;
     }
+    
+    // حساب المبلغ المتبقي تلقائيًا
+    $('#selling-price, #received-amount').on('input', function() {
+        updateRemainingAmount();
+    });
+    
+    // دالة تحديث المبلغ المتبقي
+    function updateRemainingAmount() {
+        let sellingPrice = parseFloat($('#selling-price').val()) || 0;
+        let receivedAmount = parseFloat($('#received-amount').val()) || 0;
+        let remainingAmount = sellingPrice - receivedAmount;
+        
+        // لا يمكن أن يكون المبلغ المتبقي سالب
+        if (remainingAmount < 0) {
+            remainingAmount = 0;
+        }
+        
+        $('#remaining-amount').val(remainingAmount.toFixed(2));
+    }
 
     // محاكاة البحث عن الرحلات
     $('#search-trips').on('click', function() {
@@ -89,7 +108,14 @@ $(function () {
         
         // عرض تفاصيل الرحلة
         $('#trip-details-text').text(`من ${from} إلى ${to} - ${departureTime} - ${company} - ${busType}`);
-        $('#ticket-price').val(price);
+        
+        // تحديث الأسعار
+        $('#selling-price').val(price);
+        $('#cost-price').val(Math.round(price * 0.85)); // سعر التكلفة تقريباً 85% من سعر البيع
+        $('#received-amount').val(price); // افتراضياً يساوي سعر البيع
+        
+        // تحديث المبلغ المتبقي
+        updateRemainingAmount();
         
         // إخفاء نتائج البحث
         $('#search-results').hide();
@@ -341,5 +367,7 @@ $(function () {
     // استدعاء إعادة التعيين عند فتح المودال
     $('#modal-add-reservation').on('show.bs.modal', function (e) {
         resetBookingForm();
+        // تأكد من تحديث المبلغ المتبقي
+        updateRemainingAmount();
     });
 });

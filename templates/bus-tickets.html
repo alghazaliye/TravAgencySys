@@ -593,9 +593,9 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="ticket-price">سعر التذكرة <span class="text-danger">*</span></label>
+                                    <label for="selling-price">سعر البيع الإجمالي <span class="text-danger">*</span></label>
                                     <div class="input-group">
-                                        <input type="number" class="form-control" id="ticket-price" value="120" readonly>
+                                        <input type="number" class="form-control" id="selling-price" value="120" required>
                                         <div class="input-group-append">
                                             <span class="input-group-text currency-symbol">ر.س</span>
                                         </div>
@@ -603,6 +603,31 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="cost-price">سعر التكلفة الإجمالي <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="cost-price" value="100" required>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text currency-symbol">ر.س</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="received-amount">المبلغ الواصل <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="received-amount" value="120" required>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text currency-symbol">ر.س</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="payment-method">طريقة الدفع <span class="text-danger">*</span></label>
                                     <select class="form-control select2" id="payment-method" style="width: 100%;" required>
@@ -613,11 +638,22 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-3" id="paid-amount-container">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="paid-amount">المبلغ المدفوع <span class="text-danger">*</span></label>
+                                    <label for="account">الحساب <span class="text-danger">*</span></label>
+                                    <select class="form-control select2" id="account" style="width: 100%;" required>
+                                        <option value="">اختر الحساب</option>
+                                        <option value="cash-register">الصندوق</option>
+                                        <option value="bank">البنك</option>
+                                        <option value="client">عميل</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="remaining-amount">المبلغ المتبقي</label>
                                     <div class="input-group">
-                                        <input type="number" class="form-control" id="paid-amount" placeholder="أدخل المبلغ المدفوع">
+                                        <input type="number" class="form-control" id="remaining-amount" value="0" readonly>
                                         <div class="input-group-append">
                                             <span class="input-group-text currency-symbol">ر.س</span>
                                         </div>
