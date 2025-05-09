@@ -156,30 +156,8 @@ class BusTrip(db.Model):
 class BusBooking(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     booking_number = db.Column(db.String(20), unique=True, nullable=False)
-    customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=False)
-    trip_id = db.Column(db.Integer, db.ForeignKey('bus_trip.id'))
-    booking_date = db.Column(db.DateTime, default=datetime.utcnow)
-    travel_date = db.Column(db.Date, nullable=False)
-    seat_number = db.Column(db.String(10))
-    is_round_trip = db.Column(db.Boolean, default=False)
-    return_trip_id = db.Column(db.Integer, db.ForeignKey('bus_trip.id'))
-    return_date = db.Column(db.Date)
-    return_seat_number = db.Column(db.String(10))
-    ticket_price = db.Column(db.Float, nullable=False)
-    discount_amount = db.Column(db.Float, default=0)
-    total_amount = db.Column(db.Float, nullable=False)
-    payment_method = db.Column(db.String(20))
-    payment_status = db.Column(db.String(20), default="pending")  # pending, partial, paid
-    booking_status = db.Column(db.String(20), default="confirmed")  # confirmed, cancelled, completed
-    created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
-    notes = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
-    # Use foreign_keys without backref to avoid conflicts
-    outbound_trip = db.relationship('BusTrip', foreign_keys=[trip_id])
-    return_trip = db.relationship('BusTrip', foreign_keys=[return_trip_id])
-    created_user = db.relationship('User', foreign_keys=[created_by])
 
 class BookingPayment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -227,7 +205,7 @@ def bus_tickets():
     companies = TransportCompany.query.filter_by(is_active=True).all()
     bus_types = BusType.query.filter_by(is_active=True).all()
     
-    # Get recent bookings for the table
+    # Get recent bookings for the table (with minimal fields now)
     recent_bookings = BusBooking.query.order_by(BusBooking.created_at.desc()).limit(10).all()
     
     return render_template('bus-tickets.html', 
@@ -456,57 +434,12 @@ def create_bus_booking():
         except ValueError:
             ticket_price = bus_schedule.price or 100
         
-        # Create booking record
+        # Create booking record with minimal fields
         booking = BusBooking()
         booking.booking_number = booking_number
-        booking.customer_id = customer.id
-        booking.trip_id = trip.id
-        booking.travel_date = travel_date
-        booking.seat_number = data.get('seatNumber', 'A1')  # Default seat
-        booking.is_round_trip = data.get('tripType') == 'round-trip'
-        booking.ticket_price = ticket_price
-        booking.discount_amount = 0
-        booking.total_amount = ticket_price
-        booking.payment_method = data.get('paymentType', 'cash')
         
-        # Calculate payment status
-        received_amount = 0
-        try:
-            received_amount_str = data.get('receivedAmount', '')
-            if received_amount_str and isinstance(received_amount_str, str) and received_amount_str.strip():
-                received_amount = float(received_amount_str)
-        except ValueError:
-            received_amount = 0
-        
-        if received_amount >= ticket_price:
-            booking.payment_status = 'paid'
-        elif received_amount > 0:
-            booking.payment_status = 'partial'
-        else:
-            booking.payment_status = 'pending'
-        
-        booking.booking_status = 'confirmed'
-        booking.notes = data.get('statement') or data.get('notes')
-        
-        # Store the current user if available
-        if current_user and current_user.is_authenticated:
-            booking.created_by = current_user.id
-        
+        # Add minimal booking to the database
         db.session.add(booking)
-        
-        # If payment was made, record the payment
-        if received_amount > 0:
-            payment = BookingPayment()
-            payment.booking_id = booking.id
-            payment.amount = received_amount
-            payment.payment_method = data.get('paymentType', 'cash')
-            payment.account = data.get('accountId', 'صندوق الشركة')
-            payment.notes = f"دفعة أولى - {booking.booking_number}"
-            
-            if current_user and current_user.is_authenticated:
-                payment.created_by = current_user.id
-                
-            db.session.add(payment)
         
         # Commit all changes
         db.session.commit()
