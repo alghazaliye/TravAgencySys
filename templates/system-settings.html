@@ -182,6 +182,40 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- إعدادات حقوق النشر والعنوان -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h5 class="mb-3">معلومات الشركة وحقوق النشر</h5>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="company_full_name">الاسم الكامل للشركة</label>
+                                <input type="text" class="form-control" id="company_full_name" name="company_full_name" 
+                                    value="{{ settings.company_full_name }}" placeholder="أدخل الاسم الكامل للشركة">
+                                <small class="form-text text-muted">الاسم الكامل للشركة كما سيظهر في التقارير والوثائق</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="company_license_number">رقم الترخيص</label>
+                                <input type="text" class="form-control" id="company_license_number" name="company_license_number" 
+                                    value="{{ settings.company_license_number }}" placeholder="أدخل رقم الترخيص">
+                                <small class="form-text text-muted">رقم ترخيص الشركة أو السجل التجاري</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="copyright_text">نص حقوق النشر</label>
+                                <input type="text" class="form-control" id="copyright_text" name="copyright_text" 
+                                    value="{{ settings.copyright_text }}" placeholder="أدخل نص حقوق النشر">
+                                <small class="form-text text-muted">النص الذي سيظهر في تذييل الصفحة مثل: © 2025 اسم الشركة. جميع الحقوق محفوظة.</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- إعدادات المظهر والألوان -->

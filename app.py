@@ -635,7 +635,17 @@ def before_request():
             'transitions': 'true',
             'copyright_text': '© 2025 وكالة السفر المتميزة. جميع الحقوق محفوظة.',
             'company_full_name': 'وكالة السفر المتميزة للسياحة والسفر',
-            'company_license_number': 'ت.س: 123456789'
+            'company_license_number': 'ت.س: 123456789',
+            'field_style': 'default',
+            'button_style': 'default',
+            'input_shadow': 'true',
+            'input_rounded': 'medium',
+            'table_style': 'bordered',
+            'table_hover': 'true',
+            'table_striped': 'true',
+            'icon_size': 'medium',
+            'icon_style': 'regular',
+            'icon_color_mode': 'auto'
         }
         
         # تهيئة قاموس الإعدادات
@@ -855,6 +865,65 @@ def system_settings():
             'value': 'true',
             'type': 'boolean',
             'description': 'تفعيل التأثيرات الحركية'
+        },
+        
+        # إعدادات الحقول والأزرار والجداول
+        'field_style': {
+            'value': 'default',
+            'type': 'select',
+            'description': 'نمط الحقول والمدخلات',
+            'options': 'default,flat,outline'
+        },
+        'button_style': {
+            'value': 'default',
+            'type': 'select',
+            'description': 'نمط الأزرار',
+            'options': 'default,flat,gradient,outline'
+        },
+        'input_shadow': {
+            'value': 'true',
+            'type': 'boolean',
+            'description': 'إضافة ظلال للحقول عند التركيز'
+        },
+        'input_rounded': {
+            'value': 'medium',
+            'type': 'select',
+            'description': 'مقدار انحناء حواف الحقول',
+            'options': 'none,small,medium,large,pill'
+        },
+        'table_style': {
+            'value': 'bordered',
+            'type': 'select',
+            'description': 'نمط الجداول',
+            'options': 'default,bordered,borderless,condensed'
+        },
+        'table_hover': {
+            'value': 'true',
+            'type': 'boolean',
+            'description': 'تأثير التلميح عند المرور على صفوف الجداول'
+        },
+        'table_striped': {
+            'value': 'true',
+            'type': 'boolean',
+            'description': 'لون الصفوف المتناوب في الجداول'
+        },
+        'icon_size': {
+            'value': 'medium',
+            'type': 'select',
+            'description': 'حجم الأيقونات',
+            'options': 'small,medium,large'
+        },
+        'icon_style': {
+            'value': 'regular',
+            'type': 'select',
+            'description': 'نمط الأيقونات',
+            'options': 'regular,solid,light,duotone'
+        },
+        'icon_color_mode': {
+            'value': 'auto',
+            'type': 'select',
+            'description': 'وضع لون الأيقونات',
+            'options': 'auto,custom,inherit'
         },
         
         # إعدادات مالية
