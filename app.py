@@ -291,43 +291,231 @@ def create_bus_booking():
     try:
         # Get form data
         data = request.form
+        logging.debug(f"Received booking data: {data}")
         
-        # Create customer record
-        customer = Customer(
-            full_name=data.get('passengerName'),
-            mobile=data.get('mobileNumber'),
-            id_type=data.get('idType'),
-            id_number=data.get('idNumber'),
-            nationality=data.get('nationality'),
-            birth_date=data.get('birthDate'),
-            gender=data.get('gender'),
-            id_issue_date=data.get('issueDate'),
-            id_issue_place=data.get('issuePlace'),
-            notes=data.get('notes')
-        )
-        db.session.add(customer)
-        db.session.flush()  # Get customer ID
+        # Basic validation
+        required_fields = ['passengerName', 'sellPrice']
         
-        # Create booking
-        booking = BusBooking(
-            booking_number=f"BUS-{Customer.query.count() + 1:06d}",
-            customer_id=customer.id,
-            travel_date=data.get('reservationDate'),
-            is_round_trip=data.get('tripType') == 'round-trip',
-            ticket_price=float(data.get('sellPrice', 0)),
-            total_amount=float(data.get('sellPrice', 0)),
-            payment_method=data.get('paymentType'),
-            payment_status='paid' if data.get('receivedAmount') == data.get('sellPrice') else 'partial',
-            notes=data.get('statement')
-        )
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({
+                    'success': False, 
+                    'error': f'الحقل المطلوب {field} غير موجود'
+                }), 400
+        
+        # Check if customer already exists by ID number
+        id_number = data.get('idNumber')
+        existing_customer = None
+        
+        if id_number:
+            existing_customer = Customer.query.filter_by(id_number=id_number).first()
+        
+        if existing_customer:
+            customer = existing_customer
+            # Update customer information if provided
+            if data.get('passengerName'):
+                customer.full_name = data.get('passengerName')
+            if data.get('mobileNumber'):
+                customer.mobile = data.get('mobileNumber')
+            if data.get('nationality'):
+                customer.nationality = data.get('nationality')
+            # Add more field updates as needed
+        else:
+            # Parse date fields properly
+            birth_date = None
+            issue_date = None
+            
+            try:
+                if data.get('birthDate'):
+                    birth_date = datetime.strptime(data.get('birthDate'), '%d  %B , %Y').date()
+            except ValueError:
+                logging.warning(f"Invalid birth date format: {data.get('birthDate')}")
+            
+            try:
+                if data.get('issueDate'):
+                    issue_date = datetime.strptime(data.get('issueDate'), '%d  %B , %Y').date()
+            except ValueError:
+                logging.warning(f"Invalid issue date format: {data.get('issueDate')}")
+            
+            # Create new customer record
+            customer = Customer()
+            customer.full_name = data.get('passengerName')
+            customer.mobile = data.get('mobileNumber')
+            customer.id_type = data.get('idType')
+            customer.id_number = id_number
+            customer.nationality = data.get('nationality')
+            customer.birth_date = birth_date
+            customer.gender = data.get('gender')
+            customer.id_issue_date = issue_date
+            customer.id_issue_place = data.get('issuePlace')
+            customer.notes = data.get('notes')
+            
+            db.session.add(customer)
+        
+        # Find or create bus trip
+        departure_city_id = None
+        destination_city_id = None
+        
+        # Convert city name to ID
+        departure_city_name = data.get('departureCity')
+        destination_city_name = data.get('destinationCity')
+        
+        if departure_city_name:
+            departure_city = City.query.filter_by(name=departure_city_name).first()
+            if not departure_city:
+                # Try to find by value instead of name
+                cities = City.query.all()
+                for city in cities:
+                    if city.id == int(departure_city_name) if departure_city_name.isdigit() else False:
+                        departure_city = city
+                        break
+            
+            if departure_city:
+                departure_city_id = departure_city.id
+        
+        if destination_city_name:
+            destination_city = City.query.filter_by(name=destination_city_name).first()
+            if not destination_city:
+                # Try to find by value instead of name
+                cities = City.query.all()
+                for city in cities:
+                    if city.id == int(destination_city_name) if destination_city_name.isdigit() else False:
+                        destination_city = city
+                        break
+            
+            if destination_city:
+                destination_city_id = destination_city.id
+        
+        # Find bus route based on departure and destination
+        bus_route = None
+        if departure_city_id and destination_city_id:
+            bus_route = BusRoute.query.filter_by(
+                departure_city_id=departure_city_id,
+                destination_city_id=destination_city_id
+            ).first()
+        
+        if not bus_route:
+            # Just use the first route as a fallback for testing
+            bus_route = BusRoute.query.first()
+            if not bus_route:
+                return jsonify({
+                    'success': False,
+                    'error': 'لا توجد مسارات باص متاحة. يرجى إضافة مسارات أولاً.'
+                }), 400
+        
+        # Find a bus schedule for this route
+        bus_schedule = BusSchedule.query.filter_by(route_id=bus_route.id).first()
+        if not bus_schedule:
+            return jsonify({
+                'success': False,
+                'error': 'لا توجد جداول زمنية متاحة لهذا المسار.'
+            }), 400
+        
+        # Parse reservation date
+        travel_date = None
+        try:
+            if data.get('reservationDate'):
+                travel_date = datetime.strptime(data.get('reservationDate'), '%d  %B , %Y').date()
+                # If parsing fails, use today's date
+                if not travel_date:
+                    travel_date = date.today()
+        except ValueError:
+            logging.warning(f"Invalid reservation date format: {data.get('reservationDate')}")
+            travel_date = date.today()
+        
+        # Create or find a trip for this schedule on the given date
+        trip = BusTrip.query.filter_by(
+            schedule_id=bus_schedule.id,
+            trip_date=travel_date
+        ).first()
+        
+        if not trip:
+            # Create a new trip
+            trip = BusTrip()
+            trip.schedule_id = bus_schedule.id
+            trip.trip_date = travel_date
+            trip.bus_number = f"BUS-{bus_schedule.id}-{travel_date.strftime('%Y%m%d')}"
+            trip.available_seats = bus_schedule.bus_type.seat_capacity if bus_schedule.bus_type else 45
+            trip.status = 'scheduled'
+            
+            db.session.add(trip)
+        
+        # Create a unique booking number
+        booking_count = BusBooking.query.count()
+        booking_number = f"BUS-{booking_count + 1:06d}"
+        
+        # Get ticket price from form or use schedule price
+        ticket_price = 0
+        try:
+            ticket_price = float(data.get('sellPrice', 0))
+        except ValueError:
+            ticket_price = bus_schedule.price or 100
+        
+        # Create booking record
+        booking = BusBooking()
+        booking.booking_number = booking_number
+        booking.customer_id = customer.id
+        booking.trip_id = trip.id
+        booking.travel_date = travel_date
+        booking.seat_number = data.get('seatNumber', 'A1')  # Default seat
+        booking.is_round_trip = data.get('tripType') == 'round-trip'
+        booking.ticket_price = ticket_price
+        booking.discount_amount = 0
+        booking.total_amount = ticket_price
+        booking.payment_method = data.get('paymentType', 'cash')
+        
+        # Calculate payment status
+        received_amount = 0
+        try:
+            if data.get('receivedAmount'):
+                received_amount = float(data.get('receivedAmount'))
+        except ValueError:
+            received_amount = 0
+        
+        if received_amount >= ticket_price:
+            booking.payment_status = 'paid'
+        elif received_amount > 0:
+            booking.payment_status = 'partial'
+        else:
+            booking.payment_status = 'pending'
+        
+        booking.booking_status = 'confirmed'
+        booking.notes = data.get('statement') or data.get('notes')
+        
+        # Store the current user if available
+        if current_user and current_user.is_authenticated:
+            booking.created_by = current_user.id
+        
         db.session.add(booking)
+        
+        # If payment was made, record the payment
+        if received_amount > 0:
+            payment = BookingPayment()
+            payment.booking_id = booking.id
+            payment.amount = received_amount
+            payment.payment_method = data.get('paymentType', 'cash')
+            payment.account = data.get('accountId', 'صندوق الشركة')
+            payment.notes = f"دفعة أولى - {booking.booking_number}"
+            
+            if current_user and current_user.is_authenticated:
+                payment.created_by = current_user.id
+                
+            db.session.add(payment)
+        
+        # Commit all changes
         db.session.commit()
         
-        return jsonify({'success': True, 'booking_id': booking.id, 'booking_number': booking.booking_number})
+        return jsonify({
+            'success': True, 
+            'booking_id': booking.id, 
+            'booking_number': booking.booking_number
+        })
     
     except Exception as e:
         db.session.rollback()
         logging.error(f"Error creating booking: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/bus-tickets-new')

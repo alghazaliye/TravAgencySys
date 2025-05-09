@@ -169,11 +169,73 @@ $(function () {
         // بدء العملية
         showFormProcessing();
         
-        // محاكاة طلب حفظ البيانات (سيتم استبدالها بطلب AJAX في التطبيق الحقيقي)
-        setTimeout(function() {
-            hideFormProcessing();
-            showBookingConfirmation();
-        }, 1500);
+        // جمع البيانات من النموذج
+        var formData = {
+            passengerName: $('#passengerName').val(),
+            mobileNumber: $('#mobileNumber').val(),
+            birthPlace: $('#birthPlace').val(),
+            birthDate: $('#birthDate').val(),
+            gender: $('#gender').val(),
+            idType: $('#idType').val(),
+            idNumber: $('#idNumber').val(),
+            nationality: $('#nationality').val(),
+            issueDate: $('#issueDate').val(),
+            issuePlace: $('#issuePlace').val(),
+            busType: $('input[name="busType"]:checked').val(),
+            departureCity: $('#departureCity').val(),
+            destinationCity: $('#destinationCity').val(),
+            transportCompany: $('#transportCompany').val(),
+            tripType: $('#tripType').val(),
+            reservationDate: $('#reservationDate').val(),
+            purpose: $('#purpose').val(),
+            notes: $('#notes').val(),
+            transactionDate: $('#transactionDate').val(),
+            paymentType: $('#paymentType').val(),
+            sellPrice: $('#sellPrice').val(),
+            receivedAmount: $('#receivedAmount').val(),
+            remainingAmount: $('#remainingAmount').val(),
+            accountId: $('#accountId').val(),
+            statement: $('#statement').val(),
+            supplierId: $('#supplierId').val(),
+            purchasePrice: $('#purchasePrice').val()
+        };
+        
+        // إرسال البيانات إلى الخادم باستخدام AJAX
+        $.ajax({
+            type: 'POST',
+            url: '/api/create-bus-booking',
+            data: formData,
+            success: function(response) {
+                hideFormProcessing();
+                if (response.success) {
+                    // نجاح عملية الحفظ
+                    showBookingConfirmation(response.booking_number);
+                    
+                    // إعادة تحميل الصفحة بعد 2 ثانية لتحديث قائمة الحجوزات
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 2000);
+                } else {
+                    // فشل عملية الحفظ
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'خطأ!',
+                        text: 'حدث خطأ أثناء حفظ الحجز: ' + response.error,
+                        confirmButtonText: 'حسناً'
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                hideFormProcessing();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'خطأ!',
+                    text: 'حدث خطأ في الاتصال بالخادم. يرجى المحاولة مرة أخرى.',
+                    confirmButtonText: 'حسناً'
+                });
+                console.error(error);
+            }
+        });
     });
 });
 
