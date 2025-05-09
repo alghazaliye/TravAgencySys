@@ -163,8 +163,8 @@ $(function () {
     $('#paymentType').on('change', function() {
         var paymentType = $(this).val();
         
-        // إظهار حقل المبلغ الواصل فقط عند اختيار "نقد"
-        if (paymentType === 'cash') {
+        // إظهار حقل المبلغ الواصل عند اختيار "نقد" أو "تحويل بنكي"
+        if (paymentType === 'cash' || paymentType === 'bank-transfer') {
             $('#receivedAmountContainer').show();
         } else {
             $('#receivedAmountContainer').hide();
