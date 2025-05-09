@@ -632,7 +632,10 @@ def before_request():
             'sidebar_mini': 'false',
             'card_shadow': 'medium',
             'border_radius': 'medium',
-            'transitions': 'true'
+            'transitions': 'true',
+            'copyright_text': '© 2025 وكالة السفر المتميزة. جميع الحقوق محفوظة.',
+            'company_full_name': 'وكالة السفر المتميزة للسياحة والسفر',
+            'company_license_number': 'ت.س: 123456789'
         }
         
         # تهيئة قاموس الإعدادات
