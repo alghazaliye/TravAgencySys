@@ -140,6 +140,9 @@ toastr.options = {
 
 <script>
 $(document).ready(function() {
+    // استرجاع القيم المحفوظة
+    loadSavedFormValues();
+    
     // إظهار/إخفاء حقل تاريخ العودة حسب نوع الرحلة
     $('input[name="journeyType"]').on('change', function() {
         if ($('#journeyTypeRoundTrip').is(':checked')) {
@@ -305,6 +308,12 @@ $(document).ready(function() {
                             text: 'تم حفظ الحجز برقم: ' + response.booking_number,
                             confirmButtonText: 'تم'
                         }).then(function() {
+                            // مسح البيانات المحفوظة بعد نجاح الحجز
+                            sessionStorage.removeItem('busBookingSellPrice');
+                            sessionStorage.removeItem('busBookingPurchasePrice');
+                            sessionStorage.removeItem('busBookingReceivedAmount');
+                            sessionStorage.removeItem('busBookingCurrency');
+                            
                             window.location.href = '/bus-tickets';
                         });
                     } else {
@@ -393,6 +402,12 @@ $(document).ready(function() {
             cancelButtonText: 'لا، تراجع'
         }).then((result) => {
             if (result.isConfirmed) {
+                // مسح البيانات المحفوظة عند إلغاء الحجز
+                sessionStorage.removeItem('busBookingSellPrice');
+                sessionStorage.removeItem('busBookingPurchasePrice');
+                sessionStorage.removeItem('busBookingReceivedAmount');
+                sessionStorage.removeItem('busBookingCurrency');
+                
                 window.location.href = '/bus-tickets';
             }
         });
@@ -434,11 +449,47 @@ $(document).ready(function() {
                 $('.is-invalid').removeClass('is-invalid');
                 $('.invalid-feedback').remove();
                 
+                // مسح البيانات المحفوظة في sessionStorage
+                sessionStorage.removeItem('busBookingSellPrice');
+                sessionStorage.removeItem('busBookingPurchasePrice');
+                sessionStorage.removeItem('busBookingReceivedAmount');
+                sessionStorage.removeItem('busBookingCurrency');
+                
                 // عرض رسالة نجاح
                 toastr.success('تم إعادة تعيين النموذج بنجاح');
             }
         });
     });
+    
+    // استرجاع القيم المحفوظة من sessionStorage
+    function loadSavedFormValues() {
+        // استرجاع القيم
+        var sellPrice = sessionStorage.getItem('busBookingSellPrice');
+        var purchasePrice = sessionStorage.getItem('busBookingPurchasePrice');
+        var receivedAmount = sessionStorage.getItem('busBookingReceivedAmount');
+        var currencyCode = sessionStorage.getItem('busBookingCurrency');
+        
+        // وضع القيم في الحقول المناسبة إذا كانت موجودة
+        if (sellPrice) {
+            $('#sellPrice').val(sellPrice);
+        }
+        
+        if (purchasePrice) {
+            $('#purchasePrice').val(purchasePrice);
+        }
+        
+        if (receivedAmount) {
+            $('#receivedAmount').val(receivedAmount);
+        }
+        
+        if (currencyCode) {
+            $('#currency').val(currencyCode).trigger('change');
+        }
+        
+        // تحديث النصوص والمبالغ المكتوبة بالكلمات
+        updatePriceInWords();
+        calculateRemainingAmount();
+    }
     
     // تهيئة محددات التاريخ
     $('.datetimepicker-input').datetimepicker({
