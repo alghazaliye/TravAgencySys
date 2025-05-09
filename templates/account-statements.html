@@ -43,11 +43,8 @@
                                 <label for="accountType">نوع الحساب</label>
                                 <select class="form-control" id="accountType" required>
                                     <option value="">اختر نوع الحساب</option>
-                                    <option value="customer">العملاء</option>
-                                    <option value="supplier">الموردين</option>
-                                    <option value="employee">الموظفين</option>
                                     <option value="bank">البنوك</option>
-                                    <option value="cashbox">الصناديق</option>
+                                    <option value="cash">الصناديق</option>
                                 </select>
                             </div>
                         </div>
@@ -296,6 +293,9 @@
     document.addEventListener('DOMContentLoaded', function() {
         // تهيئة مكونات واجهة المستخدم
         initializeUI();
+        
+        // عندما تكون الصفحة جاهزة، قم بتحميل الحسابات
+        loadAccounts();
         
         // معالجة تغيير نوع الحساب
         document.getElementById('accountType').addEventListener('change', function() {

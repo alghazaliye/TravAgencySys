@@ -1400,9 +1400,9 @@ def account_statements():
     for bank in bank_accounts:
         accounts.append({
             'id': bank.id,
-            'name': bank.name,
+            'name': bank.bank_name,
             'type': 'bank',
-            'balance': bank.balance
+            'balance': bank.current_balance
         })
     
     for cash in cash_registers:
@@ -1519,12 +1519,16 @@ def api_account_transactions():
             'other_party': other_party_name
         })
     
+    # اختيار الاسم والرصيد بناءً على نوع الحساب
+    account_name = account.bank_name if account_type == 'bank' else account.name
+    account_balance = account.current_balance if account_type == 'bank' else account.balance
+    
     return jsonify({
         'success': True,
         'account': {
-            'name': account.name,
+            'name': account_name,
             'type': account_type,
-            'balance': account.balance
+            'balance': account_balance
         },
         'transactions': result
     })
