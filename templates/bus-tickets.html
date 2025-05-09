@@ -337,9 +337,7 @@
                                 <label for="account">الحساب <span class="text-danger">*</span></label>
                                 <select class="form-control select2" id="account" name="accountId" style="width: 100%;" required>
                                     <option value="">اختر الحساب</option>
-                                    <option value="cash_1">الصندوق</option>
-                                    <option value="bank_1">البنك</option>
-                                    <option value="client_1">عميل</option>
+                                    <!-- سيتم تحديث هذه الخيارات ديناميكياً حسب طريقة الدفع -->
                                 </select>
                             </div>
                         </div>
@@ -551,21 +549,31 @@
             </ul>
         </div>
     </div>
-    {% endif %}>
-        <!-- نظرة عامة -->
+    {% endif %}
+
+        <!-- نظرة عامة والمخططات -->
         <div class="row">
-            <div class="col-lg-3 col-6">
-                <div class="small-box bg-info">
-                    <div class="inner">
-                        <h3>150</h3>
-                        <p>حجوزات هذا الشهر</p>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-line ml-1"></i>
+                            إحصائيات الحجوزات
+                        </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="icon">
-                        <i class="fas fa-bus"></i>
+                    <div class="card-body">
+                        <div class="chart" style="position: relative; height:300px;">
+                            <canvas id="bookingsChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-6">
+            <div class="col-md-4">
                 <div class="small-box bg-success">
                     <div class="inner">
                         <h3>53<sup style="font-size: 20px">%</sup></h3>
@@ -1427,4 +1435,7 @@ $(document).ready(function() {
     }
 });
 </script>
+
+<!-- إضافة ملف JavaScript المخصص لصفحة حجز تذاكر الباص -->
+<script src="{{ url_for('static', filename='js/pages/bus-tickets.js') }}"></script>
 {% endblock %}
