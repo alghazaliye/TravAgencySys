@@ -1,7 +1,7 @@
 import os
 import logging
 from datetime import datetime, date
-from flask import Flask, render_template, request, jsonify, flash, redirect, url_for
+from flask import Flask, render_template, request, jsonify, flash, redirect, url_for, g
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, current_user, login_user, logout_user, login_required
 
@@ -558,6 +558,30 @@ def employees():
 @app.route('/account-statements')
 def account_statements():
     return render_template('account-statements.html')
+
+# تعديل before_request لإضافة إعدادات النظام لجميع القوالب
+
+@app.before_request
+def before_request():
+    # تجنب تنفيذ هذا الكود للطلبات الخاصة بالملفات الثابتة
+    if not request.path.startswith('/static/'):
+        # استرجاع إعدادات النظام الأساسية
+        g.settings = {
+            'system_name': SystemSettings.get_value('system_name', 'وكالة السفر المتميزة'),
+            'system_slogan': SystemSettings.get_value('system_slogan', 'للسفر والسياحة والخدمات'),
+            'primary_color': SystemSettings.get_value('primary_color', '#4e73df'),
+            'secondary_color': SystemSettings.get_value('secondary_color', '#1cc88a'),
+            'logo_icon': SystemSettings.get_value('logo_icon', 'fas fa-plane-departure'),
+            'dashboard_title': SystemSettings.get_value('dashboard_title', 'نظام إدارة وكالة السياحة والسفر'),
+            'default_currency': SystemSettings.get_value('default_currency', 'SAR')
+        }
+
+# استخدام context_processor لإتاحة الإعدادات في جميع القوالب
+@app.context_processor
+def inject_settings():
+    if hasattr(g, 'settings'):
+        return {'settings': g.settings}
+    return {'settings': {}}
 
 @app.route('/system-settings', methods=['GET', 'POST'])
 def system_settings():
