@@ -58,9 +58,6 @@ class Customer(db.Model):
     notes = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
-    # Relationships
-    bookings = db.relationship('BusBooking', backref='customer', lazy=True)
 
 class TransportCompany(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -148,14 +145,43 @@ class BusTrip(db.Model):
     notes = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
-    # Relationships - without backref to avoid conflicts
-    bookings = db.relationship('BusBooking', foreign_keys='BusBooking.trip_id', lazy=True)
-    return_bookings = db.relationship('BusBooking', foreign_keys='BusBooking.return_trip_id', lazy=True)
 
 class BusBooking(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     booking_number = db.Column(db.String(20), unique=True, nullable=False)
+    
+    # بيانات المسافر - القسم الأول
+    passenger_name = db.Column(db.String(150), nullable=False)  # اسم المسافر (إجباري)
+    mobile_number = db.Column(db.String(20))  # رقم الهاتف (اختياري)
+    id_type = db.Column(db.String(20))  # نوع الهوية
+    id_number = db.Column(db.String(30))  # رقم الهوية
+    id_issue_date = db.Column(db.Date)  # تاريخ إصدار الهوية
+    id_issue_place = db.Column(db.String(100))  # مكان إصدار الهوية
+    birth_date = db.Column(db.Date)  # تاريخ الميلاد
+    gender = db.Column(db.String(10))  # الجنس (ذكر/أنثى)
+    nationality = db.Column(db.String(50))  # الجنسية
+    
+    # بيانات الحجز - القسم الثاني
+    trip_type = db.Column(db.String(20))  # نوع الرحلة (عادي/سياحي)
+    departure_city = db.Column(db.String(100))  # مدينة المغادرة
+    destination_city = db.Column(db.String(100))  # مدينة الوصول
+    service_provider = db.Column(db.String(100))  # مزود الخدمة
+    journey_type = db.Column(db.String(20))  # نوع الرحلة (ذهاب/ذهاب وعودة)
+    travel_date = db.Column(db.Date)  # تاريخ السفر
+    return_date = db.Column(db.Date)  # تاريخ العودة (في حالة الذهاب والعودة)
+    
+    # البيانات المالية - القسم الثالث
+    transaction_date = db.Column(db.DateTime, default=datetime.utcnow)  # تاريخ ووقت العملية
+    currency = db.Column(db.String(10), default="SAR")  # العملة
+    selling_price = db.Column(db.Float)  # سعر البيع الإجمالي
+    cost_price = db.Column(db.Float)  # سعر التكلفة الإجمالي
+    payment_type = db.Column(db.String(20))  # نوع التوصيل المالي (نقد/أجل/تحويل بنكي)
+    account = db.Column(db.String(50))  # الحساب (صندوق/عميل/بنك)
+    received_amount = db.Column(db.Float, default=0)  # المبلغ الواصل
+    remaining_amount = db.Column(db.Float, default=0)  # المبلغ المتبقي
+    statement = db.Column(db.Text)  # البيان
+    
+    # بيانات النظام
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -281,164 +307,107 @@ def create_bus_booking():
                     'error': f'الحقل المطلوب {field} غير موجود'
                 }), 400
         
-        # Check if customer already exists by ID number
-        id_number = data.get('idNumber')
-        existing_customer = None
-        
-        if id_number:
-            existing_customer = Customer.query.filter_by(id_number=id_number).first()
-        
-        if existing_customer:
-            customer = existing_customer
-            # Update customer information if provided
-            if data.get('passengerName'):
-                customer.full_name = data.get('passengerName')
-            if data.get('mobileNumber'):
-                customer.mobile = data.get('mobileNumber')
-            if data.get('nationality'):
-                customer.nationality = data.get('nationality')
-            # Add more field updates as needed
-        else:
-            # Parse date fields properly
-            birth_date = None
-            issue_date = None
-            
-            try:
-                birth_date_str = data.get('birthDate', '')
-                if birth_date_str and isinstance(birth_date_str, str) and birth_date_str.strip():
-                    birth_date = datetime.strptime(birth_date_str, '%d  %B , %Y').date()
-            except ValueError:
-                logging.warning(f"Invalid birth date format: {data.get('birthDate')}")
-            
-            try:
-                issue_date_str = data.get('issueDate', '')
-                if issue_date_str and isinstance(issue_date_str, str) and issue_date_str.strip():
-                    issue_date = datetime.strptime(issue_date_str, '%d  %B , %Y').date()
-            except ValueError:
-                logging.warning(f"Invalid issue date format: {data.get('issueDate')}")
-            
-            # Create new customer record
-            customer = Customer()
-            customer.full_name = data.get('passengerName')
-            customer.mobile = data.get('mobileNumber')
-            customer.id_type = data.get('idType')
-            customer.id_number = id_number
-            customer.nationality = data.get('nationality')
-            customer.birth_date = birth_date
-            customer.gender = data.get('gender')
-            customer.id_issue_date = issue_date
-            customer.id_issue_place = data.get('issuePlace')
-            customer.notes = data.get('notes')
-            
-            db.session.add(customer)
-        
-        # Find or create bus trip
-        departure_city_id = None
-        destination_city_id = None
-        
-        # Convert city name to ID
-        departure_city_name = data.get('departureCity')
-        destination_city_name = data.get('destinationCity')
-        
-        if departure_city_name:
-            departure_city = City.query.filter_by(name=departure_city_name).first()
-            if not departure_city:
-                # Try to find by value instead of name
-                cities = City.query.all()
-                for city in cities:
-                    if city.id == int(departure_city_name) if departure_city_name.isdigit() else False:
-                        departure_city = city
-                        break
-            
-            if departure_city:
-                departure_city_id = departure_city.id
-        
-        if destination_city_name:
-            destination_city = City.query.filter_by(name=destination_city_name).first()
-            if not destination_city:
-                # Try to find by value instead of name
-                cities = City.query.all()
-                for city in cities:
-                    if city.id == int(destination_city_name) if destination_city_name.isdigit() else False:
-                        destination_city = city
-                        break
-            
-            if destination_city:
-                destination_city_id = destination_city.id
-        
-        # Find bus route based on departure and destination
-        bus_route = None
-        if departure_city_id and destination_city_id:
-            bus_route = BusRoute.query.filter_by(
-                departure_city_id=departure_city_id,
-                destination_city_id=destination_city_id
-            ).first()
-        
-        if not bus_route:
-            # Just use the first route as a fallback for testing
-            bus_route = BusRoute.query.first()
-            if not bus_route:
-                return jsonify({
-                    'success': False,
-                    'error': 'لا توجد مسارات باص متاحة. يرجى إضافة مسارات أولاً.'
-                }), 400
-        
-        # Find a bus schedule for this route
-        bus_schedule = BusSchedule.query.filter_by(route_id=bus_route.id).first()
-        if not bus_schedule:
-            return jsonify({
-                'success': False,
-                'error': 'لا توجد جداول زمنية متاحة لهذا المسار.'
-            }), 400
-        
-        # Parse reservation date
-        travel_date = None
-        try:
-            reservation_date_str = data.get('reservationDate', '')
-            if reservation_date_str and isinstance(reservation_date_str, str) and reservation_date_str.strip():
-                travel_date = datetime.strptime(reservation_date_str, '%d  %B , %Y').date()
-                # If parsing fails, use today's date
-                if not travel_date:
-                    travel_date = date.today()
-            else:
-                travel_date = date.today()
-        except ValueError:
-            logging.warning(f"Invalid reservation date format: {data.get('reservationDate')}")
-            travel_date = date.today()
-        
-        # Create or find a trip for this schedule on the given date
-        trip = BusTrip.query.filter_by(
-            schedule_id=bus_schedule.id,
-            trip_date=travel_date
-        ).first()
-        
-        if not trip:
-            # Create a new trip
-            trip = BusTrip()
-            trip.schedule_id = bus_schedule.id
-            trip.trip_date = travel_date
-            trip.bus_number = f"BUS-{bus_schedule.id}-{travel_date.strftime('%Y%m%d')}"
-            trip.available_seats = bus_schedule.bus_type.seat_capacity if bus_schedule.bus_type else 45
-            trip.status = 'scheduled'
-            
-            db.session.add(trip)
-        
         # Create a unique booking number
         booking_count = BusBooking.query.count()
         booking_number = f"BUS-{booking_count + 1:06d}"
         
-        # Get ticket price from form or use schedule price
-        ticket_price = 0
-        try:
-            ticket_price = float(data.get('sellPrice', 0))
-        except ValueError:
-            ticket_price = bus_schedule.price or 100
-        
-        # Create booking record with minimal fields
+        # Create booking record with all fields based on the form data
         booking = BusBooking()
         booking.booking_number = booking_number
         
-        # Add minimal booking to the database
+        # بيانات المسافر - القسم الأول
+        booking.passenger_name = data.get('passengerName', '')
+        booking.mobile_number = data.get('mobileNumber', '')
+        booking.id_type = data.get('idType', '')
+        booking.id_number = data.get('idNumber', '')
+        
+        # معالجة التواريخ
+        try:
+            birth_date_str = data.get('birthDate', '')
+            if birth_date_str and birth_date_str.strip():
+                booking.birth_date = datetime.strptime(birth_date_str, '%d  %B , %Y').date()
+        except ValueError:
+            logging.warning(f"Invalid birth date format: {data.get('birthDate')}")
+        
+        try:
+            id_issue_date_str = data.get('issueDate', '')
+            if id_issue_date_str and id_issue_date_str.strip():
+                booking.id_issue_date = datetime.strptime(id_issue_date_str, '%d  %B , %Y').date()
+        except ValueError:
+            logging.warning(f"Invalid issue date format: {data.get('issueDate')}")
+            
+        booking.id_issue_place = data.get('issuePlace', '')
+        booking.gender = data.get('gender', '')
+        booking.nationality = data.get('nationality', '')
+        
+        # بيانات الحجز - القسم الثاني
+        booking.trip_type = data.get('tripType', '')
+        booking.departure_city = data.get('departureCity', '')
+        booking.destination_city = data.get('destinationCity', '')
+        booking.service_provider = data.get('supplierId', '')
+        booking.journey_type = 'round-trip' if data.get('tripTypeRoundTrip') == 'on' else 'one-way'
+        
+        try:
+            reservation_date_str = data.get('reservationDate', '')
+            if reservation_date_str and reservation_date_str.strip():
+                booking.travel_date = datetime.strptime(reservation_date_str, '%d  %B , %Y').date()
+        except ValueError:
+            logging.warning(f"Invalid reservation date format: {data.get('reservationDate')}")
+            booking.travel_date = date.today()
+        
+        try:
+            return_date_str = data.get('returnDate', '')
+            if return_date_str and return_date_str.strip():
+                booking.return_date = datetime.strptime(return_date_str, '%d  %B , %Y').date()
+        except ValueError:
+            logging.warning(f"Invalid return date format: {data.get('returnDate')}")
+        
+        # البيانات المالية - القسم الثالث
+        try:
+            transaction_date_str = data.get('transactionDate', '')
+            if transaction_date_str and transaction_date_str.strip():
+                booking.transaction_date = datetime.strptime(transaction_date_str, '%d  %B , %Y').date()
+        except ValueError:
+            logging.warning(f"Invalid transaction date format: {data.get('transactionDate')}")
+            booking.transaction_date = datetime.utcnow()
+            
+        booking.currency = data.get('currency', 'SAR')
+        
+        try:
+            booking.selling_price = float(data.get('sellPrice', 0))
+        except ValueError:
+            booking.selling_price = 0
+            
+        try:
+            booking.cost_price = float(data.get('purchasePrice', 0))
+        except ValueError:
+            booking.cost_price = 0
+        
+        booking.payment_type = data.get('paymentType', '')
+        booking.account = data.get('accountId', '')
+        
+        try:
+            booking.received_amount = float(data.get('receivedAmount', 0))
+        except ValueError:
+            booking.received_amount = 0
+            
+        try:
+            booking.remaining_amount = float(data.get('remainingAmount', 0))
+        except ValueError:
+            # حساب المبلغ المتبقي تلقائياً
+            booking.remaining_amount = max(0, booking.selling_price - booking.received_amount)
+        
+        # إنشاء البيان التلقائي
+        statement = data.get('statement', '')
+        if not statement:
+            departure_city = booking.departure_city
+            destination_city = booking.destination_city
+            passenger_name = booking.passenger_name
+            statement = f"حجز تذكرة من {departure_city} إلى {destination_city} للمسافر {passenger_name}"
+        
+        booking.statement = statement
+        
+        # Add booking to the database
         db.session.add(booking)
         
         # Commit all changes
