@@ -154,10 +154,8 @@ class BusBooking(db.Model):
     passenger_name = db.Column(db.String(150), nullable=False)  # اسم المسافر (إجباري)
     mobile_number = db.Column(db.String(20))  # رقم الهاتف (اختياري)
     id_number = db.Column(db.String(30))  # رقم الهوية
-    id_issue_place = db.Column(db.String(100))  # مكان إصدار الهوية
     birth_date = db.Column(db.Date)  # تاريخ الميلاد
     gender = db.Column(db.String(10))  # الجنس (ذكر/أنثى)
-    nationality = db.Column(db.String(50))  # الجنسية
     
     # بيانات الحجز - القسم الثاني
     trip_type = db.Column(db.String(20))  # نوع الرحلة (عادي/سياحي)
@@ -326,16 +324,7 @@ def create_bus_booking():
         except ValueError:
             logging.warning(f"Invalid birth date format: {data.get('birthDate')}")
         
-        try:
-            id_issue_date_str = data.get('issueDate', '')
-            if id_issue_date_str and id_issue_date_str.strip():
-                booking.id_issue_date = datetime.strptime(id_issue_date_str, '%d  %B , %Y').date()
-        except ValueError:
-            logging.warning(f"Invalid issue date format: {data.get('issueDate')}")
-            
-        booking.id_issue_place = data.get('issuePlace', '')
         booking.gender = data.get('gender', '')
-        booking.nationality = data.get('nationality', '')
         
         # بيانات الحجز - القسم الثاني
         booking.trip_type = data.get('tripType', '')
