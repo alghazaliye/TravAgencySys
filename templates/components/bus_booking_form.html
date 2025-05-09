@@ -121,6 +121,17 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
+                    <label for="busType">نوع الباص <span class="text-danger">*</span></label>
+                    <select class="form-control select2" id="busType" required>
+                        <option value="">اختر نوع الباص</option>
+                        <option value="عادي">عادي</option>
+                        <option value="سياحي">سياحي</option>
+                        <option value="VIP">VIP</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
                     <label>نوع الرحلة <span class="text-danger">*</span></label>
                     <div class="d-flex">
                         <div class="custom-control custom-radio ml-4">
@@ -132,21 +143,6 @@
                             <label class="custom-control-label" for="tripTypeRoundTrip">ذهاب وعودة</label>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="purpose">الغرض من الرحلة</label>
-                    <select class="form-control select2" id="purpose">
-                        <option value="">اختر الغرض</option>
-                        <option value="زيارة">زيارة</option>
-                        <option value="عمل">عمل</option>
-                        <option value="عمرة">عمرة</option>
-                        <option value="سياحة">سياحة</option>
-                        <option value="دراسة">دراسة</option>
-                        <option value="علاج">علاج</option>
-                        <option value="أخرى">أخرى</option>
-                    </select>
                 </div>
             </div>
         </div>
@@ -175,6 +171,24 @@
                         <option value="مكة المكرمة">مكة المكرمة</option>
                         <option value="المدينة المنورة">المدينة المنورة</option>
                         <option value="الدمام">الدمام</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="purpose">الغرض من الرحلة</label>
+                    <select class="form-control select2" id="purpose">
+                        <option value="">اختر الغرض</option>
+                        <option value="زيارة">زيارة</option>
+                        <option value="عمل">عمل</option>
+                        <option value="عمرة">عمرة</option>
+                        <option value="سياحة">سياحة</option>
+                        <option value="دراسة">دراسة</option>
+                        <option value="علاج">علاج</option>
+                        <option value="أخرى">أخرى</option>
                     </select>
                 </div>
             </div>
