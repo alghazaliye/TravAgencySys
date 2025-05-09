@@ -265,6 +265,20 @@ function getCurrencySymbol(currencyCode) {
  * تهيئة أحداث النقر على الأزرار
  */
 function setupButtonEvents() {
+    // زر إظهار نموذج الحجز الجديد
+    $('#show-booking-form').on('click', function() {
+        console.log('عرض نموذج الحجز');
+        $('#booking-form-container').fadeIn();
+        // تحديث حقل تاريخ ووقت العملية بالتاريخ والوقت الحالي
+        setCurrentDateTimeToTransactionDate();
+    });
+    
+    // زر إلغاء/إخفاء نموذج الحجز
+    $('#hide-booking-form').on('click', function() {
+        console.log('إخفاء نموذج الحجز');
+        $('#booking-form-container').fadeOut();
+    });
+    
     // زر البحث عن الرحلات
     $('#search-trips').on('click', function() {
         console.log('بحث عن الرحلات');
@@ -279,4 +293,21 @@ function setupButtonEvents() {
         $('#search-results').hide();
         toastr.success('تم اختيار الرحلة بنجاح');
     });
+}
+
+/**
+ * تحديث حقل تاريخ ووقت العملية بالتاريخ والوقت الحالي
+ */
+function setCurrentDateTimeToTransactionDate() {
+    // الحصول على تاريخ ووقت اليوم
+    var now = moment();
+    
+    // تنسيق التاريخ حسب التنسيق المطلوب
+    var formattedDateTime = now.format('DD MMMM, YYYY');
+    
+    // تعيين القيمة في حقل تاريخ ووقت العملية
+    $('#transaction-date').val(formattedDateTime);
+    
+    // تحديث datetimepicker لعكس القيمة الجديدة
+    $('#transaction-date-picker').datetimepicker('date', now);
 }

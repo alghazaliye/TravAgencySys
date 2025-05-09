@@ -430,8 +430,9 @@ def new_bus_booking():
     # استرجاع قائمة الحجوزات للعرض في الصفحة نفسها
     bookings = BusBooking.query.order_by(BusBooking.created_at.desc()).limit(10).all()
     
-    # عرض صفحة تجمع نموذج الحجز مع قائمة الحجوزات
-    return render_template('bus-tickets.html', currencies=currencies, bookings=bookings, show_booking_form=True)
+    # عرض صفحة حجوزات الباص بدون تفعيل نموذج الحجز
+    # (سيتم تفعيله عبر JavaScript عند النقر على زر "حجز جديد")
+    return render_template('bus-tickets.html', currencies=currencies, bookings=bookings, show_booking_form=False)
 
 @app.route('/work-visa')
 def work_visa():
