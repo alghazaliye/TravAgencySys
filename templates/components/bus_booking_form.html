@@ -333,10 +333,16 @@
                 <div class="form-group">
                     <label for="currency">العملة</label>
                     <select class="form-control select2" id="currency">
-                        <option value="SAR" selected>ريال سعودي (SAR)</option>
-                        <option value="USD">دولار أمريكي (USD)</option>
-                        <option value="EUR">يورو (EUR)</option>
-                        <option value="YER">ريال يمني (YER)</option>
+                        {% if currencies %}
+                            {% for currency in currencies %}
+                                <option value="{{ currency.id }}" {% if currency.id == 'SAR' %}selected{% endif %}>{{ currency.name }}</option>
+                            {% endfor %}
+                        {% else %}
+                            <option value="SAR" selected>ريال سعودي (SAR)</option>
+                            <option value="USD">دولار أمريكي (USD)</option>
+                            <option value="EUR">يورو (EUR)</option>
+                            <option value="YER">ريال يمني (YER)</option>
+                        {% endif %}
                     </select>
                 </div>
             </div>

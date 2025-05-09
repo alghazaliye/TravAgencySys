@@ -528,6 +528,19 @@ def create_bus_booking():
 def bus_tickets_new():
     return render_template('bus-tickets-new.html')
 
+@app.route('/new-bus-booking')
+def new_bus_booking():
+    # في المستقبل يمكن استرجاع العملات من قاعدة البيانات هنا
+    currencies = [
+        {"id": "SAR", "name": "ريال سعودي (SAR)"},
+        {"id": "USD", "name": "دولار أمريكي (USD)"},
+        {"id": "EUR", "name": "يورو (EUR)"},
+        {"id": "YER", "name": "ريال يمني (YER)"}
+    ]
+    
+    # ارسال قائمة العملات والبيانات الأخرى اللازمة للنموذج
+    return render_template('new_bus_booking.html', currencies=currencies)
+
 @app.route('/work-visa')
 def work_visa():
     return render_template('work-visa.html')
