@@ -637,6 +637,22 @@ def system_settings():
             'type': 'select',
             'description': 'العملة الافتراضية للنظام',
             'options': 'SAR,USD,EUR,YER'
+        },
+        'date_format': {
+            'value': 'DD/MM/YYYY',
+            'type': 'select',
+            'description': 'صيغة عرض التاريخ في النظام',
+            'options': 'DD/MM/YYYY,YYYY/MM/DD,DD-MM-YYYY,YYYY-MM-DD,DD MMMM, YYYY'
+        },
+        'use_hijri_dates': {
+            'value': 'false',
+            'type': 'boolean',
+            'description': 'استخدام التاريخ الهجري بدلاً من الميلادي'
+        },
+        'show_both_dates': {
+            'value': 'false',
+            'type': 'boolean',
+            'description': 'عرض التاريخ الهجري والميلادي معاً'
         }
     }
     

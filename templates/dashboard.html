@@ -1,8 +1,8 @@
 {% extends 'layout.html' %}
 
-{% block title %}لوحة التحكم | نظام إدارة وكالة السياحة والسفر{% endblock %}
+{% block title %}لوحة التحكم | {{ settings.system_name }}{% endblock %}
 
-{% block page_title %}لوحة التحكم{% endblock %}
+{% block page_title %}{{ settings.dashboard_title|default('لوحة التحكم') }}{% endblock %}
 
 {% block breadcrumb %}
 <li class="breadcrumb-item active">لوحة التحكم</li>
