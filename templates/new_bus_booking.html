@@ -150,6 +150,12 @@ $(document).ready(function() {
         }
     });
     
+    // تطبيق الإخفاء عند تحميل الصفحة - تأكد من أن حقل تاريخ العودة مخفي افتراضياً
+    if ($('#journeyTypeOneWay').is(':checked')) {
+        $('.return-date-container').addClass('d-none');
+        $('#returnDate').val('');
+    }
+    
     // تحديث العملة عند تغيير قيمة العملة المحددة
     $('#currency').on('change', function() {
         var currencyCode = $(this).val();
@@ -242,6 +248,15 @@ $(document).ready(function() {
         // تحديث المبلغ المتبقي بعد إخفاء المبلغ المستلم
         calculateRemainingAmount();
     });
+    
+    // تطبيق الإخفاء عند تحميل الصفحة - إظهار المبلغ المستلم فقط إذا كانت طريقة الدفع "نقد"
+    var initialPaymentType = $('#paymentType').val();
+    if (initialPaymentType === 'cash') {
+        $('#receivedAmountContainer').show();
+    } else {
+        $('#receivedAmountContainer').hide();
+        $('#receivedAmount').val('');
+    }
     
     // توليد البيان التلقائي عندما تتغير البيانات المتعلقة
     $('#departureCity, #destinationCity, #passengerName').on('change', function() {
