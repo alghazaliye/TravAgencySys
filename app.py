@@ -270,19 +270,8 @@ def airline_tickets():
 
 @app.route('/bus-tickets')
 def bus_tickets():
-    # Get data for dropdowns
-    cities = City.query.filter_by(is_active=True).all()
-    companies = TransportCompany.query.filter_by(is_active=True).all()
-    bus_types = BusType.query.filter_by(is_active=True).all()
-    
-    # Get recent bookings for the table (with minimal fields now)
-    recent_bookings = BusBooking.query.order_by(BusBooking.created_at.desc()).limit(10).all()
-    
-    return render_template('bus-tickets.html', 
-                          cities=cities,
-                          companies=companies,
-                          bus_types=bus_types,
-                          bookings=recent_bookings)
+    # تحويل مباشر إلى صفحة حجز تذكرة باص جديدة
+    return redirect(url_for('new_bus_booking'))
 
 @app.route('/api/bus-routes', methods=['GET'])
 def get_bus_routes():
