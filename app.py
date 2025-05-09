@@ -477,12 +477,14 @@ class CashRegister(db.Model):
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
     name = db.Column(db.String(100), nullable=False)
     location = db.Column(db.String(100))
+    balance = db.Column(db.Float, default=0)  # رصيد الصندوق
+    is_main_register = db.Column(db.Boolean, default=False)  # هل هذا هو الصندوق الرئيسي
+    is_active = db.Column(db.Boolean, default=True)  # حالة الصندوق نشط/غير نشط
+    responsible_person = db.Column(db.String(100))  # الشخص المسؤول
     responsible_user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     currency_id = db.Column(db.Integer, db.ForeignKey('currency.id'))
     opening_balance = db.Column(db.Float, default=0)
-    current_balance = db.Column(db.Float, default=0)
-    is_active = db.Column(db.Boolean, default=True)
-    notes = db.Column(db.Text)
+    notes = db.Column(db.Text)  # ملاحظات
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -490,6 +492,41 @@ class CashRegister(db.Model):
     account = db.relationship('Account', foreign_keys=[account_id])
     responsible_user = db.relationship('User', foreign_keys=[responsible_user_id])
     currency = db.relationship('Currency', foreign_keys=[currency_id])
+
+class AccountTransaction(db.Model):
+    """حركات الحسابات والصناديق"""
+    id = db.Column(db.Integer, primary_key=True)
+    
+    # نوع الحركة: إيداع، سحب، تحويل
+    transaction_type = db.Column(db.String(20), nullable=False)
+    
+    # المبلغ (إذا كان سالباً فهو سحب)
+    amount = db.Column(db.Float, nullable=False)
+    
+    # الرصيد بعد الحركة
+    balance_after = db.Column(db.Float, nullable=False)
+    
+    # معلومات المصدر
+    source_type = db.Column(db.String(20), nullable=False)  # 'bank' أو 'cash'
+    source_id = db.Column(db.Integer, nullable=False)
+    
+    # معلومات الوجهة (في حالة التحويل)
+    destination_type = db.Column(db.String(20))
+    destination_id = db.Column(db.Integer)
+    
+    # وصف الحركة والمرجع
+    description = db.Column(db.Text)
+    reference = db.Column(db.String(100))
+    
+    # معلومات المستخدم
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    
+    # تواريخ
+    transaction_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # العلاقات
+    user = db.relationship('User', foreign_keys=[user_id])
 
 # Create all tables
 with app.app_context():
@@ -1005,6 +1042,11 @@ def api_transfer_money():
         description = data.get('description', '')
         reference = data.get('reference', '')
         
+        # الحصول على معرف المستخدم (إذا كان متاحاً)
+        user_id = None
+        if current_user.is_authenticated:
+            user_id = current_user.id
+        
         # التحقق من صحة البيانات
         if not source_type or not source_id or not destination_type or not destination_id or not amount:
             return jsonify({'success': False, 'message': 'يرجى توفير جميع البيانات المطلوبة'}), 400
@@ -1047,15 +1089,49 @@ def api_transfer_money():
         source.updated_at = datetime.utcnow()
         destination.updated_at = datetime.utcnow()
         
-        # في المستقبل، سنقوم بإضافة سجل الحركة في جدول الحركات
+        # إنشاء حركة سحب من المصدر
+        source_transaction = AccountTransaction(
+            transaction_type='transfer_out',
+            amount=-amount,  # قيمة سالبة لأنها سحب
+            balance_after=source.balance,
+            source_type=source_type,
+            source_id=source_id,
+            destination_type=destination_type,
+            destination_id=destination_id,
+            description=description or 'تحويل إلى حساب آخر',
+            reference=reference,
+            user_id=user_id,
+            transaction_date=datetime.utcnow()
+        )
         
+        # إنشاء حركة إيداع للوجهة
+        destination_transaction = AccountTransaction(
+            transaction_type='transfer_in',
+            amount=amount,  # قيمة موجبة لأنها إيداع
+            balance_after=destination.balance,
+            source_type=source_type,
+            source_id=source_id,
+            destination_type=destination_type,
+            destination_id=destination_id,
+            description=description or 'تحويل من حساب آخر',
+            reference=reference,
+            user_id=user_id,
+            transaction_date=datetime.utcnow()
+        )
+        
+        # إضافة الحركات إلى قاعدة البيانات
+        db.session.add(source_transaction)
+        db.session.add(destination_transaction)
+        
+        # حفظ التغييرات
         db.session.commit()
         
         return jsonify({
             'success': True, 
             'message': 'تم التحويل بنجاح',
             'source_balance': source.balance,
-            'destination_balance': destination.balance
+            'destination_balance': destination.balance,
+            'transaction_id': source_transaction.id
         })
     
     except Exception as e:
@@ -1096,7 +1172,33 @@ def cash_journal():
 
 @app.route('/bank-journal')
 def bank_journal():
-    return render_template('bank-journal.html')
+    """صفحة عرض تقارير حركات الحسابات البنكية"""
+    # الحصول على حركات الحسابات البنكية
+    bank_transactions = AccountTransaction.query.filter_by(source_type='bank').order_by(AccountTransaction.transaction_date.desc()).limit(100).all()
+    
+    # البحث عن أسماء الحسابات البنكية
+    bank_ids = set()
+    for transaction in bank_transactions:
+        bank_ids.add(transaction.source_id)
+        if transaction.destination_type == 'bank':
+            bank_ids.add(transaction.destination_id)
+    
+    bank_accounts = BankAccount.query.filter(BankAccount.id.in_(bank_ids)).all() if bank_ids else []
+    bank_map = {account.id: account.name for account in bank_accounts}
+    
+    # البحث عن أسماء الصناديق النقدية
+    cash_ids = set()
+    for transaction in bank_transactions:
+        if transaction.destination_type == 'cash':
+            cash_ids.add(transaction.destination_id)
+    
+    cash_registers = CashRegister.query.filter(CashRegister.id.in_(cash_ids)).all() if cash_ids else []
+    cash_map = {register.id: register.name for register in cash_registers}
+    
+    return render_template('bank-journal.html', 
+                           transactions=bank_transactions,
+                           bank_map=bank_map,
+                           cash_map=cash_map)
 
 @app.route('/countries-cities')
 def countries_cities():
