@@ -379,6 +379,124 @@
                     </div>
                 </div>
                 
+                <!-- إعدادات الشكل العام -->
+                <div class="settings-section">
+                    <h3><i class="fas fa-desktop ml-2"></i>إعدادات الشكل العام</h3>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="content_width">عرض المحتوى</label>
+                                <select class="form-control" id="content_width" name="content_width">
+                                    {% for option in setting_descriptions.content_width.options.split(',') %}
+                                        <option value="{{ option }}" {% if settings.content_width == option %}selected{% endif %}>
+                                            {% if option == 'fluid' %}سلس (مرن)
+                                            {% elif option == 'fixed' %}ثابت
+                                            {% else %}{{ option }}{% endif %}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <small class="form-text text-muted">{{ setting_descriptions.content_width.description }}</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="border_radius">انحناء الحواف</label>
+                                <select class="form-control" id="border_radius" name="border_radius">
+                                    {% for option in setting_descriptions.border_radius.options.split(',') %}
+                                        <option value="{{ option }}" {% if settings.border_radius == option %}selected{% endif %}>
+                                            {% if option == 'none' %}بدون انحناء
+                                            {% elif option == 'small' %}انحناء صغير
+                                            {% elif option == 'medium' %}انحناء متوسط
+                                            {% elif option == 'large' %}انحناء كبير
+                                            {% else %}{{ option }}{% endif %}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <small class="form-text text-muted">{{ setting_descriptions.border_radius.description }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="card_shadow">ظل البطاقات</label>
+                                <select class="form-control" id="card_shadow" name="card_shadow">
+                                    {% for option in setting_descriptions.card_shadow.options.split(',') %}
+                                        <option value="{{ option }}" {% if settings.card_shadow == option %}selected{% endif %}>
+                                            {% if option == 'none' %}بدون ظل
+                                            {% elif option == 'small' %}ظل خفيف
+                                            {% elif option == 'medium' %}ظل متوسط
+                                            {% elif option == 'large' %}ظل كبير
+                                            {% else %}{{ option }}{% endif %}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <small class="form-text text-muted">{{ setting_descriptions.card_shadow.description }}</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-check mt-4">
+                                <input type="checkbox" class="form-check-input" id="transitions" name="transitions" value="true"
+                                    {% if settings.transitions == 'true' %}checked{% endif %}>
+                                <label class="form-check-label" for="transitions">تفعيل التأثيرات الحركية</label>
+                                <small class="form-text text-muted d-block">{{ setting_descriptions.transitions.description }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="form-group form-check">
+                                <input type="checkbox" class="form-check-input" id="layout_boxed" name="layout_boxed" value="true"
+                                    {% if settings.layout_boxed == 'true' %}checked{% endif %}>
+                                <label class="form-check-label" for="layout_boxed">تخطيط مضغوط للشاشة</label>
+                                <small class="form-text text-muted d-block">{{ setting_descriptions.layout_boxed.description }}</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-check">
+                                <input type="checkbox" class="form-check-input" id="sidebar_mini" name="sidebar_mini" value="true"
+                                    {% if settings.sidebar_mini == 'true' %}checked{% endif %}>
+                                <label class="form-check-label" for="sidebar_mini">استخدام القائمة الجانبية المصغرة</label>
+                                <small class="form-text text-muted d-block">{{ setting_descriptions.sidebar_mini.description }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <div class="card">
+                            <div class="card-header bg-travel-info text-white">
+                                <h5 class="mb-0">معاينة الشكل العام</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div id="preview_card" class="card mb-0" style="box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-radius: 8px;">
+                                            <div class="card-header bg-travel-primary">
+                                                <h6 class="text-white mb-0">معاينة البطاقة</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <p>هذه هي معاينة لشكل البطاقات وفقاً للإعدادات المحددة. ستتغير تلقائياً عند تغيير الإعدادات.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div id="layout_preview" class="text-center p-3 border" style="min-height: 150px; background-color: #f8f9fc; border-radius: 5px;">
+                                            <div id="preview_header" class="mb-2 p-2 bg-primary text-white" style="border-radius: 5px;">شريط التنقل</div>
+                                            <div class="d-flex">
+                                                <div id="preview_sidebar" class="mr-2 p-2 bg-secondary text-white" style="width: 20%; border-radius: 5px;">القائمة</div>
+                                                <div id="preview_content" class="p-2 bg-white" style="width: 80%; border-radius: 5px;">محتوى الصفحة</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- إعدادات التاريخ -->
                 <div class="settings-section">
                     <h3><i class="fas fa-calendar-alt ml-2"></i>إعدادات التاريخ</h3>
@@ -709,6 +827,75 @@ $(document).ready(function() {
         var color = $(this).val();
         $('#navbar_dark_text_color_preview').css('background-color', color);
     });
+    
+    // تحديث معاينة إعدادات الشكل العام
+    function updateLayoutPreview() {
+        // تحديث حجم ظل البطاقة
+        var shadowSize = $('#card_shadow').val();
+        var shadowValue = '0 0 0 rgba(0,0,0,0)';
+        
+        if (shadowSize === 'small') {
+            shadowValue = '0 2px 5px rgba(0,0,0,0.1)';
+        } else if (shadowSize === 'medium') {
+            shadowValue = '0 4px 10px rgba(0,0,0,0.15)';
+        } else if (shadowSize === 'large') {
+            shadowValue = '0 8px 20px rgba(0,0,0,0.2)';
+        }
+        
+        $('#preview_card').css('box-shadow', shadowValue);
+        
+        // تحديث انحناء الحواف
+        var borderRadius = $('#border_radius').val();
+        var radiusValue = '0';
+        
+        if (borderRadius === 'small') {
+            radiusValue = '4px';
+        } else if (borderRadius === 'medium') {
+            radiusValue = '8px';
+        } else if (borderRadius === 'large') {
+            radiusValue = '16px';
+        }
+        
+        $('#preview_card, #preview_header, #preview_sidebar, #preview_content').css('border-radius', radiusValue);
+        
+        // تحديث عرض المحتوى
+        if ($('#content_width').val() === 'fixed') {
+            $('#layout_preview').addClass('container-narrow').removeClass('container-fluid');
+            $('#preview_content').css('width', '70%');
+        } else {
+            $('#layout_preview').removeClass('container-narrow').addClass('container-fluid');
+            $('#preview_content').css('width', '80%');
+        }
+        
+        // تحديث تخطيط مضغوط
+        if ($('#layout_boxed').is(':checked')) {
+            $('#layout_preview').addClass('boxed-layout').css('max-width', '90%').css('margin', '0 auto');
+        } else {
+            $('#layout_preview').removeClass('boxed-layout').css('max-width', '100%').css('margin', '0');
+        }
+        
+        // تحديث القائمة الجانبية المصغرة
+        if ($('#sidebar_mini').is(':checked')) {
+            $('#preview_sidebar').css('width', '10%').text('');
+            $('#preview_content').css('width', '90%');
+        } else {
+            $('#preview_sidebar').css('width', '20%').text('القائمة');
+        }
+        
+        // تحديث التأثيرات الحركية
+        if ($('#transitions').is(':checked')) {
+            $('#preview_card, #preview_header, #preview_sidebar, #preview_content').css('transition', 'all 0.3s ease');
+        } else {
+            $('#preview_card, #preview_header, #preview_sidebar, #preview_content').css('transition', 'none');
+        }
+    }
+    
+    // ربط الأحداث بالعناصر
+    $('#card_shadow, #border_radius, #content_width').on('change', updateLayoutPreview);
+    $('#layout_boxed, #sidebar_mini, #transitions').on('change', updateLayoutPreview);
+    
+    // تهيئة المعاينة الأولية
+    updateLayoutPreview();
 });
 </script>
 {% endblock %}

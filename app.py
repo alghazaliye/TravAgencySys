@@ -626,7 +626,13 @@ def before_request():
             'navbar_dark_text_color': '#e1e1e1',
             'navbar_fixed': 'true',
             'navbar_transparent': 'false',
-            'navbar_shadow': 'true'
+            'navbar_shadow': 'true',
+            'layout_boxed': 'false',
+            'content_width': 'fluid',
+            'sidebar_mini': 'false',
+            'card_shadow': 'medium',
+            'border_radius': 'medium',
+            'transitions': 'true'
         }
         
         # تهيئة قاموس الإعدادات
@@ -813,6 +819,39 @@ def system_settings():
             'value': 'true',
             'type': 'boolean',
             'description': 'إظهار ظل لشريط التنقل'
+        },
+        'layout_boxed': {
+            'value': 'false',
+            'type': 'boolean',
+            'description': 'استخدام تخطيط مضغوط للشاشة'
+        },
+        'content_width': {
+            'value': 'fluid',
+            'type': 'select',
+            'description': 'عرض محتوى الصفحة',
+            'options': 'fluid,fixed'
+        },
+        'sidebar_mini': {
+            'value': 'false',
+            'type': 'boolean',
+            'description': 'استخدام القائمة الجانبية المصغرة'
+        },
+        'card_shadow': {
+            'value': 'medium',
+            'type': 'select',
+            'description': 'حجم ظل البطاقات',
+            'options': 'none,small,medium,large'
+        },
+        'border_radius': {
+            'value': 'medium',
+            'type': 'select',
+            'description': 'مقدار انحناء الحواف',
+            'options': 'none,small,medium,large'
+        },
+        'transitions': {
+            'value': 'true',
+            'type': 'boolean',
+            'description': 'تفعيل التأثيرات الحركية'
         },
         
         # إعدادات مالية

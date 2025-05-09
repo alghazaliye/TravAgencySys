@@ -59,6 +59,14 @@
             --light-travel: #f8f9fc;
             --dark-travel: #3a3b45;
             
+            /* متغيرات الشكل العام */
+            --border-radius: {{ '0' if settings.border_radius == 'none' else ('4px' if settings.border_radius == 'small' else ('8px' if settings.border_radius == 'medium' else '16px')) }};
+            --card-shadow: {{ 'none' if settings.card_shadow == 'none' else ('0 2px 5px rgba(0,0,0,0.1)' if settings.card_shadow == 'small' else ('0 4px 10px rgba(0,0,0,0.15)' if settings.card_shadow == 'medium' else '0 8px 20px rgba(0,0,0,0.2)')) }};
+            --content-width: {{ '1200px' if settings.content_width == 'fixed' else '100%' }};
+            --sidebar-width: {{ '4.5rem' if settings.sidebar_mini == 'true' else '250px' }};
+            --sidebar-collapsed-width: {{ '4.5rem' }};
+            --transition-speed: {{ '0.3s' if settings.transitions == 'true' else '0s' }};
+            
             /* ألوان خاصة بالواجهة (وضع النهار) */
             --sidebar-bg: {{ settings.sidebar_color|default('#2c3e50') }};
             --sidebar-dark: color-mix(in srgb, {{ settings.sidebar_color|default('#2c3e50') }} 70%, black);
@@ -133,6 +141,9 @@
         .card {
             background-color: var(--card-bg);
             border-color: var(--card-border);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            transition: all var(--transition-speed) ease;
         }
         
         .main-header {
@@ -185,17 +196,36 @@
         
         /* تحسينات الكارت */
         .card-travel {
-            border-radius: 10px;
+            border-radius: var(--border-radius);
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
+            box-shadow: var(--card-shadow);
+            transition: all var(--transition-speed) ease;
             border: none;
         }
         
         .card-travel:hover {
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            transform: translateY(-3px);
+            box-shadow: var(--card-shadow);
+            transform: {{ "translateY(-3px)" if settings.transitions == 'true' else "none" }};
         }
+        
+        /* تطبيق التخطيط المضغوط */
+        {% if settings.layout_boxed == 'true' %}
+        .wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        {% endif %}
+        
+        /* تطبيق عرض المحتوى الثابت */
+        {% if settings.content_width == 'fixed' %}
+        .container-fluid {
+            max-width: var(--content-width);
+            margin: 0 auto;
+        }
+        {% endif %}
         
         .card-travel .card-header {
             padding: 1rem 1.25rem;
@@ -282,10 +312,65 @@
         }
         
         .content-wrapper, .main-footer, .main-header {
-            margin-right: 250px;
+            margin-right: var(--sidebar-width);
             margin-left: 0;
-            transition: margin-right .3s ease-in-out;
+            transition: margin-right var(--transition-speed) ease-in-out;
         }
+        
+        /* القائمة الجانبية المصغرة */
+        {% if settings.sidebar_mini == 'true' %}
+        .main-sidebar, .main-sidebar::before {
+            width: var(--sidebar-width) !important;
+        }
+        
+        .nav-sidebar .nav-link p {
+            font-size: 0;
+            margin: 0;
+            width: 0;
+            transition: var(--transition-speed) ease-in-out;
+        }
+        
+        .nav-sidebar .nav-link {
+            text-align: center;
+            padding: 0.7rem 0.5rem;
+            width: 100%;
+            white-space: nowrap;
+        }
+        
+        .nav-sidebar .nav-icon, 
+        .nav-sidebar .fa, 
+        .nav-sidebar .fas {
+            margin-left: 0 !important;
+            font-size: 1.3rem !important;
+            width: 100% !important;
+        }
+        
+        .sidebar-mini .brand-link {
+            text-align: center;
+            padding: 0.8rem 0.5rem;
+        }
+        
+        .sidebar-mini .brand-link .brand-text {
+            display: none;
+        }
+        
+        /* ظهور النص عند تحويم المؤشر */
+        .nav-sidebar .nav-link:hover {
+            width: auto;
+            min-width: 200px;
+            position: relative;
+            z-index: 1031;
+            background-color: var(--sidebar-bg);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .nav-sidebar .nav-link:hover p {
+            display: inline-block;
+            font-size: 1rem;
+            margin-right: 5px !important;
+            width: auto;
+        }
+        {% endif %}
         
         /* إصلاح حالة القائمة المغلقة */
         body.sidebar-collapse .main-sidebar {
