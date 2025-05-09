@@ -13,6 +13,42 @@
 <!-- صفحة حجز تذاكر الباص CSS -->
 <link rel="stylesheet" href="{{ url_for('static', filename='css/bus-tickets.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/bus-tickets-form.css') }}">
+
+<style>
+    /* تنسيقات إضافية لصفحة الحجز الجديدة */
+    .card-header {
+        background-color: #f4f6f9;
+    }
+    
+    .new-booking-card {
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-section {
+        background-color: #f9f9f9;
+        border-radius: 5px;
+        padding: 20px;
+        margin-bottom: 25px;
+        border: 1px solid #e9ecef;
+    }
+    
+    /* تنسيق العناوين */
+    h4 {
+        font-size: 1.2rem;
+        margin-bottom: 1.2rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #3c8dbc;
+        color: #3c8dbc;
+    }
+    
+    /* نمط عرض المبلغ بالحروف العربية */
+    .amount-in-words {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-top: 5px;
+        font-style: italic;
+    }
+</style>
 {% endblock %}
 
 {% block content %}

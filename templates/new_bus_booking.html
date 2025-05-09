@@ -1,0 +1,196 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    حجز تذاكر باص جديد - نظام وكالة السفر والسياحة
+{% endblock %}
+
+{% block styles %}
+<!-- DateTimePicker CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/css/tempusdominus-bootstrap-4.min.css">
+<!-- Select2 CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css">
+<!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<!-- صفحة حجز تذاكر الباص CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bus-tickets-form.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>حجز تذاكر باص جديد</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">الرئيسية</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('bus_tickets') }}">حجز تذاكر باص</a></li>
+                    <li class="breadcrumb-item active">حجز جديد</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="card card-primary card-outline new-booking-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-bus ml-2"></i>
+                    نموذج حجز تذاكر الباصات
+                </h3>
+            </div>
+            <div class="card-body">
+                {% include 'components/bus_booking_form.html' %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<!-- Moment.js (needed for DateTimePicker) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/ar.js"></script>
+<!-- DateTimePicker JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/js/tempusdominus-bootstrap-4.min.js"></script>
+<!-- Select2 JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Custom JS -->
+<script src="{{ url_for('static', filename='js/bus-tickets.js') }}"></script>
+
+<script>
+$(document).ready(function() {
+    // إظهار/إخفاء حقل تاريخ العودة حسب نوع الرحلة
+    $('input[name="tripType"]').on('change', function() {
+        if ($('#tripTypeRoundTrip').is(':checked')) {
+            $('.return-date-container').removeClass('d-none');
+        } else {
+            $('.return-date-container').addClass('d-none');
+            $('#returnDate').val('');
+        }
+    });
+    
+    // حساب المبلغ المتبقي تلقائيًا
+    $('#sellPrice, #receivedAmount').on('input', function() {
+        var sellPrice = parseFloat($('#sellPrice').val()) || 0;
+        var receivedAmount = parseFloat($('#receivedAmount').val()) || 0;
+        var remainingAmount = sellPrice - receivedAmount;
+        
+        $('#remainingAmount').val(remainingAmount >= 0 ? remainingAmount.toFixed(2) : 0);
+    });
+    
+    // تحويل الأرقام إلى كلمات عربية
+    $('#purchasePrice').on('input', function() {
+        var amount = parseFloat($(this).val()) || 0;
+        $('#purchasePriceInWords').text(convertNumberToArabicWords(amount) + ' ريال سعودي');
+    });
+    
+    $('#sellPrice').on('input', function() {
+        var amount = parseFloat($(this).val()) || 0;
+        $('#sellPriceInWords').text(convertNumberToArabicWords(amount) + ' ريال سعودي');
+    });
+    
+    $('#receivedAmount').on('input', function() {
+        var amount = parseFloat($(this).val()) || 0;
+        $('#receivedAmountInWords').text(convertNumberToArabicWords(amount) + ' ريال سعودي');
+    });
+    
+    // تحديث حقول الدفع عند تغيير نوع التوصيل
+    $('#paymentType').on('change', function() {
+        var paymentType = $(this).val();
+        var accountSelect = $('#accountId');
+        
+        // حذف الخيارات الحالية
+        accountSelect.empty().append('<option value="">اختر الحساب المالي</option>');
+        
+        // إضافة خيارات جديدة حسب نوع التوصيل
+        if (paymentType === 'cash') {
+            accountSelect.append('<option value="cash_1">صندوق الشركة الرئيسي</option>');
+            accountSelect.append('<option value="cash_2">صندوق الفرع 1</option>');
+            accountSelect.append('<option value="cash_3">صندوق الفرع 2</option>');
+            $('#receivedAmountContainer').show();
+        } 
+        else if (paymentType === 'credit') {
+            accountSelect.append('<option value="client_1">حساب العملاء العام</option>');
+            accountSelect.append('<option value="client_2">عملاء الشركات</option>');
+            accountSelect.append('<option value="client_3">عملاء VIP</option>');
+            $('#receivedAmountContainer').hide();
+            $('#receivedAmount').val('');
+        } 
+        else if (paymentType === 'bank_transfer') {
+            accountSelect.append('<option value="bank_1">بنك الراجحي</option>');
+            accountSelect.append('<option value="bank_2">البنك الأهلي</option>');
+            accountSelect.append('<option value="bank_3">بنك الإنماء</option>');
+            $('#receivedAmountContainer').hide();
+            $('#receivedAmount').val('');
+        }
+        
+        // تحديث قائمة Select2
+        accountSelect.trigger('change');
+    });
+    
+    // إلغاء الحجز
+    $('#cancel-booking').on('click', function() {
+        if (confirm('هل أنت متأكد من إلغاء عملية الحجز؟')) {
+            window.location.href = '/bus-tickets';
+        }
+    });
+    
+    // تهيئة محددات التاريخ
+    $('.datetimepicker-input').datetimepicker({
+        format: 'DD  MMMM , YYYY',
+        locale: 'ar',
+        icons: {
+            time: 'far fa-clock',
+            date: 'far fa-calendar',
+            up: 'fas fa-chevron-up',
+            down: 'fas fa-chevron-down',
+            previous: 'fas fa-chevron-right',
+            next: 'fas fa-chevron-left',
+            today: 'fas fa-calendar-check',
+            clear: 'far fa-trash-alt',
+            close: 'far fa-times-circle'
+        }
+    });
+    
+    // تهيئة محددات Select2 
+    $('.select2').select2({
+        theme: 'bootstrap',
+        dir: 'rtl',
+        placeholder: 'اختر...',
+        width: '100%'
+    });
+    
+    // تنفيذ التغيير الأولي لتحديث القائمة حسب القيمة الافتراضية عند تحميل الصفحة
+    $('#paymentType').trigger('change');
+});
+
+// دالة تحويل الرقم إلى كلمات عربية (محاكاة)
+function convertNumberToArabicWords(number) {
+    if (number === 0) return 'صفر';
+    
+    var units = ['', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة', 'عشرة'];
+    var teens = ['', 'أحد عشر', 'اثنا عشر', 'ثلاثة عشر', 'أربعة عشر', 'خمسة عشر', 'ستة عشر', 'سبعة عشر', 'ثمانية عشر', 'تسعة عشر'];
+    var tens = ['', 'عشرة', 'عشرون', 'ثلاثون', 'أربعون', 'خمسون', 'ستون', 'سبعون', 'ثمانون', 'تسعون'];
+    
+    // للتبسيط، سنتعامل مع الأرقام حتى 100 فقط
+    if (number < 11) return units[Math.floor(number)];
+    if (number < 20) return teens[Math.floor(number) - 10];
+    if (number < 100) {
+        var unit = Math.floor(number) % 10;
+        var ten = Math.floor(number / 10);
+        return unit > 0 ? units[unit] + ' و' + tens[ten] : tens[ten];
+    }
+    
+    // لأعداد أكبر، سنعرض قيمة تقريبية
+    if (number < 1000) return 'حوالي ' + units[Math.floor(number / 100)] + ' مائة';
+    return 'أكثر من ألف';
+}
+</script>
+{% endblock %}

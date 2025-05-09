@@ -159,6 +159,22 @@ $(function () {
     // تنفيذ التغيير الأولي لتحديث القائمة حسب القيمة الافتراضية عند تحميل الصفحة
     $('#paymentType').trigger('change');
     
+    // إضافة وظيفة لإظهار/إخفاء حقل المبلغ الواصل حسب نوع التوصيل
+    $('#paymentType').on('change', function() {
+        var paymentType = $(this).val();
+        
+        // إظهار حقل المبلغ الواصل فقط عند اختيار "نقد"
+        if (paymentType === 'cash') {
+            $('#receivedAmountContainer').show();
+        } else {
+            $('#receivedAmountContainer').hide();
+            $('#receivedAmount').val(''); // مسح القيمة عند الإخفاء
+        }
+    });
+    
+    // تشغيل الوظيفة عند تحميل الصفحة
+    $('#paymentType').trigger('change');
+    
     // إكمال الحجز
     $('#complete-reservation').on('click', function() {
         // التحقق من صحة النموذج بالكامل

@@ -1,117 +1,95 @@
-/* تنسيق نموذج حجز تذاكر الباصات */
+/**
+ * أنماط خاصة بنموذج حجز تذاكر الباص
+ * مصممة لتلبية متطلبات شاشة حجز تذاكر الباصات
+ */
 
-/* العنوان والقسم الرئيسي */
-.form-header {
-    background-color: #4a4a4a;
-    color: white;
-    padding: 10px;
-    text-align: center;
-    margin-bottom: 0;
-    border-bottom: 2px solid #2c2c2c;
+/* عنوان نموذج الحجز */
+h4 {
+    font-size: 1.2rem;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #3c8dbc;
+    color: #3c8dbc;
 }
 
-.form-title {
-    font-weight: bold;
-    margin-bottom: 0;
-}
-
-/* أقسام النموذج */
+/* تنسيق قسم النموذج */
 .form-section {
-    background-color: #e9ecef;
-    padding: 10px;
-    margin-bottom: 15px;
+    background-color: #f9f9f9;
     border-radius: 5px;
-    border: 1px solid #d6d6d6;
+    padding: 20px;
+    margin-bottom: 25px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+/* تنسيق العناوين الفرعية */
 .section-title {
-    background-color: #4a4a4a;
-    color: white;
-    padding: 8px;
-    margin: -10px -10px 10px -10px;
     font-weight: bold;
-}
-
-/* حقول الإدخال */
-.form-control {
-    border: 1px solid #aaa;
-}
-
-.form-group {
+    color: #555;
     margin-bottom: 15px;
 }
 
-.form-group label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 5px;
-}
-
-/* علامة الحقول الإلزامية */
+/* تنسيق حقول النموذج المطلوبة */
 .required-field::after {
     content: " *";
-    color: red;
-    font-weight: bold;
+    color: #dc3545;
 }
 
-/* تنسيق أزرار الاختيار */
-.custom-radio-group {
-    display: flex;
-    margin-bottom: 15px;
+/* نمط عرض المبلغ بالحروف العربية */
+.amount-in-words {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-top: 5px;
+    font-style: italic;
 }
 
-.custom-radio-group .custom-control {
-    margin-left: 15px;
+/* تنسيق حقول التاريخ */
+.datetimepicker-input {
+    direction: ltr;
+    text-align: right;
 }
 
-/* تنسيق القوائم المنسدلة */
-select.form-control {
-    padding-right: 30px;
-}
-
-/* تنسيق مختار التاريخ */
-.input-group.date .input-group-text {
+/* تنسيق حقول العملة */
+.input-group-text {
     background-color: #f8f9fa;
+    color: #495057;
 }
 
-/* تنسيق أزرار الإرسال */
-.form-actions {
-    text-align: center;
-    margin-top: 20px;
-    padding: 15px;
-    border-top: 1px solid #ddd;
+/* تنسيق أزرار التحكم */
+.custom-control {
+    padding-right: 1.5rem;
+    padding-left: 0;
 }
 
-.form-actions .btn {
-    margin: 0 5px;
-    min-width: 120px;
+.custom-control-label::before,
+.custom-control-label::after {
+    right: -1.5rem;
+    left: auto;
 }
 
+/* تنسيق الأزرار */
+.btn {
+    padding: 0.375rem 1rem;
+    font-size: 1rem;
+}
+
+/* تخصيص أزرار الإجراءات */
 .btn-primary {
     background-color: #007bff;
+    border-color: #007bff;
 }
 
-.btn-success {
-    background-color: #28a745;
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
 }
 
-/* تنسيق للشاشات الصغيرة */
-@media (max-width: 768px) {
-    .form-section {
-        padding: 10px 5px;
-    }
-    
-    .section-title {
-        font-size: 14px;
-    }
-    
-    .form-group label {
-        font-size: 13px;
-    }
+/* تنسيقات خاصة لبيئة RTL */
+select.form-control {
+    padding-right: 0.75rem;
 }
 
-/* تنسيق الملاحظات */
-.form-notes {
-    font-size: 0.9rem;
-    color: #666;
+/* تنسيق خاص بمربعات الاختيار */
+.custom-checkbox .custom-control-label::before {
+    border-radius: 0.25rem;
 }
