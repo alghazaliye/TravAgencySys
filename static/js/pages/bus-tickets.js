@@ -269,8 +269,14 @@ function setupButtonEvents() {
     $('#show-booking-form').on('click', function() {
         console.log('عرض نموذج الحجز');
         $('#booking-form-container').fadeIn();
+        
         // تحديث حقل تاريخ ووقت العملية بالتاريخ والوقت الحالي
         setCurrentDateTimeToTransactionDate();
+        
+        // تفريغ الحقول المالية عند إنشاء حجز جديد
+        $('#selling-price').val('');     // تفريغ سعر البيع الإجمالي
+        $('#cost-price').val('');       // تفريغ سعر التكلفة الإجمالي
+        $('#received-amount').val('');  // تفريغ المبلغ الواصل
     });
     
     // زر إلغاء/إخفاء نموذج الحجز
