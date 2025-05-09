@@ -262,8 +262,10 @@ def seed_accounting_data():
             location="المكتب الرئيسي",
             currency=sar_currency,
             opening_balance=5000.0,
-            current_balance=5000.0,
-            notes="الصندوق الرئيسي للمنشأة"
+            balance=5000.0,
+            notes="الصندوق الرئيسي للمنشأة",
+            is_main_register=True,
+            is_active=True
         )
     ]
     

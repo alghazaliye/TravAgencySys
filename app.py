@@ -1029,6 +1029,152 @@ def api_cash_register(register_id):
             db.session.rollback()
             return jsonify({'success': False, 'message': str(e)}), 400
 
+@app.route('/api/deposit-money', methods=['POST'])
+def api_deposit_money():
+    """واجهة برمجية لإيداع المال في الحسابات والصناديق"""
+    try:
+        data = request.json
+        account_type = data.get('account_type')  # 'bank' or 'cash'
+        account_id = data.get('account_id', type=int)
+        amount = data.get('amount', type=float)
+        description = data.get('description', '')
+        reference = data.get('reference', '')
+        
+        # الحصول على معرف المستخدم (إذا كان متاحاً)
+        user_id = None
+        if current_user.is_authenticated:
+            user_id = current_user.id
+        
+        # التحقق من صحة البيانات
+        if not account_type or not account_id or not amount:
+            return jsonify({'success': False, 'message': 'يرجى توفير جميع البيانات المطلوبة'}), 400
+        
+        if amount <= 0:
+            return jsonify({'success': False, 'message': 'يجب أن يكون المبلغ أكبر من صفر'}), 400
+        
+        # الحصول على الحساب
+        account = None
+        if account_type == 'bank':
+            account = BankAccount.query.get(account_id)
+        elif account_type == 'cash':
+            account = CashRegister.query.get(account_id)
+        
+        if not account:
+            return jsonify({'success': False, 'message': 'الحساب غير موجود'}), 404
+        
+        # إجراء الإيداع
+        previous_balance = account.balance
+        account.balance += amount
+        
+        # تحديث تاريخ التحديث
+        account.updated_at = datetime.utcnow()
+        
+        # إنشاء حركة إيداع
+        transaction = AccountTransaction(
+            transaction_type='deposit',
+            amount=amount,
+            balance_after=account.balance,
+            source_type=account_type,
+            source_id=account_id,
+            description=description or 'إيداع نقدي',
+            reference=reference,
+            user_id=user_id,
+            transaction_date=datetime.utcnow()
+        )
+        
+        # إضافة الحركة إلى قاعدة البيانات
+        db.session.add(transaction)
+        
+        # حفظ التغييرات
+        db.session.commit()
+        
+        return jsonify({
+            'success': True, 
+            'message': 'تم الإيداع بنجاح',
+            'previous_balance': previous_balance,
+            'new_balance': account.balance,
+            'transaction_id': transaction.id
+        })
+    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': str(e)}), 400
+
+@app.route('/api/withdraw-money', methods=['POST'])
+def api_withdraw_money():
+    """واجهة برمجية لسحب المال من الحسابات والصناديق"""
+    try:
+        data = request.json
+        account_type = data.get('account_type')  # 'bank' or 'cash'
+        account_id = data.get('account_id', type=int)
+        amount = data.get('amount', type=float)
+        description = data.get('description', '')
+        reference = data.get('reference', '')
+        
+        # الحصول على معرف المستخدم (إذا كان متاحاً)
+        user_id = None
+        if current_user.is_authenticated:
+            user_id = current_user.id
+        
+        # التحقق من صحة البيانات
+        if not account_type or not account_id or not amount:
+            return jsonify({'success': False, 'message': 'يرجى توفير جميع البيانات المطلوبة'}), 400
+        
+        if amount <= 0:
+            return jsonify({'success': False, 'message': 'يجب أن يكون المبلغ أكبر من صفر'}), 400
+        
+        # الحصول على الحساب
+        account = None
+        if account_type == 'bank':
+            account = BankAccount.query.get(account_id)
+        elif account_type == 'cash':
+            account = CashRegister.query.get(account_id)
+        
+        if not account:
+            return jsonify({'success': False, 'message': 'الحساب غير موجود'}), 404
+        
+        # التحقق من الرصيد الكافي
+        if account.balance < amount:
+            return jsonify({'success': False, 'message': 'الرصيد غير كافٍ للسحب'}), 400
+        
+        # إجراء السحب
+        previous_balance = account.balance
+        account.balance -= amount
+        
+        # تحديث تاريخ التحديث
+        account.updated_at = datetime.utcnow()
+        
+        # إنشاء حركة سحب
+        transaction = AccountTransaction(
+            transaction_type='withdraw',
+            amount=-amount,  # قيمة سالبة لأنها سحب
+            balance_after=account.balance,
+            source_type=account_type,
+            source_id=account_id,
+            description=description or 'سحب نقدي',
+            reference=reference,
+            user_id=user_id,
+            transaction_date=datetime.utcnow()
+        )
+        
+        # إضافة الحركة إلى قاعدة البيانات
+        db.session.add(transaction)
+        
+        # حفظ التغييرات
+        db.session.commit()
+        
+        return jsonify({
+            'success': True, 
+            'message': 'تم السحب بنجاح',
+            'previous_balance': previous_balance,
+            'new_balance': account.balance,
+            'transaction_id': transaction.id
+        })
+    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': str(e)}), 400
+
 @app.route('/api/transfer-money', methods=['POST'])
 def api_transfer_money():
     """واجهة برمجية للتحويل بين الحسابات والصناديق"""
@@ -1168,7 +1314,33 @@ def budget_profits():
 
 @app.route('/cash-journal')
 def cash_journal():
-    return render_template('cash-journal.html')
+    """صفحة عرض تقارير حركات الصناديق النقدية"""
+    # الحصول على حركات الصناديق النقدية
+    cash_transactions = AccountTransaction.query.filter_by(source_type='cash').order_by(AccountTransaction.transaction_date.desc()).limit(100).all()
+    
+    # البحث عن أسماء الصناديق النقدية
+    cash_ids = set()
+    for transaction in cash_transactions:
+        cash_ids.add(transaction.source_id)
+        if transaction.destination_type == 'cash':
+            cash_ids.add(transaction.destination_id)
+    
+    cash_registers = CashRegister.query.filter(CashRegister.id.in_(cash_ids)).all() if cash_ids else []
+    cash_map = {register.id: register.name for register in cash_registers}
+    
+    # البحث عن أسماء الحسابات البنكية
+    bank_ids = set()
+    for transaction in cash_transactions:
+        if transaction.destination_type == 'bank':
+            bank_ids.add(transaction.destination_id)
+    
+    bank_accounts = BankAccount.query.filter(BankAccount.id.in_(bank_ids)).all() if bank_ids else []
+    bank_map = {account.id: account.name for account in bank_accounts}
+    
+    return render_template('cash-journal.html', 
+                           transactions=cash_transactions,
+                           cash_map=cash_map,
+                           bank_map=bank_map)
 
 @app.route('/bank-journal')
 def bank_journal():
@@ -1218,7 +1390,144 @@ def employees():
 
 @app.route('/account-statements')
 def account_statements():
-    return render_template('account-statements.html')
+    """صفحة عرض كشوف الحسابات"""
+    bank_accounts = BankAccount.query.all()
+    cash_registers = CashRegister.query.all()
+    
+    # تجميع جميع الحسابات
+    accounts = []
+    
+    for bank in bank_accounts:
+        accounts.append({
+            'id': bank.id,
+            'name': bank.name,
+            'type': 'bank',
+            'balance': bank.balance
+        })
+    
+    for cash in cash_registers:
+        accounts.append({
+            'id': cash.id,
+            'name': cash.name,
+            'type': 'cash',
+            'balance': cash.balance
+        })
+    
+    return render_template('account-statements.html', accounts=accounts)
+
+@app.route('/api/account-transactions')
+def api_account_transactions():
+    """واجهة برمجية لاسترجاع حركات حساب معين"""
+    account_type = request.args.get('account_type')  # 'bank' or 'cash'
+    account_id = request.args.get('account_id', type=int)
+    
+    if not account_type or not account_id:
+        return jsonify({'success': False, 'message': 'يرجى توفير جميع البيانات المطلوبة'}), 400
+    
+    # التحقق من وجود الحساب
+    account = None
+    if account_type == 'bank':
+        account = BankAccount.query.get(account_id)
+    elif account_type == 'cash':
+        account = CashRegister.query.get(account_id)
+    
+    if not account:
+        return jsonify({'success': False, 'message': 'الحساب غير موجود'}), 404
+    
+    # البحث عن حركات الحساب
+    transactions = AccountTransaction.query.filter(
+        (
+            (AccountTransaction.source_type == account_type) & 
+            (AccountTransaction.source_id == account_id)
+        ) | (
+            (AccountTransaction.destination_type == account_type) & 
+            (AccountTransaction.destination_id == account_id)
+        )
+    ).order_by(AccountTransaction.transaction_date.desc()).all()
+    
+    # تحويل الحركات إلى قاموس JSON
+    result = []
+    bank_map = {}
+    cash_map = {}
+    
+    # جمع الجهات ذات الصلة
+    related_banks = set()
+    related_cash = set()
+    
+    for t in transactions:
+        if t.source_type == 'bank' and t.source_id != account_id:
+            related_banks.add(t.source_id)
+        if t.destination_type == 'bank' and t.destination_id != account_id:
+            related_banks.add(t.destination_id)
+        if t.source_type == 'cash' and t.source_id != account_id:
+            related_cash.add(t.source_id)
+        if t.destination_type == 'cash' and t.destination_id != account_id:
+            related_cash.add(t.destination_id)
+    
+    # الحصول على أسماء الحسابات ذات الصلة
+    if related_banks:
+        banks = BankAccount.query.filter(BankAccount.id.in_(related_banks)).all()
+        bank_map = {b.id: b.name for b in banks}
+    
+    if related_cash:
+        cash_regs = CashRegister.query.filter(CashRegister.id.in_(related_cash)).all()
+        cash_map = {c.id: c.name for c in cash_regs}
+    
+    for t in transactions:
+        # تحديد نوع الحركة من منظور هذا الحساب
+        transaction_direction = ''
+        other_party_name = ''
+        
+        if t.source_type == account_type and t.source_id == account_id:
+            # حركة صادرة من هذا الحساب
+            if t.destination_type == 'bank':
+                other_party_name = bank_map.get(t.destination_id, 'حساب بنكي')
+            elif t.destination_type == 'cash':
+                other_party_name = cash_map.get(t.destination_id, 'صندوق نقدي')
+            
+            if t.transaction_type == 'withdraw':
+                transaction_direction = 'سحب'
+            elif t.transaction_type == 'transfer_out':
+                transaction_direction = 'تحويل إلى ' + other_party_name
+            else:
+                transaction_direction = t.transaction_type
+        
+        elif t.destination_type == account_type and t.destination_id == account_id:
+            # حركة واردة إلى هذا الحساب
+            if t.source_type == 'bank':
+                other_party_name = bank_map.get(t.source_id, 'حساب بنكي')
+            elif t.source_type == 'cash':
+                other_party_name = cash_map.get(t.source_id, 'صندوق نقدي')
+            
+            if t.transaction_type == 'deposit':
+                transaction_direction = 'إيداع'
+            elif t.transaction_type == 'transfer_in':
+                transaction_direction = 'تحويل من ' + other_party_name
+            else:
+                transaction_direction = t.transaction_type
+        
+        # إضافة الحركة إلى النتائج
+        result.append({
+            'id': t.id,
+            'date': t.transaction_date.strftime('%Y-%m-%d %H:%M'),
+            'type': transaction_direction,
+            'amount': abs(t.amount),  # القيمة المطلقة للمبلغ
+            'is_debit': t.amount < 0,  # هل هي حركة سحب
+            'balance_after': t.balance_after if t.source_type == account_type and t.source_id == account_id else None,
+            'description': t.description,
+            'reference': t.reference,
+            'other_party': other_party_name
+        })
+    
+    return jsonify({
+        'success': True,
+        'account': {
+            'name': account.name,
+            'type': account_type,
+            'balance': account.balance
+        },
+        'transactions': result
+    })
 
 @app.route('/financial-settings', methods=['GET', 'POST'])
 def financial_settings():
