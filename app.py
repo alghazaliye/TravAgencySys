@@ -477,7 +477,8 @@ class CashRegister(db.Model):
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
     name = db.Column(db.String(100), nullable=False)
     location = db.Column(db.String(100))
-    balance = db.Column(db.Float, default=0)  # رصيد الصندوق
+    balance = db.Column(db.Float, default=0)  # رصيد الصندوق (للتوافق مع الكود القديم)
+    current_balance = db.Column(db.Float, default=0)  # رصيد الصندوق الحالي
     is_main_register = db.Column(db.Boolean, default=False)  # هل هذا هو الصندوق الرئيسي
     is_active = db.Column(db.Boolean, default=True)  # حالة الصندوق نشط/غير نشط
     responsible_person = db.Column(db.String(100))  # الشخص المسؤول

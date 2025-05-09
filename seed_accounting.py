@@ -263,6 +263,7 @@ def seed_accounting_data():
             currency=sar_currency,
             opening_balance=5000.0,
             balance=5000.0,
+            current_balance=5000.0,
             notes="الصندوق الرئيسي للمنشأة",
             is_main_register=True,
             is_active=True
