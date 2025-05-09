@@ -76,29 +76,60 @@ $(document).ready(function() {
         }
     });
     
+    // تحديث العملة عند تغيير قيمة العملة المحددة
+    $('#currency').on('change', function() {
+        var currencyCode = $(this).val();
+        var symbol = 'ر.س'; // القيمة الافتراضية للريال السعودي
+        
+        // تحديد رمز العملة حسب العملة المختارة
+        if (currencyCode === 'USD') symbol = '$';
+        else if (currencyCode === 'EUR') symbol = '€';
+        else if (currencyCode === 'YER') symbol = 'ر.ي';
+        
+        // تحديث رمز العملة في جميع حقول الأسعار
+        $('.currency-symbol').text(symbol);
+    });
+    
     // حساب المبلغ المتبقي تلقائيًا
     $('#sellPrice, #receivedAmount').on('input', function() {
+        calculateRemainingAmount();
+        updatePriceInWords();
+    });
+    
+    // حساب المبلغ المتبقي
+    function calculateRemainingAmount() {
         var sellPrice = parseFloat($('#sellPrice').val()) || 0;
         var receivedAmount = parseFloat($('#receivedAmount').val()) || 0;
         var remainingAmount = sellPrice - receivedAmount;
         
         $('#remainingAmount').val(remainingAmount >= 0 ? remainingAmount.toFixed(2) : 0);
-    });
+    }
     
-    // تحويل الأرقام إلى كلمات عربية
-    $('#purchasePrice').on('input', function() {
-        var amount = parseFloat($(this).val()) || 0;
-        $('#purchasePriceInWords').text(convertNumberToArabicWords(amount) + ' ريال سعودي');
-    });
+    // تحديث المبالغ المكتوبة بالكلمات
+    function updatePriceInWords() {
+        var sellPrice = parseFloat($('#sellPrice').val()) || 0;
+        var purchasePrice = parseFloat($('#purchasePrice').val()) || 0;
+        var receivedAmount = parseFloat($('#receivedAmount').val()) || 0;
+        var currencyCode = $('#currency').val() || 'SAR';
+        
+        // تحديد نص العملة
+        var currencyText = 'ريال سعودي';
+        if (currencyCode === 'USD') currencyText = 'دولار أمريكي';
+        else if (currencyCode === 'EUR') currencyText = 'يورو';
+        else if (currencyCode === 'YER') currencyText = 'ريال يمني';
+        
+        // تحديث النصوص
+        $('#sellPriceInWords').text(convertNumberToArabicWords(sellPrice) + ' ' + currencyText);
+        
+        // تحديث النص للمبلغ المستلم إذا كان مرئيًا
+        if ($('#receivedAmountContainer').is(':visible')) {
+            $('#receivedAmountInWords').text(convertNumberToArabicWords(receivedAmount) + ' ' + currencyText);
+        }
+    }
     
-    $('#sellPrice').on('input', function() {
-        var amount = parseFloat($(this).val()) || 0;
-        $('#sellPriceInWords').text(convertNumberToArabicWords(amount) + ' ريال سعودي');
-    });
-    
-    $('#receivedAmount').on('input', function() {
-        var amount = parseFloat($(this).val()) || 0;
-        $('#receivedAmountInWords').text(convertNumberToArabicWords(amount) + ' ريال سعودي');
+    // تحويل الأرقام إلى كلمات عربية عند تغيير قيم الأسعار
+    $('#purchasePrice, #sellPrice').on('input', function() {
+        updatePriceInWords();
     });
     
     // تحديث حقول الدفع عند تغيير نوع التوصيل
@@ -133,13 +164,121 @@ $(document).ready(function() {
         
         // تحديث قائمة Select2
         accountSelect.trigger('change');
+        
+        // تحديث المبلغ المتبقي بعد إخفاء المبلغ المستلم
+        calculateRemainingAmount();
     });
+    
+    // إرسال النموذج عند النقر على زر الحفظ
+    $('#complete-reservation').on('click', function() {
+        // التحقق من صحة البيانات
+        if (validateBookingForm()) {
+            // جمع البيانات من النموذج
+            var formData = $('#bus-booking-form').serialize();
+            
+            // إظهار مؤشر المعالجة
+            $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin ml-1"></i> جاري الحفظ...');
+            
+            // إرسال البيانات إلى الخادم
+            $.ajax({
+                url: '/api/create-bus-booking',
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    if (response.success) {
+                        // نجاح الحفظ
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'تم الحفظ بنجاح',
+                            text: 'تم حفظ الحجز برقم: ' + response.booking_number,
+                            confirmButtonText: 'تم'
+                        }).then(function() {
+                            window.location.href = '/bus-tickets';
+                        });
+                    } else {
+                        // فشل الحفظ
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'خطأ!',
+                            text: response.error || 'حدث خطأ أثناء حفظ الحجز',
+                            confirmButtonText: 'حسناً'
+                        });
+                        $('#complete-reservation').prop('disabled', false).html('<i class="fas fa-save ml-1"></i> حفظ الحجز');
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'خطأ!',
+                        text: 'حدث خطأ في الاتصال بالخادم',
+                        confirmButtonText: 'حسناً'
+                    });
+                    $('#complete-reservation').prop('disabled', false).html('<i class="fas fa-save ml-1"></i> حفظ الحجز');
+                }
+            });
+        }
+    });
+    
+    // التحقق من صحة النموذج
+    function validateBookingForm() {
+        var isValid = true;
+        
+        // التحقق من الحقول المطلوبة
+        var requiredFields = [
+            'passengerName', 'mobileNumber', 'idType', 'idNumber', 'nationality',
+            'departureCity', 'destinationCity', 'reservationDate', 
+            'supplierId', 'sellPrice', 'paymentType', 'accountId'
+        ];
+        
+        $.each(requiredFields, function(index, field) {
+            if (!$('#' + field).val()) {
+                showFieldError('#' + field, 'هذا الحقل مطلوب');
+                isValid = false;
+            } else {
+                clearFieldError('#' + field);
+            }
+        });
+        
+        // التحقق من حقول إضافية حسب نوع الرحلة
+        if ($('#tripTypeRoundTrip').is(':checked') && !$('#returnDate').val()) {
+            showFieldError('#returnDate', 'يرجى تحديد تاريخ العودة');
+            isValid = false;
+        }
+        
+        return isValid;
+    }
+    
+    // عرض رسالة خطأ على حقل
+    function showFieldError(selector, message) {
+        $(selector).addClass('is-invalid');
+        
+        // التحقق من وجود رسالة خطأ سابقة
+        if ($(selector).next('.invalid-feedback').length === 0) {
+            $(selector).after('<div class="invalid-feedback">' + message + '</div>');
+        }
+    }
+    
+    // إزالة رسالة الخطأ من حقل
+    function clearFieldError(selector) {
+        $(selector).removeClass('is-invalid');
+    }
     
     // إلغاء الحجز
     $('#cancel-booking').on('click', function() {
-        if (confirm('هل أنت متأكد من إلغاء عملية الحجز؟')) {
-            window.location.href = '/bus-tickets';
-        }
+        Swal.fire({
+            title: 'تأكيد الإلغاء',
+            text: 'هل أنت متأكد من إلغاء عملية الحجز؟',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'نعم، إلغاء الحجز',
+            cancelButtonText: 'لا، تراجع'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/bus-tickets';
+            }
+        });
     });
     
     // تهيئة محددات التاريخ
@@ -168,10 +307,11 @@ $(document).ready(function() {
     });
     
     // تنفيذ التغيير الأولي لتحديث القائمة حسب القيمة الافتراضية عند تحميل الصفحة
+    $('#currency').trigger('change');
     $('#paymentType').trigger('change');
 });
 
-// دالة تحويل الرقم إلى كلمات عربية (محاكاة)
+// دالة تحويل الرقم إلى كلمات عربية
 function convertNumberToArabicWords(number) {
     if (number === 0) return 'صفر';
     
