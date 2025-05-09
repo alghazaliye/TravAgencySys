@@ -7,13 +7,27 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="passengerName">الاسم الرباعي <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="passengerName" placeholder="الاسم الكامل كما هو في الهوية" required>
+                    <input type="text" class="form-control" id="passengerName" name="passengerName" placeholder="الاسم الكامل كما هو في الهوية" required>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
+                    <label for="mobileNumber">رقم الجوال <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                        </div>
+                        <input type="text" class="form-control" id="mobileNumber" name="mobileNumber" placeholder="أدخل رقم الجوال" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
                     <label for="idType">نوع الهوية <span class="text-danger">*</span></label>
-                    <select class="form-control select2" id="idType" required>
+                    <select class="form-control select2" id="idType" name="idType" required>
                         <option value="">اختر نوع الهوية</option>
                         <option value="جواز سفر">جواز سفر</option>
                         <option value="بطاقة هوية">بطاقة هوية</option>
@@ -22,69 +36,19 @@
                     </select>
                 </div>
             </div>
-        </div>
-        
-        <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="idNumber">رقم الهوية <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="idNumber" placeholder="أدخل رقم الهوية" required>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="issuePlace">مكان الإصدار</label>
-                    <input type="text" class="form-control" id="issuePlace" placeholder="مثال: جدة، صنعاء">
+                    <input type="text" class="form-control" id="idNumber" name="idNumber" placeholder="أدخل رقم الهوية" required>
                 </div>
             </div>
         </div>
         
         <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="issueDate">تاريخ الإصدار</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                        </div>
-                        <input type="text" class="form-control datetimepicker-input" id="issueDate" data-toggle="datetimepicker" data-target="#issueDate">
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="birthPlace">مكان الميلاد</label>
-                    <input type="text" class="form-control" id="birthPlace" placeholder="مثال: عدن، الرياض">
-                </div>
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="birthDate">تاريخ الميلاد</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                        </div>
-                        <input type="text" class="form-control datetimepicker-input" id="birthDate" data-toggle="datetimepicker" data-target="#birthDate">
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="gender">الجنس</label>
-                    <select class="form-control select2" id="gender">
-                        <option value="">اختر الجنس</option>
-                        <option value="ذكر">ذكر</option>
-                        <option value="أنثى">أنثى</option>
-                    </select>
-                </div>
-            </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="nationality">الجنسية <span class="text-danger">*</span></label>
-                    <select class="form-control select2" id="nationality" required>
+                    <select class="form-control select2" id="nationality" name="nationality" required>
                         <option value="">اختر الجنسية</option>
                         <option value="سعودي">المملكة العربية السعودية</option>
                         <option value="يمني">اليمن</option>
@@ -98,18 +62,51 @@
                     </select>
                 </div>
             </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="form-group">
-                    <label for="mobileNumber">رقم الجوال <span class="text-danger">*</span></label>
+                    <label for="gender">الجنس</label>
+                    <select class="form-control select2" id="gender" name="gender">
+                        <option value="">اختر الجنس</option>
+                        <option value="ذكر">ذكر</option>
+                        <option value="أنثى">أنثى</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="birthDate">تاريخ الميلاد</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                         </div>
-                        <input type="text" class="form-control" id="mobileNumber" placeholder="أدخل رقم الجوال" required>
+                        <input type="text" class="form-control datetimepicker-input" id="birthDate" name="birthDate" data-toggle="datetimepicker" data-target="#birthDate">
                     </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row id-details">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="issuePlace">مكان الإصدار</label>
+                    <input type="text" class="form-control" id="issuePlace" name="issuePlace" placeholder="مثال: جدة، صنعاء">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="issueDate">تاريخ الإصدار</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                        </div>
+                        <input type="text" class="form-control datetimepicker-input" id="issueDate" name="issueDate" data-toggle="datetimepicker" data-target="#issueDate">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="birthPlace">مكان الميلاد</label>
+                    <input type="text" class="form-control" id="birthPlace" name="birthPlace" placeholder="مثال: عدن، الرياض">
                 </div>
             </div>
         </div>
@@ -121,16 +118,34 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="busType">نوع الباص <span class="text-danger">*</span></label>
-                    <select class="form-control select2" id="busType" required>
-                        <option value="">اختر نوع الباص</option>
-                        <option value="عادي">عادي</option>
-                        <option value="سياحي">سياحي</option>
-                        <option value="VIP">VIP</option>
+                    <label for="departureCity">من <span class="text-danger">*</span></label>
+                    <select class="form-control select2" id="departureCity" name="departureCity" required>
+                        <option value="">اختر مدينة المغادرة</option>
+                        <option value="الرياض">الرياض</option>
+                        <option value="جدة">جدة</option>
+                        <option value="مكة المكرمة">مكة المكرمة</option>
+                        <option value="المدينة المنورة">المدينة المنورة</option>
+                        <option value="الدمام">الدمام</option>
                     </select>
                 </div>
             </div>
             <div class="col-md-6">
+                <div class="form-group">
+                    <label for="destinationCity">إلى <span class="text-danger">*</span></label>
+                    <select class="form-control select2" id="destinationCity" name="destinationCity" required>
+                        <option value="">اختر مدينة الوصول</option>
+                        <option value="الرياض">الرياض</option>
+                        <option value="جدة">جدة</option>
+                        <option value="مكة المكرمة">مكة المكرمة</option>
+                        <option value="المدينة المنورة">المدينة المنورة</option>
+                        <option value="الدمام">الدمام</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4">
                 <div class="form-group">
                     <label>نوع الرحلة <span class="text-danger">*</span></label>
                     <div class="d-flex">
@@ -145,42 +160,21 @@
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="form-group">
-                    <label for="departureCity">من <span class="text-danger">*</span></label>
-                    <select class="form-control select2" id="departureCity" required>
-                        <option value="">اختر مدينة المغادرة</option>
-                        <option value="الرياض">الرياض</option>
-                        <option value="جدة">جدة</option>
-                        <option value="مكة المكرمة">مكة المكرمة</option>
-                        <option value="المدينة المنورة">المدينة المنورة</option>
-                        <option value="الدمام">الدمام</option>
+                    <label for="busType">نوع الباص <span class="text-danger">*</span></label>
+                    <select class="form-control select2" id="busType" name="busType" required>
+                        <option value="">اختر نوع الباص</option>
+                        <option value="عادي">عادي</option>
+                        <option value="سياحي">سياحي</option>
+                        <option value="VIP">VIP</option>
                     </select>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="destinationCity">إلى <span class="text-danger">*</span></label>
-                    <select class="form-control select2" id="destinationCity" required>
-                        <option value="">اختر مدينة الوصول</option>
-                        <option value="الرياض">الرياض</option>
-                        <option value="جدة">جدة</option>
-                        <option value="مكة المكرمة">مكة المكرمة</option>
-                        <option value="المدينة المنورة">المدينة المنورة</option>
-                        <option value="الدمام">الدمام</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="form-group">
                     <label for="purpose">الغرض من الرحلة</label>
-                    <select class="form-control select2" id="purpose">
+                    <select class="form-control select2" id="purpose" name="purpose">
                         <option value="">اختر الغرض</option>
                         <option value="زيارة">زيارة</option>
                         <option value="عمل">عمل</option>
@@ -202,7 +196,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                         </div>
-                        <input type="text" class="form-control datetimepicker-input" id="reservationDate" data-toggle="datetimepicker" data-target="#reservationDate" required>
+                        <input type="text" class="form-control datetimepicker-input" id="reservationDate" name="reservationDate" data-toggle="datetimepicker" data-target="#reservationDate" required>
                     </div>
                 </div>
             </div>
@@ -213,7 +207,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                         </div>
-                        <input type="text" class="form-control datetimepicker-input" id="returnDate" data-toggle="datetimepicker" data-target="#returnDate">
+                        <input type="text" class="form-control datetimepicker-input" id="returnDate" name="returnDate" data-toggle="datetimepicker" data-target="#returnDate">
                     </div>
                 </div>
             </div>
@@ -223,7 +217,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="supplierId">مزود الخدمة <span class="text-danger">*</span></label>
-                    <select class="form-control select2" id="supplierId" required>
+                    <select class="form-control select2" id="supplierId" name="supplierId" required>
                         <option value="">اختر مزود الخدمة</option>
                         <option value="1">شركة النقل السعودية (سابتكو)</option>
                         <option value="2">شركة الإمارات للنقل</option>
@@ -235,20 +229,8 @@
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="isBooked">هل تم الحجز؟</label>
-                    <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="isBooked">
-                        <label class="custom-control-label" for="isBooked">نعم، تم تأكيد الحجز</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
                     <label for="seatNumber">رقم المقعد</label>
-                    <input type="text" class="form-control" id="seatNumber" placeholder="مثال: A12">
+                    <input type="text" class="form-control" id="seatNumber" name="seatNumber" placeholder="مثال: A12">
                 </div>
             </div>
         </div>
@@ -256,8 +238,11 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
-                    <label for="notes">ملاحظات</label>
-                    <textarea class="form-control" id="notes" rows="3" placeholder="أي ملاحظات إضافية حول الحجز"></textarea>
+                    <label for="isBooked">حالة الحجز</label>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="isBooked" name="isBooked">
+                        <label class="custom-control-label" for="isBooked">تم تأكيد الحجز</label>
+                    </div>
                 </div>
             </div>
         </div>
