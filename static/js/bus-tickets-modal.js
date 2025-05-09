@@ -26,6 +26,29 @@ $(function () {
         language: 'ar',
         dir: 'rtl'
     });
+    
+    // تحديث رموز العملة عند تغيير نوع العملة
+    $('#currency-type').on('change', function() {
+        updateCurrencySymbols($(this).val());
+    });
+    
+    // دالة تحديث رموز العملة
+    function updateCurrencySymbols(currencyCode) {
+        let symbol = getCurrencySymbol(currencyCode);
+        $('.currency-symbol').text(symbol);
+    }
+    
+    // دالة الحصول على رمز العملة
+    function getCurrencySymbol(currencyCode) {
+        const symbols = {
+            'SAR': 'ر.س',
+            'USD': '$',
+            'EUR': '€',
+            'GBP': '£',
+            'AED': 'د.إ'
+        };
+        return symbols[currencyCode] || currencyCode;
+    }
 
     // محاكاة البحث عن الرحلات
     $('#search-trips').on('click', function() {
@@ -180,6 +203,9 @@ $(function () {
         // إعادة تعيين حقول النموذج
         $('#trip-search-form')[0].reset();
         $('#booking-form')[0].reset();
+        
+        // إعادة تعيين رموز العملة إلى الريال السعودي
+        $('#currency-type').val('SAR').trigger('change');
         
         // إزالة تحديد المقاعد
         $('.seat').removeClass('selected');

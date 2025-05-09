@@ -579,18 +579,30 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="currency-type">العملة <span class="text-danger">*</span></label>
+                                    <select class="form-control select2" id="currency-type" style="width: 100%;" required>
+                                        <option value="SAR" selected>ريال سعودي (SAR)</option>
+                                        <option value="USD">دولار أمريكي (USD)</option>
+                                        <option value="EUR">يورو (EUR)</option>
+                                        <option value="GBP">جنيه إسترليني (GBP)</option>
+                                        <option value="AED">درهم إماراتي (AED)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="ticket-price">سعر التذكرة <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <input type="number" class="form-control" id="ticket-price" value="120" readonly>
                                         <div class="input-group-append">
-                                            <span class="input-group-text">ر.س</span>
+                                            <span class="input-group-text currency-symbol">ر.س</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="payment-method">طريقة الدفع <span class="text-danger">*</span></label>
                                     <select class="form-control select2" id="payment-method" style="width: 100%;" required>
@@ -601,13 +613,13 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-4" id="paid-amount-container">
+                            <div class="col-md-3" id="paid-amount-container">
                                 <div class="form-group">
                                     <label for="paid-amount">المبلغ المدفوع <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <input type="number" class="form-control" id="paid-amount" placeholder="أدخل المبلغ المدفوع">
                                         <div class="input-group-append">
-                                            <span class="input-group-text">ر.س</span>
+                                            <span class="input-group-text currency-symbol">ر.س</span>
                                         </div>
                                     </div>
                                 </div>
