@@ -1,4 +1,4 @@
-/* تنسيق صفحة حجز تذاكر الباص */
+/* تنسيقات صفحة حجز تذاكر الباص */
 
 /* خريطة المقاعد */
 .bus-seat-map {
@@ -90,57 +90,126 @@
     margin-left: 5px;
 }
 
-.legend-label {
-    font-size: 0.9rem;
+.seat-legend .text {
+    font-size: 14px;
+    color: #6c757d;
 }
 
-/* تصميم قسم الرحلات المتاحة */
-#availableTripsTable {
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+/* تنسيق جدول الحجوزات */
+.booking-table th, 
+.booking-table td {
+    vertical-align: middle;
 }
 
-#availableTripsTable thead th {
-    background-color: #f4f6f9;
+.action-buttons .btn {
+    margin-left: 5px;
 }
 
-#availableTripsTable tbody tr:hover {
+/* تنسيق نموذج البحث عن الرحلات */
+.search-form {
     background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
 }
 
-/* تفاصيل الرحلة المحددة */
-#selectedTripDetails {
-    margin-top: 20px;
+.search-form .btn-search {
+    margin-top: 28px;
 }
 
-/* تنسيقات استجابية للشاشات الصغيرة */
-@media (max-width: 768px) {
-    .seat {
-        width: 35px;
-        height: 35px;
-        font-size: 0.8rem;
-    }
-    
-    .seat-row {
-        gap: 3px;
-    }
-    
-    .bus-front {
-        padding: 5px;
-    }
-    
-    #availableTripsTable {
-        font-size: 0.9rem;
-    }
+/* تنسيق تفاصيل التذكرة */
+.ticket-details {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
 }
 
-@media (max-width: 576px) {
-    .seat {
-        width: 30px;
-        height: 30px;
-        font-size: 0.75rem;
+.ticket-details .info-item {
+    margin-bottom: 10px;
+}
+
+.ticket-details .info-label {
+    font-weight: bold;
+    color: #495057;
+}
+
+.ticket-details .info-value {
+    color: #212529;
+}
+
+.ticket-details .highlighted {
+    color: #3c8dbc;
+    font-weight: bold;
+}
+
+.ticket-details .divider {
+    margin: 15px 0;
+    border-top: 1px dashed #dee2e6;
+}
+
+.ticket-price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #28a745;
+}
+
+/* تنسيق مخططات الإحصائيات */
+.stats-chart-container {
+    height: 300px;
+    margin-bottom: 20px;
+}
+
+/* تخصيص الأزرار */
+.action-btn {
+    margin-right: 5px;
+}
+
+/* تخصيص التنبيهات */
+.custom-alert {
+    border-right: 4px solid;
+}
+
+.custom-alert.alert-info {
+    border-right-color: #17a2b8;
+}
+
+.custom-alert.alert-warning {
+    border-right-color: #ffc107;
+}
+
+.custom-alert.alert-success {
+    border-right-color: #28a745;
+}
+
+.custom-alert.alert-danger {
+    border-right-color: #dc3545;
+}
+
+/* تنسيقات للطباعة */
+@media print {
+    .no-print {
+        display: none !important;
     }
     
-    .bus-seat-map {
-        max-width: 300px;
+    .ticket-print {
+        border: 1px solid #dee2e6;
+        padding: 15px;
+        margin: 0 auto;
+        width: 80mm;
+    }
+    
+    .ticket-print .ticket-header {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    
+    .ticket-print .ticket-body {
+        font-size: 12px;
+    }
+    
+    .ticket-print .ticket-footer {
+        text-align: center;
+        margin-top: 10px;
+        font-size: 10px;
     }
 }
