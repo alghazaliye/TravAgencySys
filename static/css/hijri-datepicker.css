@@ -1,0 +1,108 @@
+/* أنماط خاصة بالتقويم الهجري */
+.datepicker {
+    direction: rtl;
+}
+
+.datepicker.dropdown-menu {
+    right: auto;
+}
+
+.datepicker table {
+    width: 100%;
+}
+
+.datepicker td, 
+.datepicker th {
+    text-align: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+}
+
+.datepicker td.hijri {
+    background-color: #f8f9fc;
+    font-size: 12px;
+}
+
+.datepicker td.hijri-selected {
+    background-color: rgba(78, 115, 223, 0.2);
+    color: #4e73df;
+}
+
+.datepicker .datepicker-switch {
+    font-weight: bold;
+    text-align: center;
+}
+
+.datepicker .prev, 
+.datepicker .next {
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+.datepicker-toggle {
+    position: absolute;
+    left: 10px; /* للمحاذاة من اليسار في واجهة RTL */
+    top: 10px;
+    padding: 2px 6px;
+    background-color: #f8f9fc;
+    border-radius: 3px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.datepicker-toggle.hijri-active {
+    color: #fff;
+    background-color: #4e73df;
+}
+
+.date-display.hijri {
+    color: #4e73df;
+}
+
+.date-display.both-dates {
+    font-size: 0.9em;
+}
+
+.datepicker td span.hijri-month,
+.datepicker td span.hijri-year {
+    color: #4e73df;
+}
+
+/* أنماط التقويم الهجري النشط */
+.datepicker.hijri-calendar .day {
+    font-family: 'Tajawal', sans-serif;
+}
+
+.datepicker.hijri-calendar .datepicker-switch {
+    color: #4e73df;
+    background-color: #f8f9fc;
+    font-weight: bold;
+}
+
+/* تحسين مظهر الأزرار في التقويم الهجري */
+.datepicker-toggle-group {
+    display: flex;
+    justify-content: center;
+    padding: 5px 0;
+    border-top: 1px solid #eee;
+    margin-top: 5px;
+}
+
+.datepicker-toggle-btn {
+    cursor: pointer;
+    padding: 5px 10px;
+    margin: 0 3px;
+    border-radius: 4px;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.datepicker-toggle-btn.active {
+    background-color: #4e73df;
+    color: white;
+}
+
+.datepicker-toggle-btn:hover:not(.active) {
+    background-color: #f8f9fc;
+}

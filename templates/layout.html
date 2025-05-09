@@ -771,6 +771,12 @@
     <!-- Bootstrap Datepicker -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.ar.min.js"></script>
+    
+    <!-- Moment.js للتعامل مع التواريخ -->
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/locale/ar.js"></script>
+    <!-- Moment Hijri للتقويم الهجري -->
+    <script src="https://cdn.jsdelivr.net/npm/moment-hijri@2.1.2/moment-hijri.min.js"></script>
     <!-- Custom JS -->
     <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
     <!-- SweetAlert2 for Notifications -->
@@ -811,6 +817,134 @@
                 }
             });
         });
+    </script>
+    
+    <!-- إعدادات النظام والتاريخ الهجري -->
+    <script>
+        // إعدادات النظام
+        const systemSettings = {
+            dateFormat: '{{ settings.date_format|default("DD/MM/YYYY") }}',
+            useHijriDates: {{ 'true' if settings.use_hijri_dates == 'true' else 'false' }},
+            showBothDates: {{ 'true' if settings.show_both_dates == 'true' else 'false' }},
+            primaryColor: '{{ settings.primary_color|default("#4e73df") }}',
+            secondaryColor: '{{ settings.secondary_color|default("#1cc88a") }}',
+            defaultCurrency: '{{ settings.default_currency|default("SAR") }}'
+        };
+        
+        // تهيئة حقول التاريخ باستخدام التاريخ الهجري
+        $(document).ready(function() {
+            // تنسيق حقول التاريخ
+            $('.datepicker').each(function() {
+                // تهيئة بتاريخ اليوم
+                const today = new Date();
+                let format = systemSettings.dateFormat;
+                
+                // ضبط خيارات عرض التاريخ الهجري إذا كان مفعلاً
+                if (systemSettings.useHijriDates) {
+                    $(this).attr('data-hijri', 'true');
+                    if (systemSettings.showBothDates) {
+                        $(this).attr('data-show-both', 'true');
+                    }
+                }
+                
+                // تحديث تلميح حقل التاريخ
+                $(this).attr('placeholder', format);
+            });
+            
+            // تنسيق عناصر عرض التاريخ
+            $('.date-display').each(function() {
+                const dateValue = $(this).data('date');
+                if (dateValue) {
+                    if (systemSettings.useHijriDates) {
+                        // تحويل إلى تاريخ هجري
+                        const dateObj = new Date(dateValue);
+                        // استخدام مكتبة moment-hijri للتحويل (يحتاج إضافتها)
+                        // هنا نستخدم فقط التاريخ الميلادي مع ملاحظة بالتاريخ الهجري
+                        const dateString = formatDate(dateValue);
+                        $(this).text(dateString);
+                    } else {
+                        // عرض التاريخ الميلادي بالتنسيق المطلوب
+                        $(this).text(formatDate(dateValue));
+                    }
+                }
+            });
+        });
+        
+        // دالة لتنسيق التاريخ حسب إعدادات النظام
+        function formatDate(dateValue) {
+            if (!dateValue) return '';
+            
+            // حساب الفرق بين التاريخين
+            const date = new Date(dateValue);
+            const format = systemSettings.dateFormat;
+            
+            // تنسيق التاريخ الميلادي
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            
+            let formattedDate = '';
+            
+            // تطبيق التنسيق المطلوب
+            switch (format) {
+                case 'DD/MM/YYYY':
+                    formattedDate = `${day}/${month}/${year}`;
+                    break;
+                case 'YYYY/MM/DD':
+                    formattedDate = `${year}/${month}/${day}`;
+                    break;
+                case 'DD-MM-YYYY':
+                    formattedDate = `${day}-${month}-${year}`;
+                    break;
+                case 'YYYY-MM-DD':
+                    formattedDate = `${year}-${month}-${day}`;
+                    break;
+                case 'DD MMMM, YYYY':
+                    const months = ['يناير', 'فبراير', 'مارس', 'إبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+                    formattedDate = `${day} ${months[date.getMonth()]}, ${year}`;
+                    break;
+                default:
+                    formattedDate = `${day}/${month}/${year}`;
+            }
+            
+            // إضافة تاريخ هجري باستخدام مكتبة moment-hijri
+            if (systemSettings.useHijriDates) {
+                try {
+                    // استخدام مكتبة moment-hijri للتحويل الدقيق
+                    const m = moment(date);
+                    
+                    // الحصول على التاريخ الهجري بتنسيق مناسب
+                    // 'iYYYY/iMM/iDD' للتنسيق الرقمي و 'iD iMMMM iYYYY' للتنسيق النصي
+                    let hijriDate = '';
+                    
+                    // استخدام التنسيق النصي الكامل للتاريخ الهجري
+                    hijriDate = m.format('iD iMMMM iYYYY');
+                    
+                    if (systemSettings.showBothDates) {
+                        return `${formattedDate} | ${hijriDate}`;
+                    } else {
+                        return hijriDate;
+                    }
+                } catch (e) {
+                    console.log('خطأ في تحويل التاريخ الهجري:', e);
+                    
+                    // استخدام تقريب بسيط في حالة الخطأ
+                    const hijriYear = year - 579;
+                    const hijriMonths = ['محرم', 'صفر', 'ربيع الأول', 'ربيع الثاني', 'جمادى الأولى', 'جمادى الآخرة', 'رجب', 'شعبان', 'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'];
+                    const hijriMonth = hijriMonths[date.getMonth()];
+                    const hijriDay = (date.getDate() + 2) % 30 || 30; // تقريبي جداً
+                    const hijriDate = `${hijriDay} ${hijriMonth} ${hijriYear}`;
+                    
+                    if (systemSettings.showBothDates) {
+                        return `${formattedDate} | ${hijriDate}`;
+                    } else {
+                        return hijriDate;
+                    }
+                }
+            }
+            
+            return formattedDate;
+        }
     </script>
     
     {% block scripts %}{% endblock %}
