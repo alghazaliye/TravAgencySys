@@ -297,6 +297,16 @@
         // عندما تكون الصفحة جاهزة، قم بتحميل الحسابات
         loadAccounts();
         
+        // وظيفة تحميل الحسابات
+        function loadAccounts() {
+            // الحسابات التي تم تمريرها من الخادم
+            const accounts = {{ accounts|tojson }};
+            
+            // فصل الحسابات حسب النوع
+            window.bankAccounts = accounts.filter(account => account.type === 'bank');
+            window.cashAccounts = accounts.filter(account => account.type === 'cash');
+        }
+        
         // معالجة تغيير نوع الحساب
         document.getElementById('accountType').addEventListener('change', function() {
             handleAccountTypeChange(this.value);
@@ -360,47 +370,11 @@
         let accounts = [];
         
         switch (accountType) {
-            case 'customer':
-                accounts = [
-                    { id: 'CUST0001', name: 'أحمد محمد علي' },
-                    { id: 'CUST0002', name: 'شركة النور للسياحة' },
-                    { id: 'CUST0003', name: 'مؤسسة الخليج للسفر' },
-                    { id: 'CUST0004', name: 'خالد عبدالله العمري' },
-                    { id: 'CUST0005', name: 'محمد سعيد الغامدي' }
-                ];
-                break;
-            case 'supplier':
-                accounts = [
-                    { id: 'SUPP0001', name: 'شركة الخطوط السعودية' },
-                    { id: 'SUPP0002', name: 'مجموعة فنادق الريتز' },
-                    { id: 'SUPP0003', name: 'الشركة العربية للطيران' },
-                    { id: 'SUPP0004', name: 'شركة المسافر العالمية' },
-                    { id: 'SUPP0005', name: 'شركة نقل المعتمرين' }
-                ];
-                break;
-            case 'employee':
-                accounts = [
-                    { id: 'EMP0001', name: 'أحمد محمد علي - مدير مبيعات' },
-                    { id: 'EMP0002', name: 'سارة عبدالله محمد - منسقة حجوزات' },
-                    { id: 'EMP0003', name: 'خالد سعيد عبدالرحمن - مختص تأشيرات' },
-                    { id: 'EMP0004', name: 'نورة محمد العتيبي - محاسبة' },
-                    { id: 'EMP0005', name: 'فهد عبدالله السبيعي - مندوب' }
-                ];
-                break;
             case 'bank':
-                accounts = [
-                    { id: 'BANK0001', name: 'مصرف الراجحي - الحساب الرئيسي' },
-                    { id: 'BANK0002', name: 'البنك الأهلي - حساب جاري' },
-                    { id: 'BANK0003', name: 'بنك الرياض - حساب تمويل' },
-                    { id: 'BANK0004', name: 'سامبا - حساب مشتريات' }
-                ];
+                accounts = window.bankAccounts || [];
                 break;
-            case 'cashbox':
-                accounts = [
-                    { id: 'CASH0001', name: 'الصندوق الرئيسي' },
-                    { id: 'CASH0002', name: 'صندوق المبيعات' },
-                    { id: 'CASH0003', name: 'صندوق المصروفات النثرية' }
-                ];
+            case 'cash':
+                accounts = window.cashAccounts || [];
                 break;
         }
         
@@ -473,17 +447,198 @@
             return;
         }
         
-        // تحديث البيانات في الكشف
-        updateStatementHeader(accountType, accountId, dateFrom, dateTo);
+        // عرض حالة التحميل
+        const loadingContainer = document.createElement('div');
+        loadingContainer.id = 'statement-loading';
+        loadingContainer.className = 'text-center p-5';
+        loadingContainer.innerHTML = `
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">جاري التحميل...</span>
+            </div>
+            <p class="mt-2">جاري تحميل البيانات...</p>
+        `;
         
-        // عرض كشف الحساب
-        document.getElementById('account-statement-card').classList.remove('d-none');
+        const statementCard = document.getElementById('account-statement-card');
+        statementCard.classList.remove('d-none');
         
-        // إنشاء رسم بياني للحركات
-        createAccountTransactionsChart();
+        // مسح المحتوى السابق وإظهار التحميل
+        const cardBody = statementCard.querySelector('.card-body');
+        const previousContent = cardBody.innerHTML;
+        cardBody.innerHTML = '';
+        cardBody.appendChild(loadingContainer);
         
-        // التمرير إلى كشف الحساب
-        document.getElementById('account-statement-card').scrollIntoView({ behavior: 'smooth' });
+        // جلب البيانات من الخادم
+        fetch(`/api/account-transactions?account_type=${accountType}&account_id=${accountId}&date_from=${dateFrom}&date_to=${dateTo}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('فشل استرجاع البيانات من الخادم');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // إزالة عنصر التحميل
+                document.getElementById('statement-loading').remove();
+                
+                // إعادة المحتوى الأصلي
+                cardBody.innerHTML = previousContent;
+                
+                if (data.success) {
+                    // تحديث بيانات كشف الحساب من البيانات المسترجعة
+                    updateStatementDataFromAPI(data, dateFrom, dateTo);
+                    
+                    // إنشاء رسم بياني للحركات
+                    createAccountTransactionsChart(data.transactions);
+                    
+                    // التمرير إلى كشف الحساب
+                    document.getElementById('account-statement-card').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    // في حالة عدم نجاح استرجاع البيانات
+                    alert('حدث خطأ أثناء استرجاع بيانات الحساب: ' + (data.message || 'خطأ غير معروف'));
+                    statementCard.classList.add('d-none');
+                }
+            })
+            .catch(error => {
+                // إزالة عنصر التحميل
+                const loadingElement = document.getElementById('statement-loading');
+                if (loadingElement) {
+                    loadingElement.remove();
+                }
+                
+                // إعادة المحتوى الأصلي
+                cardBody.innerHTML = previousContent;
+                
+                // عرض الخطأ
+                alert('حدث خطأ: ' + error.message);
+                statementCard.classList.add('d-none');
+            });
+    }
+    
+    // تحديث بيانات كشف الحساب من بيانات API
+    function updateStatementDataFromAPI(data, dateFrom, dateTo) {
+        const account = data.account;
+        const transactions = data.transactions;
+        
+        // تحديث معلومات الحساب
+        document.getElementById('statement-account-name').textContent = account.name;
+        document.getElementById('header-account-name').textContent = account.name;
+        document.getElementById('header-account-number').textContent = `${account.type.toUpperCase()}${account.id}`;
+        document.getElementById('header-account-category').textContent = account.type === 'bank' ? 'حساب بنكي' : 'صندوق نقدي';
+        
+        // تحديث فترة الكشف
+        document.getElementById('header-from-date').textContent = dateFrom;
+        document.getElementById('header-to-date').textContent = dateTo;
+        
+        // تحديث تاريخ الطباعة
+        document.getElementById('header-print-date').textContent = formatDate(new Date());
+        
+        // تحديث الرصيد الختامي
+        const closingBalance = account.balance;
+        const closingBalanceElement = document.getElementById('header-closing-balance');
+        closingBalanceElement.textContent = `${formatCurrency(closingBalance)} ر.س`;
+        closingBalanceElement.className = closingBalance >= 0 ? 'text-success' : 'text-danger';
+        
+        // مسح صفوف الجدول الحالية
+        const tableBody = document.getElementById('account-statement-rows');
+        tableBody.innerHTML = '';
+        
+        // حساب إجماليات المدين والدائن
+        let totalDebits = 0;
+        let totalCredits = 0;
+        
+        // إضافة الحركات
+        if (transactions.length > 0) {
+            // إضافة صف الرصيد الافتتاحي
+            const openingBalance = closingBalance - transactions.reduce((sum, t) => {
+                return t.is_debit ? sum - t.amount : sum + t.amount;
+            }, 0);
+            
+            const openingBalanceRow = document.createElement('tr');
+            openingBalanceRow.className = 'opening-balance-row bg-light';
+            openingBalanceRow.innerHTML = `
+                <td>${dateFrom}</td>
+                <td>-</td>
+                <td>رصيد افتتاحي</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="text-${openingBalance >= 0 ? 'success' : 'danger'}">${formatCurrency(openingBalance)} ر.س</td>
+                <td>-</td>
+            `;
+            tableBody.appendChild(openingBalanceRow);
+            
+            // إضافة الحركات
+            transactions.forEach(transaction => {
+                // تحديد إذا كانت الحركة مدينة أو دائنة
+                const isDebit = transaction.is_debit;
+                
+                if (isDebit) {
+                    totalDebits += transaction.amount;
+                } else {
+                    totalCredits += transaction.amount;
+                }
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${transaction.date}</td>
+                    <td>${transaction.id}</td>
+                    <td>${transaction.description || transaction.type}</td>
+                    <td class="${isDebit ? 'text-danger' : ''}">${isDebit ? formatCurrency(transaction.amount) + ' ر.س' : '-'}</td>
+                    <td class="${!isDebit ? 'text-success' : ''}">${!isDebit ? formatCurrency(transaction.amount) + ' ر.س' : '-'}</td>
+                    <td class="text-${transaction.balance_after >= 0 ? 'success' : 'danger'}">${transaction.balance_after ? formatCurrency(transaction.balance_after) + ' ر.س' : '-'}</td>
+                    <td>${transaction.reference || '-'}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        } else {
+            // إذا لم تكن هناك حركات، عرض رسالة فارغة
+            const emptyRow = document.createElement('tr');
+            emptyRow.innerHTML = `
+                <td colspan="7" class="text-center">لا توجد حركات في هذه الفترة</td>
+            `;
+            tableBody.appendChild(emptyRow);
+        }
+        
+        // إضافة صف الإجماليات
+        const totalRow = document.createElement('tr');
+        totalRow.className = 'font-weight-bold bg-light';
+        totalRow.innerHTML = `
+            <td colspan="3" class="text-center">الإجمالي</td>
+            <td class="text-danger">${formatCurrency(totalDebits)} ر.س</td>
+            <td class="text-success">${formatCurrency(totalCredits)} ر.س</td>
+            <td class="text-${closingBalance >= 0 ? 'success' : 'danger'}">${formatCurrency(closingBalance)} ر.س</td>
+            <td>-</td>
+        `;
+        document.querySelector('table tfoot').innerHTML = '';
+        document.querySelector('table tfoot').appendChild(totalRow);
+        
+        // تحديث ملخص الحساب
+        const openingBalance = closingBalance - totalCredits + totalDebits;
+        document.querySelector('.card.bg-light .table tbody').innerHTML = `
+            <tr>
+                <td>الرصيد الافتتاحي</td>
+                <td class="text-left text-${openingBalance >= 0 ? 'success' : 'danger'}">${formatCurrency(openingBalance)} ر.س</td>
+            </tr>
+            <tr>
+                <td>إجمالي الحركات المدينة</td>
+                <td class="text-left text-danger">${formatCurrency(totalDebits)} ر.س</td>
+            </tr>
+            <tr>
+                <td>إجمالي الحركات الدائنة</td>
+                <td class="text-left text-success">${formatCurrency(totalCredits)} ر.س</td>
+            </tr>
+            <tr>
+                <td>صافي الحركات</td>
+                <td class="text-left text-${totalCredits - totalDebits >= 0 ? 'success' : 'danger'}">${formatCurrency(totalCredits - totalDebits)} ر.س</td>
+            </tr>
+            <tr class="font-weight-bold">
+                <td>الرصيد الختامي</td>
+                <td class="text-left text-${closingBalance >= 0 ? 'success' : 'danger'}">${formatCurrency(closingBalance)} ر.س</td>
+            </tr>
+        `;
+    }
+    
+    // تنسيق المبالغ المالية
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('ar-SA').format(Math.abs(amount));
     }
     
     // تحديث بيانات رأس كشف الحساب
@@ -517,28 +672,72 @@
     }
     
     // إنشاء رسم بياني للحركات
-    function createAccountTransactionsChart() {
+    function createAccountTransactionsChart(transactions = []) {
         const ctx = document.getElementById('accountTransactionsChart').getContext('2d');
         
+        // تدمير الرسم البياني السابق إن وجد
         if (window.transactionsChart) {
             window.transactionsChart.destroy();
         }
         
+        // إذا لم يتم تمرير حركات، استخدم بيانات تجريبية
+        if (!transactions || transactions.length === 0) {
+            transactions = [
+                { date: '2025-01-03', is_debit: true, amount: 2500 },
+                { date: '2025-01-10', is_debit: false, amount: 1000 },
+                { date: '2025-01-15', is_debit: true, amount: 3000 },
+                { date: '2025-01-25', is_debit: false, amount: 2000 }
+            ];
+        }
+        
+        // تجميع البيانات حسب التاريخ
+        const groupedData = {};
+        transactions.forEach(transaction => {
+            // استخراج التاريخ فقط (بدون الوقت)
+            const dateOnly = transaction.date.split(' ')[0];
+            
+            if (!groupedData[dateOnly]) {
+                groupedData[dateOnly] = {
+                    debit: 0,
+                    credit: 0
+                };
+            }
+            
+            if (transaction.is_debit) {
+                groupedData[dateOnly].debit += transaction.amount;
+            } else {
+                groupedData[dateOnly].credit += transaction.amount;
+            }
+        });
+        
+        // استخراج التواريخ المرتبة
+        const dates = Object.keys(groupedData).sort();
+        
+        // إنشاء مصفوفات البيانات
+        const debitData = dates.map(date => groupedData[date].debit);
+        const creditData = dates.map(date => groupedData[date].credit);
+        
+        // تنسيق التواريخ للعرض في القائمة
+        const formattedDates = dates.map(date => {
+            const [year, month, day] = date.split('-');
+            return `${day}/${month}`;
+        });
+        
         window.transactionsChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['03/01', '10/01', '15/01', '25/01'],
+                labels: formattedDates,
                 datasets: [
                     {
                         label: 'حركات مدينة',
-                        data: [2500, 0, 3000, 0],
+                        data: debitData,
                         backgroundColor: 'rgba(255, 99, 132, 0.5)',
                         borderColor: 'rgb(255, 99, 132)',
                         borderWidth: 1
                     },
                     {
                         label: 'حركات دائنة',
-                        data: [0, 1000, 0, 2000],
+                        data: creditData,
                         backgroundColor: 'rgba(75, 192, 192, 0.5)',
                         borderColor: 'rgb(75, 192, 192)',
                         borderWidth: 1

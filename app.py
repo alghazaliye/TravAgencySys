@@ -794,7 +794,7 @@ def banks():
     
     # حساب الإجماليات
     total_cash = sum(register.balance for register in cash_registers)
-    total_bank = sum(account.balance for account in bank_accounts)
+    total_bank = sum(account.current_balance for account in bank_accounts)
     
     # الحصول على حركات الحسابات الأخيرة (10 حركات)
     # في المستقبل سيتم استبدال هذا بحركات حقيقية من قاعدة البيانات
@@ -843,7 +843,7 @@ def api_bank_accounts():
         'account_number': account.account_number,
         'iban': account.iban,
         'bank_name': account.bank_name,
-        'balance': account.balance,
+        'balance': account.current_balance,
         'is_active': account.is_active
     } for account in bank_accounts]
     
