@@ -140,32 +140,39 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>اسم المسافر</th>
-                            <th>رقم الهاتف</th>
-                            <th>من</th>
-                            <th>إلى</th>
-                            <th>نوع الرحلة</th>
-                            <th>نوع الباص</th>
-                            <th>تاريخ السفر</th>
-                            <th>المبلغ</th>
-                            <th>طريقة الدفع</th>
-                            <th>الحالة</th>
+                            <th>رقم الحجز</th>
+                            <th>تاريخ الحجز</th>
                             <th>الإجراءات</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {% if bookings %}
+                            {% for booking in bookings %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ booking.booking_number }}</td>
+                                <td>{{ booking.created_at.strftime('%d/%m/%Y %H:%M') if booking.created_at else 'غير متوفر' }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal-view-ticket">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-info btn-xs">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-warning btn-xs">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-xs">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
                         <tr>
                             <td>1</td>
-                            <td>محمد أحمد عبدالله</td>
-                            <td>0512345678</td>
-                            <td>الرياض</td>
-                            <td>مكة المكرمة</td>
-                            <td>ذهاب وعودة</td>
-                            <td>سياحي</td>
-                            <td>15/06/2023</td>
-                            <td>350 ر.س</td>
-                            <td>نقد الصندوق</td>
-                            <td><span class="badge badge-success">مؤكد</span></td>
+                            <td>BUS-000001</td>
+                            <td>15/06/2023 10:30</td>
                             <td>
                                 <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal-view-ticket">
                                     <i class="fas fa-eye"></i>
@@ -183,16 +190,8 @@
                         </tr>
                         <tr>
                             <td>2</td>
-                            <td>فاطمة محمد سعيد</td>
-                            <td>0523456789</td>
-                            <td>جدة</td>
-                            <td>المدينة المنورة</td>
-                            <td>ذهاب</td>
-                            <td>عادي</td>
-                            <td>16/06/2023</td>
-                            <td>120 ر.س</td>
-                            <td>تحويل بنكي</td>
-                            <td><span class="badge badge-success">مؤكد</span></td>
+                            <td>BUS-000002</td>
+                            <td>16/06/2023 14:15</td>
                             <td>
                                 <button type="button" class="btn btn-primary btn-xs">
                                     <i class="fas fa-eye"></i>
@@ -210,16 +209,8 @@
                         </tr>
                         <tr>
                             <td>3</td>
-                            <td>عبدالرحمن خالد العمري</td>
-                            <td>0534567890</td>
-                            <td>الدمام</td>
-                            <td>الرياض</td>
-                            <td>ذهاب</td>
-                            <td>سياحي</td>
-                            <td>17/06/2023</td>
-                            <td>200 ر.س</td>
-                            <td>أجل العميل</td>
-                            <td><span class="badge badge-warning">قيد الانتظار</span></td>
+                            <td>BUS-000003</td>
+                            <td>17/06/2023 09:45</td>
                             <td>
                                 <button type="button" class="btn btn-primary btn-xs">
                                     <i class="fas fa-eye"></i>
@@ -237,16 +228,8 @@
                         </tr>
                         <tr>
                             <td>4</td>
-                            <td>نوره سلطان الحربي</td>
-                            <td>0545678901</td>
-                            <td>الرياض</td>
-                            <td>أبها</td>
-                            <td>ذهاب وعودة</td>
-                            <td>سياحي</td>
-                            <td>18/06/2023</td>
-                            <td>450 ر.س</td>
-                            <td>نقد الصندوق</td>
-                            <td><span class="badge badge-success">مؤكد</span></td>
+                            <td>BUS-000004</td>
+                            <td>18/06/2023 11:20</td>
                             <td>
                                 <button type="button" class="btn btn-primary btn-xs">
                                     <i class="fas fa-eye"></i>
@@ -264,16 +247,8 @@
                         </tr>
                         <tr>
                             <td>5</td>
-                            <td>خالد عبدالله القحطاني</td>
-                            <td>0556789012</td>
-                            <td>الطائف</td>
-                            <td>مكة المكرمة</td>
-                            <td>ذهاب</td>
-                            <td>عادي</td>
-                            <td>15/06/2023</td>
-                            <td>80 ر.س</td>
-                            <td>نقد الصندوق</td>
-                            <td><span class="badge badge-danger">ملغي</span></td>
+                            <td>BUS-000005</td>
+                            <td>19/06/2023 10:15</td>
                             <td>
                                 <button type="button" class="btn btn-primary btn-xs">
                                     <i class="fas fa-eye"></i>
@@ -289,6 +264,7 @@
                                 </button>
                             </td>
                         </tr>
+                        {% endif %}
                     </tbody>
                 </table>
             </div>
