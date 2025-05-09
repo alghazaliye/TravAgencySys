@@ -460,6 +460,332 @@
                                     </div>
                                 </div>
                             </div>
+                            
+                            <!-- إعدادات سندات الصرف والقبض -->
+                            <div class="tab-pane fade" id="vouchers-settings" role="tabpanel" aria-labelledby="vouchers-tab">
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <button class="btn btn-success" data-toggle="modal" data-target="#add-payment-voucher-type-modal">
+                                            <i class="fas fa-plus ml-1"></i> إضافة نوع سند صرف
+                                        </button>
+                                        <button class="btn btn-primary" data-toggle="modal" data-target="#add-receipt-voucher-type-modal">
+                                            <i class="fas fa-plus ml-1"></i> إضافة نوع سند قبض
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- جدول أنواع سندات الصرف -->
+                                <div class="card card-primary card-outline">
+                                    <div class="card-header">
+                                        <h3 class="card-title">أنواع سندات الصرف</h3>
+                                    </div>
+                                    <div class="card-body table-responsive p-0">
+                                        <table class="table table-hover table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>الكود</th>
+                                                    <th>الاسم</th>
+                                                    <th>الوصف</th>
+                                                    <th>الحالة</th>
+                                                    <th>الإجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for voucher_type in payment_voucher_types %}
+                                                <tr>
+                                                    <td>{{ voucher_type.id }}</td>
+                                                    <td>{{ voucher_type.code }}</td>
+                                                    <td>{{ voucher_type.name }}</td>
+                                                    <td>{{ voucher_type.description }}</td>
+                                                    <td>
+                                                        {% if voucher_type.is_active %}
+                                                        <span class="badge badge-success">مفعّل</span>
+                                                        {% else %}
+                                                        <span class="badge badge-danger">معطّل</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-primary edit-payment-voucher-type" data-id="{{ voucher_type.id }}">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-danger delete-payment-voucher-type" data-id="{{ voucher_type.id }}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <!-- جدول أنواع سندات القبض -->
+                                <div class="card card-primary card-outline mt-4">
+                                    <div class="card-header">
+                                        <h3 class="card-title">أنواع سندات القبض</h3>
+                                    </div>
+                                    <div class="card-body table-responsive p-0">
+                                        <table class="table table-hover table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>الكود</th>
+                                                    <th>الاسم</th>
+                                                    <th>الوصف</th>
+                                                    <th>الحالة</th>
+                                                    <th>الإجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for voucher_type in receipt_voucher_types %}
+                                                <tr>
+                                                    <td>{{ voucher_type.id }}</td>
+                                                    <td>{{ voucher_type.code }}</td>
+                                                    <td>{{ voucher_type.name }}</td>
+                                                    <td>{{ voucher_type.description }}</td>
+                                                    <td>
+                                                        {% if voucher_type.is_active %}
+                                                        <span class="badge badge-success">مفعّل</span>
+                                                        {% else %}
+                                                        <span class="badge badge-danger">معطّل</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-primary edit-receipt-voucher-type" data-id="{{ voucher_type.id }}">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-danger delete-receipt-voucher-type" data-id="{{ voucher_type.id }}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <!-- إعدادات ترقيم السندات -->
+                                <div class="card card-primary card-outline mt-4">
+                                    <div class="card-header">
+                                        <h3 class="card-title">إعدادات ترقيم السندات</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="voucher-numbering-form">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="payment-voucher-prefix">بادئة سندات الصرف</label>
+                                                        <input type="text" class="form-control" id="payment-voucher-prefix" name="payment_voucher_prefix" value="{{ financial_settings.payment_voucher_prefix if financial_settings else 'PV' }}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="receipt-voucher-prefix">بادئة سندات القبض</label>
+                                                        <input type="text" class="form-control" id="receipt-voucher-prefix" name="receipt_voucher_prefix" value="{{ financial_settings.receipt_voucher_prefix if financial_settings else 'RV' }}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox" class="custom-control-input" id="use-fiscal-year-in-voucher-numbers" name="use_fiscal_year_in_voucher_numbers" {% if financial_settings and financial_settings.use_fiscal_year_in_voucher_numbers %}checked{% endif %}>
+                                                            <label class="custom-control-label" for="use-fiscal-year-in-voucher-numbers">استخدام السنة المالية في ترقيم السندات</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox" class="custom-control-input" id="reset-voucher-numbers-yearly" name="reset_voucher_numbers_yearly" {% if financial_settings and financial_settings.reset_voucher_numbers_yearly %}checked{% endif %}>
+                                                            <label class="custom-control-label" for="reset-voucher-numbers-yearly">إعادة ضبط أرقام السندات سنوياً</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col-md-12">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <i class="fas fa-save ml-1"></i> حفظ إعدادات السندات
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- إعدادات الميزانية -->
+                            <div class="tab-pane fade" id="budget-settings" role="tabpanel" aria-labelledby="budget-tab">
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <button class="btn btn-success" data-toggle="modal" data-target="#add-budget-category-modal">
+                                            <i class="fas fa-plus ml-1"></i> إضافة فئة ميزانية
+                                        </button>
+                                        <button class="btn btn-primary" data-toggle="modal" data-target="#add-budget-item-modal">
+                                            <i class="fas fa-plus ml-1"></i> إضافة بند ميزانية
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- جدول فئات الميزانية -->
+                                <div class="card card-primary card-outline">
+                                    <div class="card-header">
+                                        <h3 class="card-title">فئات الميزانية</h3>
+                                    </div>
+                                    <div class="card-body table-responsive p-0">
+                                        <table class="table table-hover table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>الاسم</th>
+                                                    <th>الوصف</th>
+                                                    <th>النوع</th>
+                                                    <th>الحالة</th>
+                                                    <th>الإجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for category in budget_categories %}
+                                                <tr>
+                                                    <td>{{ category.id }}</td>
+                                                    <td>{{ category.name }}</td>
+                                                    <td>{{ category.description }}</td>
+                                                    <td>
+                                                        {% if category.type == 'income' %}
+                                                        <span class="text-success">إيرادات</span>
+                                                        {% elif category.type == 'expense' %}
+                                                        <span class="text-danger">مصروفات</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {% if category.is_active %}
+                                                        <span class="badge badge-success">مفعّل</span>
+                                                        {% else %}
+                                                        <span class="badge badge-danger">معطّل</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-primary edit-budget-category" data-id="{{ category.id }}">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-danger delete-budget-category" data-id="{{ category.id }}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <!-- جدول بنود الميزانية -->
+                                <div class="card card-primary card-outline mt-4">
+                                    <div class="card-header">
+                                        <h3 class="card-title">بنود الميزانية</h3>
+                                    </div>
+                                    <div class="card-body table-responsive p-0">
+                                        <table class="table table-hover table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>الاسم</th>
+                                                    <th>الفئة</th>
+                                                    <th>المبلغ التقديري</th>
+                                                    <th>المستخدم حتى الآن</th>
+                                                    <th>النسبة</th>
+                                                    <th>الإجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for item in budget_items %}
+                                                <tr>
+                                                    <td>{{ item.id }}</td>
+                                                    <td>{{ item.name }}</td>
+                                                    <td>{{ item.category.name }}</td>
+                                                    <td>{{ item.amount }} {{ item.currency.symbol }}</td>
+                                                    <td>{{ item.used_amount }} {{ item.currency.symbol }}</td>
+                                                    <td>
+                                                        <div class="progress">
+                                                            {% set percentage = (item.used_amount / item.amount * 100) if item.amount > 0 else 0 %}
+                                                            <div class="progress-bar {% if percentage > 90 %}bg-danger{% elif percentage > 70 %}bg-warning{% else %}bg-success{% endif %}" role="progressbar" style="width: {{ percentage }}%" aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100">{{ percentage|round|int }}%</div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-primary edit-budget-item" data-id="{{ item.id }}">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-danger delete-budget-item" data-id="{{ item.id }}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <!-- إعدادات الميزانية -->
+                                <div class="card card-primary card-outline mt-4">
+                                    <div class="card-header">
+                                        <h3 class="card-title">إعدادات الميزانية التقديرية</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="budget-settings-form">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox" class="custom-control-input" id="enable-budget-alerts" name="enable_budget_alerts" {% if financial_settings and financial_settings.enable_budget_alerts %}checked{% endif %}>
+                                                            <label class="custom-control-label" for="enable-budget-alerts">تفعيل تنبيهات تجاوز الميزانية</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox" class="custom-control-input" id="restrict-over-budget-expenses" name="restrict_over_budget_expenses" {% if financial_settings and financial_settings.restrict_over_budget_expenses %}checked{% endif %}>
+                                                            <label class="custom-control-label" for="restrict-over-budget-expenses">منع المصروفات التي تتجاوز الميزانية</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="budget-threshold-warning">نسبة التنبيه للميزانية (%)</label>
+                                                        <input type="number" class="form-control" id="budget-threshold-warning" name="budget_threshold_warning" value="{{ financial_settings.budget_threshold_warning if financial_settings else '70' }}" min="1" max="100">
+                                                        <small class="form-text text-muted">النسبة المئوية التي يتم التنبيه عندها باقتراب استنفاذ الميزانية</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="budget-fiscal-year">السنة المالية للميزانية</label>
+                                                        <select class="form-control" id="budget-fiscal-year" name="budget_fiscal_year_id">
+                                                            {% for period in fiscal_periods %}
+                                                            <option value="{{ period.id }}" {% if financial_settings and financial_settings.current_fiscal_period_id == period.id %}selected{% endif %}>
+                                                                {{ period.name }} ({{ period.start_date|date }} - {{ period.end_date|date }})
+                                                            </option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col-md-12">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <i class="fas fa-save ml-1"></i> حفظ إعدادات الميزانية
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
