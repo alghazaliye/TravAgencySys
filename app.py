@@ -522,5 +522,9 @@ def employees():
 def account_statements():
     return render_template('account-statements.html')
 
+@app.route('/system-settings')
+def system_settings():
+    return render_template('system-settings.html')
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
