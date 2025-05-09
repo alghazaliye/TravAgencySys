@@ -1,0 +1,968 @@
+{% extends "layout.html" %}
+
+{% block title %}الإعدادات المالية{% endblock %}
+
+{% block content %}
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">الإعدادات المالية</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="/dashboard">الرئيسية</a></li>
+                    <li class="breadcrumb-item">الإدارة المالية</li>
+                    <li class="breadcrumb-item active">الإعدادات المالية</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary card-outline card-tabs">
+                    <div class="card-header p-0 pt-1 border-bottom-0">
+                        <ul class="nav nav-tabs" id="settings-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="general-tab" data-toggle="pill" href="#general-settings" role="tab" aria-controls="general-settings" aria-selected="true">الإعدادات العامة</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="accounts-tab" data-toggle="pill" href="#account-settings" role="tab" aria-controls="account-settings" aria-selected="false">الحسابات</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="tax-tab" data-toggle="pill" href="#tax-settings" role="tab" aria-controls="tax-settings" aria-selected="false">الضرائب والرسوم</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="currencies-tab" data-toggle="pill" href="#currencies-settings" role="tab" aria-controls="currencies-settings" aria-selected="false">العملات</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="fiscal-tab" data-toggle="pill" href="#fiscal-settings" role="tab" aria-controls="fiscal-settings" aria-selected="false">الفترات المالية</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content" id="settings-tabsContent">
+                            <!-- الإعدادات العامة -->
+                            <div class="tab-pane fade show active" id="general-settings" role="tabpanel" aria-labelledby="general-tab">
+                                <form id="general-settings-form">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="company-name">اسم المنشأة</label>
+                                                <input type="text" class="form-control" id="company-name" name="company_name" value="{{ financial_settings.company_name if financial_settings else 'وكالة السفر والسياحة' }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="fiscal-year-start">بداية السنة المالية</label>
+                                                <div class="input-group date" id="fiscal-year-start-date" data-target-input="nearest">
+                                                    <input type="text" class="form-control datetimepicker-input" id="fiscal-year-start" data-target="#fiscal-year-start-date" value="{{ financial_settings.fiscal_year_start|date if financial_settings.fiscal_year_start else '01/01/2025' }}">
+                                                    <div class="input-group-append" data-target="#fiscal-year-start-date" data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="base-currency">العملة الأساسية</label>
+                                                <select class="form-control" id="base-currency" name="base_currency_id">
+                                                    {% for currency in currencies %}
+                                                    <option value="{{ currency.id }}" {% if financial_settings and financial_settings.base_currency_id == currency.id %}selected{% endif %}>
+                                                        {{ currency.name }} ({{ currency.code }})
+                                                    </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="default-tax">الضريبة الافتراضية</label>
+                                                <select class="form-control" id="default-tax" name="default_tax_id">
+                                                    {% for tax in tax_settings %}
+                                                    <option value="{{ tax.id }}" {% if financial_settings and financial_settings.default_tax_id == tax.id %}selected{% endif %}>
+                                                        {{ tax.name }} ({{ tax.rate * 100 }}%)
+                                                    </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="custom-control custom-switch">
+                                                    <input type="checkbox" class="custom-control-input" id="enable-cost-centers" name="enable_cost_centers" {% if financial_settings and financial_settings.enable_cost_centers %}checked{% endif %}>
+                                                    <label class="custom-control-label" for="enable-cost-centers">تفعيل مراكز التكلفة</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="custom-control custom-switch">
+                                                    <input type="checkbox" class="custom-control-input" id="enable-budgets" name="enable_budgets" {% if financial_settings and financial_settings.enable_budgets %}checked{% endif %}>
+                                                    <label class="custom-control-label" for="enable-budgets">تفعيل الميزانيات التقديرية</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="default-cash-account">حساب الصندوق الافتراضي</label>
+                                                <select class="form-control" id="default-cash-account" name="default_cash_account_id">
+                                                    {% for account in cash_accounts %}
+                                                    <option value="{{ account.id }}" {% if financial_settings and financial_settings.default_cash_account_id == account.id %}selected{% endif %}>
+                                                        {{ account.name }} ({{ account.account_number }})
+                                                    </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="default-bank-account">حساب البنك الافتراضي</label>
+                                                <select class="form-control" id="default-bank-account" name="default_bank_account_id">
+                                                    {% for account in bank_accounts %}
+                                                    <option value="{{ account.id }}" {% if financial_settings and financial_settings.default_bank_account_id == account.id %}selected{% endif %}>
+                                                        {{ account.name }} ({{ account.account_number }})
+                                                    </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-md-12">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-save ml-1"></i> حفظ الإعدادات
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <!-- إعدادات الحسابات -->
+                            <div class="tab-pane fade" id="account-settings" role="tabpanel" aria-labelledby="accounts-tab">
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <button class="btn btn-success" data-toggle="modal" data-target="#add-account-category-modal">
+                                            <i class="fas fa-plus ml-1"></i> إضافة فئة حسابات
+                                        </button>
+                                        <button class="btn btn-primary" data-toggle="modal" data-target="#add-account-modal">
+                                            <i class="fas fa-plus ml-1"></i> إضافة حساب
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- جدول فئات الحسابات -->
+                                <div class="card card-primary card-outline">
+                                    <div class="card-header">
+                                        <h3 class="card-title">فئات الحسابات</h3>
+                                    </div>
+                                    <div class="card-body table-responsive p-0">
+                                        <table class="table table-hover table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>الكود</th>
+                                                    <th>الاسم</th>
+                                                    <th>الوصف</th>
+                                                    <th>الحالة</th>
+                                                    <th>الإجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for category in account_categories %}
+                                                <tr>
+                                                    <td>{{ category.id }}</td>
+                                                    <td>{{ category.code }}</td>
+                                                    <td>{{ category.name }}</td>
+                                                    <td>{{ category.description }}</td>
+                                                    <td>
+                                                        {% if category.is_active %}
+                                                        <span class="badge badge-success">مفعّل</span>
+                                                        {% else %}
+                                                        <span class="badge badge-danger">معطّل</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-primary edit-category" data-id="{{ category.id }}">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-danger delete-category" data-id="{{ category.id }}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <!-- جدول الحسابات -->
+                                <div class="card card-primary card-outline">
+                                    <div class="card-header">
+                                        <h3 class="card-title">الحسابات</h3>
+                                    </div>
+                                    <div class="card-body table-responsive p-0">
+                                        <table class="table table-hover table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>رقم الحساب</th>
+                                                    <th>الاسم</th>
+                                                    <th>الفئة</th>
+                                                    <th>النوع</th>
+                                                    <th>الرصيد</th>
+                                                    <th>الحالة</th>
+                                                    <th>الإجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for account in accounts %}
+                                                <tr>
+                                                    <td>{{ account.id }}</td>
+                                                    <td>{{ account.account_number }}</td>
+                                                    <td>{{ account.name }}</td>
+                                                    <td>{{ account.category.name if account.category else '' }}</td>
+                                                    <td>{{ account.account_type }}</td>
+                                                    <td>{{ account.balance }}</td>
+                                                    <td>
+                                                        {% if account.is_active %}
+                                                        <span class="badge badge-success">مفعّل</span>
+                                                        {% else %}
+                                                        <span class="badge badge-danger">معطّل</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-info view-account" data-id="{{ account.id }}">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-primary edit-account" data-id="{{ account.id }}">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-danger delete-account" data-id="{{ account.id }}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- إعدادات الضرائب -->
+                            <div class="tab-pane fade" id="tax-settings" role="tabpanel" aria-labelledby="tax-tab">
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <button class="btn btn-success" data-toggle="modal" data-target="#add-tax-modal">
+                                            <i class="fas fa-plus ml-1"></i> إضافة ضريبة
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- جدول الضرائب -->
+                                <div class="card card-primary card-outline">
+                                    <div class="card-header">
+                                        <h3 class="card-title">الضرائب والرسوم</h3>
+                                    </div>
+                                    <div class="card-body table-responsive p-0">
+                                        <table class="table table-hover table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>الاسم</th>
+                                                    <th>النسبة</th>
+                                                    <th>افتراضي</th>
+                                                    <th>الحالة</th>
+                                                    <th>الإجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for tax in tax_settings %}
+                                                <tr>
+                                                    <td>{{ tax.id }}</td>
+                                                    <td>{{ tax.name }}</td>
+                                                    <td>{{ tax.rate * 100 }}%</td>
+                                                    <td>
+                                                        {% if tax.is_default %}
+                                                        <span class="badge badge-success">نعم</span>
+                                                        {% else %}
+                                                        <span class="badge badge-secondary">لا</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {% if tax.is_active %}
+                                                        <span class="badge badge-success">مفعّل</span>
+                                                        {% else %}
+                                                        <span class="badge badge-danger">معطّل</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-primary edit-tax" data-id="{{ tax.id }}">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-danger delete-tax" data-id="{{ tax.id }}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- إعدادات العملات -->
+                            <div class="tab-pane fade" id="currencies-settings" role="tabpanel" aria-labelledby="currencies-tab">
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <button class="btn btn-success" data-toggle="modal" data-target="#add-currency-modal">
+                                            <i class="fas fa-plus ml-1"></i> إضافة عملة
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- جدول العملات -->
+                                <div class="card card-primary card-outline">
+                                    <div class="card-header">
+                                        <h3 class="card-title">العملات</h3>
+                                    </div>
+                                    <div class="card-body table-responsive p-0">
+                                        <table class="table table-hover table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>الاسم</th>
+                                                    <th>الرمز</th>
+                                                    <th>الرمز المختصر</th>
+                                                    <th>سعر الصرف</th>
+                                                    <th>العملة الأساسية</th>
+                                                    <th>الحالة</th>
+                                                    <th>الإجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for currency in currencies %}
+                                                <tr>
+                                                    <td>{{ currency.id }}</td>
+                                                    <td>{{ currency.name }}</td>
+                                                    <td>{{ currency.code }}</td>
+                                                    <td>{{ currency.symbol }}</td>
+                                                    <td>{{ currency.exchange_rate }}</td>
+                                                    <td>
+                                                        {% if currency.is_base_currency %}
+                                                        <span class="badge badge-success">نعم</span>
+                                                        {% else %}
+                                                        <span class="badge badge-secondary">لا</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {% if currency.is_active %}
+                                                        <span class="badge badge-success">مفعّل</span>
+                                                        {% else %}
+                                                        <span class="badge badge-danger">معطّل</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-primary edit-currency" data-id="{{ currency.id }}">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-danger delete-currency" data-id="{{ currency.id }}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- إعدادات الفترات المالية -->
+                            <div class="tab-pane fade" id="fiscal-settings" role="tabpanel" aria-labelledby="fiscal-tab">
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <button class="btn btn-success" data-toggle="modal" data-target="#add-fiscal-period-modal">
+                                            <i class="fas fa-plus ml-1"></i> إضافة فترة مالية
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- جدول الفترات المالية -->
+                                <div class="card card-primary card-outline">
+                                    <div class="card-header">
+                                        <h3 class="card-title">الفترات المالية</h3>
+                                    </div>
+                                    <div class="card-body table-responsive p-0">
+                                        <table class="table table-hover table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>الاسم</th>
+                                                    <th>تاريخ البداية</th>
+                                                    <th>تاريخ النهاية</th>
+                                                    <th>الحالة</th>
+                                                    <th>تاريخ الإغلاق</th>
+                                                    <th>الإجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for period in financial_periods %}
+                                                <tr>
+                                                    <td>{{ period.id }}</td>
+                                                    <td>{{ period.name }}</td>
+                                                    <td>{{ period.start_date }}</td>
+                                                    <td>{{ period.end_date }}</td>
+                                                    <td>
+                                                        {% if period.is_closed %}
+                                                        <span class="badge badge-danger">مغلقة</span>
+                                                        {% else %}
+                                                        <span class="badge badge-success">مفتوحة</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>{{ period.closed_at if period.closed_at else 'لا يوجد' }}</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-primary edit-period" data-id="{{ period.id }}">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        {% if not period.is_closed %}
+                                                        <button class="btn btn-sm btn-warning close-period" data-id="{{ period.id }}">
+                                                            <i class="fas fa-lock"></i>
+                                                        </button>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- النوافذ المنبثقة -->
+<!-- إضافة فئة حسابات -->
+<div class="modal fade" id="add-account-category-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">إضافة فئة حسابات جديدة</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add-account-category-form">
+                    <div class="form-group">
+                        <label for="category-name">اسم الفئة</label>
+                        <input type="text" class="form-control" id="category-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category-code">الكود</label>
+                        <input type="text" class="form-control" id="category-code" name="code" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category-description">الوصف</label>
+                        <textarea class="form-control" id="category-description" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="category-active" name="is_active" checked>
+                            <label class="custom-control-label" for="category-active">مفعّل</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-primary" id="save-account-category">حفظ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- إضافة حساب -->
+<div class="modal fade" id="add-account-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">إضافة حساب جديد</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add-account-form">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="account-name">اسم الحساب</label>
+                                <input type="text" class="form-control" id="account-name" name="name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="account-number">رقم الحساب</label>
+                                <input type="text" class="form-control" id="account-number" name="account_number" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="account-category">فئة الحساب</label>
+                                <select class="form-control" id="account-category" name="category_id">
+                                    <option value="">-- اختر الفئة --</option>
+                                    {% for category in account_categories %}
+                                    <option value="{{ category.id }}">{{ category.name }} ({{ category.code }})</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="account-type">نوع الحساب</label>
+                                <input type="text" class="form-control" id="account-type" name="account_type">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="is-bank-account" name="is_bank_account">
+                                    <label class="custom-control-label" for="is-bank-account">حساب بنكي</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="is-cash-account" name="is_cash_account">
+                                    <label class="custom-control-label" for="is-cash-account">حساب صندوق</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="account-parent">الحساب الرئيسي</label>
+                                <select class="form-control" id="account-parent" name="parent_id">
+                                    <option value="">-- لا يوجد --</option>
+                                    {% for account in accounts %}
+                                    <option value="{{ account.id }}">{{ account.name }} ({{ account.account_number }})</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="account-balance">الرصيد الافتتاحي</label>
+                                <input type="number" class="form-control" id="account-balance" name="balance" value="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="account-description">الوصف</label>
+                        <textarea class="form-control" id="account-description" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="account-active" name="is_active" checked>
+                            <label class="custom-control-label" for="account-active">مفعّل</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-primary" id="save-account">حفظ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- إضافة ضريبة -->
+<div class="modal fade" id="add-tax-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">إضافة ضريبة جديدة</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add-tax-form">
+                    <div class="form-group">
+                        <label for="tax-name">اسم الضريبة</label>
+                        <input type="text" class="form-control" id="tax-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tax-rate">نسبة الضريبة (%)</label>
+                        <input type="number" class="form-control" id="tax-rate" name="rate" step="0.01" min="0" max="100" required>
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="tax-default" name="is_default">
+                            <label class="custom-control-label" for="tax-default">الضريبة الافتراضية</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="tax-active" name="is_active" checked>
+                            <label class="custom-control-label" for="tax-active">مفعّل</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-primary" id="save-tax">حفظ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- إضافة عملة -->
+<div class="modal fade" id="add-currency-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">إضافة عملة جديدة</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add-currency-form">
+                    <div class="form-group">
+                        <label for="currency-name">اسم العملة</label>
+                        <input type="text" class="form-control" id="currency-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="currency-code">الرمز (3 أحرف)</label>
+                        <input type="text" class="form-control" id="currency-code" name="code" maxlength="3" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="currency-symbol">الرمز المختصر</label>
+                        <input type="text" class="form-control" id="currency-symbol" name="symbol" maxlength="5">
+                    </div>
+                    <div class="form-group">
+                        <label for="currency-rate">سعر الصرف (نسبة إلى العملة الأساسية)</label>
+                        <input type="number" class="form-control" id="currency-rate" name="exchange_rate" step="0.0001" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="currency-base" name="is_base_currency">
+                            <label class="custom-control-label" for="currency-base">العملة الأساسية</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="currency-active" name="is_active" checked>
+                            <label class="custom-control-label" for="currency-active">مفعّل</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-primary" id="save-currency">حفظ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- إضافة فترة مالية -->
+<div class="modal fade" id="add-fiscal-period-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">إضافة فترة مالية جديدة</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add-fiscal-period-form">
+                    <div class="form-group">
+                        <label for="period-name">اسم الفترة</label>
+                        <input type="text" class="form-control" id="period-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="period-start">تاريخ البداية</label>
+                        <div class="input-group date" id="period-start-date" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" id="period-start" data-target="#period-start-date" required>
+                            <div class="input-group-append" data-target="#period-start-date" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="period-end">تاريخ النهاية</label>
+                        <div class="input-group date" id="period-end-date" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" id="period-end" data-target="#period-end-date" required>
+                            <div class="input-group-append" data-target="#period-end-date" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="period-notes">ملاحظات</label>
+                        <textarea class="form-control" id="period-notes" name="notes" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-primary" id="save-fiscal-period">حفظ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(function() {
+        // تهيئة اختيار التاريخ
+        $('#fiscal-year-start-date, #period-start-date, #period-end-date').datetimepicker({
+            format: 'DD/MM/YYYY',
+            locale: 'ar'
+        });
+        
+        // تهيئة تحديدات Select2
+        $('.select2').select2({
+            dir: "rtl",
+            language: "ar"
+        });
+        
+        // تهيئة الأحداث للنماذج
+        $('#general-settings-form').on('submit', function(e) {
+            e.preventDefault();
+            // هنا يتم إرسال البيانات إلى الخادم
+            Swal.fire({
+                icon: 'success',
+                title: 'تم الحفظ',
+                text: 'تم حفظ الإعدادات العامة بنجاح',
+                confirmButtonText: 'حسناً'
+            });
+        });
+        
+        // أحداث الحفظ لإضافة فئة حساب
+        $('#save-account-category').on('click', function() {
+            // هنا يتم إرسال البيانات إلى الخادم
+            Swal.fire({
+                icon: 'success',
+                title: 'تم الحفظ',
+                text: 'تم إضافة فئة الحساب بنجاح',
+                confirmButtonText: 'حسناً'
+            }).then(() => {
+                $('#add-account-category-modal').modal('hide');
+                $('#add-account-category-form')[0].reset();
+            });
+        });
+        
+        // أحداث الحفظ لإضافة حساب
+        $('#save-account').on('click', function() {
+            // هنا يتم إرسال البيانات إلى الخادم
+            Swal.fire({
+                icon: 'success',
+                title: 'تم الحفظ',
+                text: 'تم إضافة الحساب بنجاح',
+                confirmButtonText: 'حسناً'
+            }).then(() => {
+                $('#add-account-modal').modal('hide');
+                $('#add-account-form')[0].reset();
+            });
+        });
+        
+        // أحداث الحفظ لإضافة ضريبة
+        $('#save-tax').on('click', function() {
+            // هنا يتم إرسال البيانات إلى الخادم
+            Swal.fire({
+                icon: 'success',
+                title: 'تم الحفظ',
+                text: 'تم إضافة الضريبة بنجاح',
+                confirmButtonText: 'حسناً'
+            }).then(() => {
+                $('#add-tax-modal').modal('hide');
+                $('#add-tax-form')[0].reset();
+            });
+        });
+        
+        // أحداث الحفظ لإضافة عملة
+        $('#save-currency').on('click', function() {
+            // هنا يتم إرسال البيانات إلى الخادم
+            Swal.fire({
+                icon: 'success',
+                title: 'تم الحفظ',
+                text: 'تم إضافة العملة بنجاح',
+                confirmButtonText: 'حسناً'
+            }).then(() => {
+                $('#add-currency-modal').modal('hide');
+                $('#add-currency-form')[0].reset();
+            });
+        });
+        
+        // أحداث الحفظ لإضافة فترة مالية
+        $('#save-fiscal-period').on('click', function() {
+            // هنا يتم إرسال البيانات إلى الخادم
+            Swal.fire({
+                icon: 'success',
+                title: 'تم الحفظ',
+                text: 'تم إضافة الفترة المالية بنجاح',
+                confirmButtonText: 'حسناً'
+            }).then(() => {
+                $('#add-fiscal-period-modal').modal('hide');
+                $('#add-fiscal-period-form')[0].reset();
+            });
+        });
+        
+        // معالجة الضغط على زر حذف فئة حساب
+        $('.delete-category').on('click', function() {
+            const categoryId = $(this).data('id');
+            Swal.fire({
+                title: 'هل أنت متأكد؟',
+                text: 'سيتم حذف فئة الحساب وكل الحسابات المرتبطة بها. هذه العملية لا يمكن التراجع عنها!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'نعم، احذف!',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // هنا يتم إرسال طلب الحذف إلى الخادم
+                    Swal.fire(
+                        'تم الحذف!',
+                        'تم حذف فئة الحساب بنجاح.',
+                        'success'
+                    );
+                }
+            });
+        });
+        
+        // معالجة الضغط على زر حذف حساب
+        $('.delete-account').on('click', function() {
+            const accountId = $(this).data('id');
+            Swal.fire({
+                title: 'هل أنت متأكد؟',
+                text: 'سيتم حذف الحساب. هذه العملية لا يمكن التراجع عنها!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'نعم، احذف!',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // هنا يتم إرسال طلب الحذف إلى الخادم
+                    Swal.fire(
+                        'تم الحذف!',
+                        'تم حذف الحساب بنجاح.',
+                        'success'
+                    );
+                }
+            });
+        });
+        
+        // معالجة الضغط على زر حذف ضريبة
+        $('.delete-tax').on('click', function() {
+            const taxId = $(this).data('id');
+            Swal.fire({
+                title: 'هل أنت متأكد؟',
+                text: 'سيتم حذف الضريبة. هذه العملية لا يمكن التراجع عنها!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'نعم، احذف!',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // هنا يتم إرسال طلب الحذف إلى الخادم
+                    Swal.fire(
+                        'تم الحذف!',
+                        'تم حذف الضريبة بنجاح.',
+                        'success'
+                    );
+                }
+            });
+        });
+        
+        // معالجة الضغط على زر حذف عملة
+        $('.delete-currency').on('click', function() {
+            const currencyId = $(this).data('id');
+            Swal.fire({
+                title: 'هل أنت متأكد؟',
+                text: 'سيتم حذف العملة. هذه العملية لا يمكن التراجع عنها!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'نعم، احذف!',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // هنا يتم إرسال طلب الحذف إلى الخادم
+                    Swal.fire(
+                        'تم الحذف!',
+                        'تم حذف العملة بنجاح.',
+                        'success'
+                    );
+                }
+            });
+        });
+        
+        // معالجة الضغط على زر إغلاق فترة مالية
+        $('.close-period').on('click', function() {
+            const periodId = $(this).data('id');
+            Swal.fire({
+                title: 'هل أنت متأكد؟',
+                text: 'سيتم إغلاق الفترة المالية وتجميد جميع الحركات المالية فيها. هذه العملية لا يمكن التراجع عنها!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'نعم، أغلق الفترة!',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // هنا يتم إرسال طلب الإغلاق إلى الخادم
+                    Swal.fire(
+                        'تم الإغلاق!',
+                        'تم إغلاق الفترة المالية بنجاح.',
+                        'success'
+                    );
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

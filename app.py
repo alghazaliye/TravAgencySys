@@ -793,6 +793,149 @@ def employees():
 def account_statements():
     return render_template('account-statements.html')
 
+@app.route('/financial-settings', methods=['GET', 'POST'])
+def financial_settings():
+    """صفحة الإعدادات المالية والمحاسبية"""
+    # جلب الإعدادات المالية
+    settings = FinancialSettings.query.first()
+    
+    # جلب بيانات الحسابات والفئات والعملات والضرائب والفترات المالية
+    currencies = Currency.query.all()
+    tax_settings = TaxSettings.query.all()
+    account_categories = AccountCategory.query.all()
+    accounts = Account.query.all()
+    cash_accounts = Account.query.filter_by(is_cash_account=True).all()
+    bank_accounts = Account.query.filter_by(is_bank_account=True).all()
+    financial_periods = FinancialPeriod.query.all()
+    
+    # معالجة طلب التحديث (POST)
+    if request.method == 'POST':
+        action = request.form.get('action')
+        if action == 'update_general_settings':
+            # تحديث الإعدادات العامة
+            if not settings:
+                settings = FinancialSettings()
+                db.session.add(settings)
+            
+            settings.company_name = request.form.get('company_name')
+            # تحويل التاريخ من النص
+            try:
+                fiscal_year_start = datetime.strptime(request.form.get('fiscal_year_start'), '%d/%m/%Y').date()
+                settings.fiscal_year_start = fiscal_year_start
+            except:
+                pass
+            
+            settings.base_currency_id = request.form.get('base_currency_id', type=int)
+            settings.default_tax_id = request.form.get('default_tax_id', type=int)
+            settings.enable_cost_centers = 'enable_cost_centers' in request.form
+            settings.enable_budgets = 'enable_budgets' in request.form
+            settings.default_cash_account_id = request.form.get('default_cash_account_id', type=int)
+            settings.default_bank_account_id = request.form.get('default_bank_account_id', type=int)
+            
+            db.session.commit()
+            flash('تم تحديث الإعدادات المالية بنجاح', 'success')
+        
+        elif action == 'add_account_category':
+            # إضافة فئة حساب جديدة
+            category = AccountCategory(
+                name=request.form.get('name'),
+                code=request.form.get('code'),
+                description=request.form.get('description'),
+                is_active='is_active' in request.form
+            )
+            db.session.add(category)
+            db.session.commit()
+            flash('تم إضافة فئة الحساب بنجاح', 'success')
+        
+        elif action == 'add_account':
+            # إضافة حساب جديد
+            account = Account(
+                name=request.form.get('name'),
+                account_number=request.form.get('account_number'),
+                category_id=request.form.get('category_id', type=int),
+                account_type=request.form.get('account_type'),
+                is_bank_account='is_bank_account' in request.form,
+                is_cash_account='is_cash_account' in request.form,
+                parent_id=request.form.get('parent_id', type=int) or None,
+                balance=request.form.get('balance', type=float, default=0),
+                description=request.form.get('description'),
+                is_active='is_active' in request.form
+            )
+            db.session.add(account)
+            db.session.commit()
+            flash('تم إضافة الحساب بنجاح', 'success')
+        
+        elif action == 'add_tax_setting':
+            # إضافة ضريبة جديدة
+            tax = TaxSettings(
+                name=request.form.get('name'),
+                rate=float(request.form.get('rate', 0)) / 100,  # تحويل النسبة المئوية إلى كسر عشري
+                is_default='is_default' in request.form,
+                is_active='is_active' in request.form
+            )
+            # إذا كانت هذه هي الضريبة الافتراضية، قم بإلغاء تفعيل الضرائب الافتراضية الأخرى
+            if tax.is_default:
+                for t in TaxSettings.query.filter_by(is_default=True).all():
+                    t.is_default = False
+            
+            db.session.add(tax)
+            db.session.commit()
+            flash('تم إضافة الضريبة بنجاح', 'success')
+        
+        elif action == 'add_currency':
+            # إضافة عملة جديدة
+            currency = Currency(
+                name=request.form.get('name'),
+                code=request.form.get('code'),
+                symbol=request.form.get('symbol'),
+                exchange_rate=request.form.get('exchange_rate', type=float, default=1.0),
+                is_base_currency='is_base_currency' in request.form,
+                is_active='is_active' in request.form
+            )
+            # إذا كانت هذه هي العملة الرئيسية، قم بإلغاء تفعيل العملات الرئيسية الأخرى
+            if currency.is_base_currency:
+                for c in Currency.query.filter_by(is_base_currency=True).all():
+                    c.is_base_currency = False
+                # إعادة ضبط سعر الصرف للعملة الرئيسية ليكون 1.0
+                currency.exchange_rate = 1.0
+            
+            db.session.add(currency)
+            db.session.commit()
+            flash('تم إضافة العملة بنجاح', 'success')
+        
+        elif action == 'add_fiscal_period':
+            # إضافة فترة مالية جديدة
+            try:
+                start_date = datetime.strptime(request.form.get('start_date'), '%d/%m/%Y').date()
+                end_date = datetime.strptime(request.form.get('end_date'), '%d/%m/%Y').date()
+                
+                period = FinancialPeriod(
+                    name=request.form.get('name'),
+                    start_date=start_date,
+                    end_date=end_date,
+                    notes=request.form.get('notes')
+                )
+                db.session.add(period)
+                db.session.commit()
+                flash('تم إضافة الفترة المالية بنجاح', 'success')
+            except:
+                flash('حدث خطأ في تنسيق التاريخ', 'error')
+        
+        # إعادة توجيه لتجنب إعادة تقديم النموذج
+        return redirect(url_for('financial_settings'))
+    
+    return render_template(
+        'financial-settings.html',
+        financial_settings=settings,
+        currencies=currencies,
+        tax_settings=tax_settings,
+        account_categories=account_categories,
+        accounts=accounts,
+        cash_accounts=cash_accounts,
+        bank_accounts=bank_accounts,
+        financial_periods=financial_periods
+    )
+
 # تعديل before_request لإضافة إعدادات النظام لجميع القوالب
 
 @app.before_request
