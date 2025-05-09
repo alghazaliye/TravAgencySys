@@ -244,6 +244,240 @@ class SystemSettings(db.Model):
         db.session.commit()
         return setting
 
+# النماذج المالية والمحاسبية
+
+class AccountCategory(db.Model):
+    """فئات الحسابات المالية"""
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    code = db.Column(db.String(20), unique=True) 
+    description = db.Column(db.Text)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # العلاقات
+    accounts = db.relationship('Account', backref='category', lazy=True)
+
+class Account(db.Model):
+    """الحسابات المالية"""
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    account_number = db.Column(db.String(20), unique=True, nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('account_category.id'))
+    account_type = db.Column(db.String(50))  # أصول، خصوم، إيرادات، مصروفات، حقوق ملكية
+    is_bank_account = db.Column(db.Boolean, default=False)
+    is_cash_account = db.Column(db.Boolean, default=False)
+    parent_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=True)
+    balance = db.Column(db.Float, default=0)
+    description = db.Column(db.Text)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # العلاقات
+    children = db.relationship('Account', backref=db.backref('parent', remote_side=[id]), lazy=True)
+    journal_entries_debit = db.relationship('JournalEntryLine', foreign_keys='JournalEntryLine.debit_account_id',
+                                   backref='debit_account', lazy=True)
+    journal_entries_credit = db.relationship('JournalEntryLine', foreign_keys='JournalEntryLine.credit_account_id',
+                                    backref='credit_account', lazy=True)
+
+class JournalEntry(db.Model):
+    """قيود اليومية الرئيسية"""
+    id = db.Column(db.Integer, primary_key=True)
+    entry_number = db.Column(db.String(20), unique=True, nullable=False)
+    date = db.Column(db.Date, nullable=False, default=date.today)
+    reference_type = db.Column(db.String(50))  # نوع المستند المرجعي (فاتورة، سند صرف، إلخ)
+    reference_id = db.Column(db.String(50))  # رقم المستند المرجعي
+    description = db.Column(db.Text)
+    entry_type = db.Column(db.String(20), default='manual')  # manual, sales, purchase, expenses, etc
+    status = db.Column(db.String(20), default='draft')  # مسودة، مرحل، ملغي
+    is_posted = db.Column(db.Boolean, default=False)
+    posted_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+    posted_at = db.Column(db.DateTime)
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # العلاقات
+    entry_lines = db.relationship('JournalEntryLine', backref='journal_entry', lazy=True, cascade="all, delete-orphan")
+    creator = db.relationship('User', foreign_keys=[created_by])
+    poster = db.relationship('User', foreign_keys=[posted_by])
+
+    @property
+    def total_debit(self):
+        """إجمالي مبلغ المدين"""
+        return sum(line.debit_amount for line in self.entry_lines)
+
+    @property
+    def total_credit(self):
+        """إجمالي مبلغ الدائن"""
+        return sum(line.credit_amount for line in self.entry_lines)
+
+    @property
+    def is_balanced(self):
+        """التحقق من توازن القيد (المدين = الدائن)"""
+        return round(self.total_debit, 2) == round(self.total_credit, 2)
+
+class JournalEntryLine(db.Model):
+    """بنود قيود اليومية"""
+    id = db.Column(db.Integer, primary_key=True)
+    journal_entry_id = db.Column(db.Integer, db.ForeignKey('journal_entry.id'), nullable=False)
+    debit_account_id = db.Column(db.Integer, db.ForeignKey('account.id'))
+    credit_account_id = db.Column(db.Integer, db.ForeignKey('account.id'))
+    description = db.Column(db.Text)
+    debit_amount = db.Column(db.Float, default=0)
+    credit_amount = db.Column(db.Float, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class FinancialPeriod(db.Model):
+    """الفترات المالية"""
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    start_date = db.Column(db.Date, nullable=False)
+    end_date = db.Column(db.Date, nullable=False)
+    is_closed = db.Column(db.Boolean, default=False)
+    closed_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+    closed_at = db.Column(db.DateTime)
+    notes = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # العلاقات
+    closer = db.relationship('User', foreign_keys=[closed_by])
+
+class PaymentVoucher(db.Model):
+    """سندات الصرف"""
+    id = db.Column(db.Integer, primary_key=True)
+    voucher_number = db.Column(db.String(20), unique=True, nullable=False)
+    date = db.Column(db.Date, nullable=False, default=date.today)
+    beneficiary_type = db.Column(db.String(20))  # موظف، مورد، عميل، أخرى
+    beneficiary_id = db.Column(db.Integer)  # المعرف في الجدول المناسب
+    beneficiary_name = db.Column(db.String(150), nullable=False)
+    amount = db.Column(db.Float, nullable=False)
+    account_id = db.Column(db.Integer, db.ForeignKey('account.id'))  # حساب الصرف (البنك أو الصندوق)
+    payment_method = db.Column(db.String(20), default='cash')  # cash, check, transfer, etc
+    reference_number = db.Column(db.String(50))  # رقم الشيك أو التحويل
+    description = db.Column(db.Text)
+    status = db.Column(db.String(20), default='posted')  # مصدر، ملغي
+    journal_entry_id = db.Column(db.Integer, db.ForeignKey('journal_entry.id'))
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # العلاقات
+    account = db.relationship('Account', foreign_keys=[account_id])
+    journal_entry = db.relationship('JournalEntry', foreign_keys=[journal_entry_id])
+    creator = db.relationship('User', foreign_keys=[created_by])
+
+class ReceiptVoucher(db.Model):
+    """سندات القبض"""
+    id = db.Column(db.Integer, primary_key=True)
+    voucher_number = db.Column(db.String(20), unique=True, nullable=False)
+    date = db.Column(db.Date, nullable=False, default=date.today)
+    payer_type = db.Column(db.String(20))  # عميل، موظف، أخرى
+    payer_id = db.Column(db.Integer)  # المعرف في الجدول المناسب
+    payer_name = db.Column(db.String(150), nullable=False)
+    amount = db.Column(db.Float, nullable=False)
+    account_id = db.Column(db.Integer, db.ForeignKey('account.id'))  # حساب الاستلام (البنك أو الصندوق)
+    payment_method = db.Column(db.String(20), default='cash')  # cash, check, transfer, etc
+    reference_number = db.Column(db.String(50))  # رقم الشيك أو التحويل
+    description = db.Column(db.Text)
+    status = db.Column(db.String(20), default='posted')  # مستلم، ملغي
+    journal_entry_id = db.Column(db.Integer, db.ForeignKey('journal_entry.id'))
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # العلاقات
+    account = db.relationship('Account', foreign_keys=[account_id])
+    journal_entry = db.relationship('JournalEntry', foreign_keys=[journal_entry_id])
+    creator = db.relationship('User', foreign_keys=[created_by])
+
+class Currency(db.Model):
+    """العملات"""
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    code = db.Column(db.String(3), unique=True, nullable=False)  # SAR, USD, EUR
+    symbol = db.Column(db.String(5))  # ر.س, $, €
+    exchange_rate = db.Column(db.Float, default=1.0)  # سعر الصرف نسبة إلى العملة الأساسية
+    is_base_currency = db.Column(db.Boolean, default=False)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class TaxSettings(db.Model):
+    """إعدادات الضرائب"""
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    rate = db.Column(db.Float, nullable=False, default=0)  # نسبة الضريبة (0.15 = 15%)
+    is_default = db.Column(db.Boolean, default=False)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class FinancialSettings(db.Model):
+    """الإعدادات المالية للنظام"""
+    id = db.Column(db.Integer, primary_key=True)
+    company_name = db.Column(db.String(150))
+    fiscal_year_start = db.Column(db.Date)
+    base_currency_id = db.Column(db.Integer, db.ForeignKey('currency.id'))
+    default_tax_id = db.Column(db.Integer, db.ForeignKey('tax_settings.id'))
+    enable_cost_centers = db.Column(db.Boolean, default=False)
+    enable_budgets = db.Column(db.Boolean, default=False)
+    default_cash_account_id = db.Column(db.Integer, db.ForeignKey('account.id'))
+    default_bank_account_id = db.Column(db.Integer, db.ForeignKey('account.id'))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # العلاقات
+    base_currency = db.relationship('Currency', foreign_keys=[base_currency_id])
+    default_tax = db.relationship('TaxSettings', foreign_keys=[default_tax_id])
+    default_cash_account = db.relationship('Account', foreign_keys=[default_cash_account_id])
+    default_bank_account = db.relationship('Account', foreign_keys=[default_bank_account_id])
+
+class BankAccount(db.Model):
+    """الحسابات البنكية"""
+    id = db.Column(db.Integer, primary_key=True)
+    account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
+    bank_name = db.Column(db.String(100), nullable=False)
+    account_number = db.Column(db.String(30), nullable=False)
+    iban = db.Column(db.String(50))
+    swift_code = db.Column(db.String(20))
+    branch_name = db.Column(db.String(100))
+    branch_code = db.Column(db.String(20))
+    currency_id = db.Column(db.Integer, db.ForeignKey('currency.id'))
+    opening_balance = db.Column(db.Float, default=0)
+    current_balance = db.Column(db.Float, default=0)
+    is_active = db.Column(db.Boolean, default=True)
+    notes = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # العلاقات
+    account = db.relationship('Account', foreign_keys=[account_id])
+    currency = db.relationship('Currency', foreign_keys=[currency_id])
+
+class CashRegister(db.Model):
+    """صناديق النقد"""
+    id = db.Column(db.Integer, primary_key=True)
+    account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    location = db.Column(db.String(100))
+    responsible_user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    currency_id = db.Column(db.Integer, db.ForeignKey('currency.id'))
+    opening_balance = db.Column(db.Float, default=0)
+    current_balance = db.Column(db.Float, default=0)
+    is_active = db.Column(db.Boolean, default=True)
+    notes = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # العلاقات
+    account = db.relationship('Account', foreign_keys=[account_id])
+    responsible_user = db.relationship('User', foreign_keys=[responsible_user_id])
+    currency = db.relationship('Currency', foreign_keys=[currency_id])
+
 # Create all tables
 with app.app_context():
     db.create_all()
