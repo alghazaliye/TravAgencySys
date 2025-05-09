@@ -1,398 +1,448 @@
-<!-- نموذج حجز تذاكر الباص - تم تنظيمه حسب المواصفات المطلوبة -->
-<form id="bus-booking-form">
-    <!-- القسم الأول: البيانات الشخصية للمسافر -->
-    <div class="form-section">
-        <h4><i class="fas fa-user ml-2"></i> القسم الأول: البيانات الشخصية للمسافر</h4>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="passengerName">الاسم الرباعي <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="passengerName" name="passengerName" placeholder="الاسم الكامل كما هو في الهوية" required>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="mobileNumber">رقم الجوال <span class="text-danger">*</span></label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                        </div>
-                        <input type="text" class="form-control" id="mobileNumber" name="mobileNumber" placeholder="أدخل رقم الجوال" required>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="idType">نوع الهوية <span class="text-danger">*</span></label>
-                    <select class="form-control select2" id="idType" name="idType" required>
-                        <option value="">اختر نوع الهوية</option>
-                        <option value="جواز سفر">جواز سفر</option>
-                        <option value="بطاقة هوية">بطاقة هوية</option>
-                        <option value="هوية إقامة">هوية إقامة</option>
-                        <option value="رخصة قيادة">رخصة قيادة</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="idNumber">رقم الهوية <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="idNumber" name="idNumber" placeholder="أدخل رقم الهوية" required>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="nationality">الجنسية <span class="text-danger">*</span></label>
-                    <select class="form-control select2" id="nationality" name="nationality" required>
-                        <option value="">اختر الجنسية</option>
-                        <option value="سعودي">المملكة العربية السعودية</option>
-                        <option value="يمني">اليمن</option>
-                        <option value="مصري">مصر</option>
-                        <option value="سوداني">السودان</option>
-                        <option value="أردني">الأردن</option>
-                        <option value="لبناني">لبنان</option>
-                        <option value="سوري">سوريا</option>
-                        <option value="باكستاني">باكستان</option>
-                        <option value="هندي">الهند</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="gender">الجنس</label>
-                    <select class="form-control select2" id="gender" name="gender">
-                        <option value="">اختر الجنس</option>
-                        <option value="ذكر">ذكر</option>
-                        <option value="أنثى">أنثى</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="birthDate">تاريخ الميلاد</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                        </div>
-                        <input type="text" class="form-control datetimepicker-input" id="birthDate" name="birthDate" data-toggle="datetimepicker" data-target="#birthDate">
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row id-details">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="issuePlace">مكان الإصدار</label>
-                    <input type="text" class="form-control" id="issuePlace" name="issuePlace" placeholder="مثال: جدة، صنعاء">
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="issueDate">تاريخ الإصدار</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                        </div>
-                        <input type="text" class="form-control datetimepicker-input" id="issueDate" name="issueDate" data-toggle="datetimepicker" data-target="#issueDate">
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="birthPlace">مكان الميلاد</label>
-                    <input type="text" class="form-control" id="birthPlace" name="birthPlace" placeholder="مثال: عدن، الرياض">
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- القسم الثاني: بيانات الحجز والرحلة -->
-    <div class="form-section">
-        <h4><i class="fas fa-route ml-2"></i> القسم الثاني: بيانات الحجز والرحلة</h4>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="departureCity">من <span class="text-danger">*</span></label>
-                    <select class="form-control select2" id="departureCity" name="departureCity" required>
-                        <option value="">اختر مدينة المغادرة</option>
-                        <option value="الرياض">الرياض</option>
-                        <option value="جدة">جدة</option>
-                        <option value="مكة المكرمة">مكة المكرمة</option>
-                        <option value="المدينة المنورة">المدينة المنورة</option>
-                        <option value="الدمام">الدمام</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="destinationCity">إلى <span class="text-danger">*</span></label>
-                    <select class="form-control select2" id="destinationCity" name="destinationCity" required>
-                        <option value="">اختر مدينة الوصول</option>
-                        <option value="الرياض">الرياض</option>
-                        <option value="جدة">جدة</option>
-                        <option value="مكة المكرمة">مكة المكرمة</option>
-                        <option value="المدينة المنورة">المدينة المنورة</option>
-                        <option value="الدمام">الدمام</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label>نوع الرحلة <span class="text-danger">*</span></label>
-                    <div class="d-flex">
-                        <div class="custom-control custom-radio ml-4">
-                            <input type="radio" id="tripTypeOneWay" name="tripType" value="one-way" class="custom-control-input" checked>
-                            <label class="custom-control-label" for="tripTypeOneWay">ذهاب</label>
-                        </div>
-                        <div class="custom-control custom-radio">
-                            <input type="radio" id="tripTypeRoundTrip" name="tripType" value="round-trip" class="custom-control-input">
-                            <label class="custom-control-label" for="tripTypeRoundTrip">ذهاب وعودة</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="busType">نوع الباص <span class="text-danger">*</span></label>
-                    <select class="form-control select2" id="busType" name="busType" required>
-                        <option value="">اختر نوع الباص</option>
-                        <option value="عادي">عادي</option>
-                        <option value="سياحي">سياحي</option>
-                        <option value="VIP">VIP</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="purpose">الغرض من الرحلة</label>
-                    <select class="form-control select2" id="purpose" name="purpose">
-                        <option value="">اختر الغرض</option>
-                        <option value="زيارة">زيارة</option>
-                        <option value="عمل">عمل</option>
-                        <option value="عمرة">عمرة</option>
-                        <option value="سياحة">سياحة</option>
-                        <option value="دراسة">دراسة</option>
-                        <option value="علاج">علاج</option>
-                        <option value="أخرى">أخرى</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="reservationDate">تاريخ الذهاب <span class="text-danger">*</span></label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                        </div>
-                        <input type="text" class="form-control datetimepicker-input" id="reservationDate" name="reservationDate" data-toggle="datetimepicker" data-target="#reservationDate" required>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 return-date-container d-none">
-                <div class="form-group">
-                    <label for="returnDate">تاريخ العودة</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                        </div>
-                        <input type="text" class="form-control datetimepicker-input" id="returnDate" name="returnDate" data-toggle="datetimepicker" data-target="#returnDate">
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="supplierId">مزود الخدمة <span class="text-danger">*</span></label>
-                    <select class="form-control select2" id="supplierId" name="supplierId" required>
-                        <option value="">اختر مزود الخدمة</option>
-                        <option value="1">شركة النقل السعودية (سابتكو)</option>
-                        <option value="2">شركة الإمارات للنقل</option>
-                        <option value="3">شركة القطيف للنقل</option>
-                        <option value="4">شركة تبوك للنقل</option>
-                        <option value="5">شركة النقل الجماعي</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="seatNumber">رقم المقعد</label>
-                    <input type="text" class="form-control" id="seatNumber" name="seatNumber" placeholder="مثال: A12">
-                </div>
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label for="isBooked">حالة الحجز</label>
-                    <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="isBooked" name="isBooked">
-                        <label class="custom-control-label" for="isBooked">تم تأكيد الحجز</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- القسم الثالث: بيانات التوصيل والتكلفة -->
-    <div class="form-section">
-        <h4><i class="fas fa-money-bill-wave ml-2"></i> القسم الثالث: بيانات التوصيل والتكلفة</h4>
-        
-        <!-- الأسعار -->
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="sellPrice">سعر البيع الإجمالي <span class="text-danger">*</span></label>
-                    <div class="input-group">
-                        <input type="number" min="0" step="0.01" class="form-control" id="sellPrice" name="sellPrice" placeholder="أدخل سعر البيع" required>
-                        <div class="input-group-append">
-                            <span class="input-group-text">
-                                <span class="currency-symbol">ر.س</span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="amount-in-words" id="sellPriceInWords">صفر ريال سعودي</div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="purchasePrice">سعر التكلفة <span class="text-danger">*</span></label>
-                    <div class="input-group">
-                        <input type="number" min="0" step="0.01" class="form-control" id="purchasePrice" name="purchasePrice" placeholder="أدخل سعر التكلفة" required>
-                        <div class="input-group-append">
-                            <span class="input-group-text">
-                                <span class="currency-symbol">ر.س</span>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- طريقة الدفع -->
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="paymentType">طريقة الدفع <span class="text-danger">*</span></label>
-                    <select class="form-control select2" id="paymentType" name="paymentType" required>
-                        <option value="">اختر طريقة الدفع</option>
-                        <option value="cash">نقد</option>
-                        <option value="credit">أجل</option>
-                        <option value="bank_transfer">تحويل بنكي</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="currency">العملة</label>
-                    <select class="form-control select2" id="currency" name="currency">
-                        {% if currencies %}
-                            {% for currency in currencies %}
-                                <option value="{{ currency.id }}" {% if currency.id == 'SAR' %}selected{% endif %}>{{ currency.name }}</option>
-                            {% endfor %}
-                        {% else %}
-                            <option value="SAR" selected>ريال سعودي (SAR)</option>
-                            <option value="USD">دولار أمريكي (USD)</option>
-                            <option value="EUR">يورو (EUR)</option>
-                            <option value="YER">ريال يمني (YER)</option>
-                        {% endif %}
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="accountId">الحساب <span class="text-danger">*</span></label>
-                    <select class="form-control select2" id="accountId" name="accountId" required>
-                        <option value="">اختر الحساب المالي</option>
-                        <!-- سيتم تحديث الخيارات ديناميكيًا حسب نوع التوصيل -->
-                    </select>
-                </div>
-            </div>
-        </div>
-        
-        <!-- تفاصيل المبلغ الواصل -->
-        <div class="row" id="receivedAmountContainer">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="receivedAmount">المبلغ الواصل</label>
-                    <div class="input-group">
-                        <input type="number" min="0" step="0.01" class="form-control" id="receivedAmount" name="receivedAmount" placeholder="أدخل المبلغ المستلم">
-                        <div class="input-group-append">
-                            <span class="input-group-text">
-                                <span class="currency-symbol">ر.س</span>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="remainingAmount">المبلغ المتبقي</label>
-                    <div class="input-group">
-                        <input type="number" min="0" step="0.01" class="form-control" id="remainingAmount" name="remainingAmount" readonly>
-                        <div class="input-group-append">
-                            <span class="input-group-text">
-                                <span class="currency-symbol">ر.س</span>
-                            </span>
-                        </div>
-                    </div>
-                </div>
+{% extends 'layout.html' %}
 
-            </div>
-        </div>
-        
-        <!-- معلومات العملية -->
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="transactionDate">تاريخ العملية</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                        </div>
-                        <input type="text" class="form-control datetimepicker-input" id="transactionDate" name="transactionDate" data-toggle="datetimepicker" data-target="#transactionDate">
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="statement">البيان</label>
-                    <textarea class="form-control" id="statement" name="statement" rows="1" placeholder="وصف داخلي للعملية المالية"></textarea>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-12">
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="generateAccountingEntry" name="generateAccountingEntry" checked>
-                    <label class="custom-control-label" for="generateAccountingEntry">تسجيل حركة استحقاق</label>
-                </div>
-            </div>
-        </div>
-    </div>
+{% block title %}
+    حجز تذاكر باص جديد - نظام وكالة السفر والسياحة
+{% endblock %}
+
+{% block styles %}
+<!-- DateTimePicker CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/css/tempusdominus-bootstrap-4.min.css">
+<!-- Select2 CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css">
+<!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<!-- Toastr CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<!-- صفحة حجز تذاكر الباص CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bus-tickets-form.css') }}">
+
+<style>
+    /* تنسيقات إضافية لنموذج الحجز */
+    .form-section {
+        margin-bottom: 30px;
+    }
     
-    <!-- أزرار التحكم -->
-    <div class="text-center mt-4">
-        <button type="button" id="cancel-booking" class="btn btn-secondary ml-2">
-            <i class="fas fa-times ml-1"></i> إلغاء
-        </button>
-        <button type="button" id="complete-reservation" class="btn btn-primary">
-            <i class="fas fa-save ml-1"></i> حفظ الحجز
-        </button>
+    .section-title {
+        margin-bottom: 15px;
+        color: #3a5ccc;
+        border-bottom: 2px solid #e9ecef;
+        padding-bottom: 10px;
+    }
+    
+    .card-body {
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        border-radius: 5px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .amount-in-words {
+        color: #777;
+        font-size: 0.85rem;
+        margin-top: 5px;
+    }
+    
+    .form-actions {
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        margin-top: 20px;
+    }
+    
+    /* تنسيق الأيقونات داخل النموذج */
+    .input-group-text {
+        background-color: #f8f9fa;
+    }
+    
+    /* تنسيق التحقق من الحقول */
+    .is-invalid {
+        border-color: #dc3545;
+    }
+    
+    .invalid-feedback {
+        display: block;
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 80%;
+        color: #dc3545;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>حجز تذاكر باص جديد</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">الرئيسية</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('bus_tickets') }}">حجز تذاكر باص</a></li>
+                    <li class="breadcrumb-item active">حجز جديد</li>
+                </ol>
+            </div>
+        </div>
     </div>
-</form>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="card card-primary card-outline new-booking-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-bus ml-2"></i>
+                    نموذج حجز تذاكر الباصات
+                </h3>
+            </div>
+            <div class="card-body">
+                {% include 'components/new_bus_booking_form.html' %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<!-- Moment.js (needed for DateTimePicker) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/ar.js"></script>
+<!-- DateTimePicker JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/js/tempusdominus-bootstrap-4.min.js"></script>
+<!-- Select2 JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<!-- Custom JS -->
+<script src="{{ url_for('static', filename='js/bus-tickets.js') }}"></script>
+
+<script>
+// تهيئة إعدادات Toastr
+toastr.options = {
+    "closeButton": true,
+    "progressBar": true,
+    "positionClass": "toast-top-left",
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "5000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut",
+    "rtl": true
+};
+
+// عند تحميل الصفحة
+$(document).ready(function() {
+    // تهيئة التواريخ
+    $('.datetimepicker-input').datetimepicker({
+        format: 'DD  MMMM , YYYY',
+        locale: 'ar',
+        icons: {
+            time: 'far fa-clock',
+            date: 'far fa-calendar',
+            up: 'fas fa-chevron-up',
+            down: 'fas fa-chevron-down',
+            previous: 'fas fa-chevron-right',
+            next: 'fas fa-chevron-left',
+            today: 'fas fa-calendar-check',
+            clear: 'far fa-trash-alt',
+            close: 'far fa-times-circle'
+        }
+    });
+    
+    // تهيئة Select2
+    $('.select2').select2({
+        theme: 'bootstrap',
+        dir: 'rtl',
+        language: 'ar',
+        width: '100%'
+    });
+    
+    // إظهار/إخفاء حقل تاريخ العودة حسب نوع الرحلة
+    $('input[name="journeyType"]').on('change', function() {
+        if ($('#journeyTypeRoundTrip').is(':checked')) {
+            $('.return-date-container').removeClass('d-none');
+        } else {
+            $('.return-date-container').addClass('d-none');
+            $('#returnDate').val('');
+        }
+    });
+    
+    // تحديث طريقة الدفع والحسابات
+    $('#paymentType').on('change', function() {
+        updatePaymentFields();
+    });
+    
+    // تحديث حقول الدفع حسب نوع الدفع المختار
+    function updatePaymentFields() {
+        var paymentType = $('#paymentType').val();
+        var accountSelect = $('#accountId');
+        
+        // حذف الخيارات الحالية
+        accountSelect.empty().append('<option value="">اختر الحساب المالي</option>');
+        
+        // إضافة خيارات جديدة حسب نوع التوصيل
+        if (paymentType === 'cash') {
+            accountSelect.append('<option value="cash_1">صندوق الشركة الرئيسي</option>');
+            accountSelect.append('<option value="cash_2">صندوق الفرع 1</option>');
+            accountSelect.append('<option value="cash_3">صندوق الفرع 2</option>');
+            $('#receivedAmountContainer').show();
+        } 
+        else if (paymentType === 'credit') {
+            accountSelect.append('<option value="client_1">حساب العملاء العام</option>');
+            accountSelect.append('<option value="client_2">عملاء الشركات</option>');
+            accountSelect.append('<option value="client_3">عملاء VIP</option>');
+            $('#receivedAmountContainer').hide();
+            $('#receivedAmount').val('0');
+        } 
+        else if (paymentType === 'bank_transfer') {
+            accountSelect.append('<option value="bank_1">بنك الراجحي</option>');
+            accountSelect.append('<option value="bank_2">البنك الأهلي</option>');
+            accountSelect.append('<option value="bank_3">بنك الإنماء</option>');
+            $('#receivedAmountContainer').hide();
+            $('#receivedAmount').val('0');
+        }
+        
+        // تحديث قائمة Select2
+        accountSelect.trigger('change');
+        
+        // تحديث المبلغ المتبقي بعد إخفاء المبلغ المستلم
+        calculateRemainingAmount();
+    }
+    
+    // تهيئة أولية
+    updatePaymentFields();
+    
+    // حساب المبلغ المتبقي تلقائيًا
+    $('#sellPrice, #receivedAmount').on('input', function() {
+        calculateRemainingAmount();
+        updatePriceInWords();
+    });
+    
+    // حساب المبلغ المتبقي
+    function calculateRemainingAmount() {
+        var sellPrice = parseFloat($('#sellPrice').val()) || 0;
+        var receivedAmount = parseFloat($('#receivedAmount').val()) || 0;
+        var remainingAmount = sellPrice - receivedAmount;
+        
+        $('#remainingAmount').val(remainingAmount >= 0 ? remainingAmount.toFixed(2) : 0);
+    }
+    
+    // تحديث المبالغ المكتوبة بالكلمات
+    function updatePriceInWords() {
+        var sellPrice = parseFloat($('#sellPrice').val()) || 0;
+        var currencyCode = $('#currency').val() || 'SAR';
+        
+        // تحديد نص العملة
+        var currencyText = 'ريال سعودي';
+        if (currencyCode === 'USD') currencyText = 'دولار أمريكي';
+        else if (currencyCode === 'EUR') currencyText = 'يورو';
+        else if (currencyCode === 'YER') currencyText = 'ريال يمني';
+        
+        // تحديث النصوص - استخدام دالة محاكاة بسيطة
+        $('#sellPriceInWords').text(convertToArabicWords(sellPrice) + ' ' + currencyText);
+    }
+    
+    // محاكاة بسيطة لتحويل الأرقام إلى كلمات عربية
+    function convertToArabicWords(num) {
+        if (num === 0) return "صفر";
+        
+        var units = ["", "واحد", "اثنان", "ثلاثة", "أربعة", "خمسة", "ستة", "سبعة", "ثمانية", "تسعة"];
+        var teens = ["عشرة", "أحد عشر", "اثنا عشر", "ثلاثة عشر", "أربعة عشر", "خمسة عشر", "ستة عشر", "سبعة عشر", "ثمانية عشر", "تسعة عشر"];
+        var tens = ["", "", "عشرون", "ثلاثون", "أربعون", "خمسون", "ستون", "سبعون", "ثمانون", "تسعون"];
+        
+        if (num < 10) return units[num];
+        if (num < 20) return teens[num - 10];
+        if (num < 100) {
+            var unit = num % 10;
+            var ten = Math.floor(num / 10);
+            return unit > 0 ? units[unit] + " و" + tens[ten] : tens[ten];
+        }
+        
+        // محاكاة بسيطة - لا تشمل المئات والآلاف
+        return num.toString();
+    }
+    
+    // توليد البيان التلقائي عندما تتغير البيانات المتعلقة
+    $('#departureCity, #destinationCity, #passengerName').on('change', function() {
+        updateStatement();
+    });
+    
+    // توليد البيان التلقائي
+    function updateStatement() {
+        var departureCity = $('#departureCity').val();
+        var destinationCity = $('#destinationCity').val();
+        var passengerName = $('#passengerName').val();
+        
+        if (departureCity && destinationCity && passengerName) {
+            var statement = "حجز تذكرة من " + departureCity + " إلى " + destinationCity + " للمسافر " + passengerName;
+            $('#statement').val(statement);
+        }
+    }
+    
+    // إرسال النموذج عند النقر على زر الحفظ
+    $('#complete-reservation').on('click', function() {
+        // التحقق من صحة البيانات
+        if (validateBookingForm()) {
+            // جمع البيانات من النموذج
+            var formData = $('#bus-booking-form').serialize();
+            
+            // إظهار مؤشر المعالجة
+            $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin ml-1"></i> جاري الحفظ...');
+            
+            // إرسال البيانات إلى الخادم
+            $.ajax({
+                url: '/api/create-bus-booking',
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    if (response.success) {
+                        // نجاح الحفظ
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'تم الحفظ بنجاح',
+                            text: 'تم حفظ الحجز برقم: ' + response.booking_number,
+                            confirmButtonText: 'تم'
+                        }).then(function() {
+                            window.location.href = '/bus-tickets';
+                        });
+                    } else {
+                        // فشل الحفظ
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'خطأ!',
+                            text: response.error || 'حدث خطأ أثناء حفظ الحجز',
+                            confirmButtonText: 'حسناً'
+                        });
+                        $('#complete-reservation').prop('disabled', false).html('<i class="fas fa-save ml-1"></i> حفظ الحجز');
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'خطأ!',
+                        text: 'حدث خطأ في الاتصال بالخادم',
+                        confirmButtonText: 'حسناً'
+                    });
+                    $('#complete-reservation').prop('disabled', false).html('<i class="fas fa-save ml-1"></i> حفظ الحجز');
+                }
+            });
+        }
+    });
+    
+    // التحقق من صحة النموذج
+    function validateBookingForm() {
+        var isValid = true;
+        
+        // التحقق من الحقول المطلوبة
+        var requiredFields = [
+            'passengerName',
+            'departureCity', 'destinationCity', 'reservationDate', 
+            'supplierId', 'sellPrice', 'paymentType', 'accountId'
+        ];
+        
+        $.each(requiredFields, function(index, field) {
+            if (!$('#' + field).val()) {
+                showFieldError('#' + field, 'هذا الحقل مطلوب');
+                isValid = false;
+            } else {
+                clearFieldError('#' + field);
+            }
+        });
+        
+        // التحقق من حقول إضافية حسب نوع الرحلة
+        if ($('#journeyTypeRoundTrip').is(':checked') && !$('#returnDate').val()) {
+            showFieldError('#returnDate', 'يرجى تحديد تاريخ العودة');
+            isValid = false;
+        }
+        
+        // التحقق من قيمة البيان
+        if (!$('#statement').val()) {
+            updateStatement(); // توليد البيان إذا كان فارغاً
+        }
+        
+        return isValid;
+    }
+    
+    // عرض رسالة خطأ على حقل
+    function showFieldError(selector, message) {
+        $(selector).addClass('is-invalid');
+        
+        // التحقق من وجود رسالة خطأ سابقة
+        if ($(selector).next('.invalid-feedback').length === 0) {
+            $(selector).after('<div class="invalid-feedback">' + message + '</div>');
+        }
+    }
+    
+    // إزالة رسالة الخطأ من حقل
+    function clearFieldError(selector) {
+        $(selector).removeClass('is-invalid');
+    }
+    
+    // إلغاء الحجز
+    $('#cancel-booking').on('click', function() {
+        Swal.fire({
+            title: 'تأكيد الإلغاء',
+            text: 'هل أنت متأكد من إلغاء عملية الحجز؟',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'نعم، إلغاء الحجز',
+            cancelButtonText: 'لا، تراجع'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/bus-tickets';
+            }
+        });
+    });
+    
+    // زر إعادة تعيين النموذج
+    $('#reset-form').on('click', function() {
+        Swal.fire({
+            title: 'تأكيد إعادة التعيين',
+            text: 'هل أنت متأكد من مسح جميع الحقول وإعادة تعيينها؟',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'نعم، إعادة التعيين',
+            cancelButtonText: 'لا، تراجع'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // إعادة تعيين النموذج
+                $('#bus-booking-form')[0].reset();
+                
+                // إعادة تعيين قوائم select2
+                $('.select2').val('').trigger('change');
+                
+                // إخفاء تاريخ العودة
+                $('.return-date-container').addClass('d-none');
+                
+                // إعادة تعيين النصوص
+                $('#sellPriceInWords').text('صفر ريال سعودي');
+                $('#receivedAmountInWords').text('صفر ريال سعودي');
+                $('#statement').val('');
+                
+                // اختيار القيم الافتراضية
+                $('#journeyTypeOneWay').prop('checked', true);
+                $('#currency').val('SAR').trigger('change');
+                
+                // إزالة رسائل الخطأ
+                $('.is-invalid').removeClass('is-invalid');
+                $('.invalid-feedback').remove();
+                
+                // عرض رسالة نجاح
+                toastr.success('تم إعادة تعيين النموذج بنجاح');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
