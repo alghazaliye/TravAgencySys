@@ -153,9 +153,7 @@ class BusBooking(db.Model):
     # بيانات المسافر - القسم الأول
     passenger_name = db.Column(db.String(150), nullable=False)  # اسم المسافر (إجباري)
     mobile_number = db.Column(db.String(20))  # رقم الهاتف (اختياري)
-    id_type = db.Column(db.String(20))  # نوع الهوية
     id_number = db.Column(db.String(30))  # رقم الهوية
-    id_issue_date = db.Column(db.Date)  # تاريخ إصدار الهوية
     id_issue_place = db.Column(db.String(100))  # مكان إصدار الهوية
     birth_date = db.Column(db.Date)  # تاريخ الميلاد
     gender = db.Column(db.String(10))  # الجنس (ذكر/أنثى)
@@ -318,7 +316,6 @@ def create_bus_booking():
         # بيانات المسافر - القسم الأول
         booking.passenger_name = data.get('passengerName', '')
         booking.mobile_number = data.get('mobileNumber', '')
-        booking.id_type = data.get('idType', '')
         booking.id_number = data.get('idNumber', '')
         
         # معالجة التواريخ
@@ -345,7 +342,7 @@ def create_bus_booking():
         booking.departure_city = data.get('departureCity', '')
         booking.destination_city = data.get('destinationCity', '')
         booking.service_provider = data.get('supplierId', '')
-        booking.journey_type = 'round-trip' if data.get('tripTypeRoundTrip') == 'on' else 'one-way'
+        booking.journey_type = 'round-trip' if data.get('journeyTypeRoundTrip') == 'on' else 'one-way'
         
         try:
             reservation_date_str = data.get('reservationDate', '')
