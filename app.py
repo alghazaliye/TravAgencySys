@@ -414,11 +414,12 @@ def create_bus_booking():
 
 @app.route('/bus-tickets-new')
 def bus_tickets_new():
-    return render_template('bus-tickets-new.html')
+    # إعادة توجيه إلى قائمة حجوزات الباص
+    return redirect(url_for('bus_tickets'))
 
 @app.route('/new-bus-booking')
 def new_bus_booking():
-    # في المستقبل يمكن استرجاع العملات من قاعدة البيانات هنا
+    # قائمة العملات
     currencies = [
         {"id": "SAR", "name": "ريال سعودي (SAR)"},
         {"id": "USD", "name": "دولار أمريكي (USD)"},
@@ -426,8 +427,11 @@ def new_bus_booking():
         {"id": "YER", "name": "ريال يمني (YER)"}
     ]
     
-    # ارسال قائمة العملات والبيانات الأخرى اللازمة للنموذج
-    return render_template('new_bus_booking.html', currencies=currencies)
+    # استرجاع قائمة الحجوزات للعرض في الصفحة نفسها
+    bookings = BusBooking.query.order_by(BusBooking.created_at.desc()).limit(10).all()
+    
+    # عرض صفحة تجمع نموذج الحجز مع قائمة الحجوزات
+    return render_template('bus-tickets.html', currencies=currencies, bookings=bookings, show_booking_form=True)
 
 @app.route('/work-visa')
 def work_visa():
