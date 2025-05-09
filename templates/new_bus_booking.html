@@ -192,6 +192,12 @@ $(document).ready(function() {
         var receivedAmount = parseFloat($('#receivedAmount').val()) || 0;
         var currencyCode = $('#currency').val() || 'SAR';
         
+        // حفظ البيانات في sessionStorage
+        sessionStorage.setItem('busBookingSellPrice', sellPrice);
+        sessionStorage.setItem('busBookingPurchasePrice', purchasePrice);
+        sessionStorage.setItem('busBookingReceivedAmount', receivedAmount);
+        sessionStorage.setItem('busBookingCurrency', currencyCode);
+        
         // تحديد نص العملة
         var currencyText = 'ريال سعودي';
         if (currencyCode === 'USD') currencyText = 'دولار أمريكي';
