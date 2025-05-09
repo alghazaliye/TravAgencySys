@@ -1,6 +1,6 @@
 import os
 import logging
-from datetime import datetime
+from datetime import datetime, date
 from flask import Flask, render_template, request, jsonify, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, current_user, login_user, logout_user, login_required
@@ -326,14 +326,16 @@ def create_bus_booking():
             issue_date = None
             
             try:
-                if data.get('birthDate'):
-                    birth_date = datetime.strptime(data.get('birthDate'), '%d  %B , %Y').date()
+                birth_date_str = data.get('birthDate', '')
+                if birth_date_str and isinstance(birth_date_str, str) and birth_date_str.strip():
+                    birth_date = datetime.strptime(birth_date_str, '%d  %B , %Y').date()
             except ValueError:
                 logging.warning(f"Invalid birth date format: {data.get('birthDate')}")
             
             try:
-                if data.get('issueDate'):
-                    issue_date = datetime.strptime(data.get('issueDate'), '%d  %B , %Y').date()
+                issue_date_str = data.get('issueDate', '')
+                if issue_date_str and isinstance(issue_date_str, str) and issue_date_str.strip():
+                    issue_date = datetime.strptime(issue_date_str, '%d  %B , %Y').date()
             except ValueError:
                 logging.warning(f"Invalid issue date format: {data.get('issueDate')}")
             
@@ -414,11 +416,14 @@ def create_bus_booking():
         # Parse reservation date
         travel_date = None
         try:
-            if data.get('reservationDate'):
-                travel_date = datetime.strptime(data.get('reservationDate'), '%d  %B , %Y').date()
+            reservation_date_str = data.get('reservationDate', '')
+            if reservation_date_str and isinstance(reservation_date_str, str) and reservation_date_str.strip():
+                travel_date = datetime.strptime(reservation_date_str, '%d  %B , %Y').date()
                 # If parsing fails, use today's date
                 if not travel_date:
                     travel_date = date.today()
+            else:
+                travel_date = date.today()
         except ValueError:
             logging.warning(f"Invalid reservation date format: {data.get('reservationDate')}")
             travel_date = date.today()
@@ -467,8 +472,9 @@ def create_bus_booking():
         # Calculate payment status
         received_amount = 0
         try:
-            if data.get('receivedAmount'):
-                received_amount = float(data.get('receivedAmount'))
+            received_amount_str = data.get('receivedAmount', '')
+            if received_amount_str and isinstance(received_amount_str, str) and received_amount_str.strip():
+                received_amount = float(received_amount_str)
         except ValueError:
             received_amount = 0
         
