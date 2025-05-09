@@ -12,8 +12,62 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css">
 <!-- SweetAlert2 CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<!-- Toastr CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <!-- صفحة حجز تذاكر الباص CSS -->
 <link rel="stylesheet" href="{{ url_for('static', filename='css/bus-tickets-form.css') }}">
+
+<style>
+    /* تنسيقات إضافية لنموذج الحجز */
+    .form-section {
+        margin-bottom: 30px;
+    }
+    
+    .section-title {
+        margin-bottom: 15px;
+        color: #3a5ccc;
+        border-bottom: 2px solid #e9ecef;
+        padding-bottom: 10px;
+    }
+    
+    .card-body {
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        border-radius: 5px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .amount-in-words {
+        color: #777;
+        font-size: 0.85rem;
+        margin-top: 5px;
+    }
+    
+    .form-actions {
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        margin-top: 20px;
+    }
+    
+    /* تنسيق الأيقونات داخل النموذج */
+    .input-group-text {
+        background-color: #f8f9fa;
+    }
+    
+    /* تنسيق التحقق من الحقول */
+    .is-invalid {
+        border-color: #dc3545;
+    }
+    
+    .invalid-feedback {
+        display: block;
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 80%;
+        color: #dc3545;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -61,8 +115,28 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <!-- SweetAlert2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <!-- Custom JS -->
 <script src="{{ url_for('static', filename='js/bus-tickets.js') }}"></script>
+
+<script>
+// تهيئة إعدادات Toastr
+toastr.options = {
+    "closeButton": true,
+    "progressBar": true,
+    "positionClass": "toast-top-left",
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "5000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut",
+    "rtl": true
+};
+</script>
 
 <script>
 $(document).ready(function() {
@@ -242,7 +316,7 @@ $(document).ready(function() {
         
         // التحقق من الحقول المطلوبة
         var requiredFields = [
-            'passengerName', 'mobileNumber', 'idNumber', 'nationality',
+            'passengerName',
             'departureCity', 'destinationCity', 'reservationDate', 
             'supplierId', 'sellPrice', 'paymentType', 'accountId'
         ];
@@ -299,6 +373,48 @@ $(document).ready(function() {
         }).then((result) => {
             if (result.isConfirmed) {
                 window.location.href = '/bus-tickets';
+            }
+        });
+    });
+    
+    // زر إعادة تعيين النموذج
+    $('#reset-form').on('click', function() {
+        Swal.fire({
+            title: 'تأكيد إعادة التعيين',
+            text: 'هل أنت متأكد من مسح جميع الحقول وإعادة تعيينها؟',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'نعم، إعادة التعيين',
+            cancelButtonText: 'لا، تراجع'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // إعادة تعيين النموذج
+                $('#bus-booking-form')[0].reset();
+                
+                // إعادة تعيين قوائم select2
+                $('.select2').val('').trigger('change');
+                
+                // إخفاء تاريخ العودة
+                $('.return-date-container').addClass('d-none');
+                
+                // إعادة تعيين النصوص
+                $('#sellPriceInWords').text('صفر ريال سعودي');
+                $('#receivedAmountInWords').text('صفر ريال سعودي');
+                $('#statement').val('');
+                
+                // اختيار القيم الافتراضية
+                $('#tripTypeRegular').prop('checked', true);
+                $('#journeyTypeOneWay').prop('checked', true);
+                $('#currency').val('SAR').trigger('change');
+                
+                // إزالة رسائل الخطأ
+                $('.is-invalid').removeClass('is-invalid');
+                $('.invalid-feedback').remove();
+                
+                // عرض رسالة نجاح
+                toastr.success('تم إعادة تعيين النموذج بنجاح');
             }
         });
     });
