@@ -133,6 +133,9 @@ function setContentMargins(margin) {
         if (mainHeader) mainHeader.style.marginRight = margin;
         if (mainFooter) mainFooter.style.marginRight = margin;
     }
+    
+    // تطبيق الإعدادات على متغير CSS لعرض القائمة الجانبية
+    document.documentElement.style.setProperty('--sidebar-width', margin);
 }
 
 /**
@@ -141,6 +144,10 @@ function setContentMargins(margin) {
 function applyResponsiveSettings(windowWidth) {
     const mainSidebar = document.querySelector('.main-sidebar');
     if (!mainSidebar) return;
+    
+    // الحصول على قيمة إعداد sidebar_mini
+    const sidebarMini = document.body.classList.contains('sidebar-mini');
+    const collapsedWidth = sidebarMini ? '4.6rem' : '0';
     
     if (windowWidth < 768) {
         mainSidebar.style.width = '250px';
@@ -153,7 +160,7 @@ function applyResponsiveSettings(windowWidth) {
         }
     } else if (windowWidth >= 768 && windowWidth < 992) {
         if (document.body.classList.contains('sidebar-collapse')) {
-            mainSidebar.style.width = '0';
+            mainSidebar.style.width = collapsedWidth;
             mainSidebar.style.overflow = 'hidden';
         } else {
             mainSidebar.style.width = '250px';
@@ -164,10 +171,22 @@ function applyResponsiveSettings(windowWidth) {
         mainSidebar.style.right = '0';
         
         if (document.body.classList.contains('sidebar-collapse')) {
-            mainSidebar.style.width = '4.6rem';
+            mainSidebar.style.width = collapsedWidth;
         } else {
             mainSidebar.style.width = '250px';
         }
+    }
+    
+    // تطبيق الأسلوب على العناصر الموجودة داخل القائمة الجانبية في حالة القائمة المصغرة
+    if (sidebarMini) {
+        const navLinks = document.querySelectorAll('.nav-sidebar .nav-link');
+        navLinks.forEach(link => {
+            if (document.body.classList.contains('sidebar-collapse')) {
+                link.classList.add('sidebar-mini-link');
+            } else {
+                link.classList.remove('sidebar-mini-link');
+            }
+        });
     }
 }
 
