@@ -1,3 +1,4 @@
+
 /**
  * إصلاح بسيط لزر القائمة الجانبية في تطبيق وكالة السفر
  */
@@ -5,43 +6,40 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('تم تحميل ملف sidebar-fix.js - الإصدار المحسن');
     
+    // تعريف متغير للتحكم في حالة القائمة
+    let isProcessing = false;
+    
     // إضافة مستمع للنقر المباشر على الزر الجديد المضاف
     const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
     if (sidebarToggleBtn) {
         console.log('تم العثور على زر القائمة #sidebarToggleBtn');
         
         sidebarToggleBtn.addEventListener('click', function(event) {
-            console.log('تم النقر على زر القائمة الجانبية');
-            toggleSidebar();
-            event.preventDefault();
-            event.stopPropagation();
+            if (!isProcessing) {
+                handleSidebarToggle(event);
+            }
         });
-    } else {
-        console.log('لم يتم العثور على زر القائمة، سيتم إضافة زر بديل');
     }
     
-    // إضافة معالج عام للصفحة بأكملها لالتقاط النقرات على الأزرار التي قد لا يتم اكتشافها بطريقة مباشرة
+    // إضافة معالج عام للصفحة بأكملها لالتقاط النقرات على الأزرار
     document.body.addEventListener('click', function(event) {
-        // التحقق مما إذا كان العنصر المنقور عليه أو أحد آبائه هو زر القائمة
-        const clickedElement = event.target;
-        
-        // التحقق مما إذا كان العنصر المنقور هو زر القائمة أو أحد عناصره الفرعية
-        if (clickedElement.closest('#sidebarToggleBtn') || 
-            clickedElement.closest('.fa-bars') || 
-            (clickedElement.tagName === 'I' && clickedElement.classList.contains('fa-bars'))) {
+        if (!isProcessing) {
+            const clickedElement = event.target;
             
-            console.log('تم النقر على زر القائمة من خلال المعالج العام');
-            toggleSidebar();
-            event.preventDefault();
-            event.stopPropagation();
+            if (clickedElement.closest('#sidebarToggleBtn') || 
+                clickedElement.closest('.fa-bars') || 
+                (clickedElement.tagName === 'I' && clickedElement.classList.contains('fa-bars'))) {
+                
+                handleSidebarToggle(event);
+            }
         }
     });
     
-    // وسم مخصص للنقر السريع - احتياطي في حالة عدم عمل الزر الأساسي
+    // وسم مخصص للنقر السريع
     const quickFix = document.createElement('div');
     quickFix.id = 'quickFixSidebarBtn';
     quickFix.style.position = 'fixed';
-    quickFix.style.top = '60px'; // تعديل الموضع ليكون أسفل الشريط العلوي
+    quickFix.style.top = '60px';
     quickFix.style.right = '10px';
     quickFix.style.zIndex = '9999';
     quickFix.style.padding = '5px 10px';
@@ -55,20 +53,19 @@ document.addEventListener('DOMContentLoaded', function() {
     quickFix.title = 'تبديل القائمة الجانبية (بديل)';
     
     quickFix.addEventListener('click', function(event) {
-        console.log('تم النقر على زر الإصلاح السريع البديل');
-        toggleSidebar();
-        event.stopPropagation();
+        if (!isProcessing) {
+            handleSidebarToggle(event);
+        }
     });
     
     document.body.appendChild(quickFix);
     
-    // مراقبة تغيير حجم النافذة لتطبيق الإعدادات المستجيبة
+    // مراقبة تغيير حجم النافذة
     window.addEventListener('resize', function() {
-        console.log('تم تغيير حجم النافذة');
         applyResponsiveSettings(window.innerWidth);
     });
     
-    // استعادة حالة القائمة من التخزين المحلي عند التحميل
+    // استعادة حالة القائمة عند التحميل
     restoreMenuState();
     
     // تطبيق الإعدادات الأولية للتجاوب
@@ -76,6 +73,22 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // إضافة فئة إلى الجسم للإشارة إلى أن الجافاسكريبت قد تم تحميله
     document.body.classList.add('js-sidebar-fix-loaded');
+    
+    // دالة معالجة تبديل القائمة الجانبية
+    function handleSidebarToggle(event) {
+        if (isProcessing) return;
+        
+        isProcessing = true;
+        console.log('تم النقر على زر القائمة الجانبية');
+        toggleSidebar();
+        event.preventDefault();
+        event.stopPropagation();
+        
+        // إعادة تعيين المتغير بعد 300 مللي ثانية (مدة الانتقال)
+        setTimeout(() => {
+            isProcessing = false;
+        }, 300);
+    }
 });
 
 /**
@@ -84,38 +97,26 @@ document.addEventListener('DOMContentLoaded', function() {
 function toggleSidebar() {
     console.log('بدء تبديل حالة القائمة');
     
-    // الحصول على حجم النافذة الحالي
     const windowWidth = window.innerWidth;
-    
-    // تبديل الفئات في الجسم
     document.body.classList.toggle('sidebar-collapse');
     
     if (document.body.classList.contains('sidebar-collapse')) {
-        // عند إغلاق القائمة
         document.body.classList.remove('sidebar-open');
         
-        // تعديل هوامش المحتوى حسب حجم الشاشة
         if (windowWidth >= 992) {
-            // سطح المكتب - نظهر القائمة المصغرة
             setContentMargins('4.6rem');
         } else {
-            // الأجهزة الصغيرة - نغلق القائمة تمامًا
             setContentMargins('0');
         }
     } else {
-        // عند فتح القائمة
         document.body.classList.add('sidebar-open');
         
-        // تعديل هوامش المحتوى - للشاشات الكبيرة فقط
         if (windowWidth >= 768) {
             setContentMargins('250px');
         }
     }
     
-    // تطبيق التعديلات المناسبة حسب حجم الشاشة
     applyResponsiveSettings(windowWidth);
-    
-    // تذكر حالة القائمة
     saveMenuState();
 }
 
@@ -127,7 +128,6 @@ function setContentMargins(margin) {
     const mainHeader = document.querySelector('.main-header');
     const mainFooter = document.querySelector('.main-footer');
     
-    // تطبيق الهوامش فقط للشاشات المتوسطة والكبيرة
     if (window.innerWidth >= 768) {
         if (contentWrapper) contentWrapper.style.marginRight = margin;
         if (mainHeader) mainHeader.style.marginRight = margin;
@@ -136,15 +136,13 @@ function setContentMargins(margin) {
 }
 
 /**
- * تطبيق الإعدادات المستجيبة حسب حجم الشاشة
+ * تطبيق الإعدادات المستجيبة
  */
 function applyResponsiveSettings(windowWidth) {
     const mainSidebar = document.querySelector('.main-sidebar');
-    
     if (!mainSidebar) return;
     
     if (windowWidth < 768) {
-        // الشاشات الصغيرة (الجوال)
         mainSidebar.style.width = '250px';
         mainSidebar.style.position = 'fixed';
         
@@ -153,9 +151,7 @@ function applyResponsiveSettings(windowWidth) {
         } else {
             mainSidebar.style.right = '-250px';
         }
-        
     } else if (windowWidth >= 768 && windowWidth < 992) {
-        // الشاشات المتوسطة (تابلت)
         if (document.body.classList.contains('sidebar-collapse')) {
             mainSidebar.style.width = '0';
             mainSidebar.style.overflow = 'hidden';
@@ -163,11 +159,8 @@ function applyResponsiveSettings(windowWidth) {
             mainSidebar.style.width = '250px';
             mainSidebar.style.overflow = 'visible';
         }
-        
         mainSidebar.style.right = '0';
-        
     } else {
-        // الشاشات الكبيرة (سطح المكتب)
         mainSidebar.style.right = '0';
         
         if (document.body.classList.contains('sidebar-collapse')) {
@@ -179,7 +172,7 @@ function applyResponsiveSettings(windowWidth) {
 }
 
 /**
- * حفظ حالة القائمة في التخزين المحلي
+ * حفظ حالة القائمة
  */
 function saveMenuState() {
     const state = document.body.classList.contains('sidebar-collapse') ? 'collapsed' : 'expanded';
@@ -187,13 +180,12 @@ function saveMenuState() {
 }
 
 /**
- * استعادة حالة القائمة من التخزين المحلي
+ * استعادة حالة القائمة
  */
 function restoreMenuState() {
     const savedState = localStorage.getItem('sidebar-state');
     const windowWidth = window.innerWidth;
     
-    // لا نستعيد الحالة للشاشات الصغيرة، نجعل القائمة مغلقة دائمًا
     if (windowWidth < 768) {
         document.body.classList.remove('sidebar-open');
         document.body.classList.add('sidebar-collapse');
@@ -204,7 +196,6 @@ function restoreMenuState() {
         document.body.classList.add('sidebar-collapse');
         document.body.classList.remove('sidebar-open');
         
-        // تعديل هوامش المحتوى حسب حجم الشاشة
         if (windowWidth >= 992) {
             setContentMargins('4.6rem');
         } else {
@@ -214,12 +205,10 @@ function restoreMenuState() {
         document.body.classList.remove('sidebar-collapse');
         document.body.classList.add('sidebar-open');
         
-        // تعديل الهوامش - للشاشات الكبيرة فقط
         if (windowWidth >= 768) {
             setContentMargins('250px');
         }
     }
     
-    // تطبيق الإعدادات المستجيبة
     applyResponsiveSettings(windowWidth);
 }
