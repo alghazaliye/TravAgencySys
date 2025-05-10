@@ -372,7 +372,48 @@ def system_settings():
     """صفحة إعدادات النظام"""
     settings_list = SystemSettings.query.all()
     settings = get_settings()
-    return render_template('system-settings.html', settings_list=settings_list, settings=settings)
+    
+    # إضافة وصف الإعدادات
+    setting_descriptions = {
+        'system_name': {
+            'description': 'اسم النظام الذي سيظهر في العنوان وجميع أنحاء التطبيق'
+        },
+        'system_slogan': {
+            'description': 'شعار أو وصف قصير للنظام'
+        },
+        'company_name': {
+            'description': 'اسم الشركة أو المؤسسة'
+        },
+        'company_address': {
+            'description': 'عنوان المقر الرئيسي للشركة'
+        },
+        'company_phone': {
+            'description': 'رقم الهاتف الرئيسي للتواصل'
+        },
+        'company_email': {
+            'description': 'البريد الإلكتروني الرسمي للشركة'
+        },
+        'site_description': {
+            'description': 'وصف موقع الويب (مفيد لمحركات البحث)'
+        },
+        'site_keywords': {
+            'description': 'الكلمات المفتاحية للموقع (مفيدة لمحركات البحث)'
+        },
+        'default_currency': {
+            'description': 'العملة الافتراضية للمعاملات المالية'
+        },
+        'default_language': {
+            'description': 'اللغة الافتراضية للنظام'
+        },
+        'tax_percent': {
+            'description': 'نسبة الضريبة المضافة على الخدمات'
+        },
+    }
+    
+    return render_template('system-settings.html', 
+                          settings_list=settings_list, 
+                          settings=settings, 
+                          setting_descriptions=setting_descriptions)
 
 @app.route('/api/system-settings', methods=['POST'])
 @login_required
