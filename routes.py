@@ -486,6 +486,12 @@ def system_settings():
         'system_slogan': {
             'description': 'شعار أو وصف قصير للنظام'
         },
+        'navbar_text_color': {
+            'description': 'لون النص في شريط التنقل'
+        },
+        'navbar_dark_text_color': {
+            'description': 'لون النص في شريط التنقل (الوضع الليلي)'
+        },
         'dashboard_title': {
             'description': 'العنوان الذي سيظهر في لوحة التحكم الرئيسية'
         },
