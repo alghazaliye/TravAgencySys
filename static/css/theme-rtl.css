@@ -1,0 +1,258 @@
+/**
+ * ملف أنماط خاص بإدارة سمات الوضع الفاتح والداكن للواجهة العربية
+ * يحتوي على متغيرات CSS وتعريفات مخصصة للسمات
+ */
+
+:root {
+    /* متغيرات الألوان الأساسية للوضع الفاتح (الافتراضي) */
+    --primary-travel: #4e73df;
+    --primary-travel-hover: #3f61c7;
+    --primary-light: #ebf0ff;
+    --secondary-travel: #6c757d;
+    --success-travel: #28a745;
+    --info-travel: #17a2b8;
+    --warning-travel: #ffc107;
+    --danger-travel: #dc3545;
+    --light-travel: #f8f9fa;
+    --dark-travel: #343a40;
+    
+    /* متغيرات النص والخلفية للوضع الفاتح */
+    --body-bg: #f8f9fc;
+    --content-bg: #ffffff;
+    --card-bg: #ffffff;
+    --sidebar-bg: #4e73df;
+    --sidebar-dark-bg: #3a5acb;
+    --text-color: #2e3b52;
+    --text-muted: #6c757d;
+    --border-color: #e3e6f0;
+    --input-bg: #ffffff;
+    --input-border: #d1d3e2;
+    --input-focus-border: #a1a7ea;
+    
+    /* متغيرات العناصر المشتركة */
+    --card-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    --box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.12);
+    --border-radius: 0.35rem;
+}
+
+/* السمة الداكنة */
+[data-theme="dark"] {
+    /* متغيرات الألوان الأساسية للوضع الداكن */
+    --primary-travel: #5a78de; /* أفتح قليلاً للتباين */
+    --primary-travel-hover: #6685e3;
+    --primary-light: #394978;
+    --secondary-travel: #868e96;
+    
+    /* متغيرات النص والخلفية للوضع الداكن */
+    --body-bg: #1a1f2b;
+    --content-bg: #24293b;
+    --card-bg: #2a314a;
+    --sidebar-bg: #2c3d8a;
+    --sidebar-dark-bg: #25326e;
+    --text-color: #e9ecef;
+    --text-muted: #a8adb4;
+    --border-color: #424a5e;
+    --input-bg: #343a4e;
+    --input-border: #454d61;
+    --input-focus-border: #5e668c;
+    
+    /* متغيرات العناصر المشتركة للوضع الداكن */
+    --card-shadow: 0 0.15rem 1.75rem 0 rgba(0, 0, 0, 0.4);
+    --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
+}
+
+/* تطبيق متغيرات السمة على العناصر الأساسية */
+body {
+    background-color: var(--body-bg);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.content-wrapper {
+    background-color: var(--content-bg);
+    transition: background-color 0.3s ease;
+}
+
+.card, .card-body {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.main-sidebar {
+    background-color: var(--sidebar-bg);
+    transition: background-color 0.3s ease;
+}
+
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active {
+    background-color: var(--sidebar-dark-bg);
+}
+
+.card-header {
+    background-color: var(--card-bg);
+    border-bottom-color: var(--border-color);
+}
+
+/* تعديلات النموذج */
+.form-control {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.form-control:focus {
+    background-color: var(--input-bg);
+    border-color: var(--input-focus-border);
+    color: var(--text-color);
+}
+
+/* تعديلات الجداول */
+.table {
+    color: var(--text-color);
+}
+
+.table-bordered {
+    border-color: var(--border-color);
+}
+
+.table td, .table th {
+    border-color: var(--border-color);
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* تعديلات العناصر المتنوعة */
+.border {
+    border-color: var(--border-color) !important;
+}
+
+.border-bottom {
+    border-bottom-color: var(--border-color) !important;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.bg-white {
+    background-color: var(--card-bg) !important;
+}
+
+.dropdown-menu {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+.dropdown-item {
+    color: var(--text-color);
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+    background-color: var(--primary-light);
+}
+
+/* زر تبديل السمة */
+.theme-toggle-container {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    z-index: 1050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background-color: var(--card-bg);
+    border-radius: 50%;
+    box-shadow: var(--box-shadow);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 50px;
+    height: 50px;
+    border: none;
+}
+
+.theme-toggle-container:hover {
+    transform: scale(1.1);
+}
+
+.theme-toggle-icon {
+    font-size: 22px;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+/* تصميم متحرك لأيقونة تبديل السمة */
+.theme-toggle-container .fa-sun, 
+.theme-toggle-container .fa-moon {
+    position: absolute;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle-container .fa-sun {
+    opacity: 0;
+    transform: scale(0);
+}
+
+.theme-toggle-container .fa-moon {
+    opacity: 1;
+    transform: scale(1);
+}
+
+[data-theme="dark"] .theme-toggle-container .fa-sun {
+    opacity: 1;
+    transform: scale(1);
+}
+
+[data-theme="dark"] .theme-toggle-container .fa-moon {
+    opacity: 0;
+    transform: scale(0);
+}
+
+/* إصلاحات إضافية للسمة الداكنة */
+[data-theme="dark"] .table {
+    color: var(--text-color);
+}
+
+[data-theme="dark"] .modal-content {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .close {
+    color: var(--text-color);
+}
+
+[data-theme="dark"] .close:hover {
+    color: var(--text-muted);
+}
+
+[data-theme="dark"] .navbar {
+    background-color: var(--sidebar-bg) !important;
+}
+
+/* الرسائل والتنبيهات */
+[data-theme="dark"] .alert-warning {
+    background-color: rgba(255, 193, 7, 0.2);
+    border-color: rgba(255, 193, 7, 0.3);
+    color: #fff6dd;
+}
+
+[data-theme="dark"] .alert-success {
+    background-color: rgba(40, 167, 69, 0.2);
+    border-color: rgba(40, 167, 69, 0.3);
+    color: #d7fde2;
+}
+
+[data-theme="dark"] .alert-danger {
+    background-color: rgba(220, 53, 69, 0.2);
+    border-color: rgba(220, 53, 69, 0.3);
+    color: #fdd9de;
+}
