@@ -11,14 +11,14 @@
         padding: 20px;
         margin-bottom: 20px;
     }
-    
+
     .settings-section h3 {
         border-bottom: 1px solid #e3e6f0;
         padding-bottom: 10px;
         margin-bottom: 20px;
         color: #334152;
     }
-    
+
     .color-preview {
         width: 30px;
         height: 30px;
@@ -28,7 +28,7 @@
         border: 1px solid #ddd;
         vertical-align: middle;
     }
-    
+
     .icon-option {
         display: inline-block;
         padding: 10px;
@@ -39,17 +39,17 @@
         text-align: center;
         width: 60px;
     }
-    
+
     .icon-option i {
         font-size: 20px;
         color: #4e73df;
     }
-    
+
     .icon-option.selected {
         background-color: #e8f0fe;
         border-color: #4e73df;
     }
-    
+
     .settings-preview {
         background-color: #fff;
         border-radius: 5px;
@@ -58,29 +58,29 @@
         margin-top: 20px;
         text-align: center;
     }
-    
+
     .preview-title {
         font-size: 24px;
         margin-bottom: 10px;
         color: var(--primary-color, #4e73df);
     }
-    
+
     .preview-slogan {
         font-size: 16px;
         color: #6c757d;
         margin-bottom: 15px;
     }
-    
+
     .preview-logo {
         font-size: 36px;
         margin-bottom: 20px;
         color: var(--primary-color, #4e73df);
     }
-    
+
     .preview-buttons {
         margin-top: 20px;
     }
-    
+
     .preview-button {
         display: inline-block;
         padding: 8px 16px;
@@ -89,15 +89,15 @@
         font-size: 14px;
         color: white;
     }
-    
+
     .primary-button {
         background-color: var(--primary-color, #4e73df);
     }
-    
+
     .secondary-button {
         background-color: var(--secondary-color, #1cc88a);
     }
-    
+
     .date-format-example {
         background-color: #f8f9fa;
         padding: 10px 15px;
@@ -135,7 +135,7 @@
                 <!-- إعدادات عامة للنظام -->
                 <div class="settings-section">
                     <h3><i class="fas fa-cogs ml-2"></i>الإعدادات العامة</h3>
-                    
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -154,7 +154,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -168,7 +168,7 @@
                             <div class="form-group">
                                 <label for="default_currency">العملة الافتراضية</label>
                                 <select class="form-control" id="default_currency" name="default_currency">
-                                    {% set currency_options = 'SAR,USD,EUR,YER,AED,JOD,KWD,BHD,QAR,EGP,LBP' %}
+                                    {% set currency_options = setting_descriptions.default_currency.options if 'options' in setting_descriptions.default_currency else '' %}
                                     {% for option in currency_options.split(',') %}
                                         <option value="{{ option }}" {% if settings.default_currency == option %}selected{% endif %}>
                                             {% if option == 'SAR' %}ريال سعودي (SAR)
@@ -183,13 +183,13 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- إعدادات حقوق النشر والعنوان -->
                     <div class="row mt-4">
                         <div class="col-12">
                             <h5 class="mb-3">معلومات الشركة وحقوق النشر</h5>
                         </div>
-                        
+
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="company_full_name">الاسم الكامل للشركة</label>
@@ -198,7 +198,7 @@
                                 <small class="form-text text-muted">الاسم الكامل للشركة كما سيظهر في التقارير والوثائق</small>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="company_license_number">رقم الترخيص</label>
@@ -207,7 +207,7 @@
                                 <small class="form-text text-muted">رقم ترخيص الشركة أو السجل التجاري</small>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="copyright_text">نص حقوق النشر</label>
@@ -218,11 +218,11 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- إعدادات المظهر والألوان -->
                 <div class="settings-section">
                     <h3><i class="fas fa-palette ml-2"></i>المظهر والألوان</h3>
-                    
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -247,7 +247,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <div class="custom-control custom-switch mb-3">
                             <input type="checkbox" class="custom-control-input" id="use_custom_logo" name="use_custom_logo" 
@@ -256,7 +256,7 @@
                             <small class="form-text text-muted d-block">{{ setting_descriptions.use_custom_logo.description }}</small>
                         </div>
                     </div>
-                    
+
                     <div id="logo_icon_container" class="form-group" {% if settings.use_custom_logo == 'true' %}style="display: none;"{% endif %}>
                         <label>أيقونة الشعار</label>
                         <input type="hidden" id="logo_icon" name="logo_icon" value="{{ settings.logo_icon }}">
@@ -270,7 +270,7 @@
                         </div>
                         <small class="form-text text-muted">أيقونة الشعار (تظهر عندما لا يتم استخدام شعار مخصص)</small>
                     </div>
-                    
+
                     <div id="custom_logo_container" class="form-group" {% if settings.use_custom_logo != 'true' %}style="display: none;"{% endif %}>
                         <label for="custom_logo_url">رابط الشعار المخصص</label>
                         <input type="text" class="form-control" id="custom_logo_url" name="custom_logo_url" 
@@ -283,7 +283,7 @@
                         </div>
                         {% endif %}
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="dark_mode">وضع العرض (ليلي/نهاري)</label>
                         <select class="form-control" id="dark_mode" name="dark_mode">
@@ -299,7 +299,7 @@
                         </select>
                         <small class="form-text text-muted">{{ setting_descriptions.dark_mode.description }}</small>
                     </div>
-                    
+
                     <div class="row mt-4" id="dark_mode_colors" {% if settings.dark_mode == 'light' %}style="display: none;"{% endif %}>
                         <div class="col-md-6">
                             <div class="form-group">
@@ -325,11 +325,11 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- إعدادات شريط التنقل -->
                 <div class="settings-section">
                     <h3><i class="fas fa-bars ml-2"></i>إعدادات شريط التنقل</h3>
-                    
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -354,7 +354,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -379,7 +379,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row mt-3">
                         <div class="col-md-4">
                             <div class="form-group form-check">
@@ -406,7 +406,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="mt-3">
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle ml-2"></i>
@@ -414,11 +414,11 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- إعدادات الشكل العام -->
                 <div class="settings-section">
                     <h3><i class="fas fa-desktop ml-2"></i>إعدادات الشكل العام</h3>
-                    
+
                     <div class="row mt-3">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -455,7 +455,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -484,7 +484,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row mt-3">
                         <div class="col-md-6">
                             <div class="form-group form-check">
@@ -503,7 +503,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="mt-4">
                         <div class="card">
                             <div class="card-header bg-travel-info text-white">
@@ -535,18 +535,17 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- إعدادات التاريخ -->
                 <div class="settings-section">
                     <h3><i class="fas fa-calendar-alt ml-2"></i>إعدادات التاريخ</h3>
-                    
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="date_format">صيغة عرض التاريخ</label>
                                 <select class="form-control" id="date_format" name="date_format">
-                                    {% set date_format_options = 'DD/MM/YYYY,YYYY-MM-DD,MM/DD/YYYY,DD-MM-YYYY' %}
-                                    {% for option in date_format_options.split(',') %}
+                                    {% for option in setting_descriptions.date_format.options.split(',') %}
                                         <option value="{{ option }}" {% if settings.date_format == option %}selected{% endif %}>
                                             {{ option }}
                                         </option>
@@ -564,7 +563,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <div class="custom-control custom-switch">
                             <input type="checkbox" class="custom-control-input" id="use_hijri_dates" name="use_hijri_dates" 
@@ -573,7 +572,7 @@
                         </div>
                         <small class="form-text text-muted">{{ setting_descriptions.use_hijri_dates.description }}</small>
                     </div>
-                    
+
                     <div class="form-group">
                         <div class="custom-control custom-switch">
                             <input type="checkbox" class="custom-control-input" id="show_both_dates" name="show_both_dates" 
@@ -583,11 +582,11 @@
                         <small class="form-text text-muted">{{ setting_descriptions.show_both_dates.description }}</small>
                     </div>
                 </div>
-                
+
                 <!-- إعدادات الإشعارات -->
                 <div class="settings-section">
                     <h3><i class="fas fa-bell ml-2"></i>إعدادات الإشعارات</h3>
-                    
+
                     <div class="form-group">
                         <div class="custom-control custom-switch">
                             <input type="checkbox" class="custom-control-input" id="show_notifications" name="show_notifications" 
@@ -596,7 +595,7 @@
                         </div>
                         <small class="form-text text-muted">{{ setting_descriptions.show_notifications.description }}</small>
                     </div>
-                    
+
                     <div class="form-group">
                         <div class="custom-control custom-switch">
                             <input type="checkbox" class="custom-control-input" id="enable_emails" name="enable_emails" 
@@ -605,7 +604,7 @@
                         </div>
                         <small class="form-text text-muted">{{ setting_descriptions.enable_emails.description }}</small>
                     </div>
-                    
+
                     <div class="form-group">
                         <div class="custom-control custom-switch">
                             <input type="checkbox" class="custom-control-input" id="enable_sms" name="enable_sms" 
@@ -615,7 +614,7 @@
                         <small class="form-text text-muted">{{ setting_descriptions.enable_sms.description }}</small>
                     </div>
                 </div>
-                
+
                 <!-- أزرار الإجراءات -->
                 <div class="form-group text-center">
                     <button type="submit" class="btn btn-primary">
@@ -627,25 +626,25 @@
                 </div>
             </form>
         </div>
-        
+
         <!-- معاينة الإعدادات -->
         <div class="col-lg-4">
             <div class="settings-section">
                 <h3><i class="fas fa-eye ml-2"></i>معاينة الإعدادات</h3>
-                
+
                 <div class="settings-preview">
                     <div class="preview-logo">
                         <i id="preview_icon" class="{{ settings.logo_icon }}"></i>
                     </div>
                     <div class="preview-title" id="preview_title">{{ settings.system_name }}</div>
                     <div class="preview-slogan" id="preview_slogan">{{ settings.system_slogan }}</div>
-                    
+
                     <div class="preview-buttons">
                         <span class="preview-button primary-button">زر رئيسي</span>
                         <span class="preview-button secondary-button">زر ثانوي</span>
                     </div>
                 </div>
-                
+
                 <div class="mt-4">
                     <div class="alert alert-info">
                         <h5><i class="fas fa-info-circle ml-1"></i>ملاحظة</h5>
@@ -669,25 +668,25 @@ $(document).ready(function() {
         $('.preview-title, .preview-logo, .primary-button').css('color', color);
         $('.primary-button').css('background-color', color);
     });
-    
+
     $('#secondary_color').on('input', function() {
         var color = $(this).val();
         $('#secondary_color_preview').css('background-color', color);
         document.documentElement.style.setProperty('--secondary-color', color);
         $('.secondary-button').css('background-color', color);
     });
-    
+
     // معالجة ألوان الوضع الليلي
     $('#dark_primary_color').on('input', function() {
         var color = $(this).val();
         $('#dark_primary_color_preview').css('background-color', color);
     });
-    
+
     $('#dark_text_color').on('input', function() {
         var color = $(this).val();
         $('#dark_text_color_preview').css('background-color', color);
     });
-    
+
     // إدارة إعدادات الوضع الليلي
     $('#dark_mode').on('change', function() {
         var selectedMode = $(this).val();
@@ -697,34 +696,34 @@ $(document).ready(function() {
             $('#dark_mode_colors').show();
         }
     });
-    
+
     // تحديث معاينة اسم النظام وشعاره
     $('#system_name').on('input', function() {
         $('#preview_title').text($(this).val());
     });
-    
+
     $('#system_slogan').on('input', function() {
         $('#preview_slogan').text($(this).val());
     });
-    
+
     // اختيار أيقونة الشعار
     $('.icon-option').on('click', function() {
         $('.icon-option').removeClass('selected');
         $(this).addClass('selected');
-        
+
         var iconClass = $(this).data('icon');
         $('#logo_icon').val(iconClass);
-        
+
         // تحديث المعاينة
         $('#preview_icon').attr('class', iconClass);
     });
-    
+
     // التبديل بين الشعار المخصص والأيقونة
     $('#use_custom_logo').on('change', function() {
         if (this.checked) {
             $('#logo_icon_container').hide();
             $('#custom_logo_container').show();
-            
+
             // تحديث المعاينة إذا كان هناك شعار مخصص
             if ($('#custom_logo_url').val()) {
                 updateLogoPreview($('#custom_logo_url').val());
@@ -732,13 +731,13 @@ $(document).ready(function() {
         } else {
             $('#logo_icon_container').show();
             $('#custom_logo_container').hide();
-            
+
             // إعادة عرض الأيقونة في المعاينة
             $('.preview-logo #preview_custom_logo').remove();
             $('.preview-logo #preview_icon').show();
         }
     });
-    
+
     // تحديث معاينة الشعار المخصص عند تغيير الرابط
     $('#custom_logo_url').on('input', function() {
         var url = $(this).val();
@@ -750,35 +749,35 @@ $(document).ready(function() {
             $('.preview-logo #preview_icon').show();
         }
     });
-    
+
     // دالة لتحديث معاينة الشعار المخصص
     function updateLogoPreview(url) {
         // إخفاء الأيقونة
         $('.preview-logo #preview_icon').hide();
-        
+
         // إزالة أي شعار مخصص سابق
         $('.preview-logo #preview_custom_logo').remove();
-        
+
         // إضافة الشعار المخصص الجديد
         $('.preview-logo').append('<img id="preview_custom_logo" src="' + url + '" alt="شعار مخصص" style="max-height: 50px; max-width: 150px;">');
     }
-    
+
     // ضبط متغيرات CSS للألوان
     document.documentElement.style.setProperty('--primary-color', $('#primary_color').val());
     document.documentElement.style.setProperty('--secondary-color', $('#secondary_color').val());
-    
+
     // تهيئة حقل اختيار الملف
     $('.custom-file-input').on('change', function() {
         var fileName = $(this).val().split('\\').pop();
         $(this).next('.custom-file-label').html(fileName);
     });
-    
+
     // تحديث مثال صيغة التاريخ
     function updateDateFormatExample() {
         var format = $('#date_format').val();
         var today = new Date();
         var example = '';
-        
+
         // تنسيق التاريخ حسب الصيغة المختارة
         if (format === 'DD/MM/YYYY') {
             example = padZero(today.getDate()) + '/' + padZero(today.getMonth() + 1) + '/' + today.getFullYear();
@@ -792,10 +791,10 @@ $(document).ready(function() {
             var months = ['يناير', 'فبراير', 'مارس', 'إبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
             example = padZero(today.getDate()) + ' ' + months[today.getMonth()] + ', ' + today.getFullYear();
         }
-        
+
         // عرض المثال
         $('#date_format_example').text(example);
-        
+
         // تحديث مثال التاريخ الهجري إذا كان مفعلاً
         if ($('#use_hijri_dates').is(':checked') || $('#show_both_dates').is(':checked')) {
             // هنا يمكن إضافة كود تحويل التاريخ الميلادي إلى هجري
@@ -808,15 +807,15 @@ $(document).ready(function() {
             }
         }
     }
-    
+
     // دالة مساعدة لإضافة صفر قبل الأرقام الأحادية
     function padZero(num) {
         return (num < 10 ? '0' : '') + num;
     }
-    
+
     // تحديث المثال عند تغيير صيغة التاريخ
     $('#date_format').on('change', updateDateFormatExample);
-    
+
     // تحديث المثال عند تغيير إعدادات التاريخ الهجري
     $('#use_hijri_dates, #show_both_dates').on('change', function() {
         // تفعيل/تعطيل خيار عرض التاريخين معاً حسب حالة استخدام التاريخ الهجري
@@ -825,55 +824,55 @@ $(document).ready(function() {
         } else {
             $('#show_both_dates').prop('checked', false).prop('disabled', true);
         }
-        
+
         updateDateFormatExample();
     });
-    
+
     // تحديث المثال عند تحميل الصفحة
     updateDateFormatExample();
-    
+
     // تفعيل/تعطيل خيار عرض التاريخين معاً عند تحميل الصفحة
     if (!$('#use_hijri_dates').is(':checked')) {
         $('#show_both_dates').prop('disabled', true);
     }
-    
+
     // تهيئة معاينة الشعار المخصص عند تحميل الصفحة
     if ($('#use_custom_logo').is(':checked') && $('#custom_logo_url').val()) {
         updateLogoPreview($('#custom_logo_url').val());
     }
-    
+
     // تهيئة إظهار/إخفاء خيارات الوضع الليلي عند تحميل الصفحة
     if ($('#dark_mode').val() === 'light') {
         $('#dark_mode_colors').hide();
     }
-    
+
     // تحديث معاينة ألوان شريط التنقل
     $('#navbar_color').on('input', function() {
         var color = $(this).val();
         $('#navbar_color_preview').css('background-color', color);
     });
-    
+
     $('#navbar_text_color').on('input', function() {
         var color = $(this).val();
         $('#navbar_text_color_preview').css('background-color', color);
     });
-    
+
     $('#navbar_dark_color').on('input', function() {
         var color = $(this).val();
         $('#navbar_dark_color_preview').css('background-color', color);
     });
-    
+
     $('#navbar_dark_text_color').on('input', function() {
         var color = $(this).val();
         $('#navbar_dark_text_color_preview').css('background-color', color);
     });
-    
+
     // تحديث معاينة إعدادات الشكل العام
     function updateLayoutPreview() {
         // تحديث حجم ظل البطاقة
         var shadowSize = $('#card_shadow').val();
         var shadowValue = '0 0 0 rgba(0,0,0,0)';
-        
+
         if (shadowSize === 'small') {
             shadowValue = '0 2px 5px rgba(0,0,0,0.1)';
         } else if (shadowSize === 'medium') {
@@ -881,13 +880,13 @@ $(document).ready(function() {
         } else if (shadowSize === 'large') {
             shadowValue = '0 8px 20px rgba(0,0,0,0.2)';
         }
-        
+
         $('#preview_card').css('box-shadow', shadowValue);
-        
+
         // تحديث انحناء الحواف
         var borderRadius = $('#border_radius').val();
         var radiusValue = '0';
-        
+
         if (borderRadius === 'small') {
             radiusValue = '4px';
         } else if (borderRadius === 'medium') {
@@ -895,9 +894,9 @@ $(document).ready(function() {
         } else if (borderRadius === 'large') {
             radiusValue = '16px';
         }
-        
+
         $('#preview_card, #preview_header, #preview_sidebar, #preview_content').css('border-radius', radiusValue);
-        
+
         // تحديث عرض المحتوى
         if ($('#content_width').val() === 'fixed') {
             $('#layout_preview').addClass('container-narrow').removeClass('container-fluid');
@@ -906,14 +905,14 @@ $(document).ready(function() {
             $('#layout_preview').removeClass('container-narrow').addClass('container-fluid');
             $('#preview_content').css('width', '80%');
         }
-        
+
         // تحديث تخطيط مضغوط
         if ($('#layout_boxed').is(':checked')) {
             $('#layout_preview').addClass('boxed-layout').css('max-width', '90%').css('margin', '0 auto');
         } else {
             $('#layout_preview').removeClass('boxed-layout').css('max-width', '100%').css('margin', '0');
         }
-        
+
         // تحديث القائمة الجانبية المصغرة
         if ($('#sidebar_mini').is(':checked')) {
             $('#preview_sidebar').css('width', '10%').text('');
@@ -921,7 +920,7 @@ $(document).ready(function() {
         } else {
             $('#preview_sidebar').css('width', '20%').text('القائمة');
         }
-        
+
         // تحديث التأثيرات الحركية
         if ($('#transitions').is(':checked')) {
             $('#preview_card, #preview_header, #preview_sidebar, #preview_content').css('transition', 'all 0.3s ease');
@@ -929,11 +928,11 @@ $(document).ready(function() {
             $('#preview_card, #preview_header, #preview_sidebar, #preview_content').css('transition', 'none');
         }
     }
-    
+
     // ربط الأحداث بالعناصر
     $('#card_shadow, #border_radius, #content_width').on('change', updateLayoutPreview);
     $('#layout_boxed, #sidebar_mini, #transitions').on('change', updateLayoutPreview);
-    
+
     // تهيئة المعاينة الأولية
     updateLayoutPreview();
 });
