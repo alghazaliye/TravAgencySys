@@ -480,6 +480,9 @@ def system_settings():
         'dark_text_color': {
             'description': 'لون النص في الوضع الليلي'
         },
+        'navbar_color': {
+            'description': 'لون خلفية شريط التنقل'
+        },
         'system_slogan': {
             'description': 'شعار أو وصف قصير للنظام'
         },
