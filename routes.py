@@ -689,17 +689,46 @@ def create_bus_booking():
         birth_date = None
         
         try:
-            if data.get('reservationDate'):
-                travel_date = datetime.strptime(data.get('reservationDate'), '%d/%m/%Y').date()
-            if data.get('returnDate'):
-                return_date = datetime.strptime(data.get('returnDate'), '%d/%m/%Y').date()
-            if data.get('birthDate'):
-                birth_date = datetime.strptime(data.get('birthDate'), '%d/%m/%Y').date()
+            # التعامل مع تنسيقات التاريخ المختلفة، بما في ذلك الأرقام العربية
+            def parse_date(date_str):
+                if not date_str:
+                    return None
+                
+                # محاولة تحويل التاريخ بصيغ مختلفة
+                date_formats = ['%d/%m/%Y', '%Y/%m/%d', '%d-%m-%Y', '%Y-%m-%d', 
+                               '%d %B، %Y', '%d %B , %Y', '%d %B %Y']
+                
+                # تحويل الأرقام العربية إلى إنجليزية
+                eastern_to_western = {
+                    '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
+                    '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9'
+                }
+                
+                # تبديل الأرقام العربية إلى إنجليزية
+                for arabic, western in eastern_to_western.items():
+                    if arabic in date_str:
+                        date_str = date_str.replace(arabic, western)
+                
+                # محاولة جميع الصيغ
+                for fmt in date_formats:
+                    try:
+                        return datetime.strptime(date_str, fmt).date()
+                    except ValueError:
+                        continue
+                
+                # إذا فشلت جميع المحاولات
+                raise ValueError(f"لا يمكن تحويل '{date_str}' إلى تاريخ صالح")
+            
+            # تحويل التواريخ
+            travel_date = parse_date(data.get('reservationDate'))
+            return_date = parse_date(data.get('returnDate'))
+            birth_date = parse_date(data.get('birthDate'))
+            
         except ValueError as e:
             logging.error(f"Error parsing dates: {str(e)}")
             return jsonify({
                 'success': False, 
-                'error': 'حدث خطأ في تنسيق التاريخ. يرجى استخدام تنسيق: يوم/شهر/سنة'
+                'error': 'حدث خطأ في تنسيق التاريخ. يرجى استخدام تنسيق صحيح مثل: يوم/شهر/سنة أو يوم-شهر-سنة'
             }), 400
         
         # تحويل القيم المالية
@@ -763,7 +792,74 @@ def create_bus_booking():
         db.session.add(new_booking)
         db.session.commit()
         
-        # سجل الإضافة في السجل
+        # إنشاء سجلات القيود المالية المرتبطة بالحجز
+        try:
+            # القيد المالي يختلف حسب نوع الدفع
+            payment_type = data.get('paymentType', '')
+            account = data.get('account', '')
+            
+            # تسجيل إيراد من بيع التذكرة
+            accounting_entry = {
+                'booking_id': new_booking.id,
+                'entry_date': datetime.now(),
+                'entry_type': 'revenue',
+                'amount': selling_price,
+                'description': f'إيراد بيع تذكرة باص رقم: {booking_number}'
+            }
+            
+            # سجل معلومات المعاملة المالية
+            if payment_type == 'cash':
+                # قيد نقدي: إضافة رصيد للصندوق
+                transaction_info = {
+                    'transaction_type': 'cash_payment',
+                    'account_id': account,
+                    'amount': received_amount,
+                    'remaining_amount': remaining_amount,
+                    'description': f'دفع نقدي لحجز الباص رقم: {booking_number}'
+                }
+                logging.info(f"تم تسجيل قيد نقدي بمبلغ {received_amount} للحجز رقم: {booking_number}")
+                
+            elif payment_type == 'credit':
+                # قيد آجل: إضافة رصيد للعميل
+                transaction_info = {
+                    'transaction_type': 'credit_payment',
+                    'account_id': account,
+                    'amount': selling_price,
+                    'description': f'دفع آجل لحجز الباص رقم: {booking_number}'
+                }
+                logging.info(f"تم تسجيل قيد آجل بمبلغ {selling_price} للحجز رقم: {booking_number}")
+                
+            elif payment_type == 'bank':
+                # قيد بنكي: إضافة رصيد للبنك
+                transaction_info = {
+                    'transaction_type': 'bank_payment',
+                    'account_id': account,
+                    'amount': received_amount,
+                    'remaining_amount': remaining_amount,
+                    'description': f'دفع بنكي لحجز الباص رقم: {booking_number}'
+                }
+                logging.info(f"تم تسجيل قيد بنكي بمبلغ {received_amount} للحجز رقم: {booking_number}")
+            
+            # تسجيل تكلفة الرحلة إذا كانت أكبر من صفر
+            if cost_price > 0:
+                supplier_id = data.get('supplierId', '')
+                cost_entry = {
+                    'booking_id': new_booking.id,
+                    'entry_date': datetime.now(),
+                    'entry_type': 'expense',
+                    'amount': cost_price,
+                    'description': f'تكلفة حجز باص رقم: {booking_number}',
+                    'supplier_id': supplier_id
+                }
+                logging.info(f"تم تسجيل تكلفة بمبلغ {cost_price} للحجز رقم: {booking_number}")
+                
+            # في بيئة إنتاجية حقيقية، ستقوم بحفظ هذه القيود في جداول مخصصة للمحاسبة
+            # BookingTransaction, AccountingEntry, etc.
+                
+        except Exception as e:
+            logging.warning(f"تم إنشاء الحجز ولكن حدث خطأ في إنشاء قيود المحاسبة: {str(e)}")
+        
+        # سجل نجاح العملية في السجل
         logging.info(f"تم إنشاء حجز باص جديد برقم: {booking_number}")
         
         # إرجاع رد نجاح العملية

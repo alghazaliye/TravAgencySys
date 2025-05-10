@@ -119,8 +119,21 @@ $(function () {
         accountSelect.empty(); // مسح الخيارات السابقة
         accountSelect.append('<option value="">اختر الحساب المالي</option>');
         
+        // متغير لتخزين نوع الدفع الحالي
+        var paymentType = $(this).val();
+        
+        // إظهار أو إخفاء حقل المبلغ الواصل بناء على نوع الدفع
+        if (paymentType === 'cash' || paymentType === 'bank') {
+            $('#receivedAmountContainer').show();
+            $('#receivedAmount').prop('required', true);
+        } else {
+            $('#receivedAmountContainer').hide();
+            $('#receivedAmount').val('0'); 
+            $('#receivedAmount').prop('required', false);
+        }
+        
         // إظهار الحقول المناسبة حسب نوع التوصيل
-        switch ($(this).val()) {
+        switch (paymentType) {
             case 'cash':
                 // إظهار حقول الصندوق
                 $('#cash-fields').show();
@@ -130,6 +143,12 @@ $(function () {
                 accountSelect.append('<option value="101">الصندوق الرئيسي</option>');
                 accountSelect.append('<option value="102">صندوق المبيعات</option>');
                 accountSelect.append('<option value="103">الصندوق النثري</option>');
+                
+                // تلميح للمستخدم عن المبلغ الواصل
+                $('#receivedAmount').attr('placeholder', 'أدخل المبلغ المستلم نقداً');
+                
+                // تحديث تلميح التحقق
+                $('#receivedAmountHelp').text('المبلغ الذي تم استلامه نقداً من العميل');
                 break;
                 
             case 'credit':
@@ -139,6 +158,9 @@ $(function () {
                 accountSelect.append('<option value="203">عبدالله ناصر العتيبي</option>');
                 accountSelect.append('<option value="204">فهد سعد الغامدي</option>');
                 accountSelect.append('<option value="205">علي حسن الشمري</option>');
+                
+                // تحديث البيان التلقائي ليتضمن نوع الدفع
+                setTimeout(updateStatement, 100);
                 break;
                 
             case 'transfer':
@@ -149,11 +171,20 @@ $(function () {
                 accountSelect.append('<option value="303">بنك الإنماء</option>');
                 accountSelect.append('<option value="304">بنك سامبا</option>');
                 accountSelect.append('<option value="305">بنك الرياض</option>');
+                
+                // تلميح للمستخدم عن المبلغ الواصل
+                $('#receivedAmount').attr('placeholder', 'أدخل مبلغ التحويل البنكي');
+                
+                // تحديث تلميح التحقق
+                $('#receivedAmountHelp').text('المبلغ الذي تم تحويله بنكياً');
                 break;
         }
         
         // تحديث قائمة Select2
         accountSelect.trigger('change');
+        
+        // إعادة حساب المبلغ المتبقي
+        updateRemainingAmount();
     });
     
     // تنفيذ التغيير الأولي لتحديث القائمة حسب القيمة الافتراضية عند تحميل الصفحة
@@ -174,6 +205,94 @@ $(function () {
     
     // تشغيل الوظيفة عند تحميل الصفحة
     $('#payment-method').trigger('change');
+    
+    // دالة لحساب المبلغ المتبقي
+    function updateRemainingAmount() {
+        var sellPrice = parseFloat($('#sellPrice').val()) || 0;
+        var receivedAmount = parseFloat($('#receivedAmount').val()) || 0;
+        var remainingAmount = sellPrice - receivedAmount;
+        
+        // التحقق من أن المبلغ الواصل لا يتجاوز سعر البيع
+        if (receivedAmount > sellPrice) {
+            // إظهار تنبيه
+            $('#receivedAmount').addClass('is-invalid');
+            $('#receivedAmountFeedback').text('المبلغ الواصل لا يمكن أن يتجاوز سعر البيع');
+            $('#remainingAmount').val(0);
+            return false;
+        } else {
+            // إزالة رسالة الخطأ
+            $('#receivedAmount').removeClass('is-invalid');
+            $('#receivedAmountFeedback').text('');
+        }
+        
+        // تحديث حقل المبلغ المتبقي
+        $('#remainingAmount').val(remainingAmount.toFixed(2));
+        return true;
+    }
+    
+    // مراقبة تغيير الحقول المالية
+    $('#sellPrice, #receivedAmount').on('input', function() {
+        updateRemainingAmount();
+    });
+    
+    // التحقق من أن سعر البيع أكبر من أو يساوي سعر التكلفة
+    $('#sellPrice, #purchasePrice').on('input', function() {
+        var sellPrice = parseFloat($('#sellPrice').val()) || 0;
+        var purchasePrice = parseFloat($('#purchasePrice').val()) || 0;
+        
+        if (sellPrice < purchasePrice) {
+            $('#sellPrice').addClass('is-invalid');
+            $('#sellPriceFeedback').text('سعر البيع يجب أن يكون أكبر من أو يساوي سعر التكلفة');
+            return false;
+        } else {
+            $('#sellPrice').removeClass('is-invalid');
+            $('#sellPriceFeedback').text('');
+            return true;
+        }
+    });
+    
+    // توليد البيان التلقائي عندما تتغير البيانات المتعلقة
+    $('#departureCity, #destinationCity, #passengerName, #busType, #paymentType').on('change', function() {
+        updateStatement();
+    });
+    
+    // دالة لتوليد البيان التلقائي بناءً على المدخلات
+    function updateStatement() {
+        // الحصول على البيانات
+        var departureCity = $('#departureCity').val() || '';
+        var destinationCity = $('#destinationCity').val() || '';
+        var passengerName = $('#passengerName').val() || '';
+        var busType = $('#busType').val() || '';
+        var paymentType = $('#paymentType').val() || '';
+        
+        // التحقق من وجود البيانات الأساسية
+        if (departureCity && destinationCity && passengerName) {
+            // توليد البيان بناءً على نوع الباص
+            var busTypeText = '';
+            if (busType) {
+                busTypeText = ` على باص ${busType}`;
+            }
+            
+            // توليد البيان بناءً على طريقة الدفع
+            var paymentTypeText = '';
+            if (paymentType === 'cash') {
+                paymentTypeText = ' - تم الدفع نقداً';
+            } else if (paymentType === 'bank') {
+                paymentTypeText = ' - تم الدفع بتحويل بنكي';
+            } else if (paymentType === 'credit') {
+                paymentTypeText = ' - آجل';
+            }
+            
+            // تجميع البيان الكامل
+            var statement = `حجز تذكرة من ${departureCity} إلى ${destinationCity} للمسافر ${passengerName}${busTypeText}${paymentTypeText}`;
+            
+            // تحديث حقل البيان
+            $('#statement').val(statement);
+            
+            // تمكين تعديل البيان
+            $('#statement').prop('readonly', false);
+        }
+    }
     
     // إكمال الحجز
     $('#complete-reservation').on('click', function() {
@@ -418,38 +537,87 @@ function validateTripSearchForm() {
  * التحقق من صحة النموذج الكامل
  */
 function validateCompleteForm() {
-    // هنا يتم التحقق من كافة حقول النموذج
-    // لتبسيط الشيفرة تم استبعاد التحقق التفصيلي
-    
+    // قائمة بالحقول المطلوبة مع رسائل الخطأ المخصصة
     const requiredFields = [
-        '#passengerName',
-        '#phoneNumber',
-        '#idType',
-        '#idNumber',
-        '#nationality',
-        '#ticketPrice',
-        '#paymentType',
-        '#transactionDateTime',
-        '#supplierId',
-        '#purchasePrice'
+        { selector: '#passengerName', message: 'يرجى إدخال اسم المسافر' },
+        { selector: '#mobileNumber', message: 'يرجى إدخال رقم الجوال' },
+        { selector: '#idType', message: 'يرجى اختيار نوع الهوية' },
+        { selector: '#idNumber', message: 'يرجى إدخال رقم الهوية' },
+        { selector: '#nationality', message: 'يرجى اختيار الجنسية' },
+        { selector: '#departureCity', message: 'يرجى اختيار مدينة المغادرة' },
+        { selector: '#destinationCity', message: 'يرجى اختيار مدينة الوصول' },
+        { selector: '#busType', message: 'يرجى اختيار نوع الباص' },
+        { selector: '#reservationDate', message: 'يرجى تحديد تاريخ الحجز' },
+        { selector: '#sellPrice', message: 'يرجى إدخال سعر البيع' },
+        { selector: '#paymentType', message: 'يرجى اختيار طريقة الدفع' },
+        { selector: '#account', message: 'يرجى اختيار الحساب المالي' },
+        { selector: '#supplierId', message: 'يرجى اختيار المورد' },
+        { selector: '#purchasePrice', message: 'يرجى إدخال سعر التكلفة' }
     ];
+    
+    // التحقق من حقول إضافية إذا كانت طريقة الدفع نقدًا أو تحويل بنكي
+    const paymentType = $('#paymentType').val();
+    if (paymentType === 'cash' || paymentType === 'bank') {
+        requiredFields.push({ 
+            selector: '#receivedAmount', 
+            message: 'يرجى إدخال المبلغ الواصل' 
+        });
+    }
+    
+    // التحقق من أن تاريخ العودة مطلوب في حالة الذهاب والعودة
+    if ($('#journeyType').val() === 'round-trip') {
+        requiredFields.push({ 
+            selector: '#returnDate', 
+            message: 'يرجى تحديد تاريخ العودة' 
+        });
+    }
     
     let valid = true;
     
     // التحقق من الحقول المطلوبة
     requiredFields.forEach(field => {
-        if (!$(field).val()) {
-            showFieldError(field, 'هذا الحقل مطلوب');
+        if (!$(field.selector).val()) {
+            showFieldError(field.selector, field.message);
             valid = false;
         } else {
-            clearFieldError(field);
+            clearFieldError(field.selector);
         }
     });
     
-    // التحقق من المقاعد المحددة
-    if ($('.seat.selected').length === 0) {
-        alert('يرجى اختيار مقعد واحد على الأقل');
+    // التحقق من أن سعر البيع أكبر من أو يساوي سعر التكلفة
+    const sellPrice = parseFloat($('#sellPrice').val()) || 0;
+    const purchasePrice = parseFloat($('#purchasePrice').val()) || 0;
+    
+    if (sellPrice < purchasePrice) {
+        showFieldError('#sellPrice', 'سعر البيع يجب أن يكون أكبر من أو يساوي سعر التكلفة');
         valid = false;
+    }
+    
+    // التحقق من أن المبلغ الواصل لا يتجاوز سعر البيع
+    if (paymentType === 'cash' || paymentType === 'bank') {
+        const receivedAmount = parseFloat($('#receivedAmount').val()) || 0;
+        
+        if (receivedAmount > sellPrice) {
+            showFieldError('#receivedAmount', 'المبلغ الواصل لا يمكن أن يتجاوز سعر البيع');
+            valid = false;
+        }
+    }
+    
+    // التحقق من أن مدينة المغادرة مختلفة عن مدينة الوصول
+    if ($('#departureCity').val() === $('#destinationCity').val() && $('#departureCity').val() !== '') {
+        showFieldError('#destinationCity', 'يجب أن تكون مدينة الوصول مختلفة عن مدينة المغادرة');
+        valid = false;
+    }
+    
+    // إذا تم اكتشاف أي أخطاء، أظهر رسالة تنبيه رئيسية
+    if (!valid) {
+        // عرض رسالة خطأ عامة في أعلى النموذج
+        Swal.fire({
+            icon: 'error',
+            title: 'يرجى تصحيح الأخطاء',
+            text: 'يوجد بعض الحقول غير المكتملة أو تحتوي على أخطاء',
+            confirmButtonText: 'حسناً'
+        });
     }
     
     return valid;
@@ -566,11 +734,60 @@ function updateSelectedSeats() {
     if (selectedSeats.length > 0) {
         $('#selectedSeats').val(selectedSeats.join(', '));
         $('#tripSeat').text(selectedSeats.join(', '));
+        // تحديث قائمة المقاعد المحددة في النافذة المنبثقة
+        $('#selected-seats-list').text(selectedSeats.join(', '));
     } else {
         $('#selectedSeats').val('');
         $('#tripSeat').text('لم يتم الاختيار');
+        $('#selected-seats-list').text('لم يتم تحديد مقاعد');
     }
 }
+
+// تفعيل اختيار المقاعد
+$(document).ready(function() {
+    // مراقبة النقر على المقاعد
+    $(document).on('click', '.seat:not(.aisle):not(.reserved)', function() {
+        // تبديل حالة اختيار المقعد
+        $(this).toggleClass('selected');
+        
+        // تحديث قائمة المقاعد المحددة
+        let selectedSeatsText = '';
+        let selectedSeatsArray = [];
+        
+        $('.seat.selected').each(function() {
+            selectedSeatsArray.push($(this).data('seat-id'));
+        });
+        
+        if (selectedSeatsArray.length > 0) {
+            selectedSeatsText = selectedSeatsArray.join(', ');
+        } else {
+            selectedSeatsText = 'لم يتم تحديد مقاعد';
+        }
+        
+        $('#selected-seats-list').text(selectedSeatsText);
+    });
+    
+    // تأكيد اختيار المقاعد
+    $('#confirm-seat-selection').on('click', function() {
+        let selectedSeatsArray = [];
+        
+        $('.seat.selected').each(function() {
+            selectedSeatsArray.push($(this).data('seat-id'));
+        });
+        
+        // تحديث حقل رقم المقعد
+        $('#seat-number').val(selectedSeatsArray.join(', '));
+        
+        // إغلاق النافذة المنبثقة
+        $('#seat-selection-modal').modal('hide');
+        
+        // إضافة تأثير تنبيه مرئي لحقل المقعد
+        $('#seat-number').addClass('is-valid');
+        setTimeout(function() {
+            $('#seat-number').removeClass('is-valid');
+        }, 2000);
+    });
+});
 
 /**
  * عرض مؤشر معالجة النموذج

@@ -233,8 +233,159 @@
                             <div class="form-group">
                                 <label for="seat-number">رقم المقعد</label>
                                 <input type="text" class="form-control" id="seat-number" name="seatNumber">
+                                <button type="button" class="btn btn-sm btn-outline-primary mt-2" data-toggle="modal" data-target="#seat-selection-modal">
+                                    <i class="fas fa-chair ml-1"></i> اختيار المقعد من الخريطة
+                                </button>
                             </div>
                         </div>
+
+<!-- نافذة منبثقة لاختيار المقعد -->
+<div class="modal fade" id="seat-selection-modal" tabindex="-1" role="dialog" aria-labelledby="seatSelectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="seatSelectionModalLabel">اختيار المقعد</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- راهنما المقاعد -->
+                <div class="seat-legend mb-4">
+                    <div class="d-flex align-items-center ml-3">
+                        <div class="seat mr-2"></div>
+                        <span class="text">متاح</span>
+                    </div>
+                    <div class="d-flex align-items-center ml-3">
+                        <div class="seat selected mr-2"></div>
+                        <span class="text">محدد</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="seat reserved mr-2"></div>
+                        <span class="text">محجوز</span>
+                    </div>
+                </div>
+                
+                <!-- اتجاه الباص -->
+                <div class="bus-direction mb-4 text-center">
+                    <div class="bus-front">
+                        <i class="fas fa-steering-wheel fa-2x"></i>
+                        <span>مقدمة الباص</span>
+                    </div>
+                </div>
+                
+                <!-- خريطة المقاعد -->
+                <div class="bus-seat-map">
+                    <div class="seat-map">
+                        <!-- الصف الأول -->
+                        <div class="seat-row">
+                            <div class="seat" data-seat-id="1A">1A</div>
+                            <div class="seat" data-seat-id="1B">1B</div>
+                            <div class="seat aisle"><i class="fas fa-ellipsis-h"></i></div>
+                            <div class="seat" data-seat-id="1C">1C</div>
+                            <div class="seat" data-seat-id="1D">1D</div>
+                        </div>
+                        
+                        <!-- الصف الثاني -->
+                        <div class="seat-row">
+                            <div class="seat" data-seat-id="2A">2A</div>
+                            <div class="seat" data-seat-id="2B">2B</div>
+                            <div class="seat aisle"><i class="fas fa-ellipsis-h"></i></div>
+                            <div class="seat" data-seat-id="2C">2C</div>
+                            <div class="seat" data-seat-id="2D">2D</div>
+                        </div>
+                        
+                        <!-- الصف الثالث -->
+                        <div class="seat-row">
+                            <div class="seat" data-seat-id="3A">3A</div>
+                            <div class="seat" data-seat-id="3B">3B</div>
+                            <div class="seat aisle"><i class="fas fa-ellipsis-h"></i></div>
+                            <div class="seat" data-seat-id="3C">3C</div>
+                            <div class="seat" data-seat-id="3D">3D</div>
+                        </div>
+                        
+                        <!-- الصف الرابع -->
+                        <div class="seat-row">
+                            <div class="seat" data-seat-id="4A">4A</div>
+                            <div class="seat" data-seat-id="4B">4B</div>
+                            <div class="seat aisle"><i class="fas fa-ellipsis-h"></i></div>
+                            <div class="seat" data-seat-id="4C">4C</div>
+                            <div class="seat" data-seat-id="4D">4D</div>
+                        </div>
+                        
+                        <!-- الصف الخامس -->
+                        <div class="seat-row">
+                            <div class="seat" data-seat-id="5A">5A</div>
+                            <div class="seat" data-seat-id="5B">5B</div>
+                            <div class="seat aisle"><i class="fas fa-ellipsis-h"></i></div>
+                            <div class="seat" data-seat-id="5C">5C</div>
+                            <div class="seat" data-seat-id="5D">5D</div>
+                        </div>
+                        
+                        <!-- الصف السادس -->
+                        <div class="seat-row">
+                            <div class="seat" data-seat-id="6A">6A</div>
+                            <div class="seat" data-seat-id="6B">6B</div>
+                            <div class="seat aisle"><i class="fas fa-ellipsis-h"></i></div>
+                            <div class="seat" data-seat-id="6C">6C</div>
+                            <div class="seat" data-seat-id="6D">6D</div>
+                        </div>
+                        
+                        <!-- الصف السابع -->
+                        <div class="seat-row">
+                            <div class="seat" data-seat-id="7A">7A</div>
+                            <div class="seat" data-seat-id="7B">7B</div>
+                            <div class="seat aisle"><i class="fas fa-ellipsis-h"></i></div>
+                            <div class="seat" data-seat-id="7C">7C</div>
+                            <div class="seat" data-seat-id="7D">7D</div>
+                        </div>
+                        
+                        <!-- الصف الثامن -->
+                        <div class="seat-row">
+                            <div class="seat" data-seat-id="8A">8A</div>
+                            <div class="seat" data-seat-id="8B">8B</div>
+                            <div class="seat aisle"><i class="fas fa-ellipsis-h"></i></div>
+                            <div class="seat" data-seat-id="8C">8C</div>
+                            <div class="seat" data-seat-id="8D">8D</div>
+                        </div>
+                        
+                        <!-- الصف التاسع -->
+                        <div class="seat-row">
+                            <div class="seat" data-seat-id="9A">9A</div>
+                            <div class="seat" data-seat-id="9B">9B</div>
+                            <div class="seat aisle"><i class="fas fa-ellipsis-h"></i></div>
+                            <div class="seat reserved" data-seat-id="9C">9C</div>
+                            <div class="seat reserved" data-seat-id="9D">9D</div>
+                        </div>
+                        
+                        <!-- الصف العاشر (الصف الخلفي) -->
+                        <div class="seat-row">
+                            <div class="seat" data-seat-id="10A">10A</div>
+                            <div class="seat" data-seat-id="10B">10B</div>
+                            <div class="seat" data-seat-id="10C">10C</div>
+                            <div class="seat" data-seat-id="10D">10D</div>
+                            <div class="seat" data-seat-id="10E">10E</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- تفاصيل اختيار المقعد -->
+                <div class="mt-4 d-flex justify-content-between align-items-center">
+                    <div class="selected-seats">
+                        <span class="font-weight-bold ml-2">المقاعد المحددة:</span>
+                        <span id="selected-seats-list">لم يتم تحديد مقاعد</span>
+                    </div>
+                    
+                    <div>
+                        <button type="button" class="btn btn-primary" id="confirm-seat-selection">
+                            <i class="fas fa-check ml-1"></i> تأكيد الاختيار
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
