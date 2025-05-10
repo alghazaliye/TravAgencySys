@@ -530,6 +530,9 @@
                                 <button type="button" class="btn btn-danger btn-xs delete-booking" data-id="{{ booking.id }}">
                                     <i class="fas fa-trash"></i>
                                 </button>
+                                <button type="button" class="btn btn-success btn-xs view-journals" data-id="{{ booking.id }}" data-booking-number="{{ booking.booking_number }}">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                </button>
                             </td>
                         </tr>
                         {% endfor %}
@@ -644,6 +647,79 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-info print-ticket">
                     <i class="fas fa-print ml-1"></i> طباعة التذكرة
+                </button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">إغلاق</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal - عرض القيود المحاسبية -->
+<div class="modal fade" id="modal-view-journals">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h4 class="modal-title">القيود المحاسبية للحجز</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="journal-details">
+                    <h5 class="text-center mb-3">القيود المحاسبية للحجز رقم <span id="journal-booking-number"></span></h5>
+                    
+                    <!-- القيد الأول: قيد الإيرادات -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">قيد الإيرادات <span id="revenue-journal-id"></span></h6>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-bordered mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>الحساب</th>
+                                            <th>البيان</th>
+                                            <th>مدين</th>
+                                            <th>دائن</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="revenue-journal-entries">
+                                        <!-- سيتم تعبئة هذا القسم بواسطة JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- القيد الثاني: قيد التكاليف -->
+                    <div class="card">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">قيد التكاليف <span id="cost-journal-id"></span></h6>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-bordered mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>الحساب</th>
+                                            <th>البيان</th>
+                                            <th>مدين</th>
+                                            <th>دائن</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="cost-journal-entries">
+                                        <!-- سيتم تعبئة هذا القسم بواسطة JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" id="print-journals">
+                    <i class="fas fa-print ml-1"></i> طباعة القيود
                 </button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">إغلاق</button>
             </div>

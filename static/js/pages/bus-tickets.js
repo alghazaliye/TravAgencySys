@@ -301,6 +301,27 @@ function setupButtonEvents() {
         $('#search-results').hide();
         toastr.success('تم اختيار الرحلة بنجاح');
     });
+    
+    // زر عرض القيود المحاسبية للحجز
+    $(document).on('click', '.view-journals', function() {
+        var bookingId = $(this).data('id');
+        var bookingNumber = $(this).data('booking-number');
+        console.log('عرض القيود المحاسبية للحجز رقم: ' + bookingNumber);
+        
+        // عرض رقم الحجز في النافذة المنبثقة
+        $('#journal-booking-number').text(bookingNumber);
+        
+        // الحصول على بيانات القيود المحاسبية
+        fetchJournalEntries(bookingId, bookingNumber);
+        
+        // عرض النافذة المنبثقة
+        $('#modal-view-journals').modal('show');
+    });
+    
+    // زر طباعة القيود المحاسبية
+    $('#print-journals').on('click', function() {
+        printJournalEntries();
+    });
 }
 
 /**
