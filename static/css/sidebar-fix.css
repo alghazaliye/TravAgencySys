@@ -1,0 +1,182 @@
+/**
+ * ملف CSS مخصص لإصلاح مشكلة القائمة الجانبية
+ * هذا الملف يتضمن تحسينات لعرض الأيقونات والنصوص في القائمة الجانبية
+ */
+
+/* إصلاح الأيقونات في القائمة الجانبية */
+.nav-sidebar .nav-icon, 
+.nav-sidebar .fas, 
+.nav-sidebar .fa,
+.nav-sidebar .far,
+.nav-sidebar .fab {
+    margin-left: 0.7rem !important;
+    margin-right: 0 !important;
+    color: inherit !important;
+    display: inline-block !important;
+    width: 1.6rem !important;
+    text-align: center !important;
+    font-size: 1.1rem !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* تحسين ظهور القائمة الجانبية عند التبديل */
+.sidebar-mini.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-link p {
+    display: inline-block !important;
+    margin: 0 !important;
+    margin-right: 0.3rem !important;
+    color: inherit !important;
+}
+
+.sidebar-mini.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-treeview {
+    display: block !important;
+}
+
+/* تعزيز ظهور الأيقونات في حالة تصغير القائمة */
+.sidebar-mini.sidebar-collapse .main-sidebar:not(:hover) .nav-sidebar .nav-link .nav-icon,
+.sidebar-mini.sidebar-collapse .main-sidebar:not(:hover) .nav-sidebar .nav-link .fas,
+.sidebar-mini.sidebar-collapse .main-sidebar:not(:hover) .nav-sidebar .nav-link .far,
+.sidebar-mini.sidebar-collapse .main-sidebar:not(:hover) .nav-sidebar .nav-link .fa {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    text-align: center !important;
+}
+
+/* تحسين عنصر القائمة النشط */
+.nav-sidebar .nav-link.active {
+    background-color: var(--primary-travel) !important;
+    color: white !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
+}
+
+.nav-sidebar .nav-link.active .nav-icon,
+.nav-sidebar .nav-link.active .fas,
+.nav-sidebar .nav-link.active .far,
+.nav-sidebar .nav-link.active .fa {
+    color: white !important;
+}
+
+/* معالجة الأيقونات المعدلة عبر fixSidebarIcons() */
+.fixed-sidebar-icon {
+    display: inline-block !important;
+    visibility: visible !important;
+    margin-left: 0.7rem !important;
+    margin-right: 0 !important;
+}
+
+/* إصلاح عام لسلوك الشريط الجانبي */
+.main-sidebar, .main-sidebar::before {
+    width: 250px;
+    right: 0;
+    left: auto;
+    transition: margin-right .3s ease-in-out, width .3s ease-in-out;
+}
+
+body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper, 
+body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer, 
+body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header {
+    margin-right: 250px;
+    margin-left: 0;
+    transition: margin-right .3s ease-in-out;
+}
+
+.layout-fixed .main-sidebar {
+    right: 0;
+    left: auto;
+}
+
+.layout-fixed .brand-link {
+    width: 250px;
+}
+
+/* حالة طي القائمة */
+body.sidebar-collapse .main-sidebar, 
+body.sidebar-collapse .main-sidebar::before {
+    margin-right: -250px;
+    margin-left: 0;
+}
+
+body.sidebar-collapse .content-wrapper, 
+body.sidebar-collapse .main-footer, 
+body.sidebar-collapse .main-header {
+    margin-right: 0;
+    margin-left: 0;
+    width: 100%;
+    transition: margin-right .3s ease-in-out, width .3s ease-in-out;
+}
+
+/* تحسين لمعالجة مشكلة اختفاء النص في حالة طي القائمة في وضع mini */
+.sidebar-mini.sidebar-collapse .main-sidebar:hover {
+    width: 250px !important;
+}
+
+.sidebar-mini.sidebar-collapse .main-sidebar:hover .brand-text,
+.sidebar-mini.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-link p {
+    margin-right: 5px !important;
+    display: inline-block !important;
+    animation: fadeIn 0.1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* إصلاح سهم القائمة المتفرعة */
+.nav-sidebar .nav-item.has-treeview > .nav-link > .right,
+.nav-sidebar .has-treeview > .nav-link > .fas.fa-angle-left {
+    position: absolute !important;
+    left: 1rem !important;
+    right: auto !important;
+}
+
+/* تحسينات للقائمة في وضع الهاتف المحمول */
+@media (max-width: 767.98px) {
+    .main-sidebar, .main-sidebar::before {
+        box-shadow: 0 10px 3px rgba(0, 0, 0, 0.1) !important;
+        margin-right: -250px !important; /* مخفية افتراضيًا */
+        margin-left: 0 !important;
+    }
+    
+    .sidebar-open .main-sidebar, 
+    .sidebar-open .main-sidebar::before {
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+    }
+    
+    .content-wrapper, 
+    .main-footer, 
+    .main-header {
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+    
+    /* تحسين الزر البديل للقائمة الجانبية */
+    #quickFixSidebarBtn {
+        display: block !important;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(78, 115, 223, 0.7);
+        }
+        70% {
+            box-shadow: 0 0 0 7px rgba(78, 115, 223, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(78, 115, 223, 0);
+        }
+    }
+}
+
+/* إصلاح إضافي لأيقونات القائمة للتأكد من عدم اختفائها */
+.nav-sidebar .nav-link i.nav-icon:before,
+.nav-sidebar .nav-link i.fas:before,
+.nav-sidebar .nav-link i.far:before,
+.nav-sidebar .nav-link i.fa:before {
+    visibility: visible !important;
+    display: inline-block !important;
+}
