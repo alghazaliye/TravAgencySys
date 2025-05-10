@@ -1,0 +1,535 @@
+{% extends "layout.html" %}
+
+{% block title %}إدارة المدن{% endblock %}
+
+{% block styles %}
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables.net-bs4@1.10.24/css/dataTables.bootstrap4.min.css">
+<!-- Select2 CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css">
+<!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<style>
+    .form-section {
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 20px;
+        position: relative;
+    }
+    
+    .section-title {
+        background-color: #007bff;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 3px;
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+    
+    .action-buttons {
+        width: 100px;
+    }
+    
+    .select2-container--bootstrap .select2-selection--single {
+        height: 38px !important;
+        padding-top: 5px;
+    }
+    
+    .country-info {
+        background-color: #f0f8ff;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-right: 5px solid #007bff;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">إدارة المدن</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="/dashboard">الرئيسية</a></li>
+                    <li class="breadcrumb-item">الإعدادات</li>
+                    <li class="breadcrumb-item active">إدارة المدن</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- أزرار الإجراءات -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <a href="/countries" class="btn btn-info">
+                    <i class="fas fa-globe-asia ml-1"></i> إدارة الدول
+                </a>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-add-city">
+                    <i class="fas fa-plus ml-1"></i> إضافة مدينة جديدة
+                </button>
+            </div>
+        </div>
+
+        <!-- مرشح الدول -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="country-filter">تصفية حسب الدولة:</label>
+                    <select class="form-control" id="country-filter">
+                        <option value="">كل الدول</option>
+                        <option value="1">المملكة العربية السعودية</option>
+                        <option value="2">الإمارات العربية المتحدة</option>
+                        <option value="3">مصر</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- بطاقة المدن -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">قائمة المدن</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table id="citiesTable" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>الرقم</th>
+                            <th>اسم المدينة (عربي)</th>
+                            <th>اسم المدينة (إنجليزي)</th>
+                            <th>الكود</th>
+                            <th>الدولة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- السعودية -->
+                        <tr data-country="1">
+                            <td>1</td>
+                            <td>الرياض</td>
+                            <td>Riyadh</td>
+                            <td>RUH</td>
+                            <td>المملكة العربية السعودية</td>
+                            <td class="action-buttons">
+                                <button type="button" class="btn btn-info btn-sm edit-city" data-id="1">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm delete-city" data-id="1">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr data-country="1">
+                            <td>2</td>
+                            <td>جدة</td>
+                            <td>Jeddah</td>
+                            <td>JED</td>
+                            <td>المملكة العربية السعودية</td>
+                            <td class="action-buttons">
+                                <button type="button" class="btn btn-info btn-sm edit-city" data-id="2">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm delete-city" data-id="2">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr data-country="1">
+                            <td>3</td>
+                            <td>مكة المكرمة</td>
+                            <td>Makkah</td>
+                            <td>MKH</td>
+                            <td>المملكة العربية السعودية</td>
+                            <td class="action-buttons">
+                                <button type="button" class="btn btn-info btn-sm edit-city" data-id="3">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm delete-city" data-id="3">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- الإمارات -->
+                        <tr data-country="2">
+                            <td>6</td>
+                            <td>دبي</td>
+                            <td>Dubai</td>
+                            <td>DXB</td>
+                            <td>الإمارات العربية المتحدة</td>
+                            <td class="action-buttons">
+                                <button type="button" class="btn btn-info btn-sm edit-city" data-id="6">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm delete-city" data-id="6">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr data-country="2">
+                            <td>7</td>
+                            <td>أبو ظبي</td>
+                            <td>Abu Dhabi</td>
+                            <td>AUH</td>
+                            <td>الإمارات العربية المتحدة</td>
+                            <td class="action-buttons">
+                                <button type="button" class="btn btn-info btn-sm edit-city" data-id="7">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm delete-city" data-id="7">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- مصر -->
+                        <tr data-country="3">
+                            <td>9</td>
+                            <td>القاهرة</td>
+                            <td>Cairo</td>
+                            <td>CAI</td>
+                            <td>مصر</td>
+                            <td class="action-buttons">
+                                <button type="button" class="btn btn-info btn-sm edit-city" data-id="9">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm delete-city" data-id="9">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr data-country="3">
+                            <td>10</td>
+                            <td>الإسكندرية</td>
+                            <td>Alexandria</td>
+                            <td>ALY</td>
+                            <td>مصر</td>
+                            <td class="action-buttons">
+                                <button type="button" class="btn btn-info btn-sm edit-city" data-id="10">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm delete-city" data-id="10">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.بطاقة المدن -->
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<!-- نافذة إضافة مدينة جديدة -->
+<div class="modal fade" id="modal-add-city">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">إضافة مدينة جديدة</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="cityForm">
+                    <div class="form-group">
+                        <label for="cityCountry">الدولة</label>
+                        <select class="form-control" id="cityCountry" required>
+                            <option value="">اختر الدولة</option>
+                            <option value="1">المملكة العربية السعودية</option>
+                            <option value="2">الإمارات العربية المتحدة</option>
+                            <option value="3">مصر</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cityNameAr">اسم المدينة (عربي)</label>
+                        <input type="text" class="form-control" id="cityNameAr" placeholder="أدخل اسم المدينة بالعربية" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cityNameEn">اسم المدينة (إنجليزي)</label>
+                        <input type="text" class="form-control" id="cityNameEn" placeholder="Enter city name in English" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cityCode">كود المدينة</label>
+                        <input type="text" class="form-control" id="cityCode" placeholder="مثال: RUH" maxlength="5" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-primary" id="saveCity">حفظ</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- نافذة تعديل المدينة -->
+<div class="modal fade" id="modal-edit-city">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">تعديل بيانات المدينة</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editCityForm">
+                    <input type="hidden" id="editCityId">
+                    <div class="form-group">
+                        <label for="editCityCountry">الدولة</label>
+                        <select class="form-control" id="editCityCountry" required>
+                            <option value="">اختر الدولة</option>
+                            <option value="1">المملكة العربية السعودية</option>
+                            <option value="2">الإمارات العربية المتحدة</option>
+                            <option value="3">مصر</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCityNameAr">اسم المدينة (عربي)</label>
+                        <input type="text" class="form-control" id="editCityNameAr" placeholder="أدخل اسم المدينة بالعربية" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCityNameEn">اسم المدينة (إنجليزي)</label>
+                        <input type="text" class="form-control" id="editCityNameEn" placeholder="Enter city name in English" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCityCode">كود المدينة</label>
+                        <input type="text" class="form-control" id="editCityCode" placeholder="مثال: RUH" maxlength="5" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-primary" id="updateCity">حفظ التغييرات</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+{% endblock %}
+
+{% block scripts %}
+<!-- DataTables -->
+<script src="https://cdn.jsdelivr.net/npm/datatables.net@1.10.24/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net-bs4@1.10.24/js/dataTables.bootstrap4.min.js"></script>
+<!-- Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+$(function() {
+    'use strict';
+    
+    // تهيئة DataTables
+    var citiesTable = $('#citiesTable').DataTable({
+        "paging": true,
+        "lengthChange": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": true,
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/ar.json"
+        }
+    });
+    
+    // تهيئة Select2
+    $('#cityCountry, #editCityCountry, #country-filter').select2({
+        dir: "rtl",
+        language: "ar",
+        theme: "bootstrap",
+        width: '100%'
+    });
+    
+    // تصفية المدن حسب الدولة
+    $('#country-filter').on('change', function() {
+        var countryId = $(this).val();
+        
+        if (countryId) {
+            citiesTable.column(4).search($(this).find('option:selected').text()).draw();
+        } else {
+            // إعادة تعيين التصفية
+            citiesTable.column(4).search('').draw();
+        }
+    });
+    
+    // معالجة زر تعديل المدينة
+    $(document).on('click', '.edit-city', function() {
+        var cityId = $(this).data('id');
+        var row = $(this).closest('tr');
+        
+        // استخراج بيانات المدينة من الصف
+        var cityNameAr = row.find('td:eq(1)').text();
+        var cityNameEn = row.find('td:eq(2)').text();
+        var cityCode = row.find('td:eq(3)').text();
+        var countryId = row.data('country');
+        
+        // ملء النموذج ببيانات المدينة
+        $('#editCityId').val(cityId);
+        $('#editCityNameAr').val(cityNameAr);
+        $('#editCityNameEn').val(cityNameEn);
+        $('#editCityCode').val(cityCode);
+        $('#editCityCountry').val(countryId).trigger('change');
+        
+        // فتح نافذة التعديل
+        $('#modal-edit-city').modal('show');
+    });
+    
+    // معالجة زر حفظ المدينة الجديدة
+    $('#saveCity').on('click', function() {
+        // التحقق من صحة النموذج
+        if ($('#cityForm')[0].checkValidity()) {
+            // جمع بيانات المدينة
+            var countryId = $('#cityCountry').val();
+            var countryName = $('#cityCountry option:selected').text();
+            var cityNameAr = $('#cityNameAr').val();
+            var cityNameEn = $('#cityNameEn').val();
+            var cityCode = $('#cityCode').val();
+            
+            // محاكاة إضافة المدينة (ستستبدل بطلب AJAX حقيقي)
+            // إنشاء معرف فريد (في التطبيق الحقيقي سيتم إرجاعه من الخادم)
+            var newId = Math.floor(Math.random() * 1000) + 100;
+            
+            // إضافة صف جديد للجدول
+            var actionButtons = '<button type="button" class="btn btn-info btn-sm edit-city" data-id="' + newId + '"><i class="fas fa-edit"></i></button> ' +
+                               '<button type="button" class="btn btn-danger btn-sm delete-city" data-id="' + newId + '"><i class="fas fa-trash"></i></button>';
+            
+            var newRow = citiesTable.row.add([
+                newId,
+                cityNameAr,
+                cityNameEn,
+                cityCode,
+                countryName,
+                actionButtons
+            ]).draw().node();
+            
+            // إضافة سمة الدولة للصف
+            $(newRow).attr('data-country', countryId);
+            
+            // إغلاق النافذة وإعادة تعيين النموذج
+            $('#modal-add-city').modal('hide');
+            $('#cityForm')[0].reset();
+            $('#cityCountry').val('').trigger('change');
+            
+            // عرض رسالة نجاح
+            Swal.fire({
+                icon: 'success',
+                title: 'تمت الإضافة بنجاح',
+                text: 'تمت إضافة المدينة ' + cityNameAr + ' بنجاح',
+                confirmButtonText: 'حسناً'
+            });
+        } else {
+            // إجبار التحقق من صحة النموذج
+            $('#cityForm')[0].reportValidity();
+        }
+    });
+    
+    // معالجة زر تحديث المدينة
+    $('#updateCity').on('click', function() {
+        // التحقق من صحة النموذج
+        if ($('#editCityForm')[0].checkValidity()) {
+            // جمع بيانات المدينة
+            var cityId = $('#editCityId').val();
+            var countryId = $('#editCityCountry').val();
+            var countryName = $('#editCityCountry option:selected').text();
+            var cityNameAr = $('#editCityNameAr').val();
+            var cityNameEn = $('#editCityNameEn').val();
+            var cityCode = $('#editCityCode').val();
+            
+            // محاكاة تحديث المدينة (ستستبدل بطلب AJAX حقيقي)
+            // البحث عن الصف المطلوب تحديثه
+            var rowIndex = citiesTable.rows().eq(0).filter(function(idx) {
+                return citiesTable.cell(idx, 0).data() == cityId;
+            });
+            
+            if (rowIndex.length > 0) {
+                // تحديث بيانات الصف
+                var actionButtons = '<button type="button" class="btn btn-info btn-sm edit-city" data-id="' + cityId + '"><i class="fas fa-edit"></i></button> ' +
+                                   '<button type="button" class="btn btn-danger btn-sm delete-city" data-id="' + cityId + '"><i class="fas fa-trash"></i></button>';
+                
+                citiesTable.row(rowIndex[0]).data([
+                    cityId,
+                    cityNameAr,
+                    cityNameEn,
+                    cityCode,
+                    countryName,
+                    actionButtons
+                ]).draw();
+                
+                // تحديث سمة الدولة
+                $(citiesTable.row(rowIndex[0]).node()).attr('data-country', countryId);
+                
+                // إغلاق النافذة
+                $('#modal-edit-city').modal('hide');
+                
+                // عرض رسالة نجاح
+                Swal.fire({
+                    icon: 'success',
+                    title: 'تم التحديث بنجاح',
+                    text: 'تم تحديث بيانات المدينة ' + cityNameAr + ' بنجاح',
+                    confirmButtonText: 'حسناً'
+                });
+            }
+        } else {
+            // إجبار التحقق من صحة النموذج
+            $('#editCityForm')[0].reportValidity();
+        }
+    });
+    
+    // معالجة زر حذف المدينة
+    $(document).on('click', '.delete-city', function() {
+        var cityId = $(this).data('id');
+        var cityName = $(this).closest('tr').find('td:eq(1)').text();
+        
+        // تأكيد الحذف
+        Swal.fire({
+            title: 'هل أنت متأكد؟',
+            text: 'هل تريد حذف المدينة ' + cityName + '؟',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'نعم، احذف',
+            cancelButtonText: 'إلغاء'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // محاكاة حذف المدينة (ستستبدل بطلب AJAX حقيقي)
+                citiesTable.row($(this).closest('tr')).remove().draw();
+                
+                // عرض رسالة نجاح
+                Swal.fire({
+                    icon: 'success',
+                    title: 'تم الحذف بنجاح',
+                    text: 'تم حذف المدينة ' + cityName + ' بنجاح',
+                    confirmButtonText: 'حسناً'
+                });
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
