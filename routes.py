@@ -477,6 +477,9 @@ def system_settings():
         'system_name': {
             'description': 'اسم النظام الذي سيظهر في العنوان وجميع أنحاء التطبيق'
         },
+        'dark_text_color': {
+            'description': 'لون النص في الوضع الليلي'
+        },
         'system_slogan': {
             'description': 'شعار أو وصف قصير للنظام'
         },
