@@ -399,15 +399,54 @@ def system_settings():
         'site_keywords': {
             'description': 'الكلمات المفتاحية للموقع (مفيدة لمحركات البحث)'
         },
+        'dashboard_title': {
+            'description': 'العنوان الذي سيظهر في لوحة التحكم الرئيسية'
+        },
         'default_currency': {
-            'description': 'العملة الافتراضية للمعاملات المالية'
+            'description': 'العملة الافتراضية للمعاملات المالية',
+            'options': 'SAR,USD,EUR,YER,AED,JOD,KWD,BHD,QAR,EGP,LBP'
         },
         'default_language': {
-            'description': 'اللغة الافتراضية للنظام'
+            'description': 'اللغة الافتراضية للنظام',
+            'options': 'ar,en,fr'
         },
         'tax_percent': {
             'description': 'نسبة الضريبة المضافة على الخدمات'
         },
+        'visa_fee': {
+            'description': 'رسوم التأشيرة الافتراضية'
+        },
+        'umrah_fee': {
+            'description': 'رسوم العمرة الافتراضية'
+        },
+        'system_footer': {
+            'description': 'نص التذييل الذي سيظهر في أسفل جميع الصفحات'
+        },
+        'receipt_note': {
+            'description': 'ملاحظات تظهر في جميع الإيصالات'
+        },
+        'logo_url': {
+            'description': 'رابط شعار الشركة (يفضل استخدام صورة بحجم 200×60 بكسل)'
+        },
+        'favicon_url': {
+            'description': 'رابط أيقونة الموقع (الأيقونة المفضلة)'
+        },
+        'theme_color': {
+            'description': 'اللون الرئيسي للموقع',
+            'options': 'primary,info,success,warning,danger,dark'
+        },
+        'sidebar_collapsed': {
+            'description': 'هل الشريط الجانبي مطوي افتراضياً',
+            'options': 'true,false'
+        },
+        'rtl_mode': {
+            'description': 'تمكين وضع RTL (من اليمين إلى اليسار)',
+            'options': 'true,false'
+        },
+        'enable_dark_mode': {
+            'description': 'تمكين الوضع الداكن افتراضياً',
+            'options': 'true,false'
+        }
     }
     
     return render_template('system-settings.html', 
