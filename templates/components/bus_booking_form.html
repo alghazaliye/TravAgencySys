@@ -266,6 +266,7 @@
                         </div>
                     </div>
                     <div class="amount-in-words" id="sellPriceInWords">صفر ريال سعودي</div>
+                    <!-- سيتم إضافة معلومات هامش الربح هنا عبر JavaScript -->
                 </div>
             </div>
             <div class="col-md-6">
@@ -279,6 +280,7 @@
                             </span>
                         </div>
                     </div>
+                    <small class="form-text text-muted">يجب أن يكون سعر التكلفة أقل من أو يساوي سعر البيع</small>
                 </div>
             </div>
         </div>
@@ -294,6 +296,9 @@
                         <option value="credit">أجل</option>
                         <option value="bank_transfer">تحويل بنكي</option>
                     </select>
+                    <small class="form-text text-muted payment-type-note" style="display: none;" id="cashNote">سيتم تسجيل قيد استلام نقدي في الصندوق المحدد</small>
+                    <small class="form-text text-muted payment-type-note" style="display: none;" id="creditNote">سيتم تسجيل قيد ذمم مدينة على حساب العميل المحدد</small>
+                    <small class="form-text text-muted payment-type-note" style="display: none;" id="bankNote">سيتم تسجيل قيد إيداع في حساب البنك المحدد</small>
                 </div>
             </div>
             <div class="col-md-4">
@@ -319,6 +324,7 @@
                     <select class="form-control select2" id="accountId" name="accountId" required>
                         <option value="">اختر الحساب المالي</option>
                     </select>
+                    <small class="form-text text-muted">سيتم تحديث الخيارات حسب طريقة الدفع المختارة</small>
                 </div>
             </div>
         </div>
@@ -327,7 +333,7 @@
         <div class="row">
             <div class="col-md-4" id="receivedAmountContainer">
                 <div class="form-group">
-                    <label for="receivedAmount">المبلغ المستلم</label>
+                    <label for="receivedAmount">المبلغ المستلم <span id="receivedAmount-required" class="text-danger" style="display: none;">*</span></label>
                     <div class="input-group">
                         <input type="number" min="0" step="0.01" class="form-control" id="receivedAmount" name="receivedAmount" placeholder="أدخل المبلغ المستلم">
                         <div class="input-group-append">
@@ -337,9 +343,10 @@
                         </div>
                     </div>
                     <div class="amount-in-words" id="receivedAmountInWords">صفر ريال سعودي</div>
+                    <small class="form-text text-muted">المبلغ المستلم لا يمكن أن يتجاوز سعر البيع</small>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4" id="remainingAmountContainer">
                 <div class="form-group">
                     <label for="remainingAmount">المبلغ المتبقي</label>
                     <div class="input-group">
@@ -350,6 +357,7 @@
                             </span>
                         </div>
                     </div>
+                    <div id="remainingAmountInWords" class="amount-in-words">صفر ريال سعودي</div>
                 </div>
             </div>
             <div class="col-md-4">

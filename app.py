@@ -619,15 +619,13 @@ def create_bus_booking():
         data = request.form
         logging.debug(f"Received booking data: {data}")
         
-        # Basic validation
-        required_fields = ['passengerName', 'sellPrice']
-        
-        for field in required_fields:
-            if not data.get(field):
-                return jsonify({
-                    'success': False, 
-                    'error': f'الحقل المطلوب {field} غير موجود'
-                }), 400
+        # تحسين التحقق من البيانات المدخلة
+        validation_result = validate_booking_data(data)
+        if not validation_result['valid']:
+            return jsonify({
+                'success': False, 
+                'error': validation_result['error']
+            }), 400
         
         # Create a unique booking number
         booking_count = BusBooking.query.count()
@@ -700,6 +698,10 @@ def create_bus_booking():
         
         try:
             booking.received_amount = float(data.get('receivedAmount', 0))
+            
+            # تحسين: التأكد من أن المبلغ المستلم لا يتجاوز سعر البيع
+            if booking.received_amount > booking.selling_price:
+                booking.received_amount = booking.selling_price
         except ValueError:
             booking.received_amount = 0
             
@@ -715,13 +717,27 @@ def create_bus_booking():
             departure_city = booking.departure_city
             destination_city = booking.destination_city
             passenger_name = booking.passenger_name
-            statement = f"حجز تذكرة من {departure_city} إلى {destination_city} للمسافر {passenger_name}"
+            service_provider = "المورد"
+            
+            # محاولة الحصول على اسم مزود الخدمة
+            try:
+                supplier_id = booking.service_provider
+                supplier = Supplier.query.get(int(supplier_id))
+                if supplier:
+                    service_provider = supplier.name
+            except:
+                pass
+            
+            statement = f"حجز تذكرة باص من {departure_city} إلى {destination_city} للمسافر {passenger_name} مع {service_provider}"
         
         booking.statement = statement
         
         # Add booking to the database
         db.session.add(booking)
         db.session.flush()  # احصل على معرف الحجز قبل الالتزام النهائي
+        
+        # تحسين: إنشاء القيود المحاسبية المطلوبة بناءً على نوع المعاملة
+        journals_created = create_booking_journals(booking)
         
         # إضافة المعاملات المالية بناءً على طريقة الدفع
         try:
@@ -783,9 +799,22 @@ def create_bus_booking():
                     cash_register = CashRegister.query.get(int(cash_register_id))
                     if cash_register:
                         cash_register.balance += booking.received_amount
+                        
+                    # إذا كان هناك مبلغ متبقي، إضافته كذمم مدينة
+                    if booking.remaining_amount > 0:
+                        receivable_transaction = AccountTransaction()
+                        receivable_transaction.transaction_type = 'debit'  # مدين (لنا عليه)
+                        receivable_transaction.amount = booking.remaining_amount
+                        receivable_transaction.balance_after = booking.remaining_amount
+                        receivable_transaction.source_type = 'receivable'
+                        receivable_transaction.source_id = booking.id  # استخدام معرف الحجز
+                        receivable_transaction.description = f"المبلغ المتبقي من حجز تذكرة باص رقم {booking.booking_number} - {booking.passenger_name}"
+                        receivable_transaction.reference = booking.booking_number
+                        receivable_transaction.transaction_date = datetime.utcnow()
+                        db.session.add(receivable_transaction)
             
             # 3. في حالة التحويل البنكي: إضافة المبلغ المستلم إلى البنك المحدد
-            elif booking.payment_type == 'bank-transfer':
+            elif booking.payment_type == 'bank_transfer':
                 bank_account_id = booking.account
                 if bank_account_id:
                     # إضافة حركة مالية للبنك (المبلغ الواصل)
@@ -804,6 +833,19 @@ def create_bus_booking():
                     bank_account = BankAccount.query.get(int(bank_account_id))
                     if bank_account:
                         bank_account.balance += booking.received_amount
+                        
+                    # إذا كان هناك مبلغ متبقي، إضافته كذمم مدينة
+                    if booking.remaining_amount > 0:
+                        receivable_transaction = AccountTransaction()
+                        receivable_transaction.transaction_type = 'debit'  # مدين (لنا عليه)
+                        receivable_transaction.amount = booking.remaining_amount
+                        receivable_transaction.balance_after = booking.remaining_amount
+                        receivable_transaction.source_type = 'receivable'
+                        receivable_transaction.source_id = booking.id  # استخدام معرف الحجز
+                        receivable_transaction.description = f"المبلغ المتبقي من حجز تذكرة باص رقم {booking.booking_number} - {booking.passenger_name}"
+                        receivable_transaction.reference = booking.booking_number
+                        receivable_transaction.transaction_date = datetime.utcnow()
+                        db.session.add(receivable_transaction)
         
         except Exception as financial_error:
             logging.error(f"خطأ في إضافة المعاملات المالية: {str(financial_error)}")
@@ -815,7 +857,8 @@ def create_bus_booking():
         return jsonify({
             'success': True, 
             'booking_id': booking.id, 
-            'booking_number': booking.booking_number
+            'booking_number': booking.booking_number,
+            'journals_created': journals_created
         })
     
     except Exception as e:
@@ -824,6 +867,307 @@ def create_bus_booking():
         import traceback
         traceback.print_exc()
         return jsonify({'success': False, 'error': str(e)}), 500
+
+# وظيفة للتحقق من صحة بيانات الحجز
+def validate_booking_data(data):
+    """التحقق المحسن من بيانات الحجز"""
+    result = {'valid': True, 'error': None}
+    
+    # 1. التحقق من الحقول المطلوبة
+    required_fields = {
+        'passengerName': 'اسم المسافر',
+        'departureCity': 'مدينة المغادرة',
+        'destinationCity': 'مدينة الوصول',
+        'reservationDate': 'تاريخ الحجز',
+        'supplierId': 'مزود الخدمة',
+        'sellPrice': 'سعر البيع',
+        'purchasePrice': 'سعر التكلفة',
+        'paymentType': 'طريقة الدفع',
+        'accountId': 'الحساب المالي'
+    }
+    
+    missing_fields = []
+    for field, label in required_fields.items():
+        if not data.get(field):
+            missing_fields.append(label)
+    
+    if missing_fields:
+        result['valid'] = False
+        result['error'] = f"الحقول التالية مطلوبة: {', '.join(missing_fields)}"
+        return result
+    
+    # 2. التحقق من صحة البيانات المالية
+    try:
+        sell_price = float(data.get('sellPrice', 0))
+        purchase_price = float(data.get('purchasePrice', 0))
+        
+        # التحقق من أن سعر البيع موجب
+        if sell_price <= 0:
+            result['valid'] = False
+            result['error'] = "يجب أن يكون سعر البيع أكبر من صفر"
+            return result
+        
+        # التحقق من أن سعر البيع أكبر من أو يساوي سعر التكلفة
+        if purchase_price > sell_price:
+            result['valid'] = False
+            result['error'] = "سعر التكلفة لا يمكن أن يكون أكبر من سعر البيع"
+            return result
+        
+        # التحقق من المبلغ المستلم في حالة الدفع النقدي أو تحويل بنكي
+        payment_type = data.get('paymentType')
+        if payment_type in ['cash', 'bank_transfer']:
+            try:
+                received_amount = float(data.get('receivedAmount', 0))
+                
+                # التحقق من أن المبلغ المستلم لا يتجاوز سعر البيع
+                if received_amount > sell_price:
+                    result['valid'] = False
+                    result['error'] = "المبلغ المستلم لا يمكن أن يكون أكبر من سعر البيع"
+                    return result
+            except ValueError:
+                result['valid'] = False
+                result['error'] = "يرجى إدخال قيمة صحيحة للمبلغ المستلم"
+                return result
+    
+    except ValueError:
+        result['valid'] = False
+        result['error'] = "يرجى إدخال قيم صحيحة للأسعار"
+        return result
+    
+    # 3. تحقق من تواريخ الرحلة
+    if data.get('journeyTypeRoundTrip') == 'on' and not data.get('returnDate'):
+        result['valid'] = False
+        result['error'] = "يجب تحديد تاريخ العودة للرحلة ذهاب وعودة"
+        return result
+    
+    # 4. التحقق من عدم تكرار بيانات الحجز (يمكن إضافة المزيد من عمليات التحقق حسب متطلبات النظام)
+    
+    return result
+
+# وظيفة إنشاء القيود المحاسبية للحجز
+def create_booking_journals(booking):
+    """إنشاء القيود المحاسبية اللازمة لحجز الباص"""
+    journals_created = []
+    
+    try:
+        # 1. إنشاء قيد محاسبي أساسي لعملية الحجز
+        main_journal = JournalEntry(
+            entry_number=f"J-BUS-{booking.booking_number}",
+            date=date.today(),
+            reference_type="bus_booking",
+            reference_id=str(booking.id),
+            description=booking.statement,
+            entry_type="sales",
+            status="posted",
+            is_posted=True,
+            posted_at=datetime.utcnow()
+        )
+        db.session.add(main_journal)
+        db.session.flush()  # احصل على معرف القيد قبل إضافة البنود
+        
+        journals_created.append(main_journal.entry_number)
+        
+        # الحصول على الحسابات المطلوبة
+        revenue_account = Account.query.filter_by(account_type='revenue', is_active=True).first()
+        if not revenue_account:
+            # إنشاء حساب إيرادات افتراضي إذا لم يكن موجوداً
+            revenue_account = Account(
+                name="إيرادات حجوزات الباص",
+                account_number="4001",
+                account_type="revenue",
+                is_active=True
+            )
+            db.session.add(revenue_account)
+            db.session.flush()
+        
+        cogs_account = Account.query.filter_by(account_type='expense', name='تكلفة خدمات حجز الباص').first()
+        if not cogs_account:
+            # إنشاء حساب تكلفة الخدمات افتراضي إذا لم يكن موجوداً
+            cogs_account = Account(
+                name="تكلفة خدمات حجز الباص",
+                account_number="5001",
+                account_type="expense",
+                is_active=True
+            )
+            db.session.add(cogs_account)
+            db.session.flush()
+        
+        receivables_account = Account.query.filter_by(account_type='asset', name='ذمم مدينة - حجوزات الباص').first()
+        if not receivables_account:
+            # إنشاء حساب ذمم مدينة افتراضي إذا لم يكن موجوداً
+            receivables_account = Account(
+                name="ذمم مدينة - حجوزات الباص",
+                account_number="1200",
+                account_type="asset",
+                is_active=True
+            )
+            db.session.add(receivables_account)
+            db.session.flush()
+        
+        # 2. إضافة بنود القيد حسب نوع الدفع
+        # 2.1 في حالة الدفع النقدي
+        if booking.payment_type == 'cash':
+            # البند الأول: المبلغ المستلم إلى الصندوق
+            if booking.received_amount > 0:
+                cash_line = JournalEntryLine(
+                    journal_entry_id=main_journal.id,
+                    debit_account_id=get_account_id_for_code(booking.account, 'cash'),
+                    credit_account_id=revenue_account.id,
+                    description=f"استلام نقدي - حجز تذكرة باص {booking.booking_number}",
+                    debit_amount=booking.received_amount,
+                    credit_amount=booking.received_amount
+                )
+                db.session.add(cash_line)
+            
+            # البند الثاني: المبلغ المتبقي إلى الذمم المدينة (إذا وجد)
+            if booking.remaining_amount > 0:
+                receivable_line = JournalEntryLine(
+                    journal_entry_id=main_journal.id,
+                    debit_account_id=receivables_account.id,
+                    credit_account_id=revenue_account.id,
+                    description=f"ذمم مدينة - حجز تذكرة باص {booking.booking_number}",
+                    debit_amount=booking.remaining_amount,
+                    credit_amount=booking.remaining_amount
+                )
+                db.session.add(receivable_line)
+        
+        # 2.2 في حالة الدفع الآجل
+        elif booking.payment_type == 'credit':
+            receivable_line = JournalEntryLine(
+                journal_entry_id=main_journal.id,
+                debit_account_id=get_account_id_for_code(booking.account, 'client'),
+                credit_account_id=revenue_account.id,
+                description=f"ذمم مدينة - حجز تذكرة باص {booking.booking_number}",
+                debit_amount=booking.selling_price,
+                credit_amount=booking.selling_price
+            )
+            db.session.add(receivable_line)
+        
+        # 2.3 في حالة التحويل البنكي
+        elif booking.payment_type == 'bank_transfer':
+            # البند الأول: المبلغ المستلم إلى البنك
+            if booking.received_amount > 0:
+                bank_line = JournalEntryLine(
+                    journal_entry_id=main_journal.id,
+                    debit_account_id=get_account_id_for_code(booking.account, 'bank'),
+                    credit_account_id=revenue_account.id,
+                    description=f"تحويل بنكي - حجز تذكرة باص {booking.booking_number}",
+                    debit_amount=booking.received_amount,
+                    credit_amount=booking.received_amount
+                )
+                db.session.add(bank_line)
+            
+            # البند الثاني: المبلغ المتبقي إلى الذمم المدينة (إذا وجد)
+            if booking.remaining_amount > 0:
+                receivable_line = JournalEntryLine(
+                    journal_entry_id=main_journal.id,
+                    debit_account_id=receivables_account.id,
+                    credit_account_id=revenue_account.id,
+                    description=f"ذمم مدينة - حجز تذكرة باص {booking.booking_number}",
+                    debit_amount=booking.remaining_amount,
+                    credit_amount=booking.remaining_amount
+                )
+                db.session.add(receivable_line)
+        
+        # 3. إنشاء قيد منفصل لتكلفة الخدمة (إذا وجدت)
+        if booking.cost_price > 0:
+            cost_journal = JournalEntry(
+                entry_number=f"J-BUS-COST-{booking.booking_number}",
+                date=date.today(),
+                reference_type="bus_booking_cost",
+                reference_id=str(booking.id),
+                description=f"تكلفة حجز تذكرة باص - {booking.booking_number}",
+                entry_type="purchase",
+                status="posted",
+                is_posted=True,
+                posted_at=datetime.utcnow()
+            )
+            db.session.add(cost_journal)
+            db.session.flush()
+            
+            journals_created.append(cost_journal.entry_number)
+            
+            # الحصول على حساب المورد
+            supplier_account = get_account_id_for_code(booking.service_provider, 'supplier')
+            
+            # إضافة بنود قيد التكلفة
+            cost_line = JournalEntryLine(
+                journal_entry_id=cost_journal.id,
+                debit_account_id=cogs_account.id,
+                credit_account_id=supplier_account,
+                description=f"تكلفة حجز تذكرة باص {booking.booking_number}",
+                debit_amount=booking.cost_price,
+                credit_amount=booking.cost_price
+            )
+            db.session.add(cost_line)
+    
+    except Exception as e:
+        logging.error(f"خطأ في إنشاء القيود المحاسبية: {str(e)}")
+        # استمر في العملية حتى لو فشلت إضافة القيود
+    
+    return journals_created
+
+# وظيفة مساعدة للحصول على معرف الحساب من رمز معين
+def get_account_id_for_code(code_value, account_type):
+    """الحصول على معرف الحساب بناءً على الرمز ونوع الحساب"""
+    # تحويل الرمز إلى رقم إذا كان ممكناً
+    account_id = None
+    
+    try:
+        # محاولة الحصول على معرف الحساب المناسب حسب نوع الحساب
+        if account_type == 'cash' and code_value.startswith('cash_'):
+            cash_id = code_value.replace('cash_', '')
+            cash_register = CashRegister.query.get(int(cash_id))
+            if cash_register and cash_register.account_id:
+                account_id = cash_register.account_id
+            else:
+                # الحصول على حساب صندوق افتراضي
+                cash_account = Account.query.filter_by(is_cash_account=True, is_active=True).first()
+                if cash_account:
+                    account_id = cash_account.id
+        
+        elif account_type == 'client' and code_value.startswith('client_'):
+            client_id = code_value.replace('client_', '')
+            client = Customer.query.get(int(client_id))
+            if client and client.account_id:
+                account_id = client.account_id
+            else:
+                # الحصول على حساب عملاء افتراضي
+                client_account = Account.query.filter_by(name='حسابات العملاء العامة', is_active=True).first()
+                if client_account:
+                    account_id = client_account.id
+        
+        elif account_type == 'bank' and code_value.startswith('bank_'):
+            bank_id = code_value.replace('bank_', '')
+            bank = BankAccount.query.get(int(bank_id))
+            if bank and bank.account_id:
+                account_id = bank.account_id
+            else:
+                # الحصول على حساب بنك افتراضي
+                bank_account = Account.query.filter_by(is_bank_account=True, is_active=True).first()
+                if bank_account:
+                    account_id = bank_account.id
+        
+        elif account_type == 'supplier':
+            supplier = Supplier.query.get(int(code_value))
+            if supplier and supplier.account_id:
+                account_id = supplier.account_id
+            else:
+                # الحصول على حساب موردين افتراضي
+                supplier_account = Account.query.filter_by(name='حسابات الموردين العامة', is_active=True).first()
+                if supplier_account:
+                    account_id = supplier_account.id
+    
+    except (ValueError, TypeError, AttributeError) as e:
+        logging.error(f"خطأ في الحصول على معرف الحساب: {str(e)}")
+    
+    if not account_id:
+        # إذا لم يتم العثور على حساب مناسب، إنشاء حساب افتراضي
+        default_account = Account.query.filter_by(account_number='1000').first()
+        if default_account:
+            account_id = default_account.id
+    
+    return account_id
 
 @app.route('/bus-tickets-new')
 def bus_tickets_new():
