@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>تسجيل الدخول | نظام إدارة وكالة السياحة والسفر</title>
+    <title>تسجيل الدخول | {{ settings.system_name }}</title>
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -14,17 +14,186 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom-rtl.css') }}">
     <!-- Google Font: Tajawal -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: {{ settings.primary_color|default('#4e73df') }};
+            --secondary-color: {{ settings.secondary_color|default('#1cc88a') }};
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            font-family: 'Tajawal', sans-serif;
+            height: 100vh;
+        }
+        
+        .login-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .login-box {
+            width: 360px;
+            max-width: 90%;
+        }
+        
+        .login-logo {
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .login-logo a {
+            color: white;
+            font-size: 2.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            display: inline-block;
+        }
+        
+        .login-card-body {
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+        }
+        
+        .login-box-msg {
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+        
+        .input-group-text {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+        
+        .form-control {
+            border-radius: 4px;
+            height: calc(2.25rem + 6px);
+            border: 1px solid #ced4da;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            font-weight: 500;
+            padding: 0.5rem 0;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-color);
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .custom-control-label::before {
+            border-color: var(--primary-color);
+        }
+        
+        .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+            background-color: var(--primary-color);
+        }
+        
+        .login-footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: white;
+            font-size: 0.9rem;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .show-password {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .show-password:hover {
+            color: var(--primary-color);
+        }
+
+        .company-logo {
+            width: 80px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        
+        .auth-animation {
+            animation: fadeInUp 0.5s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .alert {
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        
+        .social-auth-links {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+        
+        .social-auth-links .btn {
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .login-options a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .login-options a:hover {
+            text-decoration: underline;
+            color: var(--secondary-color);
+        }
+    </style>
 </head>
 <body class="hold-transition login-page">
-    <div class="login-box">
+    <div class="login-box auth-animation">
         <!-- Login Logo -->
         <div class="login-logo">
+            {% if settings.use_custom_logo == 'true' and settings.custom_logo_url %}
+                <img src="{{ settings.custom_logo_url }}" alt="{{ settings.system_name }}" class="company-logo">
+            {% else %}
+                <i class="{{ settings.logo_icon|default('fas fa-plane-departure') }} fa-2x mb-2"></i>
+            {% endif %}
             <a href="{{ url_for('login') }}">
-                <i class="fas fa-plane-departure ml-2"></i>
-                <span class="text-white">وكالة السفر المتميزة</span>
+                <div>{{ settings.company_name|default('وكالة السفر المتميزة') }}</div>
             </a>
         </div>
-        <!-- /.login-logo -->
+        
         <div class="card">
             <div class="card-body login-card-body">
                 <p class="login-box-msg">سجل دخولك لبدء الجلسة</p>
@@ -42,8 +211,10 @@
                             {% endfor %}
                         {% endif %}
                     {% endwith %}
+                    
                     <div class="input-group mb-3">
-                        <input type="text" name="username" id="username" class="form-control" placeholder="اسم المستخدم" required>
+                        <input type="text" name="username" id="username" class="form-control" 
+                               placeholder="اسم المستخدم" required autocomplete="username">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
@@ -53,42 +224,51 @@
                             الرجاء إدخال اسم المستخدم
                         </div>
                     </div>
+                    
                     <div class="input-group mb-3">
-                        <input type="password" name="password" id="password" class="form-control" placeholder="كلمة المرور" required>
+                        <input type="password" name="password" id="password" class="form-control" 
+                               placeholder="كلمة المرور" required autocomplete="current-password">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                        <div class="input-group-append show-password-toggle">
+                            <div class="input-group-text show-password" title="إظهار كلمة المرور">
+                                <span class="fas fa-eye"></span>
                             </div>
                         </div>
                         <div class="invalid-feedback">
                             الرجاء إدخال كلمة المرور
                         </div>
                     </div>
+                    
                     <div class="row">
                         <div class="col-8">
-                            <div class="icheck-primary">
-                                <input type="checkbox" id="remember">
-                                <label for="remember">
-                                    تذكرني
-                                </label>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" name="remember" class="custom-control-input" id="remember">
+                                <label class="custom-control-label" for="remember">تذكرني</label>
                             </div>
                         </div>
-                        <!-- /.col -->
                         <div class="col-4">
                             <button type="submit" class="btn btn-primary btn-block">دخول</button>
                         </div>
-                        <!-- /.col -->
                     </div>
                 </form>
 
-                <p class="mb-1 mt-3">
-                    <a href="#">نسيت كلمة المرور؟</a>
-                </p>
+                <div class="login-options">
+                    <a href="#" class="forgot-password">نسيت كلمة المرور؟</a>
+                    <a href="#" class="tech-support">الدعم الفني</a>
+                </div>
             </div>
-            <!-- /.login-card-body -->
         </div>
+        
+        <p class="login-footer">
+            {{ settings.system_slogan|default('حلول متكاملة لوكالات السفر والسياحة') }}
+            <br>
+            <small>{{ settings.company_address|default('') }}</small>
+        </p>
     </div>
-    <!-- /.login-box -->
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -98,6 +278,22 @@
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.1.0/dist/js/adminlte.min.js"></script>
     
     <script>
+        // إظهار وإخفاء كلمة المرور
+        document.querySelector('.show-password').addEventListener('mousedown', function() {
+            document.getElementById('password').type = 'text';
+            this.innerHTML = '<span class="fas fa-eye-slash"></span>';
+        });
+        
+        document.querySelector('.show-password').addEventListener('mouseup', function() {
+            document.getElementById('password').type = 'password';
+            this.innerHTML = '<span class="fas fa-eye"></span>';
+        });
+        
+        document.querySelector('.show-password').addEventListener('mouseout', function() {
+            document.getElementById('password').type = 'password';
+            this.innerHTML = '<span class="fas fa-eye"></span>';
+        });
+        
         // Form validation
         (function() {
             'use strict';
@@ -114,6 +310,11 @@
                 });
             }, false);
         })();
+        
+        // التركيز على حقل اسم المستخدم عند تحميل الصفحة
+        window.addEventListener('load', function() {
+            document.getElementById('username').focus();
+        });
     </script>
 </body>
 </html>

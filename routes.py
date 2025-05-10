@@ -184,21 +184,44 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
+        remember = True if request.form.get('remember') else False
         
         if not username or not password:
             flash('يرجى إدخال اسم المستخدم وكلمة المرور', 'danger')
             settings = get_settings()
             return render_template('login.html', settings=settings)
         
-        user = User.query.filter_by(username=username).first()
+        # إزالة المسافات الزائدة من اسم المستخدم
+        username = username.strip()
+        
+        # محاولة العثور على المستخدم إما باسم المستخدم أو البريد الإلكتروني
+        user = User.query.filter(
+            (User.username == username) | (User.email == username)
+        ).first()
         
         if user and check_password_hash(user.password_hash, password):
             # تسجيل الدخول وتفعيل خاصية التذكر لجعل الجلسة دائمة
             from datetime import timedelta
-            login_user(user, remember=True, duration=timedelta(days=1))  # جلسة لمدة يوم كامل
+            
+            # إذا كان تم اختيار "تذكرني"، فستكون مدة الجلسة 30 يومًا، وإلا ستكون 1 يومًا
+            duration = timedelta(days=30) if remember else timedelta(days=1)
+            login_user(user, remember=remember, duration=duration)
 
+            # تحديث بيانات آخر تسجيل دخول للمستخدم (إذا كان هناك حقول لذلك)
+            try:
+                # تحديث بيانات آخر تسجيل دخول إذا كانت متاحة في نموذج المستخدم
+                if hasattr(user, 'last_login_at'):
+                    user.last_login_at = datetime.now()
+                if hasattr(user, 'login_count'):
+                    user.login_count = user.login_count + 1 if user.login_count else 1
+                db.session.commit()
+            except:
+                # في حالة فشل التحديث، نتابع دون توقف
+                db.session.rollback()
+                pass
+            
             # سجل نجاح تسجيل الدخول
-            logging.info(f"تم تسجيل دخول المستخدم: {user.username}")
+            logging.info(f"تم تسجيل دخول المستخدم: {user.username} (IP: {request.remote_addr})")
             
             # التحقق من وجود صفحة إعادة توجيه
             next_page = request.args.get('next')
@@ -208,10 +231,11 @@ def login():
                 next_page = None
             
             # تأكيد نجاح تسجيل الدخول
-            flash('تم تسجيل الدخول بنجاح!', 'success')
+            flash(f'مرحبًا {user.full_name or user.username}! تم تسجيل الدخول بنجاح', 'success')
                 
             return redirect(next_page or url_for('index'))
         else:
+            logging.warning(f"محاولة تسجيل دخول فاشلة: {username} (IP: {request.remote_addr})")
             flash('اسم المستخدم أو كلمة المرور غير صحيحة', 'danger')
     
     settings = get_settings()
@@ -223,8 +247,23 @@ def logout():
     """تسجيل الخروج"""
     # تسجيل عملية الخروج
     username = current_user.username
+    user_id = current_user.id
+    user_ip = request.remote_addr
+    
+    # سجل آخر وقت لخروج المستخدم
+    try:
+        user = User.query.get(user_id)
+        if user and hasattr(user, 'last_logout_at'):
+            user.last_logout_at = datetime.now()
+            db.session.commit()
+    except:
+        # في حالة فشل التحديث، نتابع دون توقف
+        db.session.rollback()
+        pass
+    
+    # تسجيل خروج المستخدم
     logout_user()
-    logging.info(f"تم تسجيل خروج المستخدم: {username}")
+    logging.info(f"تم تسجيل خروج المستخدم: {username} (IP: {user_ip})")
     
     # تنظيف وإزالة الجلسة
     from flask import session
