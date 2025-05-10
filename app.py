@@ -21,6 +21,9 @@ db = SQLAlchemy(model_class=Base)
 # Initialize LoginManager
 login_manager = LoginManager()
 login_manager.login_view = 'login'  # Default login view route
+login_manager.login_message = 'يرجى تسجيل الدخول للوصول إلى هذه الصفحة'
+login_manager.login_message_category = 'info'
+login_manager.session_protection = 'strong'  # تعزيز حماية الجلسة
 
 # Create Flask application
 def create_app():
@@ -28,6 +31,13 @@ def create_app():
     # Set app configuration
     app.secret_key = os.environ.get("SESSION_SECRET", "dev_secret_key")  # Fallback for development
     app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)  # needed for url_for to generate with https
+    
+    # إعدادات الجلسات لتحسين الأمان والاستقرار
+    app.config["SESSION_COOKIE_HTTPONLY"] = True
+    app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+    app.config["PERMANENT_SESSION_LIFETIME"] = 86400  # 24 ساعة بالثواني
+    # تعطيل SECURE لتمكين الكوكيز من العمل مع HTTP في بيئة التطوير
+    app.config["SESSION_COOKIE_SECURE"] = False if app.debug else True
     
     # Configure database
     db_url = os.environ.get("DATABASE_URL", "postgresql://user:password@localhost/travelagency")

@@ -159,6 +159,13 @@ def get_settings():
     
     return settings_dict
 
+# إضافة وظيفة قبل كل طلب لجعل الجلسة دائمة
+@app.before_request
+def make_session_permanent():
+    """جعل جلسة المستخدم دائمة لتجنب انتهاء الصلاحية بسرعة"""
+    from flask import session
+    session.permanent = True
+
 # الصفحة الرئيسية وتسجيل الدخول
 @app.route('/')
 def index():
@@ -184,13 +191,21 @@ def login():
         user = User.query.filter_by(username=username).first()
         
         if user and check_password_hash(user.password_hash, password):
-            login_user(user, remember=True)
+            # تسجيل الدخول وتفعيل خاصية التذكر لجعل الجلسة دائمة
+            login_user(user, remember=True, duration=86400)
+
+            # سجل نجاح تسجيل الدخول
+            logging.info(f"تم تسجيل دخول المستخدم: {user.username}")
+            
             # التحقق من وجود صفحة إعادة توجيه
             next_page = request.args.get('next')
             
             # التحقق من أن الرابط التالي ليس خارجياً (أمان)
             if next_page and not next_page.startswith('/'):
                 next_page = None
+            
+            # تأكيد نجاح تسجيل الدخول
+            flash('تم تسجيل الدخول بنجاح!', 'success')
                 
             return redirect(next_page or url_for('index'))
         else:
@@ -203,7 +218,16 @@ def login():
 @login_required
 def logout():
     """تسجيل الخروج"""
+    # تسجيل عملية الخروج
+    username = current_user.username
     logout_user()
+    logging.info(f"تم تسجيل خروج المستخدم: {username}")
+    
+    # تنظيف وإزالة الجلسة
+    from flask import session
+    session.clear()
+    
+    flash('تم تسجيل الخروج بنجاح!', 'success')
     return redirect(url_for('login'))
 
 # إدارة المستخدمين

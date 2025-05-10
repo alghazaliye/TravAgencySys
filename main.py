@@ -6,9 +6,11 @@ import logging
 # تكوين سجل الأحداث
 logging.basicConfig(level=logging.INFO)
 
-# إعداد مفتاح الجلسة إذا لم يكن موجودًا
+# إعداد مفتاح الجلسة إذا لم يكن موجودًا - استخدام مفتاح أكثر قوة
 if not os.environ.get("SESSION_SECRET"):
-    os.environ["SESSION_SECRET"] = os.urandom(24).hex()
+    # استخدام مفتاح طويل 32 بايت للتشفير القوي
+    import secrets
+    os.environ["SESSION_SECRET"] = secrets.token_hex(32)
 
 # إنشاء الإعدادات الافتراضية للنظام
 with app.app_context():
