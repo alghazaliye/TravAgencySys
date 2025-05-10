@@ -172,55 +172,43 @@ body.sidebar-collapse .main-header {
     }
 }
 
-/* زر تبديل القائمة الجانبية - تحسين الظهور */
+/* زر تبديل القائمة الجانبية - تحسين الظهور (الزر السابق) */
 #sidebarToggleBtn {
     background-color: var(--primary-travel) !important;
     color: white !important;
-    width: 40px !important;
-    height: 40px !important;
+    width: 50px !important;  /* أكبر من قبل */
+    height: 50px !important; /* أكبر من قبل */
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     border-radius: 8px !important;
-    margin-left: 10px !important;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1) !important;
+    margin-left: 15px !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15) !important;
     position: relative !important;
     z-index: 1050 !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;  /* حدود بيضاء شفافة */
+    padding: 0 !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+#sidebarToggleBtn:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+#sidebarToggleBtn:active {
+    transform: scale(0.95) !important;
 }
 
 #sidebarToggleBtn i {
-    font-size: 20px !important;
+    font-size: 22px !important;  /* أكبر من قبل */
     visibility: visible !important;
     display: inline-block !important;
     color: white !important;
+    transition: all 0.2s ease-in-out !important;
 }
 
-/* زر إضافي كبير ثابت للقائمة الجانبية */
-.main-sidebar-toggle-fixed {
-    position: fixed !important;
-    top: 70px !important;
-    right: 20px !important;
-    width: 50px !important;
-    height: 50px !important;
-    background: var(--primary-travel) !important;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
-    border-radius: 50% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    color: white !important;
-    cursor: pointer !important;
-    z-index: 9999 !important;
-    border: none !important;
-    font-size: 24px !important;
-    opacity: 0.9 !important;
-    transition: all 0.3s ease !important;
-}
-
-.main-sidebar-toggle-fixed:hover {
-    transform: scale(1.1) !important;
-    opacity: 1 !important;
-}
+/* تم حذف الزر الثابت للقائمة الجانبية بناءً على طلب المستخدم */
 
 /* إصلاح إضافي لأيقونات القائمة للتأكد من عدم اختفائها */
 .nav-sidebar .nav-link i.nav-icon:before,

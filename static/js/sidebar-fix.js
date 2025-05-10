@@ -65,18 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     document.body.appendChild(quickFix);
     
-    // إضافة زر كبير ثابت للقائمة الجانبية للظهور دائماً
-    const fixedToggleBtn = document.createElement('button');
-    fixedToggleBtn.className = 'main-sidebar-toggle-fixed';
-    fixedToggleBtn.title = 'فتح/إغلاق القائمة الجانبية';
-    fixedToggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
-    fixedToggleBtn.addEventListener('click', function(event) {
-        if (!isProcessing) {
-            handleSidebarToggle(event);
-        }
-    });
-    
-    document.body.appendChild(fixedToggleBtn);
+    /* تم حذف الزر الثابت بناءً على طلب المستخدم */
     
     // مراقبة تغيير حجم النافذة
     window.addEventListener('resize', function() {
@@ -120,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /**
- * تبديل حالة القائمة الجانبية
+ * تبديل حالة القائمة الجانبية - النسخة المحسنة
  */
 function toggleSidebar() {
     console.log('بدء تبديل حالة القائمة');
@@ -128,27 +117,49 @@ function toggleSidebar() {
     const windowWidth = window.innerWidth;
     document.body.classList.toggle('sidebar-collapse');
     
+    // التأكد من ظهور القائمة الجانبية عند تبديلها
+    const mainSidebar = document.querySelector('.main-sidebar');
+    
     if (document.body.classList.contains('sidebar-collapse')) {
         document.body.classList.remove('sidebar-open');
         
         if (windowWidth >= 992) {
             setContentMargins('4.6rem');
+            // في الشاشات الكبيرة، تعيين عرض القائمة الجانبية للحد الأدنى
+            if (mainSidebar) {
+                mainSidebar.style.width = '4.6rem';
+                mainSidebar.style.overflow = 'visible';
+            }
         } else {
             setContentMargins('0');
+            // في الشاشات الصغيرة، إخفاء القائمة
+            if (mainSidebar && windowWidth < 768) {
+                mainSidebar.style.right = '-250px';
+            }
         }
     } else {
         document.body.classList.add('sidebar-open');
+        
+        // إظهار القائمة الجانبية بالعرض الكامل
+        if (mainSidebar) {
+            mainSidebar.style.width = '250px';
+            mainSidebar.style.right = '0';
+            mainSidebar.style.overflow = 'visible';
+        }
         
         if (windowWidth >= 768) {
             setContentMargins('250px');
         }
     }
     
-    applyResponsiveSettings(windowWidth);
-    saveMenuState();
+    // تحسين ظهور القائمة الجانبية عن طريق تطبيق تأخير
+    setTimeout(() => {
+        applyResponsiveSettings(windowWidth);
+        // إصلاح أي مشاكل مع عرض الأيقونات
+        fixSidebarIcons();
+    }, 10);
     
-    // إصلاح أي مشاكل مع عرض الأيقونات
-    fixSidebarIcons();
+    saveMenuState();
 }
 
 /**
