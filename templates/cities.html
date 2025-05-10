@@ -395,14 +395,12 @@ $(function() {
         
         // استخراج بيانات المدينة من الصف
         var cityNameAr = row.find('td:eq(1)').text();
-        var cityNameEn = row.find('td:eq(2)').text();
-        var cityCode = row.find('td:eq(3)').text();
+        var cityCode = row.find('td:eq(2)').text();
         var countryId = row.data('country');
         
         // ملء النموذج ببيانات المدينة
         $('#editCityId').val(cityId);
         $('#editCityNameAr').val(cityNameAr);
-        $('#editCityNameEn').val(cityNameEn);
         $('#editCityCode').val(cityCode);
         $('#editCityCountry').val(countryId).trigger('change');
         
@@ -418,7 +416,6 @@ $(function() {
             var countryId = $('#cityCountry').val();
             var countryName = $('#cityCountry option:selected').text();
             var cityNameAr = $('#cityNameAr').val();
-            var cityNameEn = $('#cityNameEn').val();
             var cityCode = $('#cityCode').val();
             
             // محاكاة إضافة المدينة (ستستبدل بطلب AJAX حقيقي)
