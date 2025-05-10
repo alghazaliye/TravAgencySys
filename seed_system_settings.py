@@ -166,6 +166,114 @@ DEFAULT_SETTINGS = {
         'description': 'روابط لمنصات التواصل الاجتماعي (مفصولة بفاصلة)'
     },
     
+    # إعدادات تنسيق التاريخ والوقت
+    'date_format': {
+        'value': 'DD/MM/YYYY',
+        'type': 'text',
+        'description': 'تنسيق عرض التاريخ في جميع أنحاء النظام'
+    },
+    'time_format': {
+        'value': 'HH:mm',
+        'type': 'text',
+        'description': 'تنسيق عرض الوقت في جميع أنحاء النظام'
+    },
+    'date_separator': {
+        'value': '/',
+        'type': 'text',
+        'description': 'الفاصل المستخدم بين أجزاء التاريخ'
+    },
+    'use_hijri_dates': {
+        'value': 'no',
+        'type': 'text',
+        'description': 'استخدام التقويم الهجري في النظام'
+    },
+    'first_day_of_week': {
+        'value': '6',
+        'type': 'text',
+        'description': 'تحديد أول يوم في الأسبوع (6=السبت)'
+    },
+    
+    # إعدادات الإشعارات والتنبيهات
+    'enable_notifications': {
+        'value': 'true',
+        'type': 'boolean',
+        'description': 'تفعيل الإشعارات في النظام'
+    },
+    'notification_position': {
+        'value': 'top-right',
+        'type': 'text',
+        'description': 'موضع ظهور الإشعارات في الشاشة'
+    },
+    'notification_duration': {
+        'value': '5',
+        'type': 'text',
+        'description': 'مدة ظهور الإشعارات (بالثواني)'
+    },
+    'sound_notifications': {
+        'value': 'true',
+        'type': 'boolean',
+        'description': 'تفعيل التنبيهات الصوتية مع الإشعارات'
+    },
+    'notify_new_bookings': {
+        'value': 'true',
+        'type': 'boolean',
+        'description': 'تنبيه عند إنشاء حجز جديد'
+    },
+    'notify_payment_received': {
+        'value': 'true',
+        'type': 'boolean',
+        'description': 'تنبيه عند استلام مدفوعات'
+    },
+    'notify_booking_cancellation': {
+        'value': 'true',
+        'type': 'boolean',
+        'description': 'تنبيه عند إلغاء حجز'
+    },
+    
+    # إعدادات التواصل والرسائل
+    'sms_service_enabled': {
+        'value': 'false',
+        'type': 'boolean',
+        'description': 'تفعيل خدمة إرسال الرسائل القصيرة'
+    },
+    'email_notifications_enabled': {
+        'value': 'true',
+        'type': 'boolean',
+        'description': 'تفعيل إرسال إشعارات البريد الإلكتروني'
+    },
+    'email_signature': {
+        'value': 'مع تحيات،\nفريق وكالة السفر للسياحة والخدمات\nهاتف: +966 11 1234567\nالبريد الإلكتروني: info@travelagency.com',
+        'type': 'text',
+        'description': 'توقيع البريد الإلكتروني للشركة'
+    },
+    
+    # إعدادات الطباعة والتقارير
+    'paper_size': {
+        'value': 'A4',
+        'type': 'text',
+        'description': 'حجم الورق الافتراضي للطباعة'
+    },
+    'print_layout': {
+        'value': 'portrait',
+        'type': 'text',
+        'description': 'اتجاه الطباعة الافتراضي (عمودي أو أفقي)'
+    },
+    'show_logo_in_reports': {
+        'value': 'true',
+        'type': 'boolean',
+        'description': 'عرض شعار النظام في التقارير المطبوعة'
+    },
+    'print_footer': {
+        'value': 'وكالة السفر للسياحة والخدمات - هاتف: +966 11 1234567',
+        'type': 'text',
+        'description': 'نص يظهر في تذييل الصفحات المطبوعة'
+    },
+    'receipt_notes': {
+        'value': 'شكراً لتعاملكم معنا. لا يعتبر هذا الإيصال ساري المفعول إلا بعد تحصيل كامل المبلغ.',
+        'type': 'text',
+        'description': 'ملاحظات تظهر في نهاية إيصالات الحجز والدفع'
+    },
+    
     # إعدادات متقدمة
     'privacy_policy': {
         'value': 'تلتزم وكالة السفر بالحفاظ على خصوصية بيانات العملاء وعدم مشاركتها مع أي جهة خارجية.',

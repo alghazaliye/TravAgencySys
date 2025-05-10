@@ -624,6 +624,288 @@
                     </div>
                 </div>
 
+                <!-- إعدادات تنسيق التاريخ والوقت -->
+                <div class="settings-section">
+                    <h3><i class="fas fa-calendar-alt ml-2"></i>تنسيق التاريخ والوقت</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="date_format">تنسيق التاريخ</label>
+                                <select class="form-control" id="date_format" name="date_format">
+                                    <option value="DD/MM/YYYY" {% if settings.date_format == 'DD/MM/YYYY' %}selected{% endif %}>DD/MM/YYYY (31/12/2025)</option>
+                                    <option value="YYYY/MM/DD" {% if settings.date_format == 'YYYY/MM/DD' %}selected{% endif %}>YYYY/MM/DD (2025/12/31)</option>
+                                    <option value="DD-MM-YYYY" {% if settings.date_format == 'DD-MM-YYYY' %}selected{% endif %}>DD-MM-YYYY (31-12-2025)</option>
+                                    <option value="YYYY-MM-DD" {% if settings.date_format == 'YYYY-MM-DD' %}selected{% endif %}>YYYY-MM-DD (2025-12-31)</option>
+                                </select>
+                                <small class="form-text text-muted">تنسيق التاريخ المستخدم في جميع أنحاء النظام</small>
+                                
+                                <!-- مثال على تنسيق التاريخ -->
+                                <div class="date-format-example" id="date_format_example">
+                                    مثال: <span>31/12/2025</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="time_format">تنسيق الوقت</label>
+                                <select class="form-control" id="time_format" name="time_format">
+                                    <option value="HH:mm" {% if settings.time_format == 'HH:mm' %}selected{% endif %}>24 ساعة (14:30)</option>
+                                    <option value="hh:mm A" {% if settings.time_format == 'hh:mm A' %}selected{% endif %}>12 ساعة (02:30 م)</option>
+                                </select>
+                                <small class="form-text text-muted">تنسيق الوقت المستخدم في جميع أنحاء النظام</small>
+                                
+                                <!-- مثال على تنسيق الوقت -->
+                                <div class="date-format-example" id="time_format_example">
+                                    مثال: <span>14:30</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="use_hijri_dates">استخدام التقويم الهجري</label>
+                                <select class="form-control" id="use_hijri_dates" name="use_hijri_dates">
+                                    <option value="no" {% if settings.use_hijri_dates == 'no' %}selected{% endif %}>لا</option>
+                                    <option value="yes" {% if settings.use_hijri_dates == 'yes' %}selected{% endif %}>نعم</option>
+                                    <option value="both" {% if settings.use_hijri_dates == 'both' %}selected{% endif %}>عرض كلا التاريخين (هجري وميلادي)</option>
+                                </select>
+                                <small class="form-text text-muted">استخدام التاريخ الهجري بدلاً من التاريخ الميلادي أو عرض كليهما في النظام</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="date_separator">فاصل التاريخ</label>
+                                <select class="form-control" id="date_separator" name="date_separator">
+                                    <option value="/" {% if settings.date_separator == '/' %}selected{% endif %}>/</option>
+                                    <option value="-" {% if settings.date_separator == '-' %}selected{% endif %}>-</option>
+                                    <option value="." {% if settings.date_separator == '.' %}selected{% endif %}>.</option>
+                                </select>
+                                <small class="form-text text-muted">الفاصل المستخدم بين أجزاء التاريخ</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="first_day_of_week">أول يوم في الأسبوع</label>
+                                <select class="form-control" id="first_day_of_week" name="first_day_of_week">
+                                    <option value="0" {% if settings.first_day_of_week == '0' %}selected{% endif %}>الأحد</option>
+                                    <option value="1" {% if settings.first_day_of_week == '1' %}selected{% endif %}>الاثنين</option>
+                                    <option value="6" {% if settings.first_day_of_week == '6' %}selected{% endif %}>السبت</option>
+                                </select>
+                                <small class="form-text text-muted">أول يوم يظهر في التقويم وتقويمات اختيار التاريخ</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- إعدادات الإشعارات والتنبيهات -->
+                <div class="settings-section">
+                    <h3><i class="fas fa-bell ml-2"></i>الإشعارات والتنبيهات</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="enable_notifications">تفعيل الإشعارات</label>
+                                <select class="form-control" id="enable_notifications" name="enable_notifications">
+                                    <option value="true" {% if settings.enable_notifications == 'true' %}selected{% endif %}>نعم</option>
+                                    <option value="false" {% if settings.enable_notifications == 'false' %}selected{% endif %}>لا</option>
+                                </select>
+                                <small class="form-text text-muted">تفعيل أو تعطيل الإشعارات العامة في النظام</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="notification_position">موضع الإشعارات</label>
+                                <select class="form-control" id="notification_position" name="notification_position">
+                                    <option value="top-right" {% if settings.notification_position == 'top-right' %}selected{% endif %}>أعلى اليمين</option>
+                                    <option value="top-left" {% if settings.notification_position == 'top-left' %}selected{% endif %}>أعلى اليسار</option>
+                                    <option value="bottom-right" {% if settings.notification_position == 'bottom-right' %}selected{% endif %}>أسفل اليمين</option>
+                                    <option value="bottom-left" {% if settings.notification_position == 'bottom-left' %}selected{% endif %}>أسفل اليسار</option>
+                                    <option value="top-center" {% if settings.notification_position == 'top-center' %}selected{% endif %}>أعلى المنتصف</option>
+                                    <option value="bottom-center" {% if settings.notification_position == 'bottom-center' %}selected{% endif %}>أسفل المنتصف</option>
+                                </select>
+                                <small class="form-text text-muted">موضع ظهور الإشعارات في النظام</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="notification_duration">مدة ظهور الإشعارات (بالثواني)</label>
+                                <input type="number" class="form-control" id="notification_duration" name="notification_duration" 
+                                    value="{{ settings.notification_duration }}" min="1" max="20" step="1">
+                                <small class="form-text text-muted">مدة ظهور الإشعارات قبل اختفائها تلقائياً</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="sound_notifications">تنبيهات صوتية</label>
+                                <select class="form-control" id="sound_notifications" name="sound_notifications">
+                                    <option value="true" {% if settings.sound_notifications == 'true' %}selected{% endif %}>مفعلة</option>
+                                    <option value="false" {% if settings.sound_notifications == 'false' %}selected{% endif %}>معطلة</option>
+                                </select>
+                                <small class="form-text text-muted">تفعيل أو تعطيل التنبيهات الصوتية عند ظهور الإشعارات</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mt-3">
+                        <label>أنواع الإشعارات المفعلة</label>
+                        <div class="custom-control custom-checkbox mb-2">
+                            <input type="checkbox" class="custom-control-input" id="notify_new_bookings" name="notify_new_bookings" 
+                                {% if settings.notify_new_bookings == 'true' %}checked{% endif %}>
+                            <label class="custom-control-label" for="notify_new_bookings">الحجوزات الجديدة</label>
+                        </div>
+                        <div class="custom-control custom-checkbox mb-2">
+                            <input type="checkbox" class="custom-control-input" id="notify_payment_received" name="notify_payment_received" 
+                                {% if settings.notify_payment_received == 'true' %}checked{% endif %}>
+                            <label class="custom-control-label" for="notify_payment_received">استلام المدفوعات</label>
+                        </div>
+                        <div class="custom-control custom-checkbox mb-2">
+                            <input type="checkbox" class="custom-control-input" id="notify_booking_cancellation" name="notify_booking_cancellation" 
+                                {% if settings.notify_booking_cancellation == 'true' %}checked{% endif %}>
+                            <label class="custom-control-label" for="notify_booking_cancellation">إلغاء الحجوزات</label>
+                        </div>
+                        <div class="custom-control custom-checkbox mb-2">
+                            <input type="checkbox" class="custom-control-input" id="notify_system_updates" name="notify_system_updates" 
+                                {% if settings.notify_system_updates == 'true' %}checked{% endif %}>
+                            <label class="custom-control-label" for="notify_system_updates">تحديثات النظام</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- إعدادات التواصل والرسائل -->
+                <div class="settings-section">
+                    <h3><i class="fas fa-envelope ml-2"></i>الرسائل والتواصل</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="sms_service_enabled">تفعيل خدمة الرسائل القصيرة</label>
+                                <select class="form-control" id="sms_service_enabled" name="sms_service_enabled">
+                                    <option value="true" {% if settings.sms_service_enabled == 'true' %}selected{% endif %}>مفعلة</option>
+                                    <option value="false" {% if settings.sms_service_enabled == 'false' %}selected{% endif %}>معطلة</option>
+                                </select>
+                                <small class="form-text text-muted">تفعيل أو تعطيل إرسال الرسائل القصيرة للعملاء</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="email_notifications_enabled">تفعيل إشعارات البريد الإلكتروني</label>
+                                <select class="form-control" id="email_notifications_enabled" name="email_notifications_enabled">
+                                    <option value="true" {% if settings.email_notifications_enabled == 'true' %}selected{% endif %}>مفعلة</option>
+                                    <option value="false" {% if settings.email_notifications_enabled == 'false' %}selected{% endif %}>معطلة</option>
+                                </select>
+                                <small class="form-text text-muted">تفعيل أو تعطيل إرسال إشعارات البريد الإلكتروني للعملاء</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="company_email">البريد الإلكتروني للشركة</label>
+                                <input type="email" class="form-control" id="company_email" name="company_email" 
+                                    value="{{ settings.company_email }}" placeholder="أدخل البريد الإلكتروني للشركة">
+                                <small class="form-text text-muted">البريد الإلكتروني الرسمي للشركة المستخدم في المراسلات</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="company_phone">رقم هاتف الشركة</label>
+                                <input type="text" class="form-control" id="company_phone" name="company_phone" 
+                                    value="{{ settings.company_phone }}" placeholder="أدخل رقم هاتف الشركة">
+                                <small class="form-text text-muted">رقم الهاتف الرسمي للشركة المستخدم في المراسلات</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="email_signature">توقيع البريد الإلكتروني</label>
+                                <textarea class="form-control" id="email_signature" name="email_signature" rows="4">{{ settings.email_signature }}</textarea>
+                                <small class="form-text text-muted">توقيع البريد الإلكتروني الذي سيظهر في جميع الرسائل المرسلة للعملاء</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- إعدادات الطباعة والتقارير -->
+                <div class="settings-section">
+                    <h3><i class="fas fa-print ml-2"></i>الطباعة والتقارير</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="paper_size">حجم الورق الافتراضي</label>
+                                <select class="form-control" id="paper_size" name="paper_size">
+                                    <option value="A4" {% if settings.paper_size == 'A4' %}selected{% endif %}>A4</option>
+                                    <option value="A5" {% if settings.paper_size == 'A5' %}selected{% endif %}>A5</option>
+                                    <option value="Letter" {% if settings.paper_size == 'Letter' %}selected{% endif %}>Letter</option>
+                                    <option value="Thermal" {% if settings.paper_size == 'Thermal' %}selected{% endif %}>ورق حراري (80مم)</option>
+                                </select>
+                                <small class="form-text text-muted">حجم الورق الافتراضي للطباعة والتقارير</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="print_layout">تخطيط الطباعة</label>
+                                <select class="form-control" id="print_layout" name="print_layout">
+                                    <option value="portrait" {% if settings.print_layout == 'portrait' %}selected{% endif %}>عمودي (Portrait)</option>
+                                    <option value="landscape" {% if settings.print_layout == 'landscape' %}selected{% endif %}>أفقي (Landscape)</option>
+                                </select>
+                                <small class="form-text text-muted">الاتجاه الافتراضي لتخطيط طباعة التقارير</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="show_logo_in_reports">عرض الشعار في التقارير</label>
+                                <select class="form-control" id="show_logo_in_reports" name="show_logo_in_reports">
+                                    <option value="true" {% if settings.show_logo_in_reports == 'true' %}selected{% endif %}>نعم</option>
+                                    <option value="false" {% if settings.show_logo_in_reports == 'false' %}selected{% endif %}>لا</option>
+                                </select>
+                                <small class="form-text text-muted">عرض شعار النظام في التقارير والإيصالات</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="print_footer">نص تذييل الطباعة</label>
+                                <input type="text" class="form-control" id="print_footer" name="print_footer" 
+                                    value="{{ settings.print_footer }}" placeholder="أدخل نص تذييل الطباعة">
+                                <small class="form-text text-muted">النص الذي سيظهر في تذييل كل صفحة مطبوعة</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="receipt_notes">ملاحظات الإيصال</label>
+                                <textarea class="form-control" id="receipt_notes" name="receipt_notes" rows="3">{{ settings.receipt_notes }}</textarea>
+                                <small class="form-text text-muted">ملاحظات تظهر في نهاية إيصالات الحجز والدفع</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- أزرار الإجراءات -->
                 <div class="form-group text-center">
                     <button type="submit" class="btn btn-primary">
@@ -944,6 +1226,96 @@ $(document).ready(function() {
 
     // تهيئة المعاينة الأولية
     updateLayoutPreview();
+
+    // تحديث مثال تنسيق التاريخ والوقت
+    function updateDateTimeFormats() {
+        const dateFormat = $('#date_format').val();
+        const timeFormat = $('#time_format').val();
+        const dateSeparator = $('#date_separator').val() || '/';
+        
+        // تحديد القيمة الافتراضية لتنسيق التاريخ
+        let dateFormatExample = dateFormat.replace(/\//g, dateSeparator);
+        
+        // حساب تاريخ المثال
+        let now = new Date();
+        let day = now.getDate().toString().padStart(2, '0');
+        let month = (now.getMonth() + 1).toString().padStart(2, '0');
+        let year = now.getFullYear();
+        
+        // إنشاء المثال حسب التنسيق المحدد
+        let dateExample = dateFormatExample;
+        dateExample = dateExample.replace('DD', day);
+        dateExample = dateExample.replace('MM', month);
+        dateExample = dateExample.replace('YYYY', year);
+        
+        // تحديث مثال تنسيق التاريخ
+        $('#date_format_example span').text(dateExample);
+        
+        // حساب الوقت للمثال
+        let hours24 = now.getHours();
+        let hours12 = hours24 % 12 || 12;
+        let minutes = now.getMinutes().toString().padStart(2, '0');
+        let ampm = hours24 >= 12 ? 'م' : 'ص';
+        
+        // إنشاء مثال الوقت حسب التنسيق المحدد
+        let timeExample = timeFormat === 'HH:mm' ? 
+            `${hours24.toString().padStart(2, '0')}:${minutes}` : 
+            `${hours12.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+        
+        // تحديث مثال تنسيق الوقت
+        $('#time_format_example span').text(timeExample);
+    }
+    
+    // توصيل تحديث الأمثلة بالحقول المتعلقة
+    $('#date_format, #date_separator').on('change', updateDateTimeFormats);
+    $('#time_format').on('change', updateDateTimeFormats);
+    
+    // تحديث الأمثلة مبدئياً
+    updateDateTimeFormats();
+    
+    // تفعيل الإشعارات
+    $('#enable_notifications').on('change', function() {
+        const enabled = $(this).val() === 'true';
+        if (enabled) {
+            $('#notification_position, #notification_duration, #sound_notifications').closest('.form-group').slideDown();
+            $('.custom-control.custom-checkbox').closest('.form-group').slideDown();
+        } else {
+            $('#notification_position, #notification_duration, #sound_notifications').closest('.form-group').slideUp();
+            $('.custom-control.custom-checkbox').closest('.form-group').slideUp();
+        }
+    }).trigger('change');
+    
+    // تفعيل حقول الرسائل والتواصل
+    $('#sms_service_enabled, #email_notifications_enabled').on('change', function() {
+        const smsEnabled = $('#sms_service_enabled').val() === 'true';
+        const emailEnabled = $('#email_notifications_enabled').val() === 'true';
+        
+        if (!smsEnabled && !emailEnabled) {
+            $('#company_phone, #company_email, #email_signature').closest('.form-group').slideUp();
+        } else {
+            $('#company_phone, #company_email, #email_signature').closest('.form-group').slideDown();
+        }
+    }).trigger('change');
+    
+    // تفعيل التقويم الهجري
+    $('#use_hijri_dates').on('change', function() {
+        // هنا يمكن إضافة أي تغييرات مطلوبة عند تغيير إعدادات التقويم الهجري
+        const useHijri = $(this).val();
+        // على سبيل المثال، إظهار إشعار للمستخدم
+        if (useHijri === 'both') {
+            $('<div class="alert alert-info mt-2">سيتم عرض التاريخين الهجري والميلادي معًا في جميع أنحاء النظام.</div>')
+                .insertAfter($(this).closest('.form-group'))
+                .fadeIn()
+                .delay(3000)
+                .fadeOut(function() { $(this).remove(); });
+        }
+    });
+    
+    // إضافة تأثيرات تفاعلية للأقسام
+    $('.settings-section h3').on('click', function() {
+        $(this).closest('.settings-section').find('.row, .form-group').not(this).slideToggle();
+        $(this).find('i').toggleClass('fa-rotate-90');
+    });
 });
 </script>
 {% endblock %}

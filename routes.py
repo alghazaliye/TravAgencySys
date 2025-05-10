@@ -507,6 +507,72 @@ def system_settings():
         'system_slogan': {
             'description': 'شعار أو وصف قصير للنظام'
         },
+        'date_format': {
+            'description': 'تنسيق عرض التاريخ في جميع أنحاء النظام'
+        },
+        'time_format': {
+            'description': 'تنسيق عرض الوقت في جميع أنحاء النظام'
+        },
+        'date_separator': {
+            'description': 'الفاصل المستخدم بين أجزاء التاريخ'
+        },
+        'use_hijri_dates': {
+            'description': 'استخدام التقويم الهجري في النظام'
+        },
+        'first_day_of_week': {
+            'description': 'تحديد أول يوم في الأسبوع'
+        },
+        'enable_notifications': {
+            'description': 'تفعيل الإشعارات في النظام'
+        },
+        'notification_position': {
+            'description': 'موضع ظهور الإشعارات في الشاشة'
+        },
+        'notification_duration': {
+            'description': 'مدة ظهور الإشعارات (بالثواني)'
+        },
+        'sound_notifications': {
+            'description': 'تفعيل التنبيهات الصوتية مع الإشعارات'
+        },
+        'notify_new_bookings': {
+            'description': 'تنبيه عند إنشاء حجز جديد'
+        },
+        'notify_payment_received': {
+            'description': 'تنبيه عند استلام مدفوعات'
+        },
+        'notify_booking_cancellation': {
+            'description': 'تنبيه عند إلغاء حجز'
+        },
+        'sms_service_enabled': {
+            'description': 'تفعيل خدمة إرسال الرسائل القصيرة'
+        },
+        'email_notifications_enabled': {
+            'description': 'تفعيل إرسال إشعارات البريد الإلكتروني'
+        },
+        'company_email': {
+            'description': 'البريد الإلكتروني الرسمي للشركة'
+        },
+        'company_phone': {
+            'description': 'رقم هاتف الشركة للتواصل'
+        },
+        'email_signature': {
+            'description': 'توقيع البريد الإلكتروني للشركة'
+        },
+        'paper_size': {
+            'description': 'حجم الورق الافتراضي للطباعة'
+        },
+        'print_layout': {
+            'description': 'اتجاه الطباعة الافتراضي (عمودي أو أفقي)'
+        },
+        'show_logo_in_reports': {
+            'description': 'عرض شعار النظام في التقارير المطبوعة'
+        },
+        'print_footer': {
+            'description': 'نص يظهر في تذييل الصفحات المطبوعة'
+        },
+        'receipt_notes': {
+            'description': 'ملاحظات تظهر في نهاية إيصالات الحجز والدفع'
+        },
         'company_name': {
             'description': 'اسم الشركة أو المؤسسة'
         },
