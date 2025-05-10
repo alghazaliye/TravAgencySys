@@ -128,7 +128,7 @@
                         <tr>
                             <th>الرقم</th>
                             <th>العلم</th>
-                            <th>اسم الدولة (عربي)</th>
+                            <th>اسم الدولة</th>
                             <th>رمز الهاتف</th>
                             <th>القارة</th>
                             <th>العملة</th>
@@ -308,21 +308,12 @@
             <div class="modal-body">
                 <form id="countryForm">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group">
-                                <label for="countryNameAr">اسم الدولة (عربي) <span class="text-danger">*</span></label>
+                                <label for="countryNameAr">اسم الدولة <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="countryNameAr" placeholder="أدخل اسم الدولة باللغة العربية" required>
                                 <div class="invalid-feedback">
                                     يرجى إدخال اسم الدولة باللغة العربية
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="countryNameEn">اسم الدولة (إنجليزي) <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="countryNameEn" placeholder="أدخل اسم الدولة باللغة الإنجليزية" required>
-                                <div class="invalid-feedback">
-                                    يرجى إدخال اسم الدولة باللغة الإنجليزية
                                 </div>
                             </div>
                         </div>
@@ -330,19 +321,10 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="countryCode">رمز الدولة (ISO) <span class="text-danger">*</span></label>
+                                <label for="countryCode">رمز الدولة <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="countryCode" placeholder="مثال: SA" required maxlength="2">
                                 <small class="form-text text-muted">
-                                    رمز ISO ثنائي الحروف (حرفين)
-                                </small>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="countryIso3">رمز ISO-3</label>
-                                <input type="text" class="form-control" id="countryIso3" placeholder="مثال: SAU" maxlength="3">
-                                <small class="form-text text-muted">
-                                    رمز ISO ثلاثي الحروف (3 أحرف)
+                                    رمز ثنائي الحروف (حرفين)
                                 </small>
                             </div>
                         </div>
@@ -476,35 +458,20 @@
                 <!-- نفس حقول النموذج السابق مع تعبئة البيانات الحالية -->
                 <form id="editCountryForm">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group">
-                                <label for="editCountryNameAr">اسم الدولة (عربي) <span class="text-danger">*</span></label>
+                                <label for="editCountryNameAr">اسم الدولة <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="editCountryNameAr" value="المملكة العربية السعودية" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editCountryNameEn">اسم الدولة (إنجليزي) <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="editCountryNameEn" value="Saudi Arabia" required>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="editCountryCode">رمز الدولة (ISO) <span class="text-danger">*</span></label>
+                                <label for="editCountryCode">رمز الدولة <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="editCountryCode" value="SA" required maxlength="2">
                                 <small class="form-text text-muted">
-                                    رمز ISO ثنائي الحروف (حرفين)
-                                </small>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="editCountryIso3">رمز ISO-3</label>
-                                <input type="text" class="form-control" id="editCountryIso3" value="SAU" maxlength="3">
-                                <small class="form-text text-muted">
-                                    رمز ISO ثلاثي الحروف (3 أحرف)
+                                    رمز ثنائي الحروف (حرفين)
                                 </small>
                             </div>
                         </div>
@@ -660,20 +627,12 @@
                                             <table class="table">
                                                 <tbody>
                                                     <tr>
-                                                        <th style="width:50%">اسم الدولة (عربي):</th>
+                                                        <th style="width:50%">اسم الدولة:</th>
                                                         <td>المملكة العربية السعودية</td>
                                                     </tr>
                                                     <tr>
-                                                        <th>اسم الدولة (إنجليزي):</th>
-                                                        <td>Saudi Arabia</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>رمز الدولة (ISO):</th>
+                                                        <th>رمز الدولة:</th>
                                                         <td>SA</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>رمز الدولة (ISO-3):</th>
-                                                        <td>SAU</td>
                                                     </tr>
                                                     <tr>
                                                         <th>القارة:</th>
