@@ -10,7 +10,56 @@ document.addEventListener('DOMContentLoaded', function() {
     // تعريف متغير للتحكم في حالة القائمة
     let isProcessing = false;
     
-    // إضافة مستمع للنقر المباشر على الزر الرئيسي
+    // إنشاء زر قائمة كبير وواضح تمامًا
+    const bigVisibleButton = document.createElement('button');
+    bigVisibleButton.id = 'mainMenuToggleBtn';
+    bigVisibleButton.innerHTML = '<i class="fas fa-bars fa-2x"></i>';
+    bigVisibleButton.style.position = 'fixed';
+    bigVisibleButton.style.top = '10px';
+    bigVisibleButton.style.right = '20px';
+    bigVisibleButton.style.zIndex = '9999';
+    bigVisibleButton.style.width = '60px';
+    bigVisibleButton.style.height = '60px';
+    bigVisibleButton.style.borderRadius = '10px';
+    bigVisibleButton.style.backgroundColor = '#d86a1a'; // لون برتقالي مميز
+    bigVisibleButton.style.color = 'white';
+    bigVisibleButton.style.border = '3px solid rgba(255, 255, 255, 0.5)';
+    bigVisibleButton.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
+    bigVisibleButton.style.cursor = 'pointer';
+    bigVisibleButton.style.display = 'flex';
+    bigVisibleButton.style.alignItems = 'center';
+    bigVisibleButton.style.justifyContent = 'center';
+    bigVisibleButton.style.padding = '0';
+    bigVisibleButton.style.transition = 'all 0.3s ease';
+    bigVisibleButton.title = 'فتح/إغلاق القائمة الجانبية';
+    
+    // تأثيرات تفاعلية للزر
+    bigVisibleButton.addEventListener('mouseenter', function() {
+        this.style.transform = 'scale(1.1)';
+        this.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.3)';
+    });
+    
+    bigVisibleButton.addEventListener('mouseleave', function() {
+        this.style.transform = 'scale(1)';
+        this.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
+    });
+    
+    bigVisibleButton.addEventListener('click', function(event) {
+        if (!isProcessing) {
+            // تأثير النقر
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+            
+            handleSidebarToggle(event);
+        }
+    });
+    
+    // إضافة الزر الجديد للصفحة
+    document.body.appendChild(bigVisibleButton);
+    
+    // إضافة مستمع للنقر المباشر على الزر الرئيسي الأصلي (إذا تم العثور عليه)
     const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
     if (sidebarToggleBtn) {
         console.log('تم العثور على زر القائمة #sidebarToggleBtn');
