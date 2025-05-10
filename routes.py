@@ -5,6 +5,8 @@ from models import User, Customer, TransportCompany, Country, City, BusRoute, Bu
 from models import BusSchedule, BusTrip, BusBooking, BookingPayment, SystemSettings
 from app import app, db
 import logging
+import uuid
+from datetime import datetime
 
 # الإعدادات الافتراضية للنظام
 DEFAULT_SETTINGS = {
@@ -669,3 +671,115 @@ def update_settings():
     except Exception as e:
         logging.error(f"Error updating settings: {str(e)}")
         return jsonify({'success': False, 'message': 'حدث خطأ أثناء تحديث الإعدادات'}), 500
+
+@app.route('/api/create-bus-booking', methods=['POST'])
+@login_required
+def create_bus_booking():
+    """إنشاء حجز باص جديد"""
+    try:
+        # الحصول على البيانات من النموذج
+        data = request.form
+        
+        # إنشاء رقم حجز فريد
+        booking_number = f"BUS-{datetime.now().strftime('%Y%m%d')}-{str(uuid.uuid4())[:8].upper()}"
+        
+        # تحويل التواريخ إلى كائنات datetime
+        travel_date = None
+        return_date = None
+        birth_date = None
+        
+        try:
+            if data.get('reservationDate'):
+                travel_date = datetime.strptime(data.get('reservationDate'), '%d/%m/%Y').date()
+            if data.get('returnDate'):
+                return_date = datetime.strptime(data.get('returnDate'), '%d/%m/%Y').date()
+            if data.get('birthDate'):
+                birth_date = datetime.strptime(data.get('birthDate'), '%d/%m/%Y').date()
+        except ValueError as e:
+            logging.error(f"Error parsing dates: {str(e)}")
+            return jsonify({
+                'success': False, 
+                'error': 'حدث خطأ في تنسيق التاريخ. يرجى استخدام تنسيق: يوم/شهر/سنة'
+            }), 400
+        
+        # تحويل القيم المالية
+        selling_price = 0
+        cost_price = 0
+        received_amount = 0
+        
+        try:
+            if data.get('sellPrice'):
+                selling_price = float(data.get('sellPrice'))
+            if data.get('purchasePrice'):
+                cost_price = float(data.get('purchasePrice'))
+            if data.get('receivedAmount'):
+                received_amount = float(data.get('receivedAmount'))
+        except ValueError:
+            logging.error("Error converting price values to float")
+            return jsonify({
+                'success': False, 
+                'error': 'القيم المالية يجب أن تكون أرقامًا فقط'
+            }), 400
+        
+        # حساب المبلغ المتبقي
+        remaining_amount = selling_price - received_amount
+        
+        # إنشاء كائن الحجز الجديد
+        new_booking = BusBooking(
+            booking_number=booking_number,
+            
+            # بيانات المسافر
+            passenger_name=data.get('passengerName', ''),
+            mobile_number=data.get('mobileNumber', ''),
+            id_number=data.get('idNumber', ''),
+            birth_date=birth_date,
+            gender=data.get('gender', ''),
+            
+            # بيانات الرحلة
+            trip_type=data.get('tripType', ''),
+            departure_city=data.get('departureCity', ''),
+            destination_city=data.get('destinationCity', ''),
+            service_provider=data.get('transportCompany', ''),
+            journey_type=data.get('tripType', ''),
+            travel_date=travel_date,
+            return_date=return_date,
+            
+            # بيانات المالية
+            transaction_date=datetime.now(),
+            currency=data.get('currency', 'SAR'),
+            selling_price=selling_price,
+            cost_price=cost_price,
+            payment_type=data.get('paymentType', ''),
+            account=data.get('account', ''),
+            received_amount=received_amount,
+            remaining_amount=remaining_amount,
+            statement=data.get('statement', ''),
+            
+            # بيانات إضافية
+            notes=data.get('notes', '')
+        )
+        
+        # حفظ الحجز في قاعدة البيانات
+        db.session.add(new_booking)
+        db.session.commit()
+        
+        # سجل الإضافة في السجل
+        logging.info(f"تم إنشاء حجز باص جديد برقم: {booking_number}")
+        
+        # إرجاع رد نجاح العملية
+        return jsonify({
+            'success': True, 
+            'message': 'تم إنشاء الحجز بنجاح',
+            'booking_number': booking_number
+        })
+        
+    except Exception as e:
+        # سجل الخطأ في السجل
+        logging.error(f"Error creating bus booking: {str(e)}")
+        db.session.rollback()
+        
+        # إرجاع رسالة خطأ
+        return jsonify({
+            'success': False, 
+            'error': 'حدث خطأ أثناء إنشاء الحجز. يرجى المحاولة مرة أخرى.'
+        }), 500
