@@ -78,12 +78,23 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         
+        if not username or not password:
+            flash('يرجى إدخال اسم المستخدم وكلمة المرور', 'danger')
+            settings = get_settings()
+            return render_template('login.html', settings=settings)
+        
         user = User.query.filter_by(username=username).first()
         
-        if user and password and check_password_hash(user.password_hash, password):
-            login_user(user)
-            next_page = request.args.get('next', url_for('index'))
-            return redirect(next_page)
+        if user and check_password_hash(user.password_hash, password):
+            login_user(user, remember=True)
+            # التحقق من وجود صفحة إعادة توجيه
+            next_page = request.args.get('next')
+            
+            # التحقق من أن الرابط التالي ليس خارجياً (أمان)
+            if next_page and not next_page.startswith('/'):
+                next_page = None
+                
+            return redirect(next_page or url_for('index'))
         else:
             flash('اسم المستخدم أو كلمة المرور غير صحيحة', 'danger')
     

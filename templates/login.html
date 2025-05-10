@@ -29,9 +29,21 @@
             <div class="card-body login-card-body">
                 <p class="login-box-msg">سجل دخولك لبدء الجلسة</p>
 
-                <form action="{{ url_for('index') }}" method="get" class="needs-validation" novalidate>
+                <form action="{{ url_for('login') }}" method="post" class="needs-validation" novalidate>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }} alert-dismissible fade show">
+                                    {{ message }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="اسم المستخدم" required>
+                        <input type="text" name="username" id="username" class="form-control" placeholder="اسم المستخدم" required>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
@@ -42,7 +54,7 @@
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="password" class="form-control" placeholder="كلمة المرور" required>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="كلمة المرور" required>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
