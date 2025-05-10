@@ -1502,9 +1502,13 @@ def bank_journal():
                            bank_map=bank_map,
                            cash_map=cash_map)
 
-@app.route('/countries-cities')
-def countries_cities():
-    return render_template('countries-cities.html')
+@app.route('/countries')
+def countries():
+    return render_template('countries.html')
+
+@app.route('/cities')
+def cities():
+    return render_template('cities.html')
 
 @app.route('/id-types')
 def id_types():
