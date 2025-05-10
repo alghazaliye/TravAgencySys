@@ -496,23 +496,45 @@ def system_settings():
     settings_list = SystemSettings.query.all()
     settings = get_settings()
     
-    # إعداد قاموس الأوصاف الافتراضي
+    # إعداد قاموس الأوصاف الافتراضي مع كافة الحقول المطلوبة
     setting_descriptions = {
         # معلومات النظام
         'system_name': {
             'description': 'اسم النظام الذي سيظهر في العنوان وجميع أنحاء التطبيق'
         },
+        'system_slogan': {
+            'description': 'شعار أو وصف قصير للنظام'
+        },
+        'company_name': {
+            'description': 'اسم الشركة أو المؤسسة'
+        },
+        'dashboard_title': {
+            'description': 'العنوان الذي سيظهر في لوحة التحكم الرئيسية'
+        },
+        
+        # الألوان والسمات
+        'primary_color': {
+            'description': 'اللون الرئيسي للنظام'
+        },
+        'secondary_color': {
+            'description': 'اللون الثانوي للنظام'
+        },
+        'text_primary_color': {
+            'description': 'لون النص الرئيسي'
+        },
+        'dark_primary_color': {
+            'description': 'اللون الرئيسي في الوضع الليلي'
+        },
         'dark_text_color': {
             'description': 'لون النص في الوضع الليلي'
         },
+        
+        # شريط التنقل
         'navbar_color': {
             'description': 'لون خلفية شريط التنقل'
         },
         'navbar_dark_color': {
             'description': 'لون خلفية شريط التنقل (الوضع الليلي)'
-        },
-        'system_slogan': {
-            'description': 'شعار أو وصف قصير للنظام'
         },
         'navbar_text_color': {
             'description': 'لون النص في شريط التنقل'
@@ -520,25 +542,28 @@ def system_settings():
         'navbar_dark_text_color': {
             'description': 'لون النص في شريط التنقل (الوضع الليلي)'
         },
+        'navbar_fixed': {
+            'description': 'تثبيت شريط التنقل أثناء التمرير'
+        },
+        'navbar_shadow': {
+            'description': 'إضافة ظل لشريط التنقل'
+        },
+        'navbar_transparent': {
+            'description': 'جعل شريط التنقل شفافًا'
+        },
+        
+        # القائمة الجانبية
         'sidebar_color': {
             'description': 'لون خلفية القائمة الجانبية'
         },
         'dark_sidebar_color': {
             'description': 'لون خلفية القائمة الجانبية (الوضع الليلي)'
         },
-        'dashboard_title': {
-            'description': 'العنوان الذي سيظهر في لوحة التحكم الرئيسية'
+        'sidebar_mini': {
+            'description': 'تمكين وضع القائمة الجانبية المصغرة'
         },
-        'primary_color': {
-            'description': 'اللون الرئيسي للنظام'
-        },
-        'secondary_color': {
-            'description': 'اللون الثانوي للنظام'
-        },
-        'dark_mode': {
-            'description': 'وضع العرض (ليلي/نهاري)',
-            'options': 'light,dark,auto'
-        },
+        
+        # الشعار والأيقونات
         'logo_icon': {
             'description': 'أيقونة الشعار (تظهر عندما لا يتم استخدام شعار مخصص)'
         },
@@ -547,6 +572,39 @@ def system_settings():
         },
         'use_custom_logo': {
             'description': 'استخدام شعار مخصص بدلاً من أيقونة'
+        },
+        
+        # إعدادات العرض
+        'dark_mode': {
+            'description': 'وضع العرض (ليلي/نهاري)',
+            'options': 'light,dark,auto'
+        },
+        'rtl_layout': {
+            'description': 'استخدام تخطيط من اليمين إلى اليسار (RTL)'
+        },
+        'enable_animations': {
+            'description': 'تمكين التأثيرات الحركية في الواجهة'
+        },
+        'font_family': {
+            'description': 'نوع الخط المستخدم في النظام'
+        },
+        'border_radius': {
+            'description': 'حجم انحناء الزوايا',
+            'options': 'none,small,medium,large'
+        },
+        'card_shadow': {
+            'description': 'حجم ظل البطاقات',
+            'options': 'none,small,medium,large'
+        },
+        'content_width': {
+            'description': 'عرض المحتوى',
+            'options': 'fluid,fixed'
+        },
+        'transitions': {
+            'description': 'تمكين الانتقالات السلسة بين العناصر'
+        },
+        'layout_boxed': {
+            'description': 'استخدام تخطيط محدود العرض'
         }
     }
     
