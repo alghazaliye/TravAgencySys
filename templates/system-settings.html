@@ -168,7 +168,8 @@
                             <div class="form-group">
                                 <label for="default_currency">العملة الافتراضية</label>
                                 <select class="form-control" id="default_currency" name="default_currency">
-                                    {% for option in setting_descriptions.default_currency.options.split(',') %}
+                                    {% set currency_options = 'SAR,USD,EUR,YER,AED,JOD,KWD,BHD,QAR,EGP,LBP' %}
+                                    {% for option in currency_options.split(',') %}
                                         <option value="{{ option }}" {% if settings.default_currency == option %}selected{% endif %}>
                                             {% if option == 'SAR' %}ريال سعودي (SAR)
                                             {% elif option == 'USD' %}دولار أمريكي (USD)
@@ -286,7 +287,8 @@
                     <div class="form-group">
                         <label for="dark_mode">وضع العرض (ليلي/نهاري)</label>
                         <select class="form-control" id="dark_mode" name="dark_mode">
-                            {% for option in setting_descriptions.dark_mode.options.split(',') %}
+                            {% set dark_mode_options = 'light,dark,auto' %}
+                            {% for option in dark_mode_options.split(',') %}
                                 <option value="{{ option }}" {% if settings.dark_mode == option %}selected{% endif %}>
                                     {% if option == 'light' %}نهاري
                                     {% elif option == 'dark' %}ليلي
@@ -422,7 +424,8 @@
                             <div class="form-group">
                                 <label for="content_width">عرض المحتوى</label>
                                 <select class="form-control" id="content_width" name="content_width">
-                                    {% for option in setting_descriptions.content_width.options.split(',') %}
+                                    {% set content_width_options = 'fluid,fixed' %}
+                                    {% for option in content_width_options.split(',') %}
                                         <option value="{{ option }}" {% if settings.content_width == option %}selected{% endif %}>
                                             {% if option == 'fluid' %}سلس (مرن)
                                             {% elif option == 'fixed' %}ثابت
@@ -437,7 +440,8 @@
                             <div class="form-group">
                                 <label for="border_radius">انحناء الحواف</label>
                                 <select class="form-control" id="border_radius" name="border_radius">
-                                    {% for option in setting_descriptions.border_radius.options.split(',') %}
+                                    {% set border_radius_options = 'none,small,medium,large' %}
+                                    {% for option in border_radius_options.split(',') %}
                                         <option value="{{ option }}" {% if settings.border_radius == option %}selected{% endif %}>
                                             {% if option == 'none' %}بدون انحناء
                                             {% elif option == 'small' %}انحناء صغير
@@ -457,7 +461,8 @@
                             <div class="form-group">
                                 <label for="card_shadow">ظل البطاقات</label>
                                 <select class="form-control" id="card_shadow" name="card_shadow">
-                                    {% for option in setting_descriptions.card_shadow.options.split(',') %}
+                                    {% set card_shadow_options = 'none,small,medium,large' %}
+                                    {% for option in card_shadow_options.split(',') %}
                                         <option value="{{ option }}" {% if settings.card_shadow == option %}selected{% endif %}>
                                             {% if option == 'none' %}بدون ظل
                                             {% elif option == 'small' %}ظل خفيف
