@@ -267,14 +267,14 @@
                                 </div>
                             {% endfor %}
                         </div>
-                        <small class="form-text text-muted">{% if setting_descriptions.get('logo_icon') %}{{ setting_descriptions.logo_icon.description }}{% else %}أيقونة الشعار (تظهر عندما لا يتم استخدام شعار مخصص){% endif %}</small>
+                        <small class="form-text text-muted">أيقونة الشعار (تظهر عندما لا يتم استخدام شعار مخصص)</small>
                     </div>
                     
                     <div id="custom_logo_container" class="form-group" {% if settings.use_custom_logo != 'true' %}style="display: none;"{% endif %}>
                         <label for="custom_logo_url">رابط الشعار المخصص</label>
                         <input type="text" class="form-control" id="custom_logo_url" name="custom_logo_url" 
                             value="{{ settings.custom_logo_url }}" placeholder="أدخل رابط الشعار المخصص">
-                        <small class="form-text text-muted">{% if setting_descriptions.get('custom_logo_url') %}{{ setting_descriptions.custom_logo_url.description }}{% else %}رابط الشعار المخصص (إذا كنت تستخدم شعار مخصص){% endif %}</small>
+                        <small class="form-text text-muted">رابط الشعار المخصص (إذا كنت تستخدم شعار مخصص)</small>
                         <!-- معاينة الشعار المخصص -->
                         {% if settings.custom_logo_url %}
                         <div class="text-center mt-2">
