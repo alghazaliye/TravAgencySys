@@ -545,7 +545,8 @@
                             <div class="form-group">
                                 <label for="date_format">صيغة عرض التاريخ</label>
                                 <select class="form-control" id="date_format" name="date_format">
-                                    {% for option in setting_descriptions.date_format.options.split(',') %}
+                                    {% set date_format_options = 'DD/MM/YYYY,YYYY-MM-DD,MM/DD/YYYY,DD-MM-YYYY' %}
+                                    {% for option in date_format_options.split(',') %}
                                         <option value="{{ option }}" {% if settings.date_format == option %}selected{% endif %}>
                                             {{ option }}
                                         </option>
