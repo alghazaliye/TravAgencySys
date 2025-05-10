@@ -802,7 +802,7 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="{{ url_for('dashboard') }}" class="brand-link">
+            <a href="{{ url_for('index') }}" class="brand-link">
                 {% if settings.use_custom_logo == 'true' and settings.custom_logo_url %}
                     <img src="{{ settings.custom_logo_url }}" alt="{{ settings.system_name|default('وكالة السفر المتميزة') }}" class="brand-image elevation-2 ml-2" style="max-height: 36px; opacity: 0.9;">
                 {% else %}
@@ -818,7 +818,7 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent nav-compact" data-widget="treeview" role="menu" data-accordion="false">
                         <li class="nav-item">
-                            <a href="{{ url_for('dashboard') }}" class="nav-link">
+                            <a href="{{ url_for('index') }}" class="nav-link">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>لوحة التحكم</p>
                             </a>
@@ -1030,7 +1030,7 @@
                         </div><!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-left">
-                                <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">الرئيسية</a></li>
+                                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">الرئيسية</a></li>
                                 {% block breadcrumb %}{% endblock %}
                             </ol>
                         </div><!-- /.col -->

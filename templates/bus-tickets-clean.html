@@ -35,7 +35,7 @@
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-left">
-                    <li class="breadcrumb-item"><a href="/dashboard">الرئيسية</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for("index") }}">الرئيسية</a></li>
                     <li class="breadcrumb-item">خدمات النقل</li>
                     {% if show_booking_form %}
                     <li class="breadcrumb-item"><a href="{{ url_for('bus_tickets') }}">حجز تذاكر الباص</a></li>
