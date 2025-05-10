@@ -374,7 +374,9 @@ def system_settings():
     settings = get_settings()
     
     # إضافة وصف الإعدادات
+    # بيانات إعدادات النظام
     setting_descriptions = {
+        # معلومات النظام
         'system_name': {
             'description': 'اسم النظام الذي سيظهر في العنوان وجميع أنحاء التطبيق'
         },
@@ -402,6 +404,8 @@ def system_settings():
         'dashboard_title': {
             'description': 'العنوان الذي سيظهر في لوحة التحكم الرئيسية'
         },
+        
+        # الإعدادات المالية
         'default_currency': {
             'description': 'العملة الافتراضية للمعاملات المالية',
             'options': 'SAR,USD,EUR,YER,AED,JOD,KWD,BHD,QAR,EGP,LBP'
@@ -419,11 +423,22 @@ def system_settings():
         'umrah_fee': {
             'description': 'رسوم العمرة الافتراضية'
         },
+        
+        # إعدادات العرض والصفحات
         'system_footer': {
             'description': 'نص التذييل الذي سيظهر في أسفل جميع الصفحات'
         },
         'receipt_note': {
             'description': 'ملاحظات تظهر في جميع الإيصالات'
+        },
+        
+        # الشعارات والرموز
+        'use_custom_logo': {
+            'description': 'استخدام شعار مخصص بدلاً من أيقونة',
+            'options': 'true,false'
+        },
+        'logo_icon': {
+            'description': 'أيقونة الشعار (تظهر عندما لا يتم استخدام شعار مخصص)'
         },
         'logo_url': {
             'description': 'رابط شعار الشركة (يفضل استخدام صورة بحجم 200×60 بكسل)'
@@ -431,6 +446,8 @@ def system_settings():
         'favicon_url': {
             'description': 'رابط أيقونة الموقع (الأيقونة المفضلة)'
         },
+        
+        # الألوان والمظهر
         'theme_color': {
             'description': 'اللون الرئيسي للموقع',
             'options': 'primary,info,success,warning,danger,dark'
@@ -450,6 +467,8 @@ def system_settings():
         'text_color': {
             'description': 'لون النص الافتراضي في النظام'
         },
+        
+        # خيارات العرض والتخصيص
         'sidebar_collapsed': {
             'description': 'هل الشريط الجانبي مطوي افتراضياً',
             'options': 'true,false'
@@ -461,13 +480,61 @@ def system_settings():
         'enable_dark_mode': {
             'description': 'تمكين الوضع الداكن افتراضياً',
             'options': 'true,false'
+        },
+        
+        # إعدادات أخرى
+        'privacy_policy': {
+            'description': 'نص سياسة الخصوصية'
+        },
+        'terms_conditions': {
+            'description': 'نص الشروط والأحكام'
+        },
+        'contact_info': {
+            'description': 'معلومات الاتصال الإضافية'
+        },
+        'social_media': {
+            'description': 'روابط لمنصات التواصل الاجتماعي (مفصولة بفاصلة)'
+        },
+        'google_analytics': {
+            'description': 'كود تتبع Google Analytics (إذا كان متاحًا)'
+        },
+        'custom_css': {
+            'description': 'أنماط CSS مخصصة لتخصيص مظهر النظام'
+        },
+        'custom_js': {
+            'description': 'سكريبت JavaScript مخصص (يضاف في نهاية الصفحة)'
         }
     }
+    
+    # إضافة قائمة الأيقونات للشعار
+    icon_options = [
+        'fas fa-plane',
+        'fas fa-car',
+        'fas fa-bus',
+        'fas fa-ship',
+        'fas fa-train',
+        'fas fa-globe',
+        'fas fa-map-marker-alt',
+        'fas fa-suitcase',
+        'fas fa-passport',
+        'fas fa-ticket-alt',
+        'fas fa-hotel',
+        'fas fa-umbrella-beach',
+        'fas fa-mountain',
+        'fas fa-mosque',
+        'fas fa-kaaba',
+        'fas fa-route',
+        'fas fa-compass',
+        'fas fa-calendar-alt',
+        'fas fa-user-friends',
+        'fas fa-building'
+    ]
     
     return render_template('system-settings.html', 
                           settings_list=settings_list, 
                           settings=settings, 
-                          setting_descriptions=setting_descriptions)
+                          setting_descriptions=setting_descriptions,
+                          icon_options=icon_options)
 
 @app.route('/api/system-settings', methods=['POST'])
 @login_required
