@@ -79,6 +79,9 @@
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-add-city">
                     <i class="fas fa-plus ml-1"></i> إضافة مدينة جديدة
                 </button>
+                <button type="button" class="btn btn-secondary" id="clear-filter">
+                    <i class="fas fa-filter ml-1"></i> عرض جميع المدن
+                </button>
             </div>
         </div>
 
@@ -374,6 +377,22 @@ $(function() {
         } else {
             // إعادة تعيين التصفية
             citiesTable.column(4).search('').draw();
+        }
+    });
+    
+    // إزالة المرشح وعرض جميع المدن
+    $('#clear-filter').on('click', function() {
+        $('#country-filter').val('').trigger('change');
+    });
+    
+    // التعامل مع المرشح المستلم من خلال query string
+    $(document).ready(function() {
+        // استخراج معرف الدولة من عنوان URL إن وجد
+        var urlParams = new URLSearchParams(window.location.search);
+        var countryFilter = urlParams.get('country');
+        
+        if (countryFilter) {
+            $('#country-filter').val(countryFilter).trigger('change');
         }
     });
     
