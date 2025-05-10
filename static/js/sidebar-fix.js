@@ -329,12 +329,30 @@ function restoreMenuState() {
 /**
  * إصلاح مشكلة الأيقونات في القائمة الجانبية - حل مشكلة "القلب"
  * النسخة المحسنة مع أيقونات أكبر وأكثر وضوحًا
+ * تم تحديثها لمنع تكرار الأيقونات
  */
 function fixSidebarIcons() {
     // معالجة جميع روابط القائمة الجانبية
     const navLinks = document.querySelectorAll('.nav-sidebar .nav-link');
     
     navLinks.forEach(link => {
+        // التحقق من علامة إذا تم إصلاح هذا العنصر مسبقًا
+        if (link.hasAttribute('data-icon-fixed')) {
+            return; // تخطي هذا العنصر لتجنب التكرار
+        }
+        
+        // وضع علامة على العنصر كمُصلح
+        link.setAttribute('data-icon-fixed', 'true');
+        
+        // إزالة أي أيقونات زائدة (نحتفظ فقط بالأولى)
+        const icons = link.querySelectorAll('i.nav-icon, i.fas, i.far, i.fa');
+        if (icons.length > 1) {
+            // الاحتفاظ فقط بالأيقونة الأولى وإزالة البقية
+            for (let i = 1; i < icons.length; i++) {
+                icons[i].remove();
+            }
+        }
+        
         const iconElement = link.querySelector('i.nav-icon, i.fas, i.far, i.fa');
         const textElement = link.querySelector('p');
         
@@ -352,27 +370,20 @@ function fixSidebarIcons() {
             iconElement.style.fontSize = '1.2rem'; // حجم أكبر للأيقونة
             iconElement.style.color = 'inherit';
             
-            // التأكد من وجود محتوى داخل الأيقونة
+            // تطبيق الأنماط دون إضافة محتوى جديد
             if (iconElement.classList.contains('fa') || 
                 iconElement.classList.contains('fas') || 
                 iconElement.classList.contains('far') || 
                 iconElement.classList.contains('fab')) {
                 
-                // تحسين عرض أيقونات Font Awesome
-                if (!iconElement.getAttribute('data-fixed')) {
-                    iconElement.setAttribute('data-fixed', 'true');
-                    
-                    // استنساخ الأيقونة واستبدالها لإعادة تهيئتها
-                    const parent = iconElement.parentNode;
-                    const newIcon = iconElement.cloneNode(true);
-                    parent.replaceChild(newIcon, iconElement);
-                }
+                // لا نضيف أيقونات جديدة، فقط نعدل الأنماط
+                
             } else if (iconElement.innerHTML === '' || !iconElement.innerHTML.trim()) {
-                // إضافة محتوى واضح للأيقونة إذا كانت فارغة
-                iconElement.innerHTML = '<i class="fas fa-circle"></i>';
+                // في حالة وجود أيقونة فارغة فقط نضيف محتوى لها
+                iconElement.innerHTML = '&#xf111;'; // رمز دائرة بسيط
             }
-        } else if (textElement) {
-            // إنشاء عنصر أيقونة جديد بتصميم محسن إذا لم يكن موجودًا
+        } else if (textElement && !link.querySelector('i')) { // نتأكد من عدم وجود أي أيقونة قبل إضافة واحدة
+            // إنشاء عنصر أيقونة جديد فقط إذا لم يكن هناك أي أيقونة
             const newIcon = document.createElement('i');
             
             // اختيار الأيقونة المناسبة بناءً على نص العنصر
@@ -411,8 +422,9 @@ function fixSidebarIcons() {
             link.insertBefore(newIcon, textElement);
         }
         
-        // تحسين ظهور النص
-        if (textElement) {
+        // تحسين ظهور النص (فقط مرة واحدة)
+        if (textElement && !textElement.hasAttribute('data-style-fixed')) {
+            textElement.setAttribute('data-style-fixed', 'true');
             textElement.style.display = 'inline-block';
             textElement.style.margin = '0';
             textElement.style.marginRight = '0.5rem';
@@ -424,31 +436,35 @@ function fixSidebarIcons() {
             textElement.style.textOverflow = 'ellipsis';
         }
         
-        // تحسين مظهر الرابط نفسه
-        link.style.display = 'flex';
-        link.style.alignItems = 'center';
-        link.style.padding = '0.8rem 1rem';
-        link.style.borderRadius = '6px';
-        link.style.transition = 'all 0.2s ease-in-out';
-        
-        // تطبيق تأثير عند التحويم
-        link.onmouseenter = function() {
-            if (!link.classList.contains('active')) {
-                link.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-            }
-        };
-        
-        link.onmouseleave = function() {
-            if (!link.classList.contains('active')) {
-                link.style.backgroundColor = '';
-            }
-        };
+        // تحسين مظهر الرابط نفسه (فقط مرة واحدة)
+        if (!link.hasAttribute('data-link-styled')) {
+            link.setAttribute('data-link-styled', 'true');
+            link.style.display = 'flex';
+            link.style.alignItems = 'center';
+            link.style.padding = '0.8rem 1rem';
+            link.style.borderRadius = '6px';
+            link.style.transition = 'all 0.2s ease-in-out';
+            
+            // تطبيق تأثير عند التحويم (فقط مرة واحدة)
+            link.onmouseenter = function() {
+                if (!link.classList.contains('active')) {
+                    link.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                }
+            };
+            
+            link.onmouseleave = function() {
+                if (!link.classList.contains('active')) {
+                    link.style.backgroundColor = '';
+                }
+            };
+        }
     });
     
-    // معالجة سهم القوائم الفرعية
+    // معالجة سهم القوائم الفرعية (فقط التي لم يتم معالجتها من قبل)
     const submenuArrows = document.querySelectorAll('.nav-sidebar .nav-link .right');
     submenuArrows.forEach(arrow => {
-        if (arrow) {
+        if (arrow && !arrow.hasAttribute('data-arrow-fixed')) {
+            arrow.setAttribute('data-arrow-fixed', 'true');
             arrow.style.position = 'absolute';
             arrow.style.left = '1rem';
             arrow.style.right = 'auto';
@@ -460,17 +476,21 @@ function fixSidebarIcons() {
         }
     });
     
-    // تحسين ظهور العناصر النشطة
+    // تحسين ظهور العناصر النشطة (مع تجنب التكرار)
     const activeLinks = document.querySelectorAll('.nav-sidebar .nav-link.active');
     activeLinks.forEach(link => {
-        link.style.backgroundColor = 'var(--primary-travel)';
-        link.style.color = 'white';
-        link.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
-        
-        // تحسين أيقونات العناصر النشطة
-        const icon = link.querySelector('i.nav-icon, i.fas, i.far, i.fa');
-        if (icon) {
-            icon.style.color = 'white';
+        // تحسين مظهر الروابط النشطة فقط مرة واحدة
+        if (!link.hasAttribute('data-active-styled')) {
+            link.setAttribute('data-active-styled', 'true');
+            link.style.backgroundColor = 'var(--primary-travel)';
+            link.style.color = 'white';
+            link.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+            
+            // تحسين أيقونات العناصر النشطة
+            const icon = link.querySelector('i.nav-icon, i.fas, i.far, i.fa');
+            if (icon) {
+                icon.style.color = 'white';
+            }
         }
     });
 }

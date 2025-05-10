@@ -38,12 +38,28 @@ function initializeTheme() {
  * إنشاء زر تبديل السمة
  */
 function createThemeToggle() {
+    // التأكد من عدم وجود زر تبديل سابق
+    const existingButton = document.querySelector('.theme-toggle-container');
+    if (existingButton) {
+        console.log('زر تبديل السمة موجود بالفعل، تم تخطي إنشاء زر جديد');
+        // التأكد من تعيين معالج الحدث
+        existingButton.addEventListener('click', toggleTheme);
+        return;
+    }
+
     // إنشاء زر تبديل السمة
     const themeToggle = document.createElement('button');
+    themeToggle.id = 'theme-toggle-button'; // إضافة معرف فريد
     themeToggle.className = 'theme-toggle-container';
     themeToggle.setAttribute('aria-label', 'تبديل بين السمة الفاتحة والداكنة');
     themeToggle.innerHTML = '<i class="fas fa-sun theme-toggle-icon"></i><i class="fas fa-moon theme-toggle-icon"></i>';
     themeToggle.title = 'تبديل السمة';
+    
+    // جعل الزر أكثر وضوحًا
+    themeToggle.style.width = '50px';
+    themeToggle.style.height = '50px';
+    themeToggle.style.backgroundColor = '#d86a1a'; // لون برتقالي متوافق مع السمة
+    themeToggle.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
     
     // إضافة الزر للصفحة
     document.body.appendChild(themeToggle);
@@ -53,6 +69,8 @@ function createThemeToggle() {
     
     // تحديث أيقونة الزر الأولية
     updateToggleIcon();
+    
+    console.log('تم إنشاء زر تبديل السمة بنجاح');
 }
 
 /**
