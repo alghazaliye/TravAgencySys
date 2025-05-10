@@ -30,11 +30,19 @@ def create_app():
     app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)  # needed for url_for to generate with https
     
     # Configure database
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "postgresql://user:password@localhost/travelagency")
+    db_url = os.environ.get("DATABASE_URL", "postgresql://user:password@localhost/travelagency")
+    # تعديل سلسلة اتصال قاعدة البيانات إذا كانت تبدأ بـ postgres:// لتكون postgresql://
+    if db_url.startswith("postgres://"):
+        db_url = db_url.replace("postgres://", "postgresql://", 1)
+    
+    app.config["SQLALCHEMY_DATABASE_URI"] = db_url
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
         "pool_recycle": 300,
         "pool_pre_ping": True,
+        "connect_args": {
+            "sslmode": "require"  # استخدام SSL كما هو مطلوب من قاعدة البيانات
+        }
     }
     
     # إضافة فلتر مخصص لتنسيق التاريخ

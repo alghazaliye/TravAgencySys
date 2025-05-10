@@ -435,6 +435,21 @@ def system_settings():
             'description': 'اللون الرئيسي للموقع',
             'options': 'primary,info,success,warning,danger,dark'
         },
+        'primary_color': {
+            'description': 'اللون الرئيسي للنظام (يستخدم في العناصر الأساسية)'
+        },
+        'secondary_color': {
+            'description': 'اللون الثانوي للنظام (يستخدم في العناصر الثانوية)'
+        },
+        'accent_color': {
+            'description': 'لون التأكيد (يستخدم للإبراز والتمييز)'
+        },
+        'bg_color': {
+            'description': 'لون الخلفية الأساسي للصفحات'
+        },
+        'text_color': {
+            'description': 'لون النص الافتراضي في النظام'
+        },
         'sidebar_collapsed': {
             'description': 'هل الشريط الجانبي مطوي افتراضياً',
             'options': 'true,false'
