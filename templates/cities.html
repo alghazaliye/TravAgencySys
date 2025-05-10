@@ -112,7 +112,7 @@
                         <tr>
                             <th>الرقم</th>
                             <th>اسم المدينة</th>
-                            <th>الكود</th>
+
                             <th>الدولة</th>
                             <th>الإجراءات</th>
                         </tr>
@@ -257,10 +257,7 @@
                         <input type="text" class="form-control" id="cityNameAr" placeholder="أدخل اسم المدينة بالعربية" required>
                     </div>
 
-                    <div class="form-group">
-                        <label for="cityCode">كود المدينة</label>
-                        <input type="text" class="form-control" id="cityCode" placeholder="مثال: RUH" maxlength="5" required>
-                    </div>
+
                 </form>
             </div>
             <div class="modal-footer justify-content-between">
@@ -301,10 +298,7 @@
                         <input type="text" class="form-control" id="editCityNameAr" placeholder="أدخل اسم المدينة بالعربية" required>
                     </div>
 
-                    <div class="form-group">
-                        <label for="editCityCode">كود المدينة</label>
-                        <input type="text" class="form-control" id="editCityCode" placeholder="مثال: RUH" maxlength="5" required>
-                    </div>
+
                 </form>
             </div>
             <div class="modal-footer justify-content-between">
@@ -389,13 +383,11 @@ $(function() {
         
         // استخراج بيانات المدينة من الصف
         var cityNameAr = row.find('td:eq(1)').text();
-        var cityCode = row.find('td:eq(2)').text();
         var countryId = row.data('country');
         
         // ملء النموذج ببيانات المدينة
         $('#editCityId').val(cityId);
         $('#editCityNameAr').val(cityNameAr);
-        $('#editCityCode').val(cityCode);
         $('#editCityCountry').val(countryId).trigger('change');
         
         // فتح نافذة التعديل
@@ -410,7 +402,6 @@ $(function() {
             var countryId = $('#cityCountry').val();
             var countryName = $('#cityCountry option:selected').text();
             var cityNameAr = $('#cityNameAr').val();
-            var cityCode = $('#cityCode').val();
             
             // محاكاة إضافة المدينة (ستستبدل بطلب AJAX حقيقي)
             // إنشاء معرف فريد (في التطبيق الحقيقي سيتم إرجاعه من الخادم)
@@ -423,7 +414,6 @@ $(function() {
             var newRow = citiesTable.row.add([
                 newId,
                 cityNameAr,
-                cityCode,
                 countryName,
                 actionButtons
             ]).draw().node();
@@ -458,7 +448,6 @@ $(function() {
             var countryId = $('#editCityCountry').val();
             var countryName = $('#editCityCountry option:selected').text();
             var cityNameAr = $('#editCityNameAr').val();
-            var cityCode = $('#editCityCode').val();
             
             // محاكاة تحديث المدينة (ستستبدل بطلب AJAX حقيقي)
             // البحث عن الصف المطلوب تحديثه
@@ -474,7 +463,6 @@ $(function() {
                 citiesTable.row(rowIndex[0]).data([
                     cityId,
                     cityNameAr,
-                    cityCode,
                     countryName,
                     actionButtons
                 ]).draw();
