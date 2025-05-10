@@ -6,6 +6,104 @@ from models import BusSchedule, BusTrip, BusBooking, BookingPayment, SystemSetti
 from app import app, db
 import logging
 
+# الإعدادات الافتراضية للنظام
+DEFAULT_SETTINGS = {
+    # معلومات النظام الأساسية
+    'system_name': {
+        'value': 'نظام إدارة وكالة السفر والسياحة',
+        'type': 'text',
+        'description': 'اسم النظام الذي سيظهر في العنوان وجميع أنحاء التطبيق'
+    },
+    'system_slogan': {
+        'value': 'حلول متكاملة لوكالات السفر والسياحة',
+        'type': 'text',
+        'description': 'شعار أو وصف قصير للنظام'
+    },
+    'company_name': {
+        'value': 'وكالة السفر للسياحة والخدمات',
+        'type': 'text',
+        'description': 'اسم الشركة أو المؤسسة'
+    },
+    'dashboard_title': {
+        'value': 'لوحة التحكم',
+        'type': 'text',
+        'description': 'العنوان الذي سيظهر في لوحة التحكم الرئيسية'
+    },
+    'primary_color': {
+        'value': '#4e73df',
+        'type': 'text',
+        'description': 'اللون الرئيسي للنظام'
+    },
+    'secondary_color': {
+        'value': '#1cc88a',
+        'type': 'text',
+        'description': 'اللون الثانوي للنظام'
+    },
+    'use_custom_logo': {
+        'value': 'false',
+        'type': 'boolean',
+        'description': 'استخدام شعار مخصص بدلاً من أيقونة'
+    },
+    'logo_icon': {
+        'value': 'fas fa-plane',
+        'type': 'text',
+        'description': 'أيقونة الشعار (تظهر عندما لا يتم استخدام شعار مخصص)'
+    },
+    'custom_logo_url': {
+        'value': '',
+        'type': 'text',
+        'description': 'رابط الشعار المخصص'
+    },
+    'dark_mode': {
+        'value': 'auto',
+        'type': 'text',
+        'description': 'وضع العرض (ليلي/نهاري)'
+    },
+    'rtl_mode': {
+        'value': 'true',
+        'type': 'boolean',
+        'description': 'تمكين وضع RTL (من اليمين إلى اليسار)'
+    },
+    'enable_dark_mode': {
+        'value': 'false',
+        'type': 'boolean',
+        'description': 'تمكين الوضع الداكن افتراضياً'
+    },
+    'default_currency': {
+        'value': 'SAR',
+        'type': 'text',
+        'description': 'العملة الافتراضية للمعاملات المالية'
+    }
+}
+
+# وظيفة لإنشاء الإعدادات الافتراضية
+def create_default_settings():
+    """إضافة الإعدادات الافتراضية للنظام إلى قاعدة البيانات"""
+    created_count = 0
+    for key, data in DEFAULT_SETTINGS.items():
+        # البحث عما إذا كان الإعداد موجودًا بالفعل
+        setting = SystemSettings.query.filter_by(setting_key=key).first()
+        if not setting:
+            # إنشاء إعداد جديد إذا لم يكن موجودًا
+            setting = SystemSettings(
+                setting_key=key,
+                setting_value=data['value'],
+                setting_type=data['type'],
+                description=data['description']
+            )
+            db.session.add(setting)
+            created_count += 1
+    
+    if created_count > 0:
+        try:
+            db.session.commit()
+            logging.info(f"تم إنشاء {created_count} إعداد افتراضي")
+        except Exception as e:
+            db.session.rollback()
+            logging.error(f"حدث خطأ أثناء إنشاء الإعدادات الافتراضية: {str(e)}")
+    
+    return created_count
+
 # إنشاء متغير للإعدادات المستخدمة في جميع القوالب
 def get_settings():
     """استرجاع إعدادات النظام"""
