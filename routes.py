@@ -471,8 +471,7 @@ def system_settings():
     settings_list = SystemSettings.query.all()
     settings = get_settings()
     
-    # إضافة وصف الإعدادات
-    # بيانات إعدادات النظام
+    # إعداد قاموس الأوصاف الافتراضي
     setting_descriptions = {
         # معلومات النظام
         'system_name': {
@@ -481,128 +480,47 @@ def system_settings():
         'system_slogan': {
             'description': 'شعار أو وصف قصير للنظام'
         },
-        'company_name': {
-            'description': 'اسم الشركة أو المؤسسة'
-        },
-        'company_address': {
-            'description': 'عنوان المقر الرئيسي للشركة'
-        },
-        'company_phone': {
-            'description': 'رقم الهاتف الرئيسي للتواصل'
-        },
-        'company_email': {
-            'description': 'البريد الإلكتروني الرسمي للشركة'
-        },
-        'site_description': {
-            'description': 'وصف موقع الويب (مفيد لمحركات البحث)'
-        },
-        'site_keywords': {
-            'description': 'الكلمات المفتاحية للموقع (مفيدة لمحركات البحث)'
-        },
         'dashboard_title': {
             'description': 'العنوان الذي سيظهر في لوحة التحكم الرئيسية'
         },
-        
-        # الإعدادات المالية
-        'default_currency': {
-            'description': 'العملة الافتراضية للمعاملات المالية',
-            'options': 'SAR,USD,EUR,YER,AED,JOD,KWD,BHD,QAR,EGP,LBP'
+        'primary_color': {
+            'description': 'اللون الرئيسي للنظام'
         },
-        'default_language': {
-            'description': 'اللغة الافتراضية للنظام',
-            'options': 'ar,en,fr'
+        'secondary_color': {
+            'description': 'اللون الثانوي للنظام'
         },
-        'tax_percent': {
-            'description': 'نسبة الضريبة المضافة على الخدمات'
-        },
-        'visa_fee': {
-            'description': 'رسوم التأشيرة الافتراضية'
-        },
-        'umrah_fee': {
-            'description': 'رسوم العمرة الافتراضية'
-        },
-        
-        # إعدادات العرض والصفحات
-        'system_footer': {
-            'description': 'نص التذييل الذي سيظهر في أسفل جميع الصفحات'
-        },
-        'receipt_note': {
-            'description': 'ملاحظات تظهر في جميع الإيصالات'
-        },
-        
-        # الشعارات والرموز
-        'use_custom_logo': {
-            'description': 'استخدام شعار مخصص بدلاً من أيقونة',
-            'options': 'true,false'
+        'dark_mode': {
+            'description': 'وضع العرض (ليلي/نهاري)',
+            'options': 'light,dark,auto'
         },
         'logo_icon': {
             'description': 'أيقونة الشعار (تظهر عندما لا يتم استخدام شعار مخصص)'
         },
-        'logo_url': {
-            'description': 'رابط شعار الشركة (يفضل استخدام صورة بحجم 200×60 بكسل)'
+        'custom_logo_url': {
+            'description': 'رابط الشعار المخصص (إذا كنت تستخدم شعار مخصص)'
         },
-        'favicon_url': {
-            'description': 'رابط أيقونة الموقع (الأيقونة المفضلة)'
-        },
-        
-        # الألوان والمظهر
-        'theme_color': {
-            'description': 'اللون الرئيسي للموقع',
-            'options': 'primary,info,success,warning,danger,dark'
-        },
-        'primary_color': {
-            'description': 'اللون الرئيسي للنظام (يستخدم في العناصر الأساسية)'
-        },
-        'secondary_color': {
-            'description': 'اللون الثانوي للنظام (يستخدم في العناصر الثانوية)'
-        },
-        'accent_color': {
-            'description': 'لون التأكيد (يستخدم للإبراز والتمييز)'
-        },
-        'bg_color': {
-            'description': 'لون الخلفية الأساسي للصفحات'
-        },
-        'text_color': {
-            'description': 'لون النص الافتراضي في النظام'
-        },
-        
-        # خيارات العرض والتخصيص
-        'sidebar_collapsed': {
-            'description': 'هل الشريط الجانبي مطوي افتراضياً',
-            'options': 'true,false'
-        },
-        'rtl_mode': {
-            'description': 'تمكين وضع RTL (من اليمين إلى اليسار)',
-            'options': 'true,false'
-        },
-        'enable_dark_mode': {
-            'description': 'تمكين الوضع الداكن افتراضياً',
-            'options': 'true,false'
-        },
-        
-        # إعدادات أخرى
-        'privacy_policy': {
-            'description': 'نص سياسة الخصوصية'
-        },
-        'terms_conditions': {
-            'description': 'نص الشروط والأحكام'
-        },
-        'contact_info': {
-            'description': 'معلومات الاتصال الإضافية'
-        },
-        'social_media': {
-            'description': 'روابط لمنصات التواصل الاجتماعي (مفصولة بفاصلة)'
-        },
-        'google_analytics': {
-            'description': 'كود تتبع Google Analytics (إذا كان متاحًا)'
-        },
-        'custom_css': {
-            'description': 'أنماط CSS مخصصة لتخصيص مظهر النظام'
-        },
-        'custom_js': {
-            'description': 'سكريبت JavaScript مخصص (يضاف في نهاية الصفحة)'
+        'use_custom_logo': {
+            'description': 'استخدام شعار مخصص بدلاً من أيقونة'
         }
     }
+    
+    # جلب أوصاف الإعدادات من قاعدة البيانات إذا كانت موجودة
+    for setting in settings_list:
+        if setting.setting_key not in setting_descriptions:
+            setting_descriptions[setting.setting_key] = {}
+        
+        setting_descriptions[setting.setting_key]['description'] = setting.description
+        setting_descriptions[setting.setting_key]['type'] = setting.setting_type
+        
+        # إعدادات القوائم المنسدلة
+        if setting.setting_key == 'dark_mode':
+            setting_descriptions[setting.setting_key]['options'] = 'light,dark,auto'
+        elif setting.setting_key == 'content_width':
+            setting_descriptions[setting.setting_key]['options'] = 'fluid,fixed'
+        elif setting.setting_key == 'border_radius':
+            setting_descriptions[setting.setting_key]['options'] = 'none,small,medium,large'
+        elif setting.setting_key == 'card_shadow':
+            setting_descriptions[setting.setting_key]['options'] = 'none,small,medium,large'
     
     # إضافة قائمة الأيقونات للشعار
     icon_options = [
