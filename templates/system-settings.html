@@ -554,11 +554,18 @@
                             <div class="form-group">
                                 <label for="date_format">صيغة عرض التاريخ</label>
                                 <select class="form-control" id="date_format" name="date_format">
-                                    {% for option in setting_descriptions.date_format.options.split(',') %}
-                                        <option value="{{ option }}" {% if settings.date_format == option %}selected{% endif %}>
-                                            {{ option }}
-                                        </option>
-                                    {% endfor %}
+                                    {% if setting_descriptions.date_format.options %}
+                                        {% for option in setting_descriptions.date_format.options.split(',') %}
+                                            <option value="{{ option }}" {% if settings.date_format == option %}selected{% endif %}>
+                                                {{ option }}
+                                            </option>
+                                        {% endfor %}
+                                    {% else %}
+                                        <option value="DD/MM/YYYY" {% if settings.date_format == 'DD/MM/YYYY' %}selected{% endif %}>DD/MM/YYYY</option>
+                                        <option value="MM/DD/YYYY" {% if settings.date_format == 'MM/DD/YYYY' %}selected{% endif %}>MM/DD/YYYY</option>
+                                        <option value="YYYY-MM-DD" {% if settings.date_format == 'YYYY-MM-DD' %}selected{% endif %}>YYYY-MM-DD</option>
+                                        <option value="DD-MM-YYYY" {% if settings.date_format == 'DD-MM-YYYY' %}selected{% endif %}>DD-MM-YYYY</option>
+                                    {% endif %}
                                 </select>
                                 <small class="form-text text-muted">{{ setting_descriptions.date_format.description }}</small>
                             </div>
@@ -624,86 +631,8 @@
                     </div>
                 </div>
 
-                <!-- إعدادات تنسيق التاريخ والوقت -->
-                <div class="settings-section">
-                    <h3><i class="fas fa-calendar-alt ml-2"></i>تنسيق التاريخ والوقت</h3>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="date_format">تنسيق التاريخ</label>
-                                <select class="form-control" id="date_format" name="date_format">
-                                    <option value="DD/MM/YYYY" {% if settings.date_format == 'DD/MM/YYYY' %}selected{% endif %}>DD/MM/YYYY (31/12/2025)</option>
-                                    <option value="YYYY/MM/DD" {% if settings.date_format == 'YYYY/MM/DD' %}selected{% endif %}>YYYY/MM/DD (2025/12/31)</option>
-                                    <option value="DD-MM-YYYY" {% if settings.date_format == 'DD-MM-YYYY' %}selected{% endif %}>DD-MM-YYYY (31-12-2025)</option>
-                                    <option value="YYYY-MM-DD" {% if settings.date_format == 'YYYY-MM-DD' %}selected{% endif %}>YYYY-MM-DD (2025-12-31)</option>
-                                </select>
-                                <small class="form-text text-muted">تنسيق التاريخ المستخدم في جميع أنحاء النظام</small>
-                                
-                                <!-- مثال على تنسيق التاريخ -->
-                                <div class="date-format-example" id="date_format_example">
-                                    مثال: <span>31/12/2025</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="time_format">تنسيق الوقت</label>
-                                <select class="form-control" id="time_format" name="time_format">
-                                    <option value="HH:mm" {% if settings.time_format == 'HH:mm' %}selected{% endif %}>24 ساعة (14:30)</option>
-                                    <option value="hh:mm A" {% if settings.time_format == 'hh:mm A' %}selected{% endif %}>12 ساعة (02:30 م)</option>
-                                </select>
-                                <small class="form-text text-muted">تنسيق الوقت المستخدم في جميع أنحاء النظام</small>
-                                
-                                <!-- مثال على تنسيق الوقت -->
-                                <div class="date-format-example" id="time_format_example">
-                                    مثال: <span>14:30</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row mt-3">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="use_hijri_dates">استخدام التقويم الهجري</label>
-                                <select class="form-control" id="use_hijri_dates" name="use_hijri_dates">
-                                    <option value="no" {% if settings.use_hijri_dates == 'no' %}selected{% endif %}>لا</option>
-                                    <option value="yes" {% if settings.use_hijri_dates == 'yes' %}selected{% endif %}>نعم</option>
-                                    <option value="both" {% if settings.use_hijri_dates == 'both' %}selected{% endif %}>عرض كلا التاريخين (هجري وميلادي)</option>
-                                </select>
-                                <small class="form-text text-muted">استخدام التاريخ الهجري بدلاً من التاريخ الميلادي أو عرض كليهما في النظام</small>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="date_separator">فاصل التاريخ</label>
-                                <select class="form-control" id="date_separator" name="date_separator">
-                                    <option value="/" {% if settings.date_separator == '/' %}selected{% endif %}>/</option>
-                                    <option value="-" {% if settings.date_separator == '-' %}selected{% endif %}>-</option>
-                                    <option value="." {% if settings.date_separator == '.' %}selected{% endif %}>.</option>
-                                </select>
-                                <small class="form-text text-muted">الفاصل المستخدم بين أجزاء التاريخ</small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="first_day_of_week">أول يوم في الأسبوع</label>
-                                <select class="form-control" id="first_day_of_week" name="first_day_of_week">
-                                    <option value="0" {% if settings.first_day_of_week == '0' %}selected{% endif %}>الأحد</option>
-                                    <option value="1" {% if settings.first_day_of_week == '1' %}selected{% endif %}>الاثنين</option>
-                                    <option value="6" {% if settings.first_day_of_week == '6' %}selected{% endif %}>السبت</option>
-                                </select>
-                                <small class="form-text text-muted">أول يوم يظهر في التقويم وتقويمات اختيار التاريخ</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- بقية أقسام الإعدادات ستأتي هنا -->
+                
 
                 <!-- إعدادات الإشعارات والتنبيهات -->
                 <div class="settings-section">

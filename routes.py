@@ -498,6 +498,33 @@ def system_settings():
     settings_list = SystemSettings.query.all()
     settings = get_settings()
     
+    # إضافة قيم افتراضية إلى قاموس الإعدادات في حالة عدم وجودها في قاعدة البيانات
+    # سيتم تحميلها من قاعدة البيانات لاحقًا إذا كانت موجودة
+    default_settings = {
+        'date_format': 'DD/MM/YYYY',
+        'time_format': 'HH:mm',
+        'date_separator': '/',
+        'use_hijri_dates': 'false',
+        'first_day_of_week': '6',
+        'enable_notifications': 'true',
+        'notification_position': 'top-right',
+        'notification_duration': '5',
+        'sound_notifications': 'true',
+        'notify_new_bookings': 'true',
+        'notify_payment_received': 'true',
+        'notify_booking_cancellation': 'true',
+        'sms_service_enabled': 'false',
+        'email_notifications_enabled': 'true',
+        'paper_size': 'A4',
+        'print_layout': 'portrait',
+        'show_logo_in_reports': 'true'
+    }
+    
+    # إضافة القيم الافتراضية إلى قاموس الإعدادات
+    for key, value in default_settings.items():
+        if key not in settings:
+            settings[key] = value
+    
     # إعداد قاموس الأوصاف الافتراضي مع كافة الحقول المطلوبة
     setting_descriptions = {
         # معلومات النظام
@@ -693,6 +720,20 @@ def system_settings():
             setting_descriptions[setting.setting_key]['options'] = 'none,small,medium,large'
         elif setting.setting_key == 'card_shadow':
             setting_descriptions[setting.setting_key]['options'] = 'none,small,medium,large'
+        elif setting.setting_key == 'date_format':
+            setting_descriptions[setting.setting_key]['options'] = 'DD/MM/YYYY,MM/DD/YYYY,YYYY-MM-DD,DD-MM-YYYY'
+        elif setting.setting_key == 'time_format':
+            setting_descriptions[setting.setting_key]['options'] = 'HH:mm,hh:mm a,HH:mm:ss,h:mm a'
+        elif setting.setting_key == 'date_separator':
+            setting_descriptions[setting.setting_key]['options'] = '/,-,.'
+        elif setting.setting_key == 'paper_size':
+            setting_descriptions[setting.setting_key]['options'] = 'A4,A5,Letter,Legal'
+        elif setting.setting_key == 'print_layout':
+            setting_descriptions[setting.setting_key]['options'] = 'portrait,landscape'
+        elif setting.setting_key == 'first_day_of_week':
+            setting_descriptions[setting.setting_key]['options'] = '0,1,6'
+        elif setting.setting_key == 'notification_position':
+            setting_descriptions[setting.setting_key]['options'] = 'top-right,top-left,bottom-right,bottom-left'
     
     # إضافة قائمة الأيقونات للشعار
     icon_options = [
