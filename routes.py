@@ -192,7 +192,8 @@ def login():
         
         if user and check_password_hash(user.password_hash, password):
             # تسجيل الدخول وتفعيل خاصية التذكر لجعل الجلسة دائمة
-            login_user(user, remember=True, duration=86400)
+            from datetime import timedelta
+            login_user(user, remember=True, duration=timedelta(days=1))  # جلسة لمدة يوم كامل
 
             # سجل نجاح تسجيل الدخول
             logging.info(f"تم تسجيل دخول المستخدم: {user.username}")
@@ -507,6 +508,9 @@ def system_settings():
         'navbar_color': {
             'description': 'لون خلفية شريط التنقل'
         },
+        'navbar_dark_color': {
+            'description': 'لون خلفية شريط التنقل (الوضع الليلي)'
+        },
         'system_slogan': {
             'description': 'شعار أو وصف قصير للنظام'
         },
@@ -515,6 +519,12 @@ def system_settings():
         },
         'navbar_dark_text_color': {
             'description': 'لون النص في شريط التنقل (الوضع الليلي)'
+        },
+        'sidebar_color': {
+            'description': 'لون خلفية القائمة الجانبية'
+        },
+        'dark_sidebar_color': {
+            'description': 'لون خلفية القائمة الجانبية (الوضع الليلي)'
         },
         'dashboard_title': {
             'description': 'العنوان الذي سيظهر في لوحة التحكم الرئيسية'
