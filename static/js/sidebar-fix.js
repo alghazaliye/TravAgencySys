@@ -65,6 +65,19 @@ document.addEventListener('DOMContentLoaded', function() {
     
     document.body.appendChild(quickFix);
     
+    // إضافة زر كبير ثابت للقائمة الجانبية للظهور دائماً
+    const fixedToggleBtn = document.createElement('button');
+    fixedToggleBtn.className = 'main-sidebar-toggle-fixed';
+    fixedToggleBtn.title = 'فتح/إغلاق القائمة الجانبية';
+    fixedToggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
+    fixedToggleBtn.addEventListener('click', function(event) {
+        if (!isProcessing) {
+            handleSidebarToggle(event);
+        }
+    });
+    
+    document.body.appendChild(fixedToggleBtn);
+    
     // مراقبة تغيير حجم النافذة
     window.addEventListener('resize', function() {
         applyResponsiveSettings(window.innerWidth);
@@ -255,6 +268,7 @@ function restoreMenuState() {
 
 /**
  * إصلاح مشكلة الأيقونات في القائمة الجانبية - حل مشكلة "القلب"
+ * النسخة المحسنة مع أيقونات أكبر وأكثر وضوحًا
  */
 function fixSidebarIcons() {
     // معالجة جميع روابط القائمة الجانبية
@@ -265,51 +279,110 @@ function fixSidebarIcons() {
         const textElement = link.querySelector('p');
         
         if (iconElement) {
-            // تطبيق الأنماط مباشرة على الأيقونات لضمان ظهورها بشكل صحيح
-            iconElement.style.display = 'inline-block';
+            // تطبيق الأنماط المحسنة على الأيقونات لضمان ظهورها بشكل أفضل
+            iconElement.style.display = 'inline-flex';
+            iconElement.style.alignItems = 'center';
+            iconElement.style.justifyContent = 'center';
             iconElement.style.visibility = 'visible';
-            iconElement.style.width = '1.6rem';
+            iconElement.style.width = '2rem';  // جعلها أكبر قليلاً
+            iconElement.style.height = '2rem'; // جعلها مربعة
             iconElement.style.marginLeft = '0.7rem';
             iconElement.style.marginRight = '0';
             iconElement.style.textAlign = 'center';
+            iconElement.style.fontSize = '1.2rem'; // حجم أكبر للأيقونة
+            iconElement.style.color = 'inherit';
             
-            // التحقق مما إذا كانت الأيقونة تحتوي على font-awesome
+            // التأكد من وجود محتوى داخل الأيقونة
             if (iconElement.classList.contains('fa') || 
                 iconElement.classList.contains('fas') || 
                 iconElement.classList.contains('far') || 
                 iconElement.classList.contains('fab')) {
                 
-                // لا تحتاج إلى إضافة أيقونة أخرى
-            } else if (iconElement.innerHTML === '') {
-                // إضافة محتوى افتراضي للأيقونة إذا كانت فارغة
-                iconElement.innerHTML = '&#xf111;'; // رمز دائرة افتراضي
+                // تحسين عرض أيقونات Font Awesome
+                if (!iconElement.getAttribute('data-fixed')) {
+                    iconElement.setAttribute('data-fixed', 'true');
+                    
+                    // استنساخ الأيقونة واستبدالها لإعادة تهيئتها
+                    const parent = iconElement.parentNode;
+                    const newIcon = iconElement.cloneNode(true);
+                    parent.replaceChild(newIcon, iconElement);
+                }
+            } else if (iconElement.innerHTML === '' || !iconElement.innerHTML.trim()) {
+                // إضافة محتوى واضح للأيقونة إذا كانت فارغة
+                iconElement.innerHTML = '<i class="fas fa-circle"></i>';
             }
         } else if (textElement) {
-            // إنشاء عنصر أيقونة إذا لم يكن موجودًا
+            // إنشاء عنصر أيقونة جديد بتصميم محسن إذا لم يكن موجودًا
             const newIcon = document.createElement('i');
-            newIcon.className = 'nav-icon fas fa-circle';
-            newIcon.style.display = 'inline-block';
+            
+            // اختيار الأيقونة المناسبة بناءً على نص العنصر
+            let iconClass = 'circle'; // افتراضي
+            
+            if (textElement.textContent.includes('لوحة') || textElement.textContent.includes('رئيسية') || textElement.textContent.includes('تحكم')) {
+                iconClass = 'tachometer-alt';
+            } else if (textElement.textContent.includes('حجز') || textElement.textContent.includes('تذاكر')) {
+                iconClass = 'ticket-alt';
+            } else if (textElement.textContent.includes('عملاء')) {
+                iconClass = 'users';
+            } else if (textElement.textContent.includes('مالية') || textElement.textContent.includes('محاسبة')) {
+                iconClass = 'money-bill-wave';
+            } else if (textElement.textContent.includes('تقارير')) {
+                iconClass = 'chart-bar';
+            } else if (textElement.textContent.includes('إعدادات')) {
+                iconClass = 'cog';
+            } else if (textElement.textContent.includes('مستخدمين')) {
+                iconClass = 'user-cog';
+            }
+            
+            newIcon.className = `nav-icon fas fa-${iconClass}`;
+            newIcon.style.display = 'inline-flex';
+            newIcon.style.alignItems = 'center';
+            newIcon.style.justifyContent = 'center';
             newIcon.style.visibility = 'visible';
-            newIcon.style.width = '1.6rem';
+            newIcon.style.width = '2rem';
+            newIcon.style.height = '2rem';
             newIcon.style.marginLeft = '0.7rem';
             newIcon.style.marginRight = '0';
             newIcon.style.textAlign = 'center';
+            newIcon.style.fontSize = '1.2rem';
+            newIcon.style.color = 'inherit';
             
-            // إدراج الأيقونة قبل النص
+            // إضافة الأيقونة قبل النص
             link.insertBefore(newIcon, textElement);
         }
         
-        // تأكد من أن النص ظاهر بوضوح ومنسق بشكل صحيح
+        // تحسين ظهور النص
         if (textElement) {
             textElement.style.display = 'inline-block';
             textElement.style.margin = '0';
-            textElement.style.marginRight = '0.3rem';
+            textElement.style.marginRight = '0.5rem';
+            textElement.style.fontSize = '1rem';
+            textElement.style.fontWeight = '400';
+            textElement.style.color = 'inherit';
+            textElement.style.whiteSpace = 'nowrap';
+            textElement.style.overflow = 'hidden';
+            textElement.style.textOverflow = 'ellipsis';
         }
         
-        // ضبط نمط الارتباط نفسه
+        // تحسين مظهر الرابط نفسه
         link.style.display = 'flex';
         link.style.alignItems = 'center';
         link.style.padding = '0.8rem 1rem';
+        link.style.borderRadius = '6px';
+        link.style.transition = 'all 0.2s ease-in-out';
+        
+        // تطبيق تأثير عند التحويم
+        link.onmouseenter = function() {
+            if (!link.classList.contains('active')) {
+                link.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+            }
+        };
+        
+        link.onmouseleave = function() {
+            if (!link.classList.contains('active')) {
+                link.style.backgroundColor = '';
+            }
+        };
     });
     
     // معالجة سهم القوائم الفرعية
@@ -319,6 +392,25 @@ function fixSidebarIcons() {
             arrow.style.position = 'absolute';
             arrow.style.left = '1rem';
             arrow.style.right = 'auto';
+            arrow.style.top = '50%';
+            arrow.style.transform = 'translateY(-50%)';
+            arrow.style.fontSize = '0.8rem';
+            arrow.style.visibility = 'visible';
+            arrow.style.display = 'inline-block';
+        }
+    });
+    
+    // تحسين ظهور العناصر النشطة
+    const activeLinks = document.querySelectorAll('.nav-sidebar .nav-link.active');
+    activeLinks.forEach(link => {
+        link.style.backgroundColor = 'var(--primary-travel)';
+        link.style.color = 'white';
+        link.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+        
+        // تحسين أيقونات العناصر النشطة
+        const icon = link.querySelector('i.nav-icon, i.fas, i.far, i.fa');
+        if (icon) {
+            icon.style.color = 'white';
         }
     });
 }
