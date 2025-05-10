@@ -415,19 +415,97 @@ def bus_tickets():
 @login_required
 def bus_tickets_new():
     """الصفحة الجديدة لحجز تذاكر الحافلات"""
+    # جلب قائمة شركات النقل النشطة
     companies = TransportCompany.query.filter_by(is_active=True).all()
+    
+    # جلب قائمة المدن النشطة
     cities = City.query.filter_by(is_active=True).all()
+    
+    # جلب قائمة أنواع الهوية من إعدادات النظام
+    id_types = SystemSettings.query.filter_by(setting_key='id_types').first()
+    id_types_list = []
+    if id_types and id_types.setting_value:
+        try:
+            # محاولة تحويل القيمة من JSON إلى قائمة
+            import json
+            id_types_list = json.loads(id_types.setting_value)
+        except:
+            # في حالة فشل التحويل، استخدم قائمة فارغة
+            id_types_list = []
+    
+    # جلب قائمة البلدان والجنسيات
+    countries = Country.query.filter_by(is_active=True).all()
+    
+    # جلب قائمة العملات المتاحة
+    currencies = Currency.query.filter_by(is_active=True).all()
+    
+    # جلب إعدادات النظام
     settings = get_settings()
-    return render_template('bus-tickets-new.html', companies=companies, cities=cities, settings=settings)
+    
+    # جلب أنواع الباصات المتاحة
+    bus_types = BusType.query.filter_by(is_active=True).all()
+    
+    return render_template(
+        'bus-tickets-new.html',
+        companies=companies,
+        cities=cities,
+        countries=countries,
+        currencies=currencies,
+        id_types=id_types_list,
+        bus_types=bus_types,
+        settings=settings
+    )
 
 @app.route('/new_bus_booking')
 @login_required
 def new_bus_booking():
     """صفحة حجز حافلة جديدة"""
+    # جلب قائمة شركات النقل النشطة
     companies = TransportCompany.query.filter_by(is_active=True).all()
+    
+    # جلب قائمة المدن النشطة
     cities = City.query.filter_by(is_active=True).all()
+    
+    # جلب قائمة أنواع الهوية من إعدادات النظام
+    id_types = SystemSettings.query.filter_by(setting_key='id_types').first()
+    id_types_list = []
+    if id_types and id_types.setting_value:
+        try:
+            # محاولة تحويل القيمة من JSON إلى قائمة
+            import json
+            id_types_list = json.loads(id_types.setting_value)
+        except:
+            # في حالة فشل التحويل، استخدم قائمة فارغة
+            id_types_list = []
+    
+    # جلب قائمة البلدان والجنسيات
+    countries = Country.query.filter_by(is_active=True).all()
+    
+    # جلب قائمة العملات المتاحة
+    currencies = Currency.query.filter_by(is_active=True).all()
+    
+    # جلب أنواع الباصات المتاحة
+    bus_types = BusType.query.filter_by(is_active=True).all()
+    
+    # جلب الحسابات النقدية والبنكية للدفع
+    cash_accounts = CashRegister.query.filter_by(is_active=True).all() if 'CashRegister' in globals() else []
+    bank_accounts = BankAccount.query.filter_by(is_active=True).all() if 'BankAccount' in globals() else []
+    
+    # جلب إعدادات النظام
     settings = get_settings()
-    return render_template('new_bus_booking.html', companies=companies, cities=cities, settings=settings)
+    
+    return render_template(
+        'new_bus_booking.html',
+        companies=companies,
+        cities=cities,
+        countries=countries,
+        currencies=currencies,
+        id_types=id_types_list,
+        bus_types=bus_types,
+        cash_accounts=cash_accounts,
+        bank_accounts=bank_accounts,
+        settings=settings
+    )
 
 # التأشيرات والخدمات الأخرى
 @app.route('/work-visa')
