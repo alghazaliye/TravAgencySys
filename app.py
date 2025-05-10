@@ -88,12 +88,23 @@ class TransportCompany(db.Model):
     # Relationships
     bus_routes = db.relationship('BusRoute', backref='company', lazy=True)
 
+class Country(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    cities = db.relationship('City', backref='country_rel', lazy=True)
+
 class City(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    country = db.Column(db.String(100), default="المملكة العربية السعودية")
-    code = db.Column(db.String(10))
+    country_id = db.Column(db.Integer, db.ForeignKey('country.id'))
     is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Relationships
     departures = db.relationship('BusRoute', foreign_keys='BusRoute.departure_city_id', backref='departure_city', lazy=True)
