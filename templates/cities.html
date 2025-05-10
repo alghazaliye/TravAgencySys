@@ -256,10 +256,7 @@
                         <label for="cityNameAr">اسم المدينة (عربي)</label>
                         <input type="text" class="form-control" id="cityNameAr" placeholder="أدخل اسم المدينة بالعربية" required>
                     </div>
-                    <div class="form-group">
-                        <label for="cityNameEn">اسم المدينة (إنجليزي)</label>
-                        <input type="text" class="form-control" id="cityNameEn" placeholder="Enter city name in English" required>
-                    </div>
+
                     <div class="form-group">
                         <label for="cityCode">كود المدينة</label>
                         <input type="text" class="form-control" id="cityCode" placeholder="مثال: RUH" maxlength="5" required>
@@ -303,10 +300,7 @@
                         <label for="editCityNameAr">اسم المدينة (عربي)</label>
                         <input type="text" class="form-control" id="editCityNameAr" placeholder="أدخل اسم المدينة بالعربية" required>
                     </div>
-                    <div class="form-group">
-                        <label for="editCityNameEn">اسم المدينة (إنجليزي)</label>
-                        <input type="text" class="form-control" id="editCityNameEn" placeholder="Enter city name in English" required>
-                    </div>
+
                     <div class="form-group">
                         <label for="editCityCode">كود المدينة</label>
                         <input type="text" class="form-control" id="editCityCode" placeholder="مثال: RUH" maxlength="5" required>
@@ -429,7 +423,6 @@ $(function() {
             var newRow = citiesTable.row.add([
                 newId,
                 cityNameAr,
-                cityNameEn,
                 cityCode,
                 countryName,
                 actionButtons
@@ -465,7 +458,6 @@ $(function() {
             var countryId = $('#editCityCountry').val();
             var countryName = $('#editCityCountry option:selected').text();
             var cityNameAr = $('#editCityNameAr').val();
-            var cityNameEn = $('#editCityNameEn').val();
             var cityCode = $('#editCityCode').val();
             
             // محاكاة تحديث المدينة (ستستبدل بطلب AJAX حقيقي)
@@ -482,7 +474,6 @@ $(function() {
                 citiesTable.row(rowIndex[0]).data([
                     cityId,
                     cityNameAr,
-                    cityNameEn,
                     cityCode,
                     countryName,
                     actionButtons
