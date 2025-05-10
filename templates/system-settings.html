@@ -2,6 +2,15 @@
 
 {% block title %}إعدادات النظام{% endblock %}
 
+{# Helper macro to safely get setting descriptions #}
+{% macro get_description(key, default) %}
+    {% if setting_descriptions and key in setting_descriptions and setting_descriptions[key] and 'description' in setting_descriptions[key] %}
+        {{ setting_descriptions[key]['description'] }}
+    {% else %}
+        {{ default }}
+    {% endif %}
+{% endmacro %}
+
 {% block styles %}
 <style>
     .settings-section {
@@ -309,7 +318,7 @@
                                 </label>
                                 <input type="color" class="form-control" id="dark_primary_color" name="dark_primary_color" 
                                     value="{{ settings.dark_primary_color }}">
-                                <small class="form-text text-muted">{{ setting_descriptions.dark_primary_color.description }}</small>
+                                <small class="form-text text-muted">{{ get_description('dark_primary_color', 'اللون الرئيسي المستخدم في الوضع الليلي') }}</small>
                             </div>
                         </div>
                         <div class="col-md-6">
