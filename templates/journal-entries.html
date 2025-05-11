@@ -1,0 +1,537 @@
+{% extends "layout.html" %}
+
+{% block title %}القيود المحاسبية{% endblock %}
+
+{% block styles %}
+<style>
+    .journal-entry {
+        background-color: #f9f9f9;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .journal-line {
+        border-bottom: 1px dashed #e0e0e0;
+        padding: 8px 0;
+    }
+    
+    .journal-line:last-child {
+        border-bottom: none;
+    }
+    
+    .debit-amount {
+        color: #28a745;
+        font-weight: 500;
+    }
+    
+    .credit-amount {
+        color: #dc3545;
+        font-weight: 500;
+    }
+    
+    .filter-section {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    
+    .journal-number {
+        font-weight: 600;
+        color: #007bff;
+    }
+    
+    .journal-date {
+        color: #6c757d;
+    }
+    
+    .journal-status {
+        font-size: 0.8rem;
+        padding: 3px 8px;
+        border-radius: 20px;
+    }
+    
+    .status-posted {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    
+    .status-draft {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    
+    .journal-totals {
+        border-top: 2px solid #dee2e6;
+        padding-top: 10px;
+        font-weight: 600;
+    }
+    
+    .pagination-container {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid rtl px-4">
+    <h1 class="mt-4 mb-4">القيود المحاسبية</h1>
+    
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-book-open mr-2"></i> سجل القيود المحاسبية</span>
+                    <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#newJournalModal">
+                        <i class="fas fa-plus"></i> قيد جديد
+                    </button>
+                </div>
+                <div class="card-body">
+                    <!-- قسم الفلترة -->
+                    <div class="filter-section mb-4">
+                        <form method="GET" action="{{ url_for('journal_entries') }}">
+                            <div class="row">
+                                <div class="col-md-3 mb-2">
+                                    <label for="date_from">من تاريخ</label>
+                                    <input type="date" class="form-control" id="date_from" name="date_from" value="{{ request.args.get('date_from', '') }}">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="date_to">إلى تاريخ</label>
+                                    <input type="date" class="form-control" id="date_to" name="date_to" value="{{ request.args.get('date_to', '') }}">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="entry_number">رقم القيد</label>
+                                    <input type="text" class="form-control" id="entry_number" name="entry_number" value="{{ request.args.get('entry_number', '') }}">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="status">الحالة</label>
+                                    <select class="form-control" id="status" name="status">
+                                        <option value="">الكل</option>
+                                        <option value="posted" {% if request.args.get('status') == 'posted' %}selected{% endif %}>مرحل</option>
+                                        <option value="draft" {% if request.args.get('status') == 'draft' %}selected{% endif %}>مسودة</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-12 text-left">
+                                    <button type="submit" class="btn btn-primary mt-3">
+                                        <i class="fas fa-filter"></i> تصفية
+                                    </button>
+                                    <a href="{{ url_for('journal_entries') }}" class="btn btn-outline-secondary mt-3">
+                                        <i class="fas fa-sync"></i> إعادة تعيين
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- قائمة القيود المحاسبية -->
+                    {% if journal_entries %}
+                        {% for entry in journal_entries %}
+                            <div class="journal-entry">
+                                <div class="row mb-3">
+                                    <div class="col-md-3">
+                                        <span class="journal-number">{{ entry.entry_number }}</span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <span class="journal-date">{{ entry.date.strftime('%Y-%m-%d') }}</span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <span class="journal-status {% if entry.is_posted %}status-posted{% else %}status-draft{% endif %}">
+                                            {{ 'مرحل' if entry.is_posted else 'مسودة' }}
+                                        </span>
+                                    </div>
+                                    <div class="col-md-3 text-left">
+                                        <div class="btn-group">
+                                            <a href="{{ url_for('view_journal_entry', entry_id=entry.id) }}" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            {% if not entry.is_posted %}
+                                                <a href="{{ url_for('edit_journal_entry', entry_id=entry.id) }}" class="btn btn-sm btn-warning">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-sm btn-success post-journal-btn" data-entry-id="{{ entry.id }}">
+                                                    <i class="fas fa-check"></i> ترحيل
+                                                </button>
+                                            {% endif %}
+                                            {% if current_user.is_admin %}
+                                                <button type="button" class="btn btn-sm btn-danger delete-journal-btn" data-entry-id="{{ entry.id }}">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="description mb-3">
+                                    <strong>الوصف:</strong> {{ entry.description }}
+                                </div>
+                                
+                                <!-- سطور القيد -->
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>الحساب</th>
+                                                <th>الوصف</th>
+                                                <th>مدين</th>
+                                                <th>دائن</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for line in entry.lines %}
+                                                <tr class="journal-line">
+                                                    <td>{{ line.account.account_number }} - {{ line.account.name }}</td>
+                                                    <td>{{ line.description|default('') }}</td>
+                                                    <td class="debit-amount">{{ line.debit if line.debit > 0 else '' }}</td>
+                                                    <td class="credit-amount">{{ line.credit if line.credit > 0 else '' }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                        <tfoot class="journal-totals">
+                                            <tr>
+                                                <td colspan="2" class="text-left"><strong>الإجمالي</strong></td>
+                                                <td class="debit-amount">{{ entry.total_debit }}</td>
+                                                <td class="credit-amount">{{ entry.total_credit }}</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        
+                        <!-- التنقل بين الصفحات -->
+                        <div class="pagination-container">
+                            <ul class="pagination">
+                                <li class="page-item {% if not has_prev %}disabled{% endif %}">
+                                    <a class="page-link" href="{{ url_for('journal_entries', page=page-1, **request.args) if has_prev else '#' }}">
+                                        <i class="fas fa-chevron-right"></i> السابق
+                                    </a>
+                                </li>
+                                <li class="page-item active">
+                                    <span class="page-link">{{ page }}</span>
+                                </li>
+                                <li class="page-item {% if not has_next %}disabled{% endif %}">
+                                    <a class="page-link" href="{{ url_for('journal_entries', page=page+1, **request.args) if has_next else '#' }}">
+                                        التالي <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> لا توجد قيود محاسبية متطابقة مع معايير البحث.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- نافذة إنشاء قيد محاسبي جديد -->
+<div class="modal fade" id="newJournalModal" tabindex="-1" role="dialog" aria-labelledby="newJournalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="newJournalModalLabel">إنشاء قيد محاسبي جديد</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="journalEntryForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="entry_date">تاريخ القيد</label>
+                                <input type="date" class="form-control" id="entry_date" name="entry_date" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="entry_type">نوع القيد</label>
+                                <select class="form-control" id="entry_type" name="entry_type">
+                                    <option value="manual">يدوي</option>
+                                    <option value="payment">دفع</option>
+                                    <option value="receipt">قبض</option>
+                                    <option value="adjustment">تسوية</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="entry_description">وصف القيد</label>
+                        <textarea class="form-control" id="entry_description" name="entry_description" rows="2" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reference">المرجع</label>
+                        <input type="text" class="form-control" id="reference" name="reference" placeholder="رقم الفاتورة أو المستند المرجعي">
+                    </div>
+                    
+                    <!-- الأسطر المحاسبية -->
+                    <h5 class="mt-4 mb-3">سطور القيد</h5>
+                    <div id="journal-lines-container">
+                        <div class="journal-line-row row mb-3">
+                            <div class="col-md-4">
+                                <select class="form-control account-select" name="account_id[]" required>
+                                    <option value="">-- اختر الحساب --</option>
+                                    {% for category in account_categories %}
+                                        <optgroup label="{{ category.name }}">
+                                            {% for account in accounts %}
+                                                {% if account.category_id == category.id %}
+                                                    <option value="{{ account.id }}">{{ account.account_number }} - {{ account.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </optgroup>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="number" class="form-control debit-input" name="debit[]" placeholder="مدين" min="0" step="0.01">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="number" class="form-control credit-input" name="credit[]" placeholder="دائن" min="0" step="0.01">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="line_description[]" placeholder="وصف السطر">
+                            </div>
+                            <div class="col-md-1">
+                                <button type="button" class="btn btn-danger remove-line-btn"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="add-line-btn" class="btn btn-success mt-2">
+                        <i class="fas fa-plus"></i> إضافة سطر
+                    </button>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>إجمالي المدين</label>
+                                <input type="text" id="total-debit" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>إجمالي الدائن</label>
+                                <input type="text" id="total-credit" class="form-control" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="balance-error" class="alert alert-danger mt-3 d-none">
+                        <i class="fas fa-exclamation-triangle"></i> يجب أن يكون إجمالي المدين مساوياً لإجمالي الدائن.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                    <button type="button" id="save-draft-btn" class="btn btn-info">حفظ كمسودة</button>
+                    <button type="button" id="save-post-btn" class="btn btn-primary">حفظ وترحيل</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // تهيئة السطر الأول
+        updateTotals();
+        
+        // إضافة سطر جديد
+        $('#add-line-btn').click(function() {
+            const newLine = $('.journal-line-row').first().clone();
+            newLine.find('input').val('');
+            newLine.find('select').val('');
+            $('#journal-lines-container').append(newLine);
+            bindEvents();
+        });
+        
+        // حذف سطر
+        function bindEvents() {
+            $('.remove-line-btn').off('click').on('click', function() {
+                if ($('.journal-line-row').length > 1) {
+                    $(this).closest('.journal-line-row').remove();
+                    updateTotals();
+                } else {
+                    alert('يجب أن يحتوي القيد على سطر واحد على الأقل');
+                }
+            });
+            
+            $('.debit-input, .credit-input').off('input').on('input', function() {
+                // عند إدخال قيمة في حقل المدين، يتم مسح حقل الدائن والعكس
+                const row = $(this).closest('.journal-line-row');
+                if ($(this).hasClass('debit-input') && $(this).val() !== '') {
+                    row.find('.credit-input').val('');
+                } else if ($(this).hasClass('credit-input') && $(this).val() !== '') {
+                    row.find('.debit-input').val('');
+                }
+                
+                updateTotals();
+            });
+        }
+        
+        // حساب الإجماليات
+        function updateTotals() {
+            let totalDebit = 0;
+            let totalCredit = 0;
+            
+            $('.debit-input').each(function() {
+                const value = parseFloat($(this).val()) || 0;
+                totalDebit += value;
+            });
+            
+            $('.credit-input').each(function() {
+                const value = parseFloat($(this).val()) || 0;
+                totalCredit += value;
+            });
+            
+            $('#total-debit').val(totalDebit.toFixed(2));
+            $('#total-credit').val(totalCredit.toFixed(2));
+            
+            // عرض رسالة خطأ إذا كان هناك عدم توازن
+            if (totalDebit !== totalCredit) {
+                $('#balance-error').removeClass('d-none');
+            } else {
+                $('#balance-error').addClass('d-none');
+            }
+        }
+        
+        // ربط الأحداث بالسطر الأول
+        bindEvents();
+        
+        // حفظ القيد كمسودة
+        $('#save-draft-btn').click(function() {
+            saveJournalEntry(false);
+        });
+        
+        // حفظ وترحيل القيد
+        $('#save-post-btn').click(function() {
+            saveJournalEntry(true);
+        });
+        
+        // حفظ القيد المحاسبي
+        function saveJournalEntry(postEntry) {
+            const totalDebit = parseFloat($('#total-debit').val());
+            const totalCredit = parseFloat($('#total-credit').val());
+            
+            // التحقق من توازن القيد
+            if (totalDebit !== totalCredit) {
+                $('#balance-error').removeClass('d-none');
+                return;
+            }
+            
+            // التحقق من وجود سطور القيد
+            if ($('.journal-line-row').length === 0) {
+                alert('يجب إضافة سطر واحد على الأقل للقيد');
+                return;
+            }
+            
+            // جمع البيانات من النموذج
+            const formData = new FormData();
+            formData.append('entry_date', $('#entry_date').val());
+            formData.append('entry_type', $('#entry_type').val());
+            formData.append('description', $('#entry_description').val());
+            formData.append('reference', $('#reference').val());
+            formData.append('is_posted', postEntry ? 'true' : 'false');
+            formData.append('total_debit', totalDebit);
+            formData.append('total_credit', totalCredit);
+            
+            // جمع بيانات سطور القيد
+            const lines = [];
+            $('.journal-line-row').each(function() {
+                const row = $(this);
+                const accountId = row.find('.account-select').val();
+                const debit = parseFloat(row.find('.debit-input').val()) || 0;
+                const credit = parseFloat(row.find('.credit-input').val()) || 0;
+                const description = row.find('input[name="line_description[]"]').val();
+                
+                if (accountId && (debit > 0 || credit > 0)) {
+                    lines.push({
+                        account_id: accountId,
+                        debit: debit,
+                        credit: credit,
+                        description: description
+                    });
+                }
+            });
+            
+            formData.append('lines', JSON.stringify(lines));
+            
+            // إرسال البيانات إلى الخادم
+            $.ajax({
+                url: '/journal-entries/create',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        alert('تم حفظ القيد المحاسبي بنجاح');
+                        location.reload();
+                    } else {
+                        alert('حدث خطأ أثناء حفظ القيد: ' + response.error);
+                    }
+                },
+                error: function() {
+                    alert('حدث خطأ في الاتصال بالخادم');
+                }
+            });
+        }
+        
+        // ترحيل قيد محاسبي
+        $('.post-journal-btn').click(function() {
+            const entryId = $(this).data('entry-id');
+            
+            if (confirm('هل أنت متأكد من ترحيل هذا القيد؟ لن تتمكن من تعديله بعد الترحيل.')) {
+                $.ajax({
+                    url: '/journal-entries/post/' + entryId,
+                    type: 'POST',
+                    success: function(response) {
+                        if (response.success) {
+                            alert('تم ترحيل القيد المحاسبي بنجاح');
+                            location.reload();
+                        } else {
+                            alert('حدث خطأ أثناء ترحيل القيد: ' + response.error);
+                        }
+                    },
+                    error: function() {
+                        alert('حدث خطأ في الاتصال بالخادم');
+                    }
+                });
+            }
+        });
+        
+        // حذف قيد محاسبي
+        $('.delete-journal-btn').click(function() {
+            const entryId = $(this).data('entry-id');
+            
+            if (confirm('هل أنت متأكد من حذف هذا القيد؟ هذه العملية لا يمكن التراجع عنها.')) {
+                $.ajax({
+                    url: '/journal-entries/delete/' + entryId,
+                    type: 'POST',
+                    success: function(response) {
+                        if (response.success) {
+                            alert('تم حذف القيد المحاسبي بنجاح');
+                            location.reload();
+                        } else {
+                            alert('حدث خطأ أثناء حذف القيد: ' + response.error);
+                        }
+                    },
+                    error: function() {
+                        alert('حدث خطأ في الاتصال بالخادم');
+                    }
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

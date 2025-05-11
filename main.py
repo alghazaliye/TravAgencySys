@@ -22,6 +22,7 @@ with app.app_context():
 
 import routes  # Import all routes
 import routes_mssql  # Import SQL Server routes
+import routes_finance  # Import financial routes
 
 # إعداد مفتاح الجلسة إذا لم يكن موجودًا - استخدام مفتاح أكثر قوة
 if not os.environ.get("SESSION_SECRET"):
