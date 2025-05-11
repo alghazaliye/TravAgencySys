@@ -714,6 +714,9 @@ def system_settings():
         'email_notifications_enabled': {
             'description': 'تفعيل إرسال إشعارات البريد الإلكتروني'
         },
+        'enable_emails': {
+            'description': 'تفعيل نظام البريد الإلكتروني'
+        },
         'company_email': {
             'description': 'البريد الإلكتروني الرسمي للشركة'
         },
