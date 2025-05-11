@@ -659,13 +659,32 @@ def system_settings():
     if request.method == 'POST':
         try:
             data = request.form
+            
+            # الحصول على جميع الإعدادات الموجودة في قاعدة البيانات
+            all_checkboxes = ['sidebar_mini', 'sidebar_collapsed', 'rtl_mode', 'enable_dark_mode', 
+                             'use_custom_logo', 'show_logo_in_reports', 'sound_notifications',
+                             'notify_new_bookings', 'notify_payment_received', 'notify_booking_cancellation',
+                             'email_notifications_enabled', 'sms_service_enabled']
+            
+            # تعيين القيم الافتراضية للخانات غير المحددة
+            for checkbox in all_checkboxes:
+                if checkbox not in data:
+                    # إذا لم يكن الـ checkbox موجودًا في البيانات المرسلة، فهذا يعني أنه غير محدد
+                    try:
+                        SystemSettings.set_value(checkbox, 'false')
+                        # تحديث القيمة في متغير الإعدادات العام
+                        global settings_dict
+                        settings_dict[checkbox] = 'false'
+                    except Exception as e:
+                        logging.error(f"خطأ في حفظ الإعداد {checkbox}: {str(e)}")
+            
+            # معالجة باقي البيانات المرسلة
             for key, value in data.items():
                 # تجنب المفاتيح الخاصة بـ CSRF وغيرها
                 if key.startswith('csrf_') or key == '_method':
                     continue
                 
                 # حفظ القيمة أيضًا في متغير الإعدادات العام
-                global settings_dict
                 settings_dict[key] = value
                 
                 # محاولة حفظ القيمة في قاعدة البيانات

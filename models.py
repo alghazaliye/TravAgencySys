@@ -1,4 +1,5 @@
 from datetime import datetime, date
+import logging
 from flask_login import UserMixin
 from app import db
 
@@ -433,28 +434,44 @@ class SystemSettings(db.Model):
     @classmethod
     def set_value(cls, key, value, setting_type='text', description=None):
         """Set a setting value by key"""
-        setting = cls.query.filter_by(setting_key=key).first()
-        if setting:
-            setting.setting_value = str(value)
-            setting.updated_at = datetime.utcnow()
-            if setting_type:
-                setting.setting_type = setting_type
-            if description:
-                setting.description = description
-        else:
-            setting = cls(
-                setting_key=key,
-                setting_value=str(value),
-                setting_type=setting_type,
-                description=description
-            )
-            db.session.add(setting)
         try:
+            setting = cls.query.filter_by(setting_key=key).first()
+            if setting:
+                # احتياط إضافي لمنع مشاكل التشفير/الترميز
+                try:
+                    setting.setting_value = str(value)
+                    setting.updated_at = datetime.utcnow()
+                    if setting_type:
+                        setting.setting_type = setting_type
+                    if description:
+                        setting.description = description
+                except Exception as encoding_error:
+                    # في حالة وجود مشكلة في التشفير، نستخدم الترميز المناسب
+                    logging.error(f"خطأ في ترميز قيمة الإعداد {key}: {encoding_error}")
+                    setting.setting_value = value.encode('utf-8', errors='replace').decode('utf-8', errors='replace')
+            else:
+                # إنشاء إعداد جديد
+                try:
+                    str_value = str(value)
+                except Exception as str_error:
+                    logging.error(f"خطأ في تحويل قيمة الإعداد {key} إلى نص: {str_error}")
+                    str_value = value.encode('utf-8', errors='replace').decode('utf-8', errors='replace')
+                
+                setting = cls(
+                    setting_key=key,
+                    setting_value=str_value,
+                    setting_type=setting_type,
+                    description=description
+                )
+                db.session.add(setting)
+            
+            # محاولة حفظ التغييرات
             db.session.commit()
+            return True
         except Exception as e:
             db.session.rollback()
-            print(f"خطأ في حفظ الإعدادات: {e}")
-            # لا نحاول حفظ الإعدادات في الذاكرة هنا لتجنب مشاكل الدورة
+            logging.error(f"خطأ في حفظ الإعداد {key}: {e}")
+            return False
         
         
 # الميزانيات والتخطيط المالي
