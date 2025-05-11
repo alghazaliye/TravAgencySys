@@ -3,6 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import User, Customer, TransportCompany, Country, City, BusRoute, BusType
 from models import BusSchedule, BusTrip, BusBooking, BookingPayment, SystemSettings
+from models import Currency, CashRegister, BankAccount
 from app import app, db
 import logging
 import uuid
@@ -488,8 +489,8 @@ def new_bus_booking():
     bus_types = BusType.query.filter_by(is_active=True).all()
     
     # جلب الحسابات النقدية والبنكية للدفع
-    cash_accounts = CashRegister.query.filter_by(is_active=True).all() if 'CashRegister' in globals() else []
-    bank_accounts = BankAccount.query.filter_by(is_active=True).all() if 'BankAccount' in globals() else []
+    cash_accounts = CashRegister.query.filter_by(is_active=True).all()
+    bank_accounts = BankAccount.query.filter_by(is_active=True).all()
     
     # جلب إعدادات النظام
     settings = get_settings()
@@ -679,6 +680,9 @@ def system_settings():
         },
         'use_hijri_dates': {
             'description': 'استخدام التقويم الهجري في النظام'
+        },
+        'show_both_dates': {
+            'description': 'عرض التاريخ الميلادي والهجري معاً'
         },
         'first_day_of_week': {
             'description': 'تحديد أول يوم في الأسبوع'
