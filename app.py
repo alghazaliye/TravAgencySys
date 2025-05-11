@@ -50,9 +50,9 @@ def create_app():
     app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
         "pool_recycle": 300,
         "pool_pre_ping": True,
-        "connect_args": {
-            "sslmode": "require"  # استخدام SSL كما هو مطلوب من قاعدة البيانات
-        }
+        "pool_timeout": 30,
+        "max_overflow": 15,
+        "pool_size": 5
     }
     
     # إضافة فلتر مخصص لتنسيق التاريخ

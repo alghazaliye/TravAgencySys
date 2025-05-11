@@ -582,7 +582,24 @@ def suppliers():
 def banks():
     """صفحة البنوك"""
     settings = get_settings()
-    return render_template('banks.html', settings=settings)
+    # إنشاء قاموس فارغ للعملات حتى لا يكون هناك خطأ في القالب
+    currency_totals = {}
+    try:
+        # الحصول على العملات
+        currencies = Currency.query.all()
+        
+        # إضافة كل عملة إلى قاموس العملات
+        for currency in currencies:
+            currency_totals[currency.code] = {
+                'name': currency.name,
+                'bank_total': 0,
+                'cash_total': 0,
+                'total': 0
+            }
+    except Exception as e:
+        logging.error(f"خطأ في استرجاع العملات: {str(e)}")
+        
+    return render_template('banks.html', settings=settings, currency_totals=currency_totals)
 
 @app.route('/payment-vouchers')
 @login_required
