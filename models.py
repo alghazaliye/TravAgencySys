@@ -3,6 +3,12 @@ import logging
 from flask_login import UserMixin
 from app import db
 
+# علاقة العديد-إلى-العديد بين المستخدمين والأدوار
+user_roles = db.Table('user_roles',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('role_id', db.Integer, db.ForeignKey('role.id'), primary_key=True)
+)
+
 # تعريف نموذج المستخدم
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -14,10 +20,91 @@ class User(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    # سيتم إضافة هذا الحقل في ترحيلات لاحقة
+    # last_login = db.Column(db.DateTime)
+    
+    # علاقة مع الأدوار
+    roles = db.relationship('Role', secondary=user_roles, lazy='subquery',
+                           backref=db.backref('users', lazy=True))
     
     @property
     def is_active(self):
         return self.active
+    
+    def set_password(self, password):
+        """تعيين كلمة مرور مشفرة للمستخدم"""
+        from werkzeug.security import generate_password_hash
+        self.password_hash = generate_password_hash(password)
+    
+    def check_password(self, password):
+        """التحقق من كلمة المرور"""
+        from werkzeug.security import check_password_hash
+        if self.password_hash:
+            return check_password_hash(self.password_hash, password)
+        return False
+    
+    def has_role(self, role_name):
+        """التحقق مما إذا كان المستخدم يملك دورًا محددًا"""
+        if self.is_admin:  # المدير لديه جميع الأدوار
+            return True
+            
+        # تنفيذ استعلام مباشر بواسطة SQL للتحقق من الأدوار
+        from sqlalchemy.sql import text
+        sql = text("""
+            SELECT COUNT(*) FROM user_roles ur
+            JOIN role r ON r.id = ur.role_id
+            WHERE ur.user_id = :user_id AND r.name = :role_name
+        """)
+        
+        result = db.session.execute(sql, {'user_id': self.id, 'role_name': role_name})
+        count = result.scalar()
+        
+        return count is not None and count > 0
+    
+    def has_permission(self, permission_name):
+        """التحقق مما إذا كان المستخدم يملك صلاحية محددة"""
+        # المسؤول لديه جميع الصلاحيات
+        if self.is_admin:
+            return True
+        
+        # تنفيذ استعلام مباشر بواسطة SQL للتحقق من الصلاحيات
+        from sqlalchemy.sql import text
+        sql = text("""
+            SELECT COUNT(*) FROM user_roles ur
+            JOIN role_permissions rp ON rp.role_id = ur.role_id
+            JOIN permission p ON p.id = rp.permission_id
+            WHERE ur.user_id = :user_id AND p.name = :permission_name
+        """)
+        
+        result = db.session.execute(sql, {'user_id': self.id, 'permission_name': permission_name})
+        count = result.scalar()
+        
+        return count is not None and count > 0
+
+# نموذج الدور
+class Role(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True, nullable=False)
+    description = db.Column(db.String(200))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # علاقة مع الصلاحيات
+    permissions = db.relationship('Permission', secondary='role_permissions', 
+                                  lazy='subquery', backref=db.backref('roles', lazy=True))
+
+# جدول وسيط للعلاقة بين الأدوار والصلاحيات
+role_permissions = db.Table('role_permissions',
+    db.Column('role_id', db.Integer, db.ForeignKey('role.id'), primary_key=True),
+    db.Column('permission_id', db.Integer, db.ForeignKey('permission.id'), primary_key=True)
+)
+
+# نموذج الصلاحيات
+class Permission(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    code = db.Column(db.String(100), unique=True, nullable=False)
+    description = db.Column(db.String(200))
+    module = db.Column(db.String(50))  # المودول أو القسم (مثل: مستخدمين، حجوزات، إلخ)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 # نموذج العملاء
 class Customer(db.Model):

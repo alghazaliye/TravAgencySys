@@ -1,9 +1,10 @@
-from flask import Blueprint, render_template, request, jsonify, flash, redirect, url_for
+from flask import Blueprint, render_template, request, jsonify, flash, redirect, url_for, abort
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from functools import wraps
 from models import User, Customer, TransportCompany, Country, City, BusRoute, BusType
 from models import BusSchedule, BusTrip, BusBooking, BookingPayment, SystemSettings
-from models import Currency, CashRegister, BankAccount
+from models import Currency, CashRegister, BankAccount, Role, Permission
 from app import app, db
 
 # قاموس عام لتخزين الإعدادات
@@ -11,6 +12,74 @@ settings_dict = {}
 import logging
 import uuid
 from datetime import datetime
+
+# دالة للتحقق من وجود صلاحية محددة
+def permission_required(permission_name):
+    """
+    زخرفة للتحقق من أن المستخدم الحالي يملك الصلاحية المحددة.
+    إذا لم يملك المستخدم الصلاحية، يتم توجيهه إلى صفحة خطأ 403 (غير مصرح)
+    """
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not current_user.is_authenticated:
+                return redirect(url_for('login', next=request.url))
+            
+            # المسؤول لديه جميع الصلاحيات
+            if current_user.is_admin:
+                return f(*args, **kwargs)
+            
+            # التحقق من الصلاحية
+            if not current_user.has_permission(permission_name):
+                flash('ليس لديك صلاحية للوصول إلى هذه الصفحة', 'danger')
+                abort(403)
+            
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
+
+# دالة للتحقق من وجود دور محدد
+def role_required(role_name):
+    """
+    زخرفة للتحقق من أن المستخدم الحالي يملك الدور المحدد.
+    إذا لم يملك المستخدم الدور، يتم توجيهه إلى صفحة خطأ 403 (غير مصرح)
+    """
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not current_user.is_authenticated:
+                return redirect(url_for('login', next=request.url))
+            
+            # المسؤول لديه جميع الأدوار
+            if current_user.is_admin:
+                return f(*args, **kwargs)
+            
+            # التحقق من الدور
+            if not current_user.has_role(role_name):
+                flash('ليس لديك الصلاحية للوصول إلى هذه الصفحة', 'danger')
+                abort(403)
+            
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
+
+# دالة للتحقق من أن المستخدم هو مسؤول
+def admin_required(f):
+    """
+    زخرفة للتحقق من أن المستخدم الحالي هو مسؤول.
+    إذا لم يكن المستخدم مسؤولاً، يتم توجيهه إلى صفحة خطأ 403 (غير مصرح)
+    """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated:
+            return redirect(url_for('login', next=request.url))
+        
+        if not current_user.is_admin:
+            flash('يجب أن تكون مسؤولاً للوصول إلى هذه الصفحة', 'danger')
+            abort(403)
+        
+        return f(*args, **kwargs)
+    return decorated_function
 
 # الإعدادات الافتراضية للنظام
 DEFAULT_SETTINGS = {
@@ -233,18 +302,9 @@ def login():
             duration = timedelta(days=30) if remember else timedelta(days=1)
             login_user(user, remember=remember, duration=duration)
 
-            # تحديث بيانات آخر تسجيل دخول للمستخدم (إذا كان هناك حقول لذلك)
-            try:
-                # تحديث بيانات آخر تسجيل دخول إذا كانت متاحة في نموذج المستخدم
-                if hasattr(user, 'last_login_at'):
-                    user.last_login_at = datetime.now()
-                if hasattr(user, 'login_count'):
-                    user.login_count = user.login_count + 1 if user.login_count else 1
-                db.session.commit()
-            except:
-                # في حالة فشل التحديث، نتابع دون توقف
-                db.session.rollback()
-                pass
+            # تسجيل معلومات تسجيل الدخول في السجلات فقط دون تخزينها في قاعدة البيانات
+            # سنضيف آليات تتبع لاحقًا بعد ترحيل قاعدة البيانات
+            logging.info(f"تم تسجيل دخول المستخدم {user.username} بنجاح في {datetime.now()}")
             
             # سجل نجاح تسجيل الدخول
             logging.info(f"تم تسجيل دخول المستخدم: {user.username} (IP: {request.remote_addr})")
