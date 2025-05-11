@@ -1,19 +1,31 @@
 /**
  * إدارة القائمة الجانبية المصغرة
- * نسخة 2.0 - تحسينات إضافية للأداء والمظهر
+ * نسخة 2.1 - تحسينات إضافية للأداء والمظهر مع تجنب تكرار الأزرار
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('تم تحميل ملف mini-sidebar.js - الإصدار المحسن 2.0');
+    console.log('تم تحميل ملف mini-sidebar.js - الإصدار المحسن 2.1');
+    
+    // نحن لا ننشئ أزرار جديدة، فقط نتكامل مع الأزرار الموجودة
+    
+    // التحقق مما إذا كان هناك زر تبديل موجود مسبقًا
+    const existingToggleBtn = document.getElementById('sidebarToggleBtn');
+    if (existingToggleBtn) {
+        console.log('تم العثور على زر تبديل القائمة الموجود #sidebarToggleBtn');
+        existingToggleBtn.setAttribute('data-mini-sidebar-integrated', 'true');
+    }
     
     // تعيين حالة القائمة المصغرة
     setupMiniSidebar();
     
-    // إضافة مستمع لتبديل حالة القائمة
+    // استدعاء setupSidebarToggle تحت ظروف معينة فقط
     setupSidebarToggle();
     
     // تطبيق الأنماط المناسبة للأيقونات
     enhanceSidebarIcons();
+    
+    // استدعاء تحسين أيقونات القائمة الجانبية بعد فترة قصيرة للتأكد من تطبيق التغييرات
+    setTimeout(enhanceSidebarIcons, 500);
 });
 
 /**
@@ -77,31 +89,34 @@ function fixSidebarIcons() {
 }
 
 /**
- * إعداد زر تبديل القائمة مع تحسينات
+ * تكامل مع أزرار تبديل القائمة الجانبية الموجودة مسبقاً
+ * هذه الوظيفة لم تعد تنشئ أزرار جديدة، بل تتكامل مع الأزرار الموجودة
  */
 function setupSidebarToggle() {
-    const toggleBtn = document.getElementById('sidebarToggleBtn');
-    if (toggleBtn) {
-        // إضافة فئة للتمييز
-        toggleBtn.classList.add('mini-sidebar-toggle');
-        
-        // إضافة مستمع للنقر
-        toggleBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            toggleSidebar();
-        });
-    }
+    // هذه الوظيفة تم إزالتها لتجنب تكرار الأزرار
+    // بدلاً من ذلك، نستخدم الأزرار التي تم إنشاؤها بواسطة sidebar-fix.js
     
     // استعادة حالة القائمة من التخزين المحلي
     restoreSidebarState();
+    
+    // البحث عن جميع أزرار تبديل القائمة الجانبية الموجودة مسبقاً
+    const allToggleBtns = document.querySelectorAll('[data-widget="pushmenu"], .sidebar-toggle, #sidebarToggleBtn');
+    allToggleBtns.forEach(btn => {
+        // إضافة مستمع لتحديث أنماط الأيقونات بعد النقر
+        btn.addEventListener('click', function() {
+            // استدعاء تحسين الأيقونات بعد تبديل القائمة
+            setTimeout(enhanceSidebarIcons, 10);
+        });
+    });
 }
 
 /**
  * تبديل حالة القائمة الجانبية
+ * هذه الوظيفة تتكامل الآن مع الأحداث التي تطلقها sidebar-fix.js
  */
 function toggleSidebar() {
-    // تبديل فئة sidebar-collapse
-    document.body.classList.toggle('sidebar-collapse');
+    // لا نقوم بتبديل الفئة هنا لأن ذلك يتم بواسطة sidebar-fix.js
+    // بدلاً من ذلك، نستمع للتغييرات ونقوم بتطبيق الأنماط المخصصة
     
     // تحديد حالة القائمة الحالية
     const isCollapsed = document.body.classList.contains('sidebar-collapse');
@@ -118,9 +133,15 @@ function toggleSidebar() {
         document.body.classList.add('sidebar-is-expanded');
     }
     
-    // إعادة تطبيق أنماط الأيقونات بعد فترة قصيرة
-    setTimeout(enhanceSidebarIcons, 10);
+    // تطبيق تحسينات الأيقونات
+    enhanceSidebarIcons();
 }
+
+// إضافة مستمع للأحداث لاستقبال إشعارات من sidebar-fix.js
+document.addEventListener('sidebar-toggled', function() {
+    // تنفيذ تحسينات الأيقونات عند تغيير حالة القائمة
+    setTimeout(toggleSidebar, 10);
+});
 
 /**
  * استعادة حالة القائمة الجانبية
