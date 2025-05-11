@@ -210,17 +210,98 @@ window.addEventListener('resize', function() {
     updateSidebarElements(document.body.classList.contains('sidebar-collapse'));
 });
 
-// تجاهل محاولات إصلاح الأيقونات من ملفات أخرى
-window.preventOtherSidebarFixers = function() {
-    // استبدال وظائف الإصلاح الأخرى بوظائف فارغة
+// تعطيل الوظائف المشابهة في ملفات JavaScript الأخرى لمنع التكرار
+window.disableConflictingFunctions = function() {
+    console.log('منع تكرار وظائف القائمة الجانبية');
+    
+    // تعطيل الوظائف في sidebar-fix.js
     if (window.fixSidebarIcons && window.fixSidebarIcons !== cleanupSidebarIcons) {
-        const originalFunction = window.fixSidebarIcons;
         window.fixSidebarIcons = function() {
-            console.log('تم تجاهل محاولة إصلاح من مصدر آخر');
+            console.log('تم تجاهل fixSidebarIcons من ملف آخر');
             return;
+        };
+    }
+    
+    // تعطيل وظائف في mini-sidebar.js
+    if (window.setupMiniSidebar) {
+        window.setupMiniSidebar = function() {
+            console.log('تم تجاهل setupMiniSidebar من ملف آخر');
+            return;
+        };
+    }
+    
+    if (window.enhanceSidebarIcons) {
+        window.enhanceSidebarIcons = function() {
+            console.log('تم تجاهل enhanceSidebarIcons من ملف آخر');
+            return;
+        };
+    }
+    
+    // تعطيل الوظائف في custom.js
+    if (window.fixRtlSidebar) {
+        const originalFixRtlSidebar = window.fixRtlSidebar;
+        
+        window.fixRtlSidebar = function() {
+            console.log('تعديل سلوك fixRtlSidebar لمنع التكرار');
+            
+            // نطلب الوظيفة الأصلية ولكن نتجاهل جزء الأيقونات
+            // تطبيق إصلاحات الأنماط فقط دون إضافة أو تعديل الأيقونات
+            const mainSidebar = document.querySelector('.main-sidebar');
+            if (mainSidebar) {
+                mainSidebar.style.minHeight = '100vh';
+                mainSidebar.style.height = '100%';
+                mainSidebar.style.position = 'fixed';
+            }
+            
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar) {
+                sidebar.style.height = 'calc(100% - 4.5rem)';
+                sidebar.style.overflowY = 'auto';
+                sidebar.style.paddingBottom = '0';
+                sidebar.style.paddingRight = '0.5rem';
+                sidebar.style.paddingLeft = '0.5rem';
+            }
+            
+            // لا نقوم بتطبيق تعديلات الأيقونات
+            
+            // استدعاء fixMobileSidebar إذا كان حجم النافذة صغيرًا
+            if (window.innerWidth <= 767.98 && window.fixMobileSidebar) {
+                window.fixMobileSidebar();
+            }
         };
     }
 };
 
-// تنفيذ الوظيفة مباشرة لتجاهل المصلحات الأخرى
-window.preventOtherSidebarFixers();
+// تنفيذ دالة تعطيل الوظائف المتضاربة فورًا
+window.disableConflictingFunctions();
+
+// إزالة أي أزرار قائمة إضافية تم إنشاؤها
+function removeExtraToggleButtons() {
+    // نحن نعرف أن الزر الأصلي هو #sidebarToggleBtn
+    // نبحث عن الأزرار الأخرى مثل mainMenuToggleBtn وما إلى ذلك
+    setTimeout(() => {
+        const mainMenuBtn = document.getElementById('mainMenuToggleBtn');
+        if (mainMenuBtn && mainMenuBtn !== document.getElementById('sidebarToggleBtn')) {
+            console.log('إزالة زر قائمة إضافي: mainMenuToggleBtn');
+            mainMenuBtn.remove();
+        }
+        
+        // تجميع الأزرار الزائدة من السمات المحددة
+        const extraButtons = document.querySelectorAll('[data-widget="pushmenu"]:not(#sidebarToggleBtn)');
+        extraButtons.forEach(btn => {
+            if (btn && btn !== document.getElementById('sidebarToggleBtn')) {
+                console.log('إزالة زر قائمة إضافي بسمة data-widget="pushmenu"');
+                btn.remove();
+            }
+        });
+        
+        const quickFixBtn = document.getElementById('quickFixSidebarBtn');
+        if (quickFixBtn) {
+            console.log('إزالة زر إصلاح سريع: quickFixSidebarBtn');
+            quickFixBtn.remove();
+        }
+    }, 100);
+}
+
+// تنفيذ دالة إزالة الأزرار الإضافية
+removeExtraToggleButtons();

@@ -1125,7 +1125,8 @@
     <!-- Notifications System -->
     <script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
     <!-- Sidebar Fix Script -->
-    <script src="{{ url_for('static', filename='js/sidebar-fix.js') }}"></script>
+    <!-- مدير القائمة الجانبية الموحد - يتم تحميله بدلاً من جميع ملفات القائمة الجانبية الأخرى -->
+    <script src="{{ url_for('static', filename='js/sidebar-manager.js') }}"></script>
     <!-- Notification Integration -->
     <script>
         // إضافة مستمعي أحداث للإشعارات - سيتم استدعاؤهم عند إضافة أي بيانات
@@ -1289,8 +1290,7 @@
     <!-- سكربت تبديل الوضع الليلي/النهاري -->
     <script src="{{ url_for('static', filename='js/theme-switcher.js') }}"></script>
     
-    <!-- سكربت القائمة الجانبية المصغرة -->
-    <script src="{{ url_for('static', filename='js/mini-sidebar.js') }}"></script>
+    <!-- تم دمج وظائف القائمة المصغرة في مدير القائمة الجانبية -->
     
     {% block scripts %}{% endblock %}
 </body>
