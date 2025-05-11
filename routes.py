@@ -75,6 +75,11 @@ DEFAULT_SETTINGS = {
         'type': 'boolean',
         'description': 'تمكين الوضع الداكن افتراضياً'
     },
+    'sidebar_mini': {
+        'value': 'true',
+        'type': 'boolean',
+        'description': 'تمكين وضع القائمة الجانبية المصغرة'
+    },
     'default_currency': {
         'value': 'SAR',
         'type': 'text',
@@ -165,7 +170,7 @@ def get_settings():
         'border_radius': 'medium',
         'card_shadow': 'medium',
         'content_width': 'fluid',
-        'sidebar_mini': 'false',
+        'sidebar_mini': 'true',
         'transitions': 'true',
         'layout_boxed': 'false',
         'navbar_fixed': 'true',
