@@ -1,0 +1,143 @@
+/**
+ * تنسيقات القائمة الجانبية المصغرة
+ */
+
+/* تنسيق القائمة المصغرة */
+.sidebar-mini.sidebar-collapse .main-sidebar {
+    width: 4.6rem !important;
+    overflow: visible !important;
+}
+
+.sidebar-mini.sidebar-collapse .main-sidebar:hover {
+    width: 16rem !important;
+}
+
+/* تخفي النص في وضع القائمة المصغرة */
+.sidebar-mini.sidebar-collapse .nav-sidebar .nav-link p {
+    width: 0;
+    white-space: nowrap;
+    padding: 0;
+    margin: 0;
+    opacity: 0;
+    visibility: hidden;
+    display: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* إظهار النص عند التحويم فوق القائمة المصغرة */
+.sidebar-mini.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-link p {
+    width: auto;
+    opacity: 1;
+    visibility: visible;
+    display: inline-block;
+    margin-right: 0.5rem;
+}
+
+/* تنسيق الأيقونات في القائمة المصغرة */
+.sidebar-mini.sidebar-collapse .nav-sidebar .nav-icon,
+.sidebar-mini.sidebar-collapse .nav-sidebar .fas,
+.sidebar-mini.sidebar-collapse .nav-sidebar .far,
+.sidebar-mini.sidebar-collapse .nav-sidebar .fa {
+    margin: 0 auto !important;
+    width: 100% !important;
+    text-align: center !important;
+    font-size: 1.25rem !important;
+}
+
+/* تعديل تنسيق الروابط في القائمة المصغرة */
+.sidebar-mini.sidebar-collapse .nav-sidebar .nav-link {
+    padding: 0.75rem 0.5rem;
+    text-align: center;
+}
+
+/* تعديل شعار العلامة التجارية في القائمة المصغرة */
+.sidebar-mini.sidebar-collapse .brand-link {
+    padding: 0.75rem 0.5rem;
+    text-align: center;
+    height: 57px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* إخفاء نص العلامة التجارية في القائمة المصغرة */
+.sidebar-mini.sidebar-collapse .brand-link .brand-text {
+    opacity: 0;
+    visibility: hidden;
+    display: none;
+}
+
+/* إظهار نص العلامة التجارية عند التحويم */
+.sidebar-mini.sidebar-collapse .brand-link:hover .brand-text {
+    opacity: 1;
+    visibility: visible;
+    display: inline-block;
+    margin-right: 0.5rem;
+}
+
+/* تحسين الانتقال بين حالات القائمة */
+.main-sidebar, .main-sidebar .nav-link, .nav-sidebar .nav-link p {
+    transition: all 0.3s ease-in-out;
+}
+
+/* إصلاح العناصر الفرعية في القائمة المصغرة */
+.sidebar-mini.sidebar-collapse .nav-sidebar .nav-treeview {
+    display: none;
+    position: absolute;
+    right: 100%;
+    top: 0;
+    width: 200px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    background-color: var(--sidebar-bg, #343a40);
+    border-radius: 0 0 0.25rem 0.25rem;
+    padding: 0.5rem 0;
+}
+
+/* إظهار العناصر الفرعية عند التحويم */
+.sidebar-mini.sidebar-collapse .nav-sidebar .nav-item:hover > .nav-treeview {
+    display: block;
+}
+
+/* إضافة سهم للعناصر التي تحتوي على قائمة فرعية */
+.sidebar-mini.sidebar-collapse .nav-sidebar .nav-item.has-treeview > .nav-link::after {
+    content: '\f105'; /* رمز السهم */
+    font-family: 'Font Awesome 5 Free'; /* استخدام Font Awesome */
+    font-weight: 900; /* السهم السميك */
+    position: absolute;
+    left: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* تعديل هوامش المحتوى الرئيسي */
+.sidebar-mini.sidebar-collapse .content-wrapper,
+.sidebar-mini.sidebar-collapse .main-footer,
+.sidebar-mini.sidebar-collapse .main-header {
+    margin-right: 4.6rem !important;
+    transition: margin-right 0.3s ease-in-out;
+}
+
+/* تحسين شكل القائمة المصغرة على الأجهزة المحمولة */
+@media (max-width: 767.98px) {
+    .sidebar-mini.sidebar-collapse .main-sidebar {
+        margin-right: -250px !important;
+    }
+    
+    .sidebar-mini.sidebar-collapse .content-wrapper,
+    .sidebar-mini.sidebar-collapse .main-footer,
+    .sidebar-mini.sidebar-collapse .main-header {
+        margin-right: 0 !important;
+    }
+}
+
+/* تحسين أداء الانتقال */
+.sidebar-mini.sidebar-collapse.sidebar-is-opening .main-sidebar {
+    transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+
+.sidebar-mini.sidebar-collapse.sidebar-is-opening .content-wrapper,
+.sidebar-mini.sidebar-collapse.sidebar-is-opening .main-footer,
+.sidebar-mini.sidebar-collapse.sidebar-is-opening .main-header {
+    transition-delay: 0;
+}

@@ -80,6 +80,11 @@ DEFAULT_SETTINGS = {
         'type': 'boolean',
         'description': 'هل الشريط الجانبي مطوي افتراضياً'
     },
+    'sidebar_mini': {
+        'value': 'true',
+        'type': 'boolean',
+        'description': 'تفعيل وضع القائمة الجانبية المصغرة (تعرض الأيقونات فقط)'
+    },
     
     # الشعارات والرموز
     'use_custom_logo': {

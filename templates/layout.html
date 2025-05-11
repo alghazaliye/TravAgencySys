@@ -30,6 +30,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive-fixes.css') }}">
     <!-- إصلاح القائمة الجانبية -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar-fix.css') }}">
+    <!-- القائمة الجانبية المصغرة -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mini-sidebar.css') }}">
     <!-- سمات الوضع الفاتح/الداكن -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-rtl.css') }}">
     <!-- Google Font: المحدد من الإعدادات -->
@@ -1286,6 +1288,9 @@
     
     <!-- سكربت تبديل الوضع الليلي/النهاري -->
     <script src="{{ url_for('static', filename='js/theme-switcher.js') }}"></script>
+    
+    <!-- سكربت القائمة الجانبية المصغرة -->
+    <script src="{{ url_for('static', filename='js/mini-sidebar.js') }}"></script>
     
     {% block scripts %}{% endblock %}
 </body>
