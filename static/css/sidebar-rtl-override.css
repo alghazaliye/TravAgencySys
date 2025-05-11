@@ -1,0 +1,81 @@
+/**
+ * تكميل لإصلاح مشكلة القائمة الجانبية RTL
+ * تطبيق محددات CSS قوية لضمان ظهور الأيقونات والعناصر بشكل صحيح
+ */
+
+.main-sidebar .nav-sidebar .nav-item {
+    width: 100% !important;
+}
+
+.main-sidebar .nav-sidebar .nav-link {
+    display: flex !important;
+    align-items: center !important;
+    padding: 0.75rem 1rem !important;
+}
+
+.main-sidebar .nav-sidebar .nav-link p {
+    margin: 0 !important;
+    margin-right: 0.5rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 200px !important;
+}
+
+.main-sidebar .nav-sidebar .nav-treeview {
+    display: block !important;
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    padding-right: 1.5rem !important;
+}
+
+.main-sidebar {
+    z-index: 1100 !important;
+}
+
+.sidebar-collapse .main-sidebar:hover {
+    overflow-y: auto !important;
+}
+
+/* إصلاح الأيقونات غير المرئية في القوائم الفرعية */
+.nav-treeview .nav-link .nav-icon,
+.nav-treeview .nav-link .fas,
+.nav-treeview .nav-link .far,
+.nav-treeview .nav-link .fa {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 1.6rem !important;
+    text-align: center !important;
+    font-size: 1rem !important;
+    margin-left: 0.7rem !important;
+    color: inherit !important;
+}
+
+/* التأكد من ظهور القوائم الفرعية */
+.sidebar-mini.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-treeview {
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* تعويض مشكلة النصوص المفقودة */
+.nav-sidebar .nav-link p {
+    display: inline-block !important;
+}
+
+/* إصلاح مشكلة ظهور القائمة الجانبية على جميع الشاشات */
+@media (max-width: 991.98px) {
+    .layout-fixed .main-sidebar {
+        right: -250px !important;
+    }
+    
+    .sidebar-open .layout-fixed .main-sidebar {
+        right: 0 !important;
+    }
+}
+
+/* تعويض مشكلة تداخل خلفية القائمة مع المحتوى */
+.main-sidebar {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2) !important;
+}

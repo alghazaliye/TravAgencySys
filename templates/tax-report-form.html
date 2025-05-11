@@ -1,0 +1,551 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block styles %}
+<style>
+    .tax-form {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+    }
+    
+    .section-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .tax-period-container {
+        display: none;
+    }
+    
+    .tax-period-container.active {
+        display: block;
+    }
+    
+    .tax-type-indicator {
+        text-align: center;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+    
+    .tax-type-indicator.active {
+        background-color: var(--primary-travel);
+        color: #fff;
+    }
+    
+    .tax-type-indicator i {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+    
+    .tax-type-indicator h5 {
+        margin-bottom: 0;
+    }
+    
+    .tax-details-container {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .tax-details-container h5 {
+        margin-bottom: 15px;
+    }
+    
+    .tax-transaction-container {
+        margin-top: 30px;
+    }
+    
+    .tax-transaction-row {
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .tax-transaction-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .tax-transaction-delete {
+        color: #dc3545;
+        cursor: pointer;
+    }
+    
+    .btn-submit {
+        min-width: 120px;
+    }
+    
+    .tax-calculation-summary {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-top: 30px;
+    }
+    
+    .tax-summary-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #f8f9fa;
+    }
+    
+    .tax-summary-label {
+        font-weight: 600;
+    }
+    
+    .tax-summary-total {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 2px solid #dee2e6;
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid rtl px-4">
+    <h1 class="mt-4 mb-4">{{ title }}</h1>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="tax-form">
+                <form method="POST" id="taxReportForm">
+                    <div class="section-title">معلومات التقرير الضريبي</div>
+                    
+                    <!-- نوع الضريبة -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <label>نوع الضريبة <span class="text-danger">*</span></label>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="tax-type-indicator {% if not report or report.report_type == 'VAT' %}active{% endif %}" 
+                                 data-type="VAT" onclick="selectTaxType('VAT')">
+                                <i class="fas fa-percentage"></i>
+                                <h5>ضريبة القيمة المضافة</h5>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="tax-type-indicator {% if report and report.report_type == 'Income' %}active{% endif %}"
+                                 data-type="Income" onclick="selectTaxType('Income')">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <h5>ضريبة الدخل</h5>
+                            </div>
+                        </div>
+                        <input type="hidden" id="report_type" name="report_type" 
+                               value="{{ report.report_type if report else 'VAT' }}">
+                    </div>
+                    
+                    <!-- فترة التقرير -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="period_type">نوع الفترة <span class="text-danger">*</span></label>
+                                <select class="form-control" id="period_type" name="period_type" onchange="togglePeriodFields()">
+                                    <option value="monthly" {% if report and report.month %}selected{% endif %}>شهري</option>
+                                    <option value="quarterly" {% if report and report.quarter %}selected{% endif %}>ربع سنوي</option>
+                                    <option value="yearly" {% if report and not report.month and not report.quarter %}selected{% endif %}>سنوي</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="year">السنة <span class="text-danger">*</span></label>
+                                <select class="form-control" id="year" name="year" required>
+                                    {% for y in range(current_year-2, current_year+3) %}
+                                        <option value="{{ y }}" 
+                                            {% if report and report.year == y %}selected
+                                            {% elif not report and y == current_year %}selected{% endif %}>
+                                            {{ y }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- الفترة الشهرية -->
+                    <div class="tax-period-container {% if report and report.month %}active{% endif %}" id="monthly-period">
+                        <div class="form-group">
+                            <label for="month">الشهر <span class="text-danger">*</span></label>
+                            <select class="form-control" id="month" name="month">
+                                <option value="1" {% if report and report.month == 1 %}selected{% endif %}>يناير</option>
+                                <option value="2" {% if report and report.month == 2 %}selected{% endif %}>فبراير</option>
+                                <option value="3" {% if report and report.month == 3 %}selected{% endif %}>مارس</option>
+                                <option value="4" {% if report and report.month == 4 %}selected{% endif %}>إبريل</option>
+                                <option value="5" {% if report and report.month == 5 %}selected{% endif %}>مايو</option>
+                                <option value="6" {% if report and report.month == 6 %}selected{% endif %}>يونيو</option>
+                                <option value="7" {% if report and report.month == 7 %}selected{% endif %}>يوليو</option>
+                                <option value="8" {% if report and report.month == 8 %}selected{% endif %}>أغسطس</option>
+                                <option value="9" {% if report and report.month == 9 %}selected{% endif %}>سبتمبر</option>
+                                <option value="10" {% if report and report.month == 10 %}selected{% endif %}>أكتوبر</option>
+                                <option value="11" {% if report and report.month == 11 %}selected{% endif %}>نوفمبر</option>
+                                <option value="12" {% if report and report.month == 12 %}selected{% endif %}>ديسمبر</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- الفترة ربع السنوية -->
+                    <div class="tax-period-container {% if report and report.quarter %}active{% endif %}" id="quarterly-period">
+                        <div class="form-group">
+                            <label for="quarter">الربع <span class="text-danger">*</span></label>
+                            <select class="form-control" id="quarter" name="quarter">
+                                <option value="1" {% if report and report.quarter == 1 %}selected{% endif %}>الربع الأول (يناير - مارس)</option>
+                                <option value="2" {% if report and report.quarter == 2 %}selected{% endif %}>الربع الثاني (إبريل - يونيو)</option>
+                                <option value="3" {% if report and report.quarter == 3 %}selected{% endif %}>الربع الثالث (يوليو - سبتمبر)</option>
+                                <option value="4" {% if report and report.quarter == 4 %}selected{% endif %}>الربع الرابع (أكتوبر - ديسمبر)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- الفترة السنوية -->
+                    <div class="tax-period-container {% if report and not report.month and not report.quarter %}active{% endif %}" id="yearly-period">
+                        <div class="form-group">
+                            <p class="text-info">سيتم حساب التقرير للسنة بأكملها من 1 يناير إلى 31 ديسمبر.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="section-title mt-4">بيانات ضريبة القيمة المضافة</div>
+                    
+                    <!-- معلومات وتفاصيل الضريبة -->
+                    <div class="tax-details-container">
+                        <h5>المبيعات مع ضريبة القيمة المضافة</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="total_sales">إجمالي المبيعات</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control calc-total" id="total_sales" name="total_sales" 
+                                               step="0.01" min="0" value="{{ report.total_sales if report else 0 }}" 
+                                               onchange="calculateVAT()">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">ريال</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="vat_on_sales">ضريبة القيمة المضافة المحصلة</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control calc-total" id="vat_on_sales" name="vat_on_sales" 
+                                               step="0.01" min="0" value="{{ report.vat_on_sales if report else 0 }}"
+                                               onchange="calculateVAT()">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">ريال</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h5 class="mt-4">المشتريات مع ضريبة القيمة المضافة</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="total_purchases">إجمالي المشتريات</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control calc-total" id="total_purchases" name="total_purchases" 
+                                               step="0.01" min="0" value="{{ report.total_purchases if report else 0 }}"
+                                               onchange="calculateVAT()">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">ريال</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="vat_on_purchases">ضريبة القيمة المضافة المدفوعة</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control calc-total" id="vat_on_purchases" name="vat_on_purchases" 
+                                               step="0.01" min="0" value="{{ report.vat_on_purchases if report else 0 }}"
+                                               onchange="calculateVAT()">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">ريال</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- ملخص حساب الضريبة -->
+                        <div class="tax-calculation-summary">
+                            <div class="section-title">ملخص حساب الضريبة</div>
+                            <div class="tax-summary-row">
+                                <div class="tax-summary-label">إجمالي ضريبة المخرجات</div>
+                                <div class="tax-summary-value" id="summary-output-vat">{{ "{:,.2f}".format(report.vat_on_sales if report else 0) }} ريال</div>
+                            </div>
+                            <div class="tax-summary-row">
+                                <div class="tax-summary-label">إجمالي ضريبة المدخلات</div>
+                                <div class="tax-summary-value" id="summary-input-vat">{{ "{:,.2f}".format(report.vat_on_purchases if report else 0) }} ريال</div>
+                            </div>
+                            <div class="tax-summary-row tax-summary-total">
+                                <div class="tax-summary-label">صافي الضريبة المستحقة</div>
+                                <div class="tax-summary-value" id="summary-net-vat">{{ "{:,.2f}".format(report.net_vat if report else 0) }} ريال</div>
+                            </div>
+                            <input type="hidden" id="net_vat" name="net_vat" value="{{ report.net_vat if report else 0 }}">
+                        </div>
+                    </div>
+                    
+                    <div class="section-title mt-4">معلومات إضافية</div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="reference_number">الرقم المرجعي في هيئة الزكاة</label>
+                                <input type="text" class="form-control" id="reference_number" name="reference_number"
+                                       value="{{ report.reference_number if report else '' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="status">حالة التقرير</label>
+                                <select class="form-control" id="status" name="status">
+                                    <option value="draft" {% if not report or report.status == 'draft' %}selected{% endif %}>مسودة</option>
+                                    <option value="submitted" {% if report and report.status == 'submitted' %}selected{% endif %}>مقدم</option>
+                                    <option value="approved" {% if report and report.status == 'approved' %}selected{% endif %}>معتمد</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-12 mt-3">
+                            <div class="form-group">
+                                <label for="notes">ملاحظات</label>
+                                <textarea class="form-control" id="notes" name="notes" rows="3">{{ report.notes if report else '' }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12 text-left">
+                            <a href="{{ url_for('tax_management') }}" class="btn btn-secondary">إلغاء</a>
+                            <button type="submit" class="btn btn-primary btn-submit">
+                                {% if action == 'create' %}إنشاء{% else %}تحديث{% endif %}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">إرشادات</h6>
+                </div>
+                <div class="card-body">
+                    <p>معلومات عن ضريبة القيمة المضافة:</p>
+                    <ul>
+                        <li><strong>ضريبة المخرجات:</strong> هي الضريبة التي تحصلها من عملائك على المبيعات والخدمات.</li>
+                        <li><strong>ضريبة المدخلات:</strong> هي الضريبة التي تدفعها لموردينك على المشتريات.</li>
+                        <li><strong>صافي الضريبة:</strong> هو الفرق بين ضريبة المخرجات وضريبة المدخلات، ويمثل المبلغ المستحق للهيئة.</li>
+                    </ul>
+                    <hr>
+                    <p>تواريخ تقديم الإقرارات الضريبية:</p>
+                    <ul>
+                        <li><strong>الشهرية:</strong> في موعد أقصاه اليوم الأخير من الشهر التالي للفترة الضريبية.</li>
+                        <li><strong>ربع السنوية:</strong> في موعد أقصاه اليوم الأخير من الشهر التالي للفترة الضريبية.</li>
+                        <li><strong>السنوية:</strong> في موعد أقصاه 30 إبريل من العام التالي.</li>
+                    </ul>
+                    <p>ملاحظة: يتم احتساب ضريبة القيمة المضافة بنسبة {{ vat_rate }}%.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function selectTaxType(type) {
+        // تحديث نوع الضريبة النشط
+        document.querySelectorAll('.tax-type-indicator').forEach(function(el) {
+            el.classList.remove('active');
+        });
+        document.querySelector('.tax-type-indicator[data-type="' + type + '"]').classList.add('active');
+        
+        // تحديث قيمة النوع المخفية
+        document.getElementById('report_type').value = type;
+    }
+    
+    function togglePeriodFields() {
+        const periodType = document.getElementById('period_type').value;
+        
+        // إخفاء جميع حقول الفترة
+        document.querySelectorAll('.tax-period-container').forEach(function(el) {
+            el.classList.remove('active');
+        });
+        
+        // إظهار حقول الفترة المناسبة
+        document.getElementById(periodType + '-period').classList.add('active');
+        
+        // تحديث متطلبات الحقول
+        updateFieldRequirements(periodType);
+    }
+    
+    function updateFieldRequirements(periodType) {
+        // إزالة متطلبات جميع الحقول
+        document.getElementById('quarter').removeAttribute('required');
+        document.getElementById('month').removeAttribute('required');
+        
+        // تحديث متطلبات الحقول حسب نوع الفترة
+        if (periodType === 'quarterly') {
+            document.getElementById('quarter').setAttribute('required', '');
+        } else if (periodType === 'monthly') {
+            document.getElementById('month').setAttribute('required', '');
+        }
+    }
+    
+    function calculateVAT() {
+        // الحصول على القيم
+        const outputVat = parseFloat(document.getElementById('vat_on_sales').value) || 0;
+        const inputVat = parseFloat(document.getElementById('vat_on_purchases').value) || 0;
+        
+        // حساب صافي الضريبة
+        const netVat = outputVat - inputVat;
+        
+        // تحديث الملخص
+        document.getElementById('summary-output-vat').textContent = outputVat.toLocaleString() + ' ريال';
+        document.getElementById('summary-input-vat').textContent = inputVat.toLocaleString() + ' ريال';
+        document.getElementById('summary-net-vat').textContent = netVat.toLocaleString() + ' ريال';
+        
+        // تحديث قيمة الحقل المخفي
+        document.getElementById('net_vat').value = netVat;
+    }
+    
+    function addTransaction() {
+        const container = document.getElementById('transactionsContainer');
+        const index = container.children.length;
+        
+        // إنشاء صف معاملة جديد
+        const transactionRow = document.createElement('div');
+        transactionRow.className = 'tax-transaction-row';
+        transactionRow.innerHTML = `
+            <div class="tax-transaction-header">
+                <h6>معاملة #${index + 1}</h6>
+                <div class="tax-transaction-delete" onclick="removeTransaction(this)">
+                    <i class="fas fa-trash"></i>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>تاريخ المعاملة <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" name="transaction_date_${index}" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>نوع المعاملة <span class="text-danger">*</span></label>
+                        <select class="form-control" name="transaction_type_${index}" required>
+                            <option value="sales">مبيعات</option>
+                            <option value="purchases">مشتريات</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>المبلغ قبل الضريبة <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" name="amount_${index}" step="0.01" min="0" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text">ريال</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>نسبة الضريبة <span class="text-danger">*</span></label>
+                        <select class="form-control" name="vat_rate_${index}" required>
+                            <option value="15">15%</option>
+                            <option value="5">5%</option>
+                            <option value="0">0% (معفى)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>الوصف</label>
+                <input type="text" class="form-control" name="description_${index}">
+            </div>
+        `;
+        
+        container.appendChild(transactionRow);
+        
+        // تحديث عدد المعاملات
+        document.getElementById('transactionCount').value = index + 1;
+    }
+    
+    function removeTransaction(element) {
+        const transactionRow = element.closest('.tax-transaction-row');
+        transactionRow.remove();
+        
+        // إعادة ترقيم المعاملات
+        const rows = document.querySelectorAll('.tax-transaction-row');
+        rows.forEach(function(row, index) {
+            row.querySelector('h6').textContent = `معاملة #${index + 1}`;
+        });
+        
+        // تحديث عدد المعاملات
+        document.getElementById('transactionCount').value = rows.length;
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // تهيئة متطلبات الحقول عند تحميل الصفحة
+        togglePeriodFields();
+        
+        // حساب ضريبة القيمة المضافة عند تحميل الصفحة
+        calculateVAT();
+        
+        // إضافة مستمعي الأحداث لحقول الحساب
+        document.querySelectorAll('.calc-total').forEach(function(el) {
+            el.addEventListener('change', calculateVAT);
+            el.addEventListener('input', calculateVAT);
+        });
+        
+        // التحقق من صحة النموذج قبل الإرسال
+        document.getElementById('taxReportForm').addEventListener('submit', function(e) {
+            const periodType = document.getElementById('period_type').value;
+            let isValid = true;
+            
+            // التحقق من اختيار السنة
+            if (!document.getElementById('year').value) {
+                alert('يرجى اختيار السنة');
+                isValid = false;
+            }
+            
+            // التحقق من حقول الفترة حسب نوع الفترة
+            if (periodType === 'quarterly' && !document.getElementById('quarter').value) {
+                alert('يرجى اختيار الربع');
+                isValid = false;
+            } else if (periodType === 'monthly' && !document.getElementById('month').value) {
+                alert('يرجى اختيار الشهر');
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+    });
+</script>
+{% endblock %}

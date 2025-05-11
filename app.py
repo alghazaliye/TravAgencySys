@@ -87,3 +87,17 @@ def create_app():
 
 # Create the application instance
 app = create_app()
+
+# تضمين إعدادات النظام في كل القوالب
+from routes import DEFAULT_SETTINGS
+
+@app.context_processor
+def inject_settings():
+    """تضمين إعدادات النظام في سياق القالب"""
+    # استخدام القيم الافتراضية فقط مبدئياً
+    settings_dict = {}
+    for key, data in DEFAULT_SETTINGS.items():
+        settings_dict[key] = data['value']
+    
+    # إعادة قاموس settings للتضمين في سياق جميع القوالب
+    return dict(settings=settings_dict)

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="{{ settings.dark_mode|default('auto') }}">
+<html lang="ar" dir="rtl" data-theme="light">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-    <title>{% block title %}{{ settings.system_name|default('نظام إدارة وكالة السياحة والسفر') }}{% endblock %}</title>
+    <title>{% block title %}نظام إدارة وكالة السياحة والسفر{% endblock %}</title>
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -928,9 +928,21 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
+                                    <a href="{{ url_for('financial_dashboard') }}" class="nav-link">
+                                        <i class="fas fa-tachometer-alt nav-icon"></i>
+                                        <p>لوحة المعلومات المالية</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a href="{{ url_for('financial_reports') }}" class="nav-link">
                                         <i class="fas fa-chart-line nav-icon"></i>
                                         <p>التقارير المالية</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ url_for('tax_management') }}" class="nav-link">
+                                        <i class="fas fa-percentage nav-icon"></i>
+                                        <p>التقارير الضريبية</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -958,9 +970,9 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="/budget-profits" class="nav-link">
+                                    <a href="{{ url_for('budget_management') }}" class="nav-link">
                                         <i class="fas fa-chart-pie nav-icon"></i>
-                                        <p>الميزانية والأرباح</p>
+                                        <p>إدارة الميزانيات</p>
                                     </a>
                                 </li>
                             </ul>

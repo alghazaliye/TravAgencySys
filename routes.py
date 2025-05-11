@@ -5,6 +5,9 @@ from models import User, Customer, TransportCompany, Country, City, BusRoute, Bu
 from models import BusSchedule, BusTrip, BusBooking, BookingPayment, SystemSettings
 from models import Currency, CashRegister, BankAccount
 from app import app, db
+
+# متغير عام لتخزين الإعدادات
+system_settings = {}
 import logging
 import uuid
 from datetime import datetime
@@ -78,6 +81,21 @@ DEFAULT_SETTINGS = {
         'description': 'العملة الافتراضية للمعاملات المالية'
     }
 }
+
+# وظيفة لتحميل إعدادات النظام
+def load_system_settings():
+    """تحميل إعدادات النظام وتخزينها في متغير عالمي"""
+    global system_settings
+    all_settings = SystemSettings.query.all()
+    for setting in all_settings:
+        system_settings[setting.setting_key] = setting.setting_value
+    
+    # إضافة الإعدادات الافتراضية إذا لم تكن موجودة بالفعل
+    for key, data in DEFAULT_SETTINGS.items():
+        if key not in system_settings:
+            system_settings[key] = data['value']
+    
+    return system_settings
 
 # وظيفة لإنشاء الإعدادات الافتراضية
 def create_default_settings():

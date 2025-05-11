@@ -1,0 +1,356 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block styles %}
+<style>
+    .budget-form {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+    }
+    
+    .section-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .budget-type-indicator {
+        text-align: center;
+        padding: 30px 20px;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+    
+    .budget-type-indicator.active {
+        background-color: var(--primary-travel);
+        color: #fff;
+    }
+    
+    .budget-type-indicator i {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+    }
+    
+    .budget-type-indicator h4 {
+        margin-bottom: 0;
+    }
+    
+    .budget-period-container {
+        display: none;
+    }
+    
+    .budget-period-container.active {
+        display: block;
+    }
+    
+    .btn-submit {
+        min-width: 120px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid rtl px-4">
+    <h1 class="mt-4 mb-4">{{ title }}</h1>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="budget-form">
+                <form method="POST" id="budgetForm">
+                    <div class="section-title">معلومات الميزانية</div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="account_id">الحساب <span class="text-danger">*</span></label>
+                                <select class="form-control" id="account_id" name="account_id" required>
+                                    <option value="">-- اختر الحساب --</option>
+                                    {% for account in accounts %}
+                                        <option value="{{ account.id }}" 
+                                            {% if budget and budget.account_id == account.id %}selected{% endif %}>
+                                            {{ account.name }} ({{ account.account_number }})
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section-title">نوع الميزانية</div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="budget-type-indicator {% if not budget or budget.budget_type == 'annual' %}active{% endif %}" 
+                                 data-type="annual" onclick="selectBudgetType('annual')">
+                                <i class="fas fa-calendar-alt"></i>
+                                <h4>ميزانية سنوية</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="budget-type-indicator {% if budget and budget.budget_type == 'quarterly' %}active{% endif %}" 
+                                 data-type="quarterly" onclick="selectBudgetType('quarterly')">
+                                <i class="fas fa-calendar-week"></i>
+                                <h4>ميزانية ربع سنوية</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="budget-type-indicator {% if budget and budget.budget_type == 'monthly' %}active{% endif %}" 
+                                 data-type="monthly" onclick="selectBudgetType('monthly')">
+                                <i class="fas fa-calendar-day"></i>
+                                <h4>ميزانية شهرية</h4>
+                            </div>
+                        </div>
+                        <input type="hidden" id="budget_type" name="budget_type" 
+                               value="{{ budget.budget_type if budget else 'annual' }}">
+                    </div>
+                    
+                    <div class="section-title">فترة الميزانية</div>
+                    
+                    <div class="row mb-4">
+                        <!-- الفترة السنوية -->
+                        <div class="col-md-12 budget-period-container {% if not budget or budget.budget_type == 'annual' %}active{% endif %}" 
+                             id="annual-period">
+                            <div class="form-group">
+                                <label for="year">السنة <span class="text-danger">*</span></label>
+                                <select class="form-control" id="year" name="year" required>
+                                    <option value="">-- اختر السنة --</option>
+                                    {% for y in range(current_year-2, current_year+3) %}
+                                        <option value="{{ y }}" 
+                                            {% if budget and budget.year == y %}selected
+                                            {% elif not budget and y == current_year %}selected{% endif %}>
+                                            {{ y }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- الفترة ربع السنوية -->
+                        <div class="col-md-12 budget-period-container {% if budget and budget.budget_type == 'quarterly' %}active{% endif %}" 
+                             id="quarterly-period">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="quarter">الربع <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="quarter" name="quarter">
+                                            <option value="">-- اختر الربع --</option>
+                                            <option value="1" {% if budget and budget.quarter == 1 %}selected{% endif %}>الربع الأول</option>
+                                            <option value="2" {% if budget and budget.quarter == 2 %}selected{% endif %}>الربع الثاني</option>
+                                            <option value="3" {% if budget and budget.quarter == 3 %}selected{% endif %}>الربع الثالث</option>
+                                            <option value="4" {% if budget and budget.quarter == 4 %}selected{% endif %}>الربع الرابع</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="quarter_year">السنة <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="quarter_year" onchange="updateYear(this.value)">
+                                            <option value="">-- اختر السنة --</option>
+                                            {% for y in range(current_year-2, current_year+3) %}
+                                                <option value="{{ y }}" 
+                                                    {% if budget and budget.year == y %}selected
+                                                    {% elif not budget and y == current_year %}selected{% endif %}>
+                                                    {{ y }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- الفترة الشهرية -->
+                        <div class="col-md-12 budget-period-container {% if budget and budget.budget_type == 'monthly' %}active{% endif %}" 
+                             id="monthly-period">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="month">الشهر <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="month" name="month">
+                                            <option value="">-- اختر الشهر --</option>
+                                            <option value="1" {% if budget and budget.month == 1 %}selected{% endif %}>يناير</option>
+                                            <option value="2" {% if budget and budget.month == 2 %}selected{% endif %}>فبراير</option>
+                                            <option value="3" {% if budget and budget.month == 3 %}selected{% endif %}>مارس</option>
+                                            <option value="4" {% if budget and budget.month == 4 %}selected{% endif %}>إبريل</option>
+                                            <option value="5" {% if budget and budget.month == 5 %}selected{% endif %}>مايو</option>
+                                            <option value="6" {% if budget and budget.month == 6 %}selected{% endif %}>يونيو</option>
+                                            <option value="7" {% if budget and budget.month == 7 %}selected{% endif %}>يوليو</option>
+                                            <option value="8" {% if budget and budget.month == 8 %}selected{% endif %}>أغسطس</option>
+                                            <option value="9" {% if budget and budget.month == 9 %}selected{% endif %}>سبتمبر</option>
+                                            <option value="10" {% if budget and budget.month == 10 %}selected{% endif %}>أكتوبر</option>
+                                            <option value="11" {% if budget and budget.month == 11 %}selected{% endif %}>نوفمبر</option>
+                                            <option value="12" {% if budget and budget.month == 12 %}selected{% endif %}>ديسمبر</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="month_year">السنة <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="month_year" onchange="updateYear(this.value)">
+                                            <option value="">-- اختر السنة --</option>
+                                            {% for y in range(current_year-2, current_year+3) %}
+                                                <option value="{{ y }}" 
+                                                    {% if budget and budget.year == y %}selected
+                                                    {% elif not budget and y == current_year %}selected{% endif %}>
+                                                    {{ y }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section-title">تفاصيل الميزانية</div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="amount">المبلغ <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="amount" name="amount" step="0.01" min="0" 
+                                           value="{{ budget.amount if budget else '' }}" required>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">ريال</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-12 mt-3">
+                            <div class="form-group">
+                                <label for="notes">ملاحظات</label>
+                                <textarea class="form-control" id="notes" name="notes" rows="3">{{ budget.notes if budget else '' }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12 text-left">
+                            <a href="{{ url_for('budget_management') }}" class="btn btn-secondary">إلغاء</a>
+                            <button type="submit" class="btn btn-primary btn-submit">
+                                {% if action == 'create' %}إنشاء{% else %}تحديث{% endif %}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">إرشادات</h6>
+                </div>
+                <div class="card-body">
+                    <p>أنواع الميزانيات:</p>
+                    <ul>
+                        <li><strong>ميزانية سنوية:</strong> تغطي سنة مالية كاملة.</li>
+                        <li><strong>ميزانية ربع سنوية:</strong> تغطي ربع سنة مالية (3 شهور).</li>
+                        <li><strong>ميزانية شهرية:</strong> تغطي شهر واحد فقط.</li>
+                    </ul>
+                    <p>يمكنك إنشاء ميزانيات متعددة لنفس الحساب على مستويات مختلفة (سنوية، ربع سنوية، شهرية).</p>
+                    <hr>
+                    <p>ملاحظات هامة:</p>
+                    <ul>
+                        <li>تأكد من اختيار الحساب المناسب. يفضل استخدام حسابات المصروفات أو الأصول.</li>
+                        <li>يجب ألا تتداخل الميزانيات لنفس الحساب في نفس الفترة.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function selectBudgetType(type) {
+        // تحديث نوع الميزانية النشط
+        document.querySelectorAll('.budget-type-indicator').forEach(function(el) {
+            el.classList.remove('active');
+        });
+        document.querySelector('.budget-type-indicator[data-type="' + type + '"]').classList.add('active');
+        
+        // تحديث قيمة النوع المخفية
+        document.getElementById('budget_type').value = type;
+        
+        // إظهار/إخفاء حقول الفترة المناسبة
+        document.querySelectorAll('.budget-period-container').forEach(function(el) {
+            el.classList.remove('active');
+        });
+        document.getElementById(type + '-period').classList.add('active');
+        
+        // تحديث متطلبات الحقول
+        updateFieldRequirements(type);
+    }
+    
+    function updateFieldRequirements(type) {
+        // إزالة متطلبات جميع الحقول
+        document.getElementById('quarter').removeAttribute('required');
+        document.getElementById('month').removeAttribute('required');
+        
+        // تحديث متطلبات الحقول حسب نوع الميزانية
+        if (type === 'quarterly') {
+            document.getElementById('quarter').setAttribute('required', '');
+        } else if (type === 'monthly') {
+            document.getElementById('month').setAttribute('required', '');
+        }
+    }
+    
+    function updateYear(value) {
+        // تحديث قيمة السنة الرئيسية
+        document.getElementById('year').value = value;
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // تهيئة متطلبات الحقول عند تحميل الصفحة
+        updateFieldRequirements(document.getElementById('budget_type').value);
+        
+        // التحقق من صحة النموذج قبل الإرسال
+        document.getElementById('budgetForm').addEventListener('submit', function(e) {
+            const budgetType = document.getElementById('budget_type').value;
+            let isValid = true;
+            
+            // التحقق من اختيار الحساب
+            if (!document.getElementById('account_id').value) {
+                alert('يرجى اختيار الحساب');
+                isValid = false;
+            }
+            
+            // التحقق من اختيار السنة
+            if (!document.getElementById('year').value) {
+                alert('يرجى اختيار السنة');
+                isValid = false;
+            }
+            
+            // التحقق من حقول الفترة حسب نوع الميزانية
+            if (budgetType === 'quarterly' && !document.getElementById('quarter').value) {
+                alert('يرجى اختيار الربع');
+                isValid = false;
+            } else if (budgetType === 'monthly' && !document.getElementById('month').value) {
+                alert('يرجى اختيار الشهر');
+                isValid = false;
+            }
+            
+            // التحقق من إدخال المبلغ
+            if (!document.getElementById('amount').value) {
+                alert('يرجى إدخال مبلغ الميزانية');
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+    });
+</script>
+{% endblock %}

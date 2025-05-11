@@ -1,0 +1,388 @@
+{% extends "layout.html" %}
+
+{% block title %}تفاصيل الميزانية{% endblock %}
+
+{% block styles %}
+<style>
+    .budget-details-header {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        margin-bottom: 20px;
+    }
+    
+    .budget-details-card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        margin-bottom: 20px;
+    }
+    
+    .budget-overview {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .budget-period {
+        background-color: var(--primary-travel);
+        color: #fff;
+        padding: 8px 15px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    
+    .budget-account {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+    }
+    
+    .budget-account-number {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    
+    .budget-metrics {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+    
+    .budget-metric {
+        flex: 1;
+        min-width: 200px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        margin: 0 10px 10px 0;
+        border-radius: 8px;
+    }
+    
+    .budget-metric-title {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-bottom: 5px;
+    }
+    
+    .budget-metric-value {
+        font-size: 1.3rem;
+        font-weight: 600;
+    }
+    
+    .budget-metric-value.positive {
+        color: #28a745;
+    }
+    
+    .budget-metric-value.negative {
+        color: #dc3545;
+    }
+    
+    .budget-progress {
+        margin-top: 20px;
+    }
+    
+    .progress {
+        height: 30px;
+        border-radius: 15px;
+        margin-top: 10px;
+    }
+    
+    .progress-bar {
+        border-radius: 15px;
+    }
+    
+    .chart-container {
+        position: relative;
+        height: 300px;
+        margin-top: 20px;
+    }
+    
+    .section-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .transaction-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #f8f9fa;
+    }
+    
+    .transaction-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        margin-left: 15px;
+    }
+    
+    .transaction-details {
+        flex: 1;
+    }
+    
+    .transaction-description {
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    
+    .transaction-date {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+    
+    .transaction-amount {
+        font-weight: 600;
+    }
+    
+    .amount-positive {
+        color: #28a745;
+    }
+    
+    .amount-negative {
+        color: #dc3545;
+    }
+    
+    .notes-container {
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+    
+    .notes-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid rtl px-4">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h1>تفاصيل الميزانية</h1>
+        <div>
+            <a href="{{ url_for('budget_management') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-right ml-1"></i> العودة
+            </a>
+            <a href="{{ url_for('edit_budget', budget_id=budget.id) }}" class="btn btn-info">
+                <i class="fas fa-edit ml-1"></i> تعديل
+            </a>
+        </div>
+    </div>
+    
+    <!-- معلومات الميزانية -->
+    <div class="budget-details-header">
+        <div class="budget-overview">
+            <div>
+                <div class="budget-account">{{ budget.account.name }}</div>
+                <div class="budget-account-number">رقم الحساب: {{ budget.account.account_number }}</div>
+            </div>
+            <div class="budget-period">{{ budget.period_name }}</div>
+        </div>
+        
+        <div class="budget-metrics">
+            <div class="budget-metric">
+                <div class="budget-metric-title">الميزانية المخططة</div>
+                <div class="budget-metric-value">{{ "{:,.2f}".format(budget.amount) }} ريال</div>
+            </div>
+            <div class="budget-metric">
+                <div class="budget-metric-title">المصروفات الفعلية</div>
+                <div class="budget-metric-value">{{ "{:,.2f}".format(budget.actual_amount) }} ريال</div>
+            </div>
+            <div class="budget-metric">
+                <div class="budget-metric-title">الانحراف</div>
+                <div class="budget-metric-value {% if budget.variance >= 0 %}positive{% else %}negative{% endif %}">
+                    {{ "{:,.2f}".format(budget.variance) }} ريال
+                </div>
+            </div>
+            <div class="budget-metric">
+                <div class="budget-metric-title">نسبة الاستهلاك</div>
+                <div class="budget-metric-value {% if budget.usage_percentage < 80 %}positive{% elif budget.usage_percentage < 100 %}warning{% else %}negative{% endif %}">
+                    {{ "{:.1f}%".format(budget.usage_percentage) }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="budget-progress">
+            <div class="d-flex justify-content-between">
+                <div>نسبة استهلاك الميزانية</div>
+                <div>{{ "{:.1f}%".format(budget.usage_percentage) }}</div>
+            </div>
+            <div class="progress">
+                <div class="progress-bar bg-{{ budget.status }}" role="progressbar" 
+                     style="width: {{ budget.usage_percentage }}%" 
+                     aria-valuenow="{{ budget.usage_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                    {{ "{:.1f}%".format(budget.usage_percentage) }}
+                </div>
+            </div>
+        </div>
+        
+        {% if budget.notes %}
+            <div class="notes-container">
+                <div class="notes-title">ملاحظات:</div>
+                <div>{{ budget.notes }}</div>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="row">
+        <!-- مخطط استهلاك الميزانية -->
+        <div class="col-lg-8">
+            <div class="budget-details-card">
+                <div class="section-title">تطور المصروفات خلال الفترة</div>
+                <div class="chart-container">
+                    <canvas id="budgetUsageChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ملخص معلومات الفترة -->
+        <div class="col-lg-4">
+            <div class="budget-details-card">
+                <div class="section-title">معلومات الفترة</div>
+                <div class="mb-3">
+                    <div class="text-muted mb-1">الفترة:</div>
+                    <div class="font-weight-bold">{{ budget.period_name }}</div>
+                </div>
+                <div class="mb-3">
+                    <div class="text-muted mb-1">بداية الفترة:</div>
+                    <div class="font-weight-bold">{{ start_date.strftime('%Y-%m-%d') }}</div>
+                </div>
+                <div class="mb-3">
+                    <div class="text-muted mb-1">نهاية الفترة:</div>
+                    <div class="font-weight-bold">{{ end_date.strftime('%Y-%m-%d') }}</div>
+                </div>
+                <div class="mb-3">
+                    <div class="text-muted mb-1">نوع الحساب:</div>
+                    <div class="font-weight-bold">{{ budget.account.account_type }}</div>
+                </div>
+                <div class="mb-3">
+                    <div class="text-muted mb-1">فئة الحساب:</div>
+                    <div class="font-weight-bold">{{ budget.account.category.name }}</div>
+                </div>
+                <div class="mb-3">
+                    <div class="text-muted mb-1">تاريخ إنشاء الميزانية:</div>
+                    <div class="font-weight-bold">{{ budget.created_at.strftime('%Y-%m-%d') }}</div>
+                </div>
+                <div>
+                    <div class="text-muted mb-1">آخر تحديث:</div>
+                    <div class="font-weight-bold">{{ budget.updated_at.strftime('%Y-%m-%d') }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- المعاملات المالية -->
+    <div class="budget-details-card">
+        <div class="section-title">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>المعاملات المالية للفترة</div>
+                <div>إجمالي المعاملات: {{ transactions|length }}</div>
+            </div>
+        </div>
+        
+        {% if transactions %}
+            {% for transaction in transactions %}
+                <div class="transaction-item">
+                    <div class="transaction-icon {{ 'bg-success' if transaction.transaction_type == 'credit' else 'bg-danger' }}">
+                        <i class="{{ 'fas fa-arrow-down' if transaction.transaction_type == 'credit' else 'fas fa-arrow-up' }}"></i>
+                    </div>
+                    <div class="transaction-details">
+                        <div class="transaction-description">{{ transaction.description }}</div>
+                        <div class="transaction-date">{{ transaction.transaction_date.strftime('%Y-%m-%d') }}</div>
+                    </div>
+                    <div class="transaction-amount {{ 'amount-positive' if transaction.transaction_type == 'credit' else 'amount-negative' }}">
+                        {{ "{:,.2f}".format(transaction.amount) }} ريال
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info">
+                لا توجد معاملات مالية لهذه الفترة.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chartCtx = document.getElementById('budgetUsageChart').getContext('2d');
+        
+        // بيانات المخطط
+        const chartData = {
+            labels: {{ chart_data.dates|tojson }},
+            datasets: [{
+                label: 'المصروفات التراكمية',
+                data: {{ chart_data.amounts|tojson }},
+                backgroundColor: 'rgba(78, 115, 223, 0.1)',
+                borderColor: 'rgba(78, 115, 223, 1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        };
+        
+        // خط الميزانية المخططة (خط أفقي)
+        const budgetAmount = {{ budget.amount }};
+        
+        // إنشاء المخطط
+        new Chart(chartCtx, {
+            type: 'line',
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString() + ' ريال';
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'المصروفات: ' + context.raw.toLocaleString() + ' ريال';
+                            }
+                        }
+                    },
+                    annotation: {
+                        annotations: {
+                            line1: {
+                                type: 'line',
+                                yMin: budgetAmount,
+                                yMax: budgetAmount,
+                                borderColor: 'rgba(220, 53, 69, 0.8)',
+                                borderWidth: 2,
+                                borderDash: [5, 5],
+                                label: {
+                                    content: 'الميزانية المخططة: ' + budgetAmount.toLocaleString() + ' ريال',
+                                    display: true,
+                                    position: 'end'
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

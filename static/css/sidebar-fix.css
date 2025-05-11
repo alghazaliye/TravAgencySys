@@ -3,7 +3,7 @@
  * هذا الملف يتضمن تحسينات لعرض الأيقونات والنصوص في القائمة الجانبية
  */
 
-/* إصلاح الأيقونات في القائمة الجانبية */
+/* إصلاح الأيقونات في القائمة الجانبية - محسّن */
 .nav-sidebar .nav-icon, 
 .nav-sidebar .fas, 
 .nav-sidebar .fa,
@@ -18,6 +18,10 @@
     font-size: 1.1rem !important;
     visibility: visible !important;
     opacity: 1 !important;
+    position: relative !important;
+    z-index: 2 !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
 }
 
 /* تحسين ظهور القائمة الجانبية عند التبديل */
@@ -109,13 +113,23 @@ body.sidebar-collapse .main-header {
 /* تحسين لمعالجة مشكلة اختفاء النص في حالة طي القائمة في وضع mini */
 .sidebar-mini.sidebar-collapse .main-sidebar:hover {
     width: 250px !important;
+    overflow: visible !important;
+    z-index: 1040 !important;
 }
 
 .sidebar-mini.sidebar-collapse .main-sidebar:hover .brand-text,
 .sidebar-mini.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-link p {
     margin-right: 5px !important;
     display: inline-block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
     animation: fadeIn 0.1s ease-in-out;
+}
+
+/* حل مشكلة القوائم الفرعية المختفية */
+.sidebar-mini.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-treeview {
+    display: block !important;
+    visibility: visible !important;
 }
 
 @keyframes fadeIn {

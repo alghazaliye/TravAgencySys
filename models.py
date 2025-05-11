@@ -450,3 +450,202 @@ class SystemSettings(db.Model):
             )
             db.session.add(setting)
         db.session.commit()
+        
+        
+# الميزانيات والتخطيط المالي
+class Budget(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
+    year = db.Column(db.Integer, nullable=False)
+    month = db.Column(db.Integer, nullable=True)  # 1-12 للميزانية الشهرية، NULL للميزانية السنوية
+    quarter = db.Column(db.Integer, nullable=True)  # 1-4 للميزانية ربع السنوية، NULL للميزانية السنوية
+    amount = db.Column(db.Numeric(precision=18, scale=2), nullable=False)
+    notes = db.Column(db.Text, nullable=True)
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # العلاقات
+    account = db.relationship('Account', backref=db.backref('budgets', lazy=True))
+    user = db.relationship('User', backref=db.backref('created_budgets', lazy=True))
+    
+    @property
+    def budget_type(self):
+        """نوع الميزانية: سنوية، ربع سنوية، شهرية"""
+        if self.month is not None:
+            return 'monthly'
+        elif self.quarter is not None:
+            return 'quarterly'
+        else:
+            return 'annual'
+    
+    @property
+    def period_name(self):
+        """اسم الفترة المالية"""
+        month_names = ['يناير', 'فبراير', 'مارس', 'إبريل', 'مايو', 'يونيو', 
+                      'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
+        
+        if self.month is not None:
+            return f"{month_names[self.month-1]} {self.year}"
+        elif self.quarter is not None:
+            return f"الربع {self.quarter} - {self.year}"
+        else:
+            return f"السنة المالية {self.year}"
+    
+    @property
+    def actual_amount(self):
+        """المبلغ الفعلي الذي تم صرفه"""
+        from sqlalchemy import func
+        from datetime import timedelta
+        
+        # تحديد تاريخ بداية ونهاية الفترة
+        start_date = None
+        end_date = None
+        
+        if self.month is not None:
+            # الميزانية الشهرية
+            from datetime import date
+            start_date = date(self.year, self.month, 1)
+            # تحديد آخر يوم في الشهر
+            if self.month == 12:
+                end_date = date(self.year + 1, 1, 1)
+            else:
+                end_date = date(self.year, self.month + 1, 1)
+            end_date = end_date.replace(day=1) - timedelta(days=1)
+        elif self.quarter is not None:
+            # الميزانية ربع السنوية
+            month_start = (self.quarter - 1) * 3 + 1
+            month_end = month_start + 2
+            from datetime import date
+            start_date = date(self.year, month_start, 1)
+            if month_end == 12:
+                end_date = date(self.year + 1, 1, 1) - timedelta(days=1)
+            else:
+                end_date = date(self.year, month_end + 1, 1) - timedelta(days=1)
+        else:
+            # الميزانية السنوية
+            from datetime import date
+            start_date = date(self.year, 1, 1)
+            end_date = date(self.year, 12, 31)
+        
+        # حساب المبلغ الفعلي المصروف
+        actual_amount = db.session.query(func.sum(AccountTransaction.amount)).filter(
+            AccountTransaction.account_id == self.account_id,
+            AccountTransaction.transaction_type == 'debit',  # للمصروفات
+            AccountTransaction.transaction_date >= start_date,
+            AccountTransaction.transaction_date <= end_date
+        ).scalar() or 0
+        
+        return actual_amount
+    
+    @property
+    def variance(self):
+        """الفرق بين الميزانية والمبلغ الفعلي"""
+        return float(self.amount) - float(self.actual_amount)
+    
+    @property
+    def usage_percentage(self):
+        """نسبة استخدام الميزانية"""
+        if float(self.amount) > 0:
+            return (float(self.actual_amount) / float(self.amount)) * 100
+        return 0
+    
+    @property
+    def status(self):
+        """حالة الميزانية: جيدة، تحذير، متجاوزة"""
+        usage = self.usage_percentage
+        if usage < 80:
+            return 'success'
+        elif usage < 100:
+            return 'warning'
+        else:
+            return 'danger'
+            
+    @property
+    def month_name(self):
+        """اسم الشهر بالعربية"""
+        if self.month is None:
+            return None
+            
+        month_names = ['يناير', 'فبراير', 'مارس', 'إبريل', 'مايو', 'يونيو', 
+                      'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
+        return month_names[self.month-1]
+        
+
+# نظام التقارير الضريبية
+class TaxReport(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    report_type = db.Column(db.String(50), nullable=False)  # VAT, Income, Corporate, etc.
+    year = db.Column(db.Integer, nullable=False)
+    quarter = db.Column(db.Integer, nullable=True)  # 1-4 للتقارير ربع سنوية
+    month = db.Column(db.Integer, nullable=True)  # 1-12 للتقارير الشهرية
+    start_date = db.Column(db.Date, nullable=False)
+    end_date = db.Column(db.Date, nullable=False)
+    total_sales = db.Column(db.Numeric(precision=18, scale=2), default=0)
+    total_purchases = db.Column(db.Numeric(precision=18, scale=2), default=0)
+    vat_on_sales = db.Column(db.Numeric(precision=18, scale=2), default=0)
+    vat_on_purchases = db.Column(db.Numeric(precision=18, scale=2), default=0)
+    net_vat = db.Column(db.Numeric(precision=18, scale=2), default=0)
+    status = db.Column(db.String(20), default='draft')  # draft, submitted, approved
+    submission_date = db.Column(db.DateTime, nullable=True)
+    reference_number = db.Column(db.String(50), nullable=True)  # رقم مرجعي للتقرير في هيئة الزكاة والضريبة
+    notes = db.Column(db.Text, nullable=True)
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # العلاقات
+    user = db.relationship('User', backref=db.backref('tax_reports', lazy=True))
+
+    @property
+    def period_name(self):
+        """اسم الفترة المالية"""
+        month_names = ['يناير', 'فبراير', 'مارس', 'إبريل', 'مايو', 'يونيو', 
+                      'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
+        
+        if self.month is not None:
+            return f"{month_names[self.month-1]} {self.year}"
+        elif self.quarter is not None:
+            return f"الربع {self.quarter} - {self.year}"
+        else:
+            return f"{self.year}"
+
+
+# تفاصيل التقرير الضريبي
+class TaxReportDetail(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    tax_report_id = db.Column(db.Integer, db.ForeignKey('tax_report.id'), nullable=False)
+    transaction_type = db.Column(db.String(50), nullable=False)  # sales, purchases, etc.
+    account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=True)
+    journal_entry_id = db.Column(db.Integer, db.ForeignKey('journal_entry.id'), nullable=True)
+    transaction_date = db.Column(db.Date, nullable=False)
+    description = db.Column(db.String(255))
+    amount = db.Column(db.Numeric(precision=18, scale=2), nullable=False)
+    vat_amount = db.Column(db.Numeric(precision=18, scale=2), nullable=False)
+    vat_rate = db.Column(db.Numeric(precision=5, scale=2), nullable=False)  # 15%, 5%, 0%
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # العلاقات
+    tax_report = db.relationship('TaxReport', backref=db.backref('details', lazy=True))
+    account = db.relationship('Account', backref=db.backref('tax_transactions', lazy=True))
+    journal_entry = db.relationship('JournalEntry', backref=db.backref('tax_details', lazy=True))
+
+
+# إعدادات الضرائب
+class TaxSettings(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    tax_type = db.Column(db.String(50), nullable=False, unique=True)  # VAT, Income, Corporate, etc.
+    tax_rate = db.Column(db.Numeric(precision=5, scale=2), nullable=False)  # 15%, 20%, etc.
+    is_active = db.Column(db.Boolean, default=True)
+    tax_authority = db.Column(db.String(100))  # هيئة الزكاة والضريبة
+    company_tax_number = db.Column(db.String(50))  # الرقم الضريبي للشركة
+    reporting_frequency = db.Column(db.String(20), default='quarterly')  # monthly, quarterly, yearly
+    description = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    @classmethod
+    def get_vat_rate(cls):
+        """الحصول على معدل ضريبة القيمة المضافة الحالي"""
+        vat_settings = cls.query.filter_by(tax_type='VAT', is_active=True).first()
+        return vat_settings.tax_rate if vat_settings else 15.0  # القيمة الافتراضية هي 15%

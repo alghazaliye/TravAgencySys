@@ -498,25 +498,43 @@ function fixSidebarIcons() {
 /**
  * إصلاح الأيقونات المفقودة
  */
+/**
+ * إصلاح الأيقونات المفقودة أو غير المرئية في القائمة الجانبية
+ * هذه الوظيفة محسنة لمعالجة مشكلة عدم ظهور بعض الأيقونات
+ */
 function fixMissingIcons() {
-    // معالجة جميع الأيقونات في القائمة الجانبية
+    // معالجة جميع الأيقونات في القائمة الجانبية - تم تحسينها
     document.querySelectorAll('.nav-sidebar .nav-link i').forEach(icon => {
-        if (getComputedStyle(icon).display === 'none' || 
-            getComputedStyle(icon).visibility === 'hidden' ||
-            icon.offsetWidth === 0 || 
-            icon.offsetHeight === 0) {
-            
-            // إصلاح الأيقونة غير المرئية
-            icon.style.display = 'inline-block';
-            icon.style.visibility = 'visible';
-            icon.style.width = '1.6rem';
-            icon.style.marginLeft = '0.7rem';
-            icon.style.marginRight = '0';
-            icon.style.textAlign = 'center';
-            
-            // إضافة فئة إضافية للمساعدة في التصحيح
-            icon.classList.add('fixed-sidebar-icon');
-        }
+        // تطبيق الإصلاح على جميع الأيقونات، حتى تلك التي تبدو ظاهرة لضمان الاتساق
+        // هذا يضمن ظهور جميع الأيقونات بشكل صحيح
+        
+        // إصلاح الأيقونة
+        icon.style.display = 'inline-block !important';
+        icon.style.visibility = 'visible !important';
+        icon.style.width = '1.6rem !important';
+        icon.style.marginLeft = '0.7rem !important';
+        icon.style.marginRight = '0 !important';
+        icon.style.textAlign = 'center !important';
+        icon.style.fontSize = '1.1rem !important';
+        icon.style.opacity = '1 !important';
+        
+        // تطبيق الأنماط بشكل أقوى - لتجاوز أي محددات CSS أخرى قد تؤثر
+        const importantStyles = `
+            display: inline-block !important;
+            visibility: visible !important;
+            width: 1.6rem !important;
+            margin-left: 0.7rem !important;
+            margin-right: 0 !important;
+            text-align: center !important;
+            font-size: 1.1rem !important;
+            opacity: 1 !important;
+        `;
+        
+        // إضافة نمط محلي مباشر للأيقونة
+        icon.setAttribute('style', importantStyles);
+        
+        // إضافة فئة إضافية للمساعدة في التصحيح
+        icon.classList.add('fixed-sidebar-icon');
     });
     
     // معالجة عامة للأيقونات في الأزرار

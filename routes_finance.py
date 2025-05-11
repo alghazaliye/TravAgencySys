@@ -4,7 +4,7 @@
 import os
 import json
 import uuid
-from datetime import datetime, date
+from datetime import datetime, date, time, timedelta
 from flask import render_template, request, jsonify, flash, redirect, url_for
 from flask_login import login_required, current_user
 from sqlalchemy import desc, and_, or_, func
@@ -879,6 +879,333 @@ def get_income_statement(date_from=None, date_to=None):
     income_statement['net_income'] = income_statement['total_revenue'] - income_statement['total_expense']
     
     return income_statement
+
+@app.route('/financial/dashboard', methods=['GET'])
+@login_required
+def financial_dashboard():
+    """لوحة المعلومات المالية"""
+    # تحديد الفترة الزمنية
+    period = request.args.get('period', 'month')
+    date_from = request.args.get('date_from')
+    date_to = request.args.get('date_to')
+    
+    # حساب الفترة الزمنية
+    today = datetime.now().date()
+    if period == 'today':
+        date_from = today
+        date_to = today
+    elif period == 'week':
+        # الأسبوع الحالي (من الأحد إلى السبت)
+        date_to = today
+        date_from = today - timedelta(days=today.weekday()) - timedelta(days=1)  # الأحد السابق
+    elif period == 'month':
+        # الشهر الحالي
+        date_from = today.replace(day=1)
+        date_to = today
+    elif period == 'quarter':
+        # الربع الحالي
+        quarter_month = ((today.month - 1) // 3) * 3 + 1
+        date_from = today.replace(month=quarter_month, day=1)
+        if quarter_month + 2 > 12:
+            next_quarter_year = today.year + 1
+            next_quarter_month = (quarter_month + 2) % 12 + 1
+            next_quarter_day = 1
+        else:
+            next_quarter_year = today.year
+            next_quarter_month = quarter_month + 3
+            next_quarter_day = 1
+        date_to = today
+    elif period == 'year':
+        # السنة الحالية
+        date_from = today.replace(month=1, day=1)
+        date_to = today
+    elif period == 'custom':
+        # فترة مخصصة
+        if date_from:
+            date_from = datetime.strptime(date_from, '%Y-%m-%d').date()
+        else:
+            date_from = today.replace(month=1, day=1)
+        
+        if date_to:
+            date_to = datetime.strptime(date_to, '%Y-%m-%d').date()
+        else:
+            date_to = today
+    
+    # جلب بيانات مؤشرات الأداء الرئيسية
+    kpis = get_financial_kpis(date_from, date_to)
+    
+    # جلب البيانات الملخصة للميزانية
+    summary = get_financial_summary(date_to)
+    
+    # جلب بيانات الرسوم البيانية
+    chart_data = get_dashboard_charts_data(date_from, date_to, period)
+    
+    # جلب أحدث المعاملات
+    recent_transactions = get_recent_transactions(10)
+    
+    return render_template('financial-dashboard.html',
+                           period=period,
+                           date_from=date_from.strftime('%Y-%m-%d') if isinstance(date_from, date) else date_from,
+                           date_to=date_to.strftime('%Y-%m-%d') if isinstance(date_to, date) else date_to,
+                           kpis=kpis,
+                           summary=summary,
+                           chart_data=chart_data,
+                           recent_transactions=recent_transactions)
+
+def get_financial_kpis(date_from, date_to):
+    """جلب مؤشرات الأداء الرئيسية المالية"""
+    # حساب إجمالي الإيرادات
+    total_revenue = db.session.query(func.sum(AccountTransaction.amount)).filter(
+        AccountTransaction.account_id.in_(
+            db.session.query(Account.id).filter(Account.account_type == 'revenue')
+        ),
+        AccountTransaction.transaction_type == 'credit',
+        AccountTransaction.transaction_date >= date_from,
+        AccountTransaction.transaction_date <= date_to
+    ).scalar() or 0
+    
+    # حساب إجمالي المصروفات
+    total_expense = db.session.query(func.sum(AccountTransaction.amount)).filter(
+        AccountTransaction.account_id.in_(
+            db.session.query(Account.id).filter(Account.account_type == 'expense')
+        ),
+        AccountTransaction.transaction_type == 'debit',
+        AccountTransaction.transaction_date >= date_from,
+        AccountTransaction.transaction_date <= date_to
+    ).scalar() or 0
+    
+    # حساب صافي الربح
+    net_profit = total_revenue - total_expense
+    
+    # جلب رصيد السيولة النقدية (الصناديق والبنوك)
+    cash_balance = db.session.query(func.sum(Account.balance)).filter(
+        Account.account_type == 'asset',
+        or_(Account.is_cash_account == True, Account.is_bank_account == True)
+    ).scalar() or 0
+    
+    return {
+        'total_revenue': total_revenue,
+        'total_expense': total_expense,
+        'net_profit': net_profit,
+        'cash_balance': cash_balance
+    }
+
+def get_financial_summary(date_to):
+    """جلب ملخص الحالة المالية"""
+    # جلب بيانات الميزانية العمومية
+    balance_sheet = get_balance_sheet(date_to)
+    
+    # حساب نسبة السيولة (الأصول المتداولة / الخصوم المتداولة)
+    current_assets = db.session.query(func.sum(Account.balance)).filter(
+        Account.account_type == 'asset',
+        Account.account_number.like('1%'),  # الأصول المتداولة تبدأ عادة برقم 1
+        Account.balance > 0
+    ).scalar() or 0
+    
+    current_liabilities = db.session.query(func.sum(Account.balance)).filter(
+        Account.account_type == 'liability',
+        Account.account_number.like('2%'),  # الخصوم المتداولة تبدأ عادة برقم 2
+        Account.balance > 0
+    ).scalar() or 1  # لتجنب القسمة على صفر
+    
+    liquidity_ratio = current_assets / current_liabilities
+    
+    # حساب هامش الربح (صافي الربح / إجمالي الإيرادات)
+    total_revenue = balance_sheet['total_assets'] - balance_sheet['total_liabilities']
+    profit_margin = total_revenue / balance_sheet['total_assets'] if balance_sheet['total_assets'] > 0 else 0
+    
+    # حساب العائد على الأصول (صافي الربح / إجمالي الأصول)
+    return_on_assets = total_revenue / balance_sheet['total_assets'] if balance_sheet['total_assets'] > 0 else 0
+    
+    return {
+        'total_assets': balance_sheet['total_assets'],
+        'total_liabilities': balance_sheet['total_liabilities'],
+        'total_equity': balance_sheet['total_equity'],
+        'liquidity_ratio': liquidity_ratio,
+        'profit_margin': profit_margin,
+        'return_on_assets': return_on_assets
+    }
+
+def get_dashboard_charts_data(date_from, date_to, period):
+    """جلب بيانات الرسوم البيانية للوحة المعلومات"""
+    chart_data = {
+        'period_labels': [],
+        'revenue_data': [],
+        'expense_data': [],
+        'revenue_categories': [],
+        'revenue_distribution': [],
+        'expense_categories': [],
+        'expense_distribution': []
+    }
+    
+    # تحديد الفترات الزمنية حسب نوع الفترة المختارة
+    if period == 'today':
+        # الساعات في اليوم
+        periods = [datetime.combine(date_from, time(hour=h)) for h in range(24)]
+        format_str = '%H:%M'
+        group_by = func.extract('hour', AccountTransaction.created_at)
+    elif period == 'week':
+        # أيام الأسبوع
+        periods = [date_from + timedelta(days=d) for d in range((date_to - date_from).days + 1)]
+        format_str = '%a'
+        group_by = func.date(AccountTransaction.transaction_date)
+    elif period == 'month':
+        # أيام الشهر
+        periods = [date_from + timedelta(days=d) for d in range((date_to - date_from).days + 1)]
+        format_str = '%d'
+        group_by = func.date(AccountTransaction.transaction_date)
+    elif period == 'quarter':
+        # أسابيع الربع
+        periods = []
+        current = date_from
+        while current <= date_to:
+            periods.append(current)
+            current += timedelta(weeks=1)
+        format_str = '%d %b'
+        group_by = func.date_trunc('week', AccountTransaction.transaction_date)
+    elif period in ['year', 'custom']:
+        # شهور السنة أو الفترة المخصصة
+        periods = []
+        current_month = date_from.replace(day=1)
+        while current_month <= date_to:
+            periods.append(current_month)
+            # انتقل إلى الشهر التالي
+            if current_month.month == 12:
+                current_month = current_month.replace(year=current_month.year + 1, month=1)
+            else:
+                current_month = current_month.replace(month=current_month.month + 1)
+        format_str = '%b %Y'
+        group_by = func.date_trunc('month', AccountTransaction.transaction_date)
+    
+    # تهيئة تسميات الفترات
+    chart_data['period_labels'] = [p.strftime(format_str) for p in periods]
+    
+    # تهيئة البيانات بأصفار
+    chart_data['revenue_data'] = [0] * len(periods)
+    chart_data['expense_data'] = [0] * len(periods)
+    
+    # جلب بيانات الإيرادات مجمعة حسب الفترة
+    revenue_data = db.session.query(
+        group_by,
+        func.sum(AccountTransaction.amount)
+    ).filter(
+        AccountTransaction.account_id.in_(
+            db.session.query(Account.id).filter(Account.account_type == 'revenue')
+        ),
+        AccountTransaction.transaction_type == 'credit',
+        AccountTransaction.transaction_date >= date_from,
+        AccountTransaction.transaction_date <= date_to
+    ).group_by(group_by).all()
+    
+    # جلب بيانات المصروفات مجمعة حسب الفترة
+    expense_data = db.session.query(
+        group_by,
+        func.sum(AccountTransaction.amount)
+    ).filter(
+        AccountTransaction.account_id.in_(
+            db.session.query(Account.id).filter(Account.account_type == 'expense')
+        ),
+        AccountTransaction.transaction_type == 'debit',
+        AccountTransaction.transaction_date >= date_from,
+        AccountTransaction.transaction_date <= date_to
+    ).group_by(group_by).all()
+    
+    # تعبئة بيانات الإيرادات
+    for period_date, amount in revenue_data:
+        if isinstance(period_date, date):
+            # البحث عن الفترة المناسبة
+            if period == 'today':
+                idx = period_date.hour
+            else:
+                for i, p in enumerate(periods):
+                    if period == 'week' or period == 'month':
+                        if p.date() == period_date:
+                            idx = i
+                            break
+                    elif period == 'quarter':
+                        # نحسب رقم الأسبوع من بداية الربع
+                        week_diff = (period_date - date_from.date()).days // 7
+                        if week_diff < len(periods):
+                            idx = week_diff
+                            break
+                    elif period in ['year', 'custom']:
+                        if p.month == period_date.month and p.year == period_date.year:
+                            idx = i
+                            break
+                else:
+                    continue
+            
+            chart_data['revenue_data'][idx] = float(amount)
+    
+    # تعبئة بيانات المصروفات
+    for period_date, amount in expense_data:
+        if isinstance(period_date, date):
+            # البحث عن الفترة المناسبة
+            if period == 'today':
+                idx = period_date.hour
+            else:
+                for i, p in enumerate(periods):
+                    if period == 'week' or period == 'month':
+                        if p.date() == period_date:
+                            idx = i
+                            break
+                    elif period == 'quarter':
+                        # نحسب رقم الأسبوع من بداية الربع
+                        week_diff = (period_date - date_from.date()).days // 7
+                        if week_diff < len(periods):
+                            idx = week_diff
+                            break
+                    elif period in ['year', 'custom']:
+                        if p.month == period_date.month and p.year == period_date.year:
+                            idx = i
+                            break
+                else:
+                    continue
+            
+            chart_data['expense_data'][idx] = float(amount)
+    
+    # جلب بيانات توزيع الإيرادات حسب نوع الحساب
+    revenue_distribution = db.session.query(
+        Account.name,
+        func.sum(AccountTransaction.amount)
+    ).join(
+        Account, Account.id == AccountTransaction.account_id
+    ).filter(
+        Account.account_type == 'revenue',
+        AccountTransaction.transaction_type == 'credit',
+        AccountTransaction.transaction_date >= date_from,
+        AccountTransaction.transaction_date <= date_to
+    ).group_by(Account.name).all()
+    
+    chart_data['revenue_categories'] = [item[0] for item in revenue_distribution]
+    chart_data['revenue_distribution'] = [float(item[1]) for item in revenue_distribution]
+    
+    # جلب بيانات توزيع المصروفات حسب نوع الحساب
+    expense_distribution = db.session.query(
+        Account.name,
+        func.sum(AccountTransaction.amount)
+    ).join(
+        Account, Account.id == AccountTransaction.account_id
+    ).filter(
+        Account.account_type == 'expense',
+        AccountTransaction.transaction_type == 'debit',
+        AccountTransaction.transaction_date >= date_from,
+        AccountTransaction.transaction_date <= date_to
+    ).group_by(Account.name).all()
+    
+    chart_data['expense_categories'] = [item[0] for item in expense_distribution]
+    chart_data['expense_distribution'] = [float(item[1]) for item in expense_distribution]
+    
+    return chart_data
+
+def get_recent_transactions(limit=10):
+    """جلب أحدث المعاملات المالية"""
+    transactions = AccountTransaction.query.order_by(
+        AccountTransaction.transaction_date.desc(),
+        AccountTransaction.id.desc()
+    ).limit(limit).all()
+    
+    return transactions
 
 def get_balance_sheet(date=None):
     """جلب الميزانية العمومية"""

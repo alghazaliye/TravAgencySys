@@ -1,0 +1,153 @@
+{% extends "layout.html" %}
+
+{% block title %}إعدادات الضرائب{% endblock %}
+
+{% block styles %}
+<style>
+    .settings-card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        margin-bottom: 20px;
+    }
+    
+    .settings-section {
+        margin-bottom: 30px;
+    }
+    
+    .settings-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .info-box {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .info-box h5 {
+        font-size: 1rem;
+        margin-bottom: 10px;
+        color: #495057;
+    }
+    
+    .info-box p {
+        margin-bottom: 0;
+        color: #6c757d;
+    }
+    
+    .tax-authority-logo {
+        max-width: 150px;
+        margin-bottom: 20px;
+    }
+    
+    .help-text {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid rtl px-4">
+    <h1 class="mt-4 mb-4">إعدادات الضرائب</h1>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="settings-card">
+                <form method="POST" action="{{ url_for('tax_settings') }}">
+                    <div class="settings-section">
+                        <div class="settings-title">ضريبة القيمة المضافة</div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="vat_rate">معدل ضريبة القيمة المضافة <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="vat_rate" name="vat_rate" step="0.01" min="0" max="100"
+                                               value="{{ vat_settings.tax_rate if vat_settings.tax_rate is defined else 15 }}" required>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">%</span>
+                                        </div>
+                                    </div>
+                                    <div class="help-text">معدل ضريبة القيمة المضافة المطبق في المملكة العربية السعودية. القيمة الافتراضية هي 15%.</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="company_tax_number">الرقم الضريبي للشركة</label>
+                                    <input type="text" class="form-control" id="company_tax_number" name="company_tax_number"
+                                           value="{{ vat_settings.company_tax_number if vat_settings.company_tax_number is defined else '' }}">
+                                    <div class="help-text">أدخل الرقم الضريبي لشركتك المسجل لدى هيئة الزكاة والضريبة والجمارك.</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="tax_authority">هيئة الضرائب</label>
+                                    <input type="text" class="form-control" id="tax_authority" name="tax_authority"
+                                           value="{{ vat_settings.tax_authority if vat_settings.tax_authority is defined else 'هيئة الزكاة والضريبة والجمارك' }}">
+                                    <div class="help-text">اسم هيئة الضرائب المسؤولة عن جمع الضرائب.</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="reporting_frequency">دورة تقديم التقارير</label>
+                                    <select class="form-control" id="reporting_frequency" name="reporting_frequency">
+                                        <option value="monthly" {% if vat_settings.reporting_frequency is defined and vat_settings.reporting_frequency == 'monthly' %}selected{% endif %}>شهرية</option>
+                                        <option value="quarterly" {% if vat_settings.reporting_frequency is defined and vat_settings.reporting_frequency == 'quarterly' %}selected{% endif %}>ربع سنوية</option>
+                                        <option value="yearly" {% if vat_settings.reporting_frequency is defined and vat_settings.reporting_frequency == 'yearly' %}selected{% endif %}>سنوية</option>
+                                    </select>
+                                    <div class="help-text">دورة تقديم التقارير الضريبية. تختلف حسب حجم الأعمال والإيرادات السنوية.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-left">
+                        <button type="submit" class="btn btn-primary">حفظ الإعدادات</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="settings-card">
+                <div class="settings-title">معلومات هامة</div>
+                
+                <img src="https://zatca.gov.sa/ar/PublishingImages/ZATCALogo-ar.svg" alt="هيئة الزكاة والضريبة والجمارك" class="tax-authority-logo">
+                
+                <div class="info-box">
+                    <h5>مواعيد تقديم إقرارات ضريبة القيمة المضافة</h5>
+                    <p>يجب تقديم إقرارات ضريبة القيمة المضافة وسداد الضريبة المستحقة في موعد أقصاه اليوم الأخير من الشهر التالي لنهاية الفترة الضريبية ذات الصلة.</p>
+                </div>
+                
+                <div class="info-box">
+                    <h5>الغرامات</h5>
+                    <p>غرامة التأخير في تقديم الإقرار الضريبي: 5% إلى 25% من قيمة الضريبة المستحقة.<br>
+                    غرامة التأخير في سداد الضريبة: 5% عن كل شهر أو جزء منه.</p>
+                </div>
+                
+                <div class="info-box">
+                    <h5>متطلبات الاحتفاظ بالسجلات</h5>
+                    <p>يجب الاحتفاظ بالفواتير الضريبية والسجلات المحاسبية لمدة 6 سنوات على الأقل.</p>
+                </div>
+                
+                <div class="info-box">
+                    <h5>موقع هيئة الزكاة والضريبة والجمارك</h5>
+                    <p><a href="https://zatca.gov.sa" target="_blank">https://zatca.gov.sa</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,543 @@
+{% extends "layout.html" %}
+
+{% block title %}لوحة المعلومات المالية{% endblock %}
+
+{% block styles %}
+<style>
+    .info-box {
+        min-height: 100px;
+        background-color: #fff;
+        width: 100%;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        display: flex;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .info-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .info-box-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 90px;
+        color: #fff;
+        font-size: 1.5rem;
+    }
+    
+    .bg-primary {
+        background-color: var(--primary-travel) !important;
+    }
+    
+    .bg-success {
+        background-color: var(--success-travel) !important;
+    }
+    
+    .bg-info {
+        background-color: var(--info-travel) !important;
+    }
+    
+    .bg-warning {
+        background-color: var(--warning-travel) !important;
+    }
+    
+    .bg-danger {
+        background-color: var(--danger-travel) !important;
+    }
+    
+    .info-box-content {
+        padding: 15px 10px;
+        flex: 1;
+    }
+    
+    .info-box-number {
+        font-weight: 700;
+        font-size: 1.4rem;
+        line-height: 1.2;
+    }
+    
+    .info-box-text {
+        font-size: 0.9rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: #6c757d;
+    }
+    
+    .chart-container {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+    
+    .chart-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .summary-container {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+    
+    .summary-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #f8f9fa;
+    }
+    
+    .summary-item:last-child {
+        border-bottom: none;
+    }
+    
+    .summary-label {
+        color: #6c757d;
+    }
+    
+    .summary-value {
+        font-weight: 600;
+    }
+    
+    .summary-total {
+        border-top: 2px solid #dee2e6;
+        font-weight: 700;
+        padding-top: 10px;
+        margin-top: 10px;
+    }
+    
+    .recent-transactions {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+    
+    .transaction-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .transaction-item {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #f8f9fa;
+    }
+    
+    .transaction-item:last-child {
+        border-bottom: none;
+    }
+    
+    .transaction-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        margin-left: 15px;
+    }
+    
+    .transaction-details {
+        flex: 1;
+    }
+    
+    .transaction-description {
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    
+    .transaction-date {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+    
+    .transaction-amount {
+        font-weight: 600;
+    }
+    
+    .amount-positive {
+        color: #28a745;
+    }
+    
+    .amount-negative {
+        color: #dc3545;
+    }
+    
+    .filter-container {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    
+    @media (max-width: 767.98px) {
+        .info-box {
+            min-height: 80px;
+        }
+        
+        .info-box-icon {
+            width: 60px;
+            font-size: 1.2rem;
+        }
+        
+        .info-box-number {
+            font-size: 1.1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid rtl px-4">
+    <h1 class="mt-4 mb-4">لوحة المعلومات المالية</h1>
+    
+    <!-- فلتر الفترة الزمنية -->
+    <div class="filter-container">
+        <form method="GET" action="{{ url_for('financial_dashboard') }}">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="period">الفترة الزمنية</label>
+                        <select class="form-control" id="period" name="period" onchange="this.form.submit()">
+                            <option value="today" {% if period == 'today' %}selected{% endif %}>اليوم</option>
+                            <option value="week" {% if period == 'week' %}selected{% endif %}>الأسبوع الحالي</option>
+                            <option value="month" {% if period == 'month' %}selected{% endif %}>الشهر الحالي</option>
+                            <option value="quarter" {% if period == 'quarter' %}selected{% endif %}>الربع الحالي</option>
+                            <option value="year" {% if period == 'year' %}selected{% endif %}>السنة الحالية</option>
+                            <option value="custom" {% if period == 'custom' %}selected{% endif %}>فترة مخصصة</option>
+                        </select>
+                    </div>
+                </div>
+                
+                {% if period == 'custom' %}
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="date_from">من تاريخ</label>
+                            <input type="date" class="form-control" id="date_from" name="date_from" value="{{ date_from }}">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="date_to">إلى تاريخ</label>
+                            <input type="date" class="form-control" id="date_to" name="date_to" value="{{ date_to }}">
+                        </div>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary mb-3">تطبيق</button>
+                    </div>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+    
+    <!-- مؤشرات الأداء الرئيسية -->
+    <div class="row">
+        <div class="col-md-3 col-sm-6">
+            <div class="info-box">
+                <span class="info-box-icon bg-primary"><i class="fas fa-money-bill-wave"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">إجمالي الإيرادات</span>
+                    <span class="info-box-number">{{ "{:,.2f}".format(kpis.total_revenue) }} ريال</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 col-sm-6">
+            <div class="info-box">
+                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">إجمالي المصروفات</span>
+                    <span class="info-box-number">{{ "{:,.2f}".format(kpis.total_expense) }} ريال</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 col-sm-6">
+            <div class="info-box">
+                <span class="info-box-icon bg-success"><i class="fas fa-chart-line"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">صافي الربح</span>
+                    <span class="info-box-number">{{ "{:,.2f}".format(kpis.net_profit) }} ريال</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 col-sm-6">
+            <div class="info-box">
+                <span class="info-box-icon bg-info"><i class="fas fa-wallet"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">السيولة النقدية</span>
+                    <span class="info-box-number">{{ "{:,.2f}".format(kpis.cash_balance) }} ريال</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- مخطط الإيرادات والمصروفات -->
+        <div class="col-md-8">
+            <div class="chart-container">
+                <div class="chart-title">الإيرادات والمصروفات حسب الفترة</div>
+                <canvas id="revenueExpenseChart" height="300"></canvas>
+            </div>
+        </div>
+        
+        <!-- ملخص مالي -->
+        <div class="col-md-4">
+            <div class="summary-container">
+                <div class="summary-title">ملخص مالي</div>
+                <div class="summary-item">
+                    <div class="summary-label">إجمالي الأصول</div>
+                    <div class="summary-value">{{ "{:,.2f}".format(summary.total_assets) }} ريال</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">إجمالي الخصوم</div>
+                    <div class="summary-value">{{ "{:,.2f}".format(summary.total_liabilities) }} ريال</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">حقوق الملكية</div>
+                    <div class="summary-value">{{ "{:,.2f}".format(summary.total_equity) }} ريال</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">نسبة السيولة</div>
+                    <div class="summary-value">{{ "{:.2f}".format(summary.liquidity_ratio) }}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">هامش الربح</div>
+                    <div class="summary-value">{{ "{:.2f}%".format(summary.profit_margin * 100) }}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">العائد على الأصول</div>
+                    <div class="summary-value">{{ "{:.2f}%".format(summary.return_on_assets * 100) }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- مخطط توزيع الإيرادات حسب النوع -->
+        <div class="col-md-6">
+            <div class="chart-container">
+                <div class="chart-title">توزيع الإيرادات حسب النوع</div>
+                <canvas id="revenueDistributionChart" height="300"></canvas>
+            </div>
+        </div>
+        
+        <!-- مخطط توزيع المصروفات حسب النوع -->
+        <div class="col-md-6">
+            <div class="chart-container">
+                <div class="chart-title">توزيع المصروفات حسب النوع</div>
+                <canvas id="expenseDistributionChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- أحدث المعاملات -->
+        <div class="col-md-12">
+            <div class="recent-transactions">
+                <div class="transaction-title">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>أحدث المعاملات</div>
+                        <a href="{{ url_for('journal_entries') }}" class="btn btn-sm btn-outline-primary">عرض الكل</a>
+                    </div>
+                </div>
+                
+                {% if recent_transactions %}
+                    {% for transaction in recent_transactions %}
+                        <div class="transaction-item">
+                            <div class="transaction-icon {{ 'bg-success' if transaction.transaction_type == 'credit' else 'bg-danger' }}">
+                                <i class="{{ 'fas fa-arrow-down' if transaction.transaction_type == 'credit' else 'fas fa-arrow-up' }}"></i>
+                            </div>
+                            <div class="transaction-details">
+                                <div class="transaction-description">{{ transaction.description }}</div>
+                                <div class="transaction-date">{{ transaction.transaction_date.strftime('%Y-%m-%d') }}</div>
+                            </div>
+                            <div class="transaction-amount {{ 'amount-positive' if transaction.transaction_type == 'credit' else 'amount-negative' }}">
+                                {{ "{:,.2f}".format(transaction.amount) }} ريال
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-info">
+                        لا توجد معاملات حديثة للعرض.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    $(document).ready(function() {
+        // إعداد بيانات الرسم البياني للإيرادات والمصروفات
+        const revenueExpenseData = {
+            labels: {{ chart_data.period_labels|tojson }},
+            datasets: [
+                {
+                    label: 'الإيرادات',
+                    data: {{ chart_data.revenue_data|tojson }},
+                    backgroundColor: 'rgba(40, 167, 69, 0.2)',
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 2,
+                    tension: 0.4
+                },
+                {
+                    label: 'المصروفات',
+                    data: {{ chart_data.expense_data|tojson }},
+                    backgroundColor: 'rgba(220, 53, 69, 0.2)',
+                    borderColor: 'rgba(220, 53, 69, 1)',
+                    borderWidth: 2,
+                    tension: 0.4
+                }
+            ]
+        };
+        
+        // إنشاء الرسم البياني للإيرادات والمصروفات
+        new Chart(document.getElementById('revenueExpenseChart'), {
+            type: 'line',
+            data: revenueExpenseData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString() + ' ريال';
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.raw.toLocaleString() + ' ريال';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // إعداد بيانات الرسم البياني لتوزيع الإيرادات
+        const revenueDistributionData = {
+            labels: {{ chart_data.revenue_categories|tojson }},
+            datasets: [{
+                data: {{ chart_data.revenue_distribution|tojson }},
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.8)',
+                    'rgba(75, 192, 192, 0.8)',
+                    'rgba(255, 206, 86, 0.8)',
+                    'rgba(153, 102, 255, 0.8)',
+                    'rgba(255, 159, 64, 0.8)',
+                    'rgba(40, 167, 69, 0.8)'
+                ],
+                borderWidth: 1
+            }]
+        };
+        
+        // إنشاء الرسم البياني لتوزيع الإيرادات
+        new Chart(document.getElementById('revenueDistributionChart'), {
+            type: 'doughnut',
+            data: revenueDistributionData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.raw;
+                                const percentage = ((value / {{ chart_data.revenue_distribution|sum or 1 }}) * 100).toFixed(1);
+                                return context.label + ': ' + value.toLocaleString() + ' ريال (' + percentage + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // إعداد بيانات الرسم البياني لتوزيع المصروفات
+        const expenseDistributionData = {
+            labels: {{ chart_data.expense_categories|tojson }},
+            datasets: [{
+                data: {{ chart_data.expense_distribution|tojson }},
+                backgroundColor: [
+                    'rgba(220, 53, 69, 0.8)',
+                    'rgba(255, 128, 0, 0.8)',
+                    'rgba(255, 193, 7, 0.8)',
+                    'rgba(111, 66, 193, 0.8)',
+                    'rgba(23, 162, 184, 0.8)',
+                    'rgba(108, 117, 125, 0.8)'
+                ],
+                borderWidth: 1
+            }]
+        };
+        
+        // إنشاء الرسم البياني لتوزيع المصروفات
+        new Chart(document.getElementById('expenseDistributionChart'), {
+            type: 'doughnut',
+            data: expenseDistributionData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.raw;
+                                const percentage = ((value / {{ chart_data.expense_distribution|sum or 1 }}) * 100).toFixed(1);
+                                return context.label + ': ' + value.toLocaleString() + ' ريال (' + percentage + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // تغيير الفلتر
+        $('#period').change(function() {
+            if ($(this).val() === 'custom') {
+                // لا تقم بتقديم النموذج تلقائيًا إذا تم اختيار فترة مخصصة
+                return false;
+            }
+            $(this).closest('form').submit();
+        });
+    });
+</script>
+{% endblock %}
