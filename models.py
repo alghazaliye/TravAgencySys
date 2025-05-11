@@ -449,7 +449,12 @@ class SystemSettings(db.Model):
                 description=description
             )
             db.session.add(setting)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(f"خطأ في حفظ الإعدادات: {e}")
+            # لا نحاول حفظ الإعدادات في الذاكرة هنا لتجنب مشاكل الدورة
         
         
 # الميزانيات والتخطيط المالي

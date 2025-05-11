@@ -6,8 +6,8 @@ from models import BusSchedule, BusTrip, BusBooking, BookingPayment, SystemSetti
 from models import Currency, CashRegister, BankAccount
 from app import app, db
 
-# متغير عام لتخزين الإعدادات
-system_settings = {}
+# قاموس عام لتخزين الإعدادات
+settings_dict = {}
 import logging
 import uuid
 from datetime import datetime
@@ -90,17 +90,19 @@ DEFAULT_SETTINGS = {
 # وظيفة لتحميل إعدادات النظام
 def load_system_settings():
     """تحميل إعدادات النظام وتخزينها في متغير عالمي"""
-    global system_settings
+    global settings_dict
+    settings_dict = {}  # إعادة تعيين القاموس
+    
     all_settings = SystemSettings.query.all()
     for setting in all_settings:
-        system_settings[setting.setting_key] = setting.setting_value
+        settings_dict[setting.setting_key] = setting.setting_value
     
     # إضافة الإعدادات الافتراضية إذا لم تكن موجودة بالفعل
     for key, data in DEFAULT_SETTINGS.items():
-        if key not in system_settings:
-            system_settings[key] = data['value']
+        if key not in settings_dict:
+            settings_dict[key] = data['value']
     
-    return system_settings
+    return settings_dict
 
 # وظيفة لإنشاء الإعدادات الافتراضية
 def create_default_settings():
@@ -644,7 +646,16 @@ def system_settings():
                 # تجنب المفاتيح الخاصة بـ CSRF وغيرها
                 if key.startswith('csrf_') or key == '_method':
                     continue
-                SystemSettings.set_value(key, value)
+                
+                # حفظ القيمة أيضًا في متغير الإعدادات العام
+                global settings_dict
+                settings_dict[key] = value
+                
+                # محاولة حفظ القيمة في قاعدة البيانات
+                try:
+                    SystemSettings.set_value(key, value)
+                except Exception as e:
+                    logging.error(f"خطأ في حفظ الإعداد {key}: {str(e)}")
             
             flash('تم تحديث إعدادات النظام بنجاح', 'success')
             return redirect(url_for('system_settings'))

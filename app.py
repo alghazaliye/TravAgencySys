@@ -89,15 +89,13 @@ def create_app():
 app = create_app()
 
 # تضمين إعدادات النظام في كل القوالب
-from routes import DEFAULT_SETTINGS
+from routes import load_system_settings
 
 @app.context_processor
 def inject_settings():
     """تضمين إعدادات النظام في سياق القالب"""
-    # استخدام القيم الافتراضية فقط مبدئياً
-    settings_dict = {}
-    for key, data in DEFAULT_SETTINGS.items():
-        settings_dict[key] = data['value']
+    # الحصول على الإعدادات من الدالة المسؤولة عن تحميلها
+    settings = load_system_settings()
     
     # إعادة قاموس settings للتضمين في سياق جميع القوالب
-    return dict(settings=settings_dict)
+    return dict(settings=settings)
