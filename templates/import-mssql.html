@@ -1,0 +1,344 @@
+{% extends "layout.html" %}
+
+{% block title %}استيراد قاعدة بيانات SQL Server{% endblock %}
+
+{% block styles %}
+<style>
+    .import-section {
+        background-color: #f9f9f9;
+        border-radius: 5px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .progress-container {
+        margin-top: 20px;
+    }
+    
+    .hidden {
+        display: none;
+    }
+    
+    .log-container {
+        max-height: 300px;
+        overflow-y: auto;
+        background-color: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        padding: 10px;
+        font-family: Consolas, monospace;
+        font-size: 13px;
+    }
+    
+    .log-info {
+        color: #0c5460;
+    }
+    
+    .log-error {
+        color: #721c24;
+    }
+    
+    .log-success {
+        color: #155724;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid rtl px-4">
+    <h1 class="mt-4 mb-4">استيراد قاعدة بيانات SQL Server</h1>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <!-- قسم إعدادات الاتصال -->
+            <div class="import-section">
+                <h3>إعدادات الاتصال بقاعدة بيانات SQL Server</h3>
+                <form id="connection-form">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="server">اسم الخادم (Server)</label>
+                                <input type="text" class="form-control" id="server" name="server" value="localhost" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="database">اسم قاعدة البيانات</label>
+                                <input type="text" class="form-control" id="database" name="database" value="travelagency" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="username">اسم المستخدم</label>
+                                <input type="text" class="form-control" id="username" name="username" value="sa" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="password">كلمة المرور</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="driver">برنامج تشغيل ODBC</label>
+                        <input type="text" class="form-control" id="driver" name="driver" value="ODBC Driver 17 for SQL Server" required>
+                        <small class="form-text text-muted">تأكد من تثبيت برنامج تشغيل ODBC لـ SQL Server</small>
+                    </div>
+                    <button type="button" id="test-connection" class="btn btn-primary">اختبار الاتصال</button>
+                </form>
+            </div>
+            
+            <!-- قسم رفع نسخة احتياطية -->
+            <div class="import-section">
+                <h3>رفع نسخة احتياطية من قاعدة البيانات</h3>
+                <p>قم برفع ملف النسخة الاحتياطية (.bak) من قاعدة بيانات SQL Server.</p>
+                <form id="upload-form" enctype="multipart/form-data">
+                    <div class="form-group mb-3">
+                        <label for="backup-file">ملف النسخة الاحتياطية</label>
+                        <input type="file" class="form-control" id="backup-file" name="backup_file" accept=".bak" required>
+                    </div>
+                    <button type="button" id="upload-backup" class="btn btn-success" disabled>رفع وتهيئة قاعدة البيانات</button>
+                </form>
+            </div>
+            
+            <!-- قسم استيراد البيانات -->
+            <div class="import-section">
+                <h3>استيراد البيانات</h3>
+                <p>يمكنك استيراد البيانات من قاعدة بيانات SQL Server إلى النظام الحالي.</p>
+                <div class="mb-3">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="import-customers" value="customers" checked>
+                        <label class="form-check-label" for="import-customers">العملاء</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="import-accounts" value="accounts" checked>
+                        <label class="form-check-label" for="import-accounts">الحسابات</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="import-bank-accounts" value="bank_accounts" checked>
+                        <label class="form-check-label" for="import-bank-accounts">الحسابات البنكية</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="import-transactions" value="transactions" checked>
+                        <label class="form-check-label" for="import-transactions">المعاملات المالية</label>
+                    </div>
+                </div>
+                <button type="button" id="import-data" class="btn btn-warning" disabled>استيراد البيانات</button>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <!-- قسم السجل والتقدم -->
+            <div class="import-section">
+                <h3>سجل العمليات</h3>
+                <div class="progress-container hidden">
+                    <div class="mb-2">جاري التنفيذ...</div>
+                    <div class="progress mb-3">
+                        <div id="import-progress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="log-container">
+                    <div id="log-messages">
+                        <div class="log-info">جاهز لبدء العملية...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const connectionForm = document.getElementById('connection-form');
+        const testConnectionBtn = document.getElementById('test-connection');
+        const uploadBackupBtn = document.getElementById('upload-backup');
+        const importDataBtn = document.getElementById('import-data');
+        const progressContainer = document.querySelector('.progress-container');
+        const progressBar = document.getElementById('import-progress');
+        const logMessages = document.getElementById('log-messages');
+        
+        // اختبار الاتصال بقاعدة بيانات SQL Server
+        testConnectionBtn.addEventListener('click', function() {
+            const formData = new FormData(connectionForm);
+            
+            // إضافة رسالة إلى السجل
+            addLogMessage('جاري اختبار الاتصال بقاعدة بيانات SQL Server...', 'info');
+            
+            // إظهار شريط التقدم
+            progressContainer.classList.remove('hidden');
+            progressBar.style.width = '30%';
+            
+            // إرسال طلب اختبار الاتصال
+            fetch('/test-mssql-connection', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    addLogMessage('تم الاتصال بقاعدة بيانات SQL Server بنجاح!', 'success');
+                    progressBar.style.width = '100%';
+                    
+                    // تفعيل زر رفع النسخة الاحتياطية وزر الاستيراد
+                    uploadBackupBtn.disabled = false;
+                    importDataBtn.disabled = false;
+                } else {
+                    addLogMessage(`فشل الاتصال: ${data.error}`, 'error');
+                    progressBar.style.width = '0%';
+                }
+                
+                // إخفاء شريط التقدم بعد فترة
+                setTimeout(() => {
+                    progressContainer.classList.add('hidden');
+                    progressBar.style.width = '0%';
+                }, 2000);
+            })
+            .catch(error => {
+                addLogMessage(`حدث خطأ: ${error.message}`, 'error');
+                progressContainer.classList.add('hidden');
+                progressBar.style.width = '0%';
+            });
+        });
+        
+        // رفع وتهيئة قاعدة البيانات
+        uploadBackupBtn.addEventListener('click', function() {
+            const uploadForm = document.getElementById('upload-form');
+            const formData = new FormData(uploadForm);
+            
+            // إضافة معلومات الاتصال
+            const server = document.getElementById('server').value;
+            const database = document.getElementById('database').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const driver = document.getElementById('driver').value;
+            
+            formData.append('server', server);
+            formData.append('database', database);
+            formData.append('username', username);
+            formData.append('password', password);
+            formData.append('driver', driver);
+            
+            // إضافة رسالة إلى السجل
+            addLogMessage('جاري رفع وتهيئة قاعدة البيانات...', 'info');
+            
+            // إظهار شريط التقدم
+            progressContainer.classList.remove('hidden');
+            progressBar.style.width = '30%';
+            
+            // إرسال طلب رفع النسخة الاحتياطية
+            fetch('/upload-mssql-backup', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    addLogMessage('تم رفع وتهيئة قاعدة البيانات بنجاح!', 'success');
+                    progressBar.style.width = '100%';
+                } else {
+                    addLogMessage(`فشل رفع أو تهيئة قاعدة البيانات: ${data.error}`, 'error');
+                    progressBar.style.width = '0%';
+                }
+                
+                // إخفاء شريط التقدم بعد فترة
+                setTimeout(() => {
+                    progressContainer.classList.add('hidden');
+                    progressBar.style.width = '0%';
+                }, 2000);
+            })
+            .catch(error => {
+                addLogMessage(`حدث خطأ: ${error.message}`, 'error');
+                progressContainer.classList.add('hidden');
+                progressBar.style.width = '0%';
+            });
+        });
+        
+        // استيراد البيانات
+        importDataBtn.addEventListener('click', function() {
+            // تحديد البيانات المطلوب استيرادها
+            const importCustomers = document.getElementById('import-customers').checked;
+            const importAccounts = document.getElementById('import-accounts').checked;
+            const importBankAccounts = document.getElementById('import-bank-accounts').checked;
+            const importTransactions = document.getElementById('import-transactions').checked;
+            
+            // تحضير البيانات للإرسال
+            const formData = new FormData();
+            formData.append('server', document.getElementById('server').value);
+            formData.append('database', document.getElementById('database').value);
+            formData.append('username', document.getElementById('username').value);
+            formData.append('password', document.getElementById('password').value);
+            formData.append('driver', document.getElementById('driver').value);
+            formData.append('import_customers', importCustomers);
+            formData.append('import_accounts', importAccounts);
+            formData.append('import_bank_accounts', importBankAccounts);
+            formData.append('import_transactions', importTransactions);
+            
+            // إضافة رسالة إلى السجل
+            addLogMessage('جاري استيراد البيانات...', 'info');
+            
+            // إظهار شريط التقدم
+            progressContainer.classList.remove('hidden');
+            progressBar.style.width = '30%';
+            
+            // إرسال طلب استيراد البيانات
+            fetch('/import-mssql-data', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    addLogMessage('تم استيراد البيانات بنجاح!', 'success');
+                    
+                    // إضافة تفاصيل الاستيراد إلى السجل
+                    if (data.details) {
+                        if (data.details.customers_count) {
+                            addLogMessage(`تم استيراد ${data.details.customers_count} عميل`, 'info');
+                        }
+                        if (data.details.accounts_count) {
+                            addLogMessage(`تم استيراد ${data.details.accounts_count} حساب/فئة`, 'info');
+                        }
+                        if (data.details.bank_accounts_count) {
+                            addLogMessage(`تم استيراد ${data.details.bank_accounts_count} حساب بنكي`, 'info');
+                        }
+                        if (data.details.transactions_count) {
+                            addLogMessage(`تم استيراد ${data.details.transactions_count} معاملة مالية`, 'info');
+                        }
+                    }
+                    
+                    progressBar.style.width = '100%';
+                } else {
+                    addLogMessage(`فشل استيراد البيانات: ${data.error}`, 'error');
+                    progressBar.style.width = '0%';
+                }
+                
+                // إخفاء شريط التقدم بعد فترة
+                setTimeout(() => {
+                    progressContainer.classList.add('hidden');
+                }, 2000);
+            })
+            .catch(error => {
+                addLogMessage(`حدث خطأ: ${error.message}`, 'error');
+                progressContainer.classList.add('hidden');
+                progressBar.style.width = '0%';
+            });
+        });
+        
+        // إضافة رسالة إلى سجل العمليات
+        function addLogMessage(message, type = 'info') {
+            const messageElement = document.createElement('div');
+            messageElement.className = `log-${type}`;
+            messageElement.textContent = message;
+            
+            logMessages.appendChild(messageElement);
+            logMessages.scrollTop = logMessages.scrollHeight;
+        }
+    });
+</script>
+{% endblock %}
