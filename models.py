@@ -194,6 +194,60 @@ class BookingPayment(db.Model):
     booking = db.relationship('BusBooking', backref='payments')
     user = db.relationship('User', foreign_keys=[created_by])
 
+# نموذج العملات
+class Currency(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(10), unique=True, nullable=False)  # رمز العملة (مثلا: SAR, USD)
+    name = db.Column(db.String(100), nullable=False)  # اسم العملة (ريال سعودي، دولار أمريكي)
+    symbol = db.Column(db.String(10))  # رمز العملة (﷼، $)
+    exchange_rate = db.Column(db.Float, default=1.0)  # سعر الصرف مقابل العملة الأساسية
+    is_default = db.Column(db.Boolean, default=False)  # هل هي العملة الافتراضية
+    is_active = db.Column(db.Boolean, default=True)  # هل العملة مفعلة
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    def __str__(self):
+        return f"{self.name} ({self.code})"
+
+# نموذج صناديق النقد
+class CashRegister(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)  # اسم الصندوق
+    code = db.Column(db.String(20), unique=True)  # كود الصندوق
+    balance = db.Column(db.Float, default=0.0)  # رصيد الصندوق
+    currency_id = db.Column(db.Integer, db.ForeignKey('currency.id'))  # العملة
+    is_active = db.Column(db.Boolean, default=True)  # هل الصندوق مفعل
+    notes = db.Column(db.Text)  # ملاحظات
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # العلاقات
+    currency = db.relationship('Currency', foreign_keys=[currency_id])
+    
+    def __str__(self):
+        return self.name
+
+# نموذج الحسابات البنكية
+class BankAccount(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    bank_name = db.Column(db.String(100), nullable=False)  # اسم البنك
+    account_name = db.Column(db.String(100), nullable=False)  # اسم الحساب
+    account_number = db.Column(db.String(50), unique=True)  # رقم الحساب
+    iban = db.Column(db.String(50), unique=True)  # رقم الآيبان
+    swift_code = db.Column(db.String(20))  # كود السويفت
+    balance = db.Column(db.Float, default=0.0)  # رصيد الحساب
+    currency_id = db.Column(db.Integer, db.ForeignKey('currency.id'))  # العملة
+    is_active = db.Column(db.Boolean, default=True)  # هل الحساب مفعل
+    notes = db.Column(db.Text)  # ملاحظات
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # العلاقات
+    currency = db.relationship('Currency', foreign_keys=[currency_id])
+    
+    def __str__(self):
+        return f"{self.bank_name} - {self.account_name}"
+
 # نموذج إعدادات النظام
 class SystemSettings(db.Model):
     id = db.Column(db.Integer, primary_key=True)

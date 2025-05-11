@@ -608,10 +608,27 @@ def id_types():
     return render_template('id-types.html', settings=settings)
 
 # إعدادات النظام
-@app.route('/system-settings')
+@app.route('/system-settings', methods=['GET', 'POST'])
 @login_required
 def system_settings():
     """صفحة إعدادات النظام"""
+    # إذا كان الطلب بطريقة POST، قم بمعالجة تحديث الإعدادات
+    if request.method == 'POST':
+        try:
+            data = request.form
+            for key, value in data.items():
+                # تجنب المفاتيح الخاصة بـ CSRF وغيرها
+                if key.startswith('csrf_') or key == '_method':
+                    continue
+                SystemSettings.set_value(key, value)
+            
+            flash('تم تحديث إعدادات النظام بنجاح', 'success')
+            return redirect(url_for('system_settings'))
+        except Exception as e:
+            logging.error(f"خطأ في تحديث إعدادات النظام: {str(e)}")
+            flash('حدث خطأ أثناء تحديث الإعدادات', 'danger')
+    
+    # تحميل الإعدادات الحالية
     settings_list = SystemSettings.query.all()
     settings = get_settings()
     
