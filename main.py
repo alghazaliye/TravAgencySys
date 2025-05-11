@@ -1,11 +1,26 @@
-from app import app  # noqa: F401
-import routes  # Import all routes
+from app import app
 import os
 import logging
+from seed_accounting import seed_accounting_data
 from seed_currencies import seed_currencies
 
-# تكوين سجل الأحداث
+# تهيئة نظام التسجيل
 logging.basicConfig(level=logging.INFO)
+
+# تهيئة البيانات الأساسية عند بدء التطبيق
+with app.app_context():
+    try:
+        # تهيئة بيانات العملات
+        seed_currencies()
+        
+        # تهيئة البيانات المحاسبية
+        seed_accounting_data()
+        
+        logging.info("تم تهيئة البيانات الأساسية للنظام")
+    except Exception as e:
+        logging.error(f"حدث خطأ أثناء تهيئة البيانات الأساسية: {e}")
+
+import routes  # Import all routes
 
 # إعداد مفتاح الجلسة إذا لم يكن موجودًا - استخدام مفتاح أكثر قوة
 if not os.environ.get("SESSION_SECRET"):

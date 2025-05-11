@@ -711,6 +711,9 @@ def system_settings():
         'sms_service_enabled': {
             'description': 'تفعيل خدمة إرسال الرسائل القصيرة'
         },
+        'enable_sms': {
+            'description': 'تفعيل نظام الرسائل القصيرة'
+        },
         'email_notifications_enabled': {
             'description': 'تفعيل إرسال إشعارات البريد الإلكتروني'
         },

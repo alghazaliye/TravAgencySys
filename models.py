@@ -251,15 +251,16 @@ class BankAccount(db.Model):
 # نموذج دليل الحسابات المالي (Chart of Accounts)
 class Account(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    code = db.Column(db.String(20), unique=True, nullable=False)  # كود الحساب
-    name = db.Column(db.String(200), nullable=False)  # اسم الحساب
-    account_type = db.Column(db.String(50), nullable=False)  # نوع الحساب (أصول، خصوم، إيرادات، مصروفات)
+    name = db.Column(db.String(100), nullable=False)  # اسم الحساب
+    account_number = db.Column(db.String(20))  # رقم الحساب
+    category_id = db.Column(db.Integer)  # رمز الفئة
+    account_type = db.Column(db.String(50))  # نوع الحساب (أصول، خصوم، إيرادات، مصروفات)
+    is_bank_account = db.Column(db.Boolean, default=False)  # هل هو حساب بنكي
+    is_cash_account = db.Column(db.Boolean, default=False)  # هل هو حساب نقدي
     parent_id = db.Column(db.Integer, db.ForeignKey('account.id'))  # الحساب الأب (للتسلسل الهرمي)
-    level = db.Column(db.Integer, default=1)  # مستوى الحساب في التسلسل الهرمي
-    debit_balance = db.Column(db.Float, default=0.0)  # الرصيد المدين
-    credit_balance = db.Column(db.Float, default=0.0)  # الرصيد الدائن
+    balance = db.Column(db.Float, default=0.0)  # الرصيد
+    description = db.Column(db.Text)  # وصف الحساب
     is_active = db.Column(db.Boolean, default=True)  # حالة الحساب
-    notes = db.Column(db.Text)  # ملاحظات
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
@@ -267,38 +268,49 @@ class Account(db.Model):
     children = db.relationship('Account', backref=db.backref('parent', remote_side=[id]), lazy='dynamic')
     
     def __str__(self):
-        return f"{self.code} - {self.name}"
+        return f"{self.account_number} - {self.name}" if self.account_number else self.name
     
     def get_balance(self):
-        """حساب الرصيد النهائي (مدين - دائن)"""
-        if self.account_type in ['asset', 'expense']:  # حسابات المدين
-            return self.debit_balance - self.credit_balance
-        else:  # حسابات الدائن
-            return self.credit_balance - self.debit_balance
+        """حساب الرصيد النهائي"""
+        return self.balance
+
+# نموذج فئات الحسابات
+class AccountCategory(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)  # اسم الفئة
+    code = db.Column(db.String(20))  # رمز الفئة
+    description = db.Column(db.Text)  # وصف الفئة
+    is_active = db.Column(db.Boolean, default=True)  # حالة الفئة
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    def __str__(self):
+        return self.name
 
 # نموذج القيد المحاسبي
 class JournalEntry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     entry_number = db.Column(db.String(20), unique=True)  # رقم القيد
-    entry_date = db.Column(db.Date, nullable=False)  # تاريخ القيد
+    date = db.Column(db.Date, nullable=False)  # تاريخ القيد
+    reference_type = db.Column(db.String(50))  # نوع المرجع
+    reference_id = db.Column(db.String(50))  # رقم المرجع
     description = db.Column(db.Text)  # وصف القيد
-    reference = db.Column(db.String(100))  # المرجع (مثل رقم الفاتورة)
-    total_debit = db.Column(db.Float, default=0.0)  # إجمالي المدين
-    total_credit = db.Column(db.Float, default=0.0)  # إجمالي الدائن
-    currency_id = db.Column(db.Integer, db.ForeignKey('currency.id'))  # العملة
-    exchange_rate = db.Column(db.Float, default=1.0)  # سعر الصرف
+    entry_type = db.Column(db.String(50))  # نوع القيد
+    status = db.Column(db.String(20))  # حالة القيد
     is_posted = db.Column(db.Boolean, default=False)  # هل تم ترحيل القيد
+    posted_by = db.Column(db.Integer, db.ForeignKey('user.id'))  # من قام بترحيل القيد
+    posted_at = db.Column(db.DateTime)  # تاريخ الترحيل
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'))  # من أنشأ القيد
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # العلاقات
-    currency = db.relationship('Currency', foreign_keys=[currency_id])
-    user = db.relationship('User', foreign_keys=[created_by])
+    creator = db.relationship('User', foreign_keys=[created_by])
+    poster = db.relationship('User', foreign_keys=[posted_by])
     lines = db.relationship('JournalLine', backref='entry', lazy=True, cascade="all, delete-orphan")
     
     def __str__(self):
-        return f"قيد رقم {self.entry_number} بتاريخ {self.entry_date}"
+        return f"قيد رقم {self.entry_number} بتاريخ {self.date}"
 
 # نموذج سطور القيد المحاسبي
 class JournalLine(db.Model):
@@ -315,6 +327,26 @@ class JournalLine(db.Model):
     
     def __str__(self):
         return f"{self.account.name}: مدين {self.debit} - دائن {self.credit}"
+
+# نموذج حركات الحسابات
+class AccountTransaction(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
+    journal_id = db.Column(db.Integer, db.ForeignKey('journal_entry.id'))
+    transaction_date = db.Column(db.Date, nullable=False)
+    amount = db.Column(db.Float, nullable=False)
+    transaction_type = db.Column(db.String(20), nullable=False)  # debit أو credit
+    description = db.Column(db.Text)
+    reference_type = db.Column(db.String(50))
+    reference_id = db.Column(db.String(50))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # العلاقات
+    account = db.relationship('Account', foreign_keys=[account_id])
+    journal = db.relationship('JournalEntry', foreign_keys=[journal_id])
+    
+    def __str__(self):
+        return f"حركة {self.transaction_type} بقيمة {self.amount} على حساب {self.account.name}"
 
 # نموذج سند القبض
 class ReceiptVoucher(db.Model):
