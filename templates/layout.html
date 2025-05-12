@@ -28,23 +28,62 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom-rtl.css') }}">
     <!-- CSS مستجيب للشاشات المختلفة -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive-fixes.css') }}">
-    <!-- أنماط بسيطة للتأكيد على اتجاه RTL لـ AdminLTE -->
+    <!-- أنماط ثابتة للقائمة الجانبية RTL -->
     <style>
-        /* حل مشكلة اتجاه RTL */
+        /* أنماط RTL أساسية للقائمة الجانبية */
+        html[dir="rtl"] .main-sidebar {
+            right: 0 !important;
+            left: auto !important;
+        }
+        
+        html[dir="rtl"] .content-wrapper,
+        html[dir="rtl"] .main-header,
+        html[dir="rtl"] .main-footer {
+            margin-right: 250px !important;
+            margin-left: 0 !important;
+            transition: margin-right 0.3s ease-in-out !important;
+        }
+        
+        html[dir="rtl"] .sidebar-collapse .content-wrapper,
+        html[dir="rtl"] .sidebar-collapse .main-header,
+        html[dir="rtl"] .sidebar-collapse .main-footer {
+            margin-right: 4.6rem !important;
+        }
+        
+        /* تأكيد عرض القائمة وتنسيقها */
         .main-sidebar {
-            right: 0;
-            left: auto;
+            width: 250px !important;
+            background-color: var(--sidebar-bg) !important;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1) !important;
+            position: fixed !important;
+            height: 100% !important;
+            z-index: 1038 !important;
+            display: block !important;
+            visibility: visible !important;
         }
         
-        .content-wrapper, .main-header, .main-footer {
-            margin-right: 250px;
-            margin-left: 0;
+        .sidebar-collapse .main-sidebar {
+            width: 4.6rem !important;
         }
         
-        .sidebar-collapse .content-wrapper,
-        .sidebar-collapse .main-header,
-        .sidebar-collapse .main-footer {
-            margin-right: 4.6rem;
+        /* تحسين أيقونات القائمة */
+        .nav-sidebar .nav-link .nav-icon {
+            margin-left: 0.5rem !important;
+            margin-right: 0 !important;
+        }
+        
+        /* تأكيد إخفاء النص عند طي القائمة */
+        .sidebar-collapse .nav-sidebar .nav-link p {
+            display: none !important;
+        }
+        
+        /* تحسين على الهواتف المحمولة */
+        @media (max-width: 767.98px) {
+            html[dir="rtl"] .content-wrapper,
+            html[dir="rtl"] .main-header,
+            html[dir="rtl"] .main-footer {
+                margin-right: 0 !important;
+            }
         }
     </style>
     <!-- سمات الوضع الفاتح/الداكن -->
@@ -1140,18 +1179,29 @@
     <!-- Notifications System -->
     <script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
     <!-- Sidebar Fix Script -->
-    <!-- كود بسيط لتفعيل زر تبديل القائمة في AdminLTE -->
+    <!-- كود بسيط جدًا للقائمة الجانبية -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // إعداد زر تبديل القائمة
-            const toggleBtn = document.getElementById('sidebarToggleBtn');
-            if (toggleBtn) {
-                toggleBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    $('body').toggleClass('sidebar-collapse');
-                });
+    $(document).ready(function() {
+        // معالج بسيط لزر القائمة
+        $('#sidebarToggleBtn').on('click', function(e) {
+            e.preventDefault();
+            console.log('تم النقر على زر القائمة');
+            
+            // تبديل فئة الطي
+            $('body').toggleClass('sidebar-collapse');
+            
+            // تحديد الحالة
+            var isCollapsed = $('body').hasClass('sidebar-collapse');
+            console.log('حالة القائمة:', isCollapsed ? 'مطوية' : 'مفتوحة');
+            
+            // معالجة مرئيات القائمة
+            if (isCollapsed) {
+                $('.nav-sidebar .nav-link p').hide();
+            } else {
+                $('.nav-sidebar .nav-link p').show();
             }
         });
+    });
     </script>
     <!-- Notification Integration -->
     <script>
