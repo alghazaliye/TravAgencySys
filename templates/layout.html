@@ -28,10 +28,48 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom-rtl.css') }}">
     <!-- CSS مستجيب للشاشات المختلفة -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive-fixes.css') }}">
-    <!-- إصلاح القائمة الجانبية -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar-fix.css') }}">
-    <!-- القائمة الجانبية المصغرة -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/mini-sidebar.css') }}">
+    <!-- أنماط القائمة الجانبية المباشرة -->
+    <style>
+        /* أنماط القائمة الجانبية الأساسية */
+        .main-sidebar {
+            position: fixed !important;
+            top: 0 !important;
+            right: 0 !important;
+            left: auto !important;
+            bottom: 0 !important;
+            width: 250px !important;
+            visibility: visible !important;
+            display: block !important;
+            z-index: 1100 !important;
+            transition: width 0.3s ease-in-out, margin 0.3s ease-in-out !important;
+        }
+        
+        /* إصلاح الهوامش الافتراضية */
+        .content-wrapper, .main-header, .main-footer {
+            margin-right: 250px !important;
+            margin-left: 0 !important;
+            transition: margin-right 0.3s ease-in-out !important;
+        }
+        
+        /* القائمة المطوية */
+        .sidebar-collapse .main-sidebar {
+            width: 4.6rem !important;
+        }
+        
+        /* الهوامش في حالة طي القائمة */
+        .sidebar-collapse .content-wrapper,
+        .sidebar-collapse .main-header,
+        .sidebar-collapse .main-footer {
+            margin-right: 4.6rem !important;
+        }
+        
+        /* أنماط إضافية */
+        .sidebar-collapse .nav-sidebar .nav-link p {
+            visibility: hidden !important;
+            opacity: 0 !important;
+            display: none !important;
+        }
+    </style>
     <!-- سمات الوضع الفاتح/الداكن -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-rtl.css') }}">
     <!-- Google Font: المحدد من الإعدادات -->
@@ -1125,8 +1163,56 @@
     <!-- Notifications System -->
     <script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
     <!-- Sidebar Fix Script -->
-    <!-- مدير القائمة الجانبية الموحد - يتم تحميله بدلاً من جميع ملفات القائمة الجانبية الأخرى -->
-    <script src="{{ url_for('static', filename='js/sidebar-manager.js') }}"></script>
+    <!-- تنفيذ مباشر للقائمة الجانبية بدون ملفات خارجية -->
+    <script>
+        // عندما تتحمل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            // الحصول على زر القائمة
+            const menuButton = document.getElementById('sidebarToggleBtn');
+            if (menuButton) {
+                console.log('تم العثور على زر القائمة');
+                
+                // إضافة معالج النقر
+                menuButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('تم النقر على زر القائمة');
+                    
+                    // تبديل حالة القائمة
+                    document.body.classList.toggle('sidebar-collapse');
+                    
+                    // تحديث الهوامش والعرض يدويًا
+                    const isCollapsed = document.body.classList.contains('sidebar-collapse');
+                    
+                    // تحديث عرض القائمة الجانبية
+                    const sidebar = document.querySelector('.main-sidebar');
+                    if (sidebar) {
+                        sidebar.style.width = isCollapsed ? '4.6rem' : '250px';
+                    }
+                    
+                    // تحديث هوامش المحتوى
+                    const margin = isCollapsed ? '4.6rem' : '250px';
+                    document.querySelectorAll('.content-wrapper, .main-header, .main-footer').forEach(function(el) {
+                        el.style.marginRight = margin;
+                    });
+                    
+                    // تطبيق تأثيرات إضافية على القائمة
+                    if (isCollapsed) {
+                        // إخفاء النص
+                        document.querySelectorAll('.nav-sidebar .nav-link p').forEach(function(el) {
+                            el.style.display = 'none';
+                        });
+                    } else {
+                        // إظهار النص
+                        document.querySelectorAll('.nav-sidebar .nav-link p').forEach(function(el) {
+                            el.style.display = '';
+                        });
+                    }
+                });
+            } else {
+                console.error('لم يتم العثور على زر القائمة!');
+            }
+        });
+    </script>
     <!-- Notification Integration -->
     <script>
         // إضافة مستمعي أحداث للإشعارات - سيتم استدعاؤهم عند إضافة أي بيانات
