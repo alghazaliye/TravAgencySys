@@ -28,46 +28,23 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom-rtl.css') }}">
     <!-- CSS مستجيب للشاشات المختلفة -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive-fixes.css') }}">
-    <!-- أنماط القائمة الجانبية المباشرة -->
+    <!-- أنماط بسيطة للتأكيد على اتجاه RTL لـ AdminLTE -->
     <style>
-        /* أنماط القائمة الجانبية الأساسية */
+        /* حل مشكلة اتجاه RTL */
         .main-sidebar {
-            position: fixed !important;
-            top: 0 !important;
-            right: 0 !important;
-            left: auto !important;
-            bottom: 0 !important;
-            width: 250px !important;
-            visibility: visible !important;
-            display: block !important;
-            z-index: 1100 !important;
-            transition: width 0.3s ease-in-out, margin 0.3s ease-in-out !important;
+            right: 0;
+            left: auto;
         }
         
-        /* إصلاح الهوامش الافتراضية */
         .content-wrapper, .main-header, .main-footer {
-            margin-right: 250px !important;
-            margin-left: 0 !important;
-            transition: margin-right 0.3s ease-in-out !important;
+            margin-right: 250px;
+            margin-left: 0;
         }
         
-        /* القائمة المطوية */
-        .sidebar-collapse .main-sidebar {
-            width: 4.6rem !important;
-        }
-        
-        /* الهوامش في حالة طي القائمة */
         .sidebar-collapse .content-wrapper,
         .sidebar-collapse .main-header,
         .sidebar-collapse .main-footer {
-            margin-right: 4.6rem !important;
-        }
-        
-        /* أنماط إضافية */
-        .sidebar-collapse .nav-sidebar .nav-link p {
-            visibility: hidden !important;
-            opacity: 0 !important;
-            display: none !important;
+            margin-right: 4.6rem;
         }
     </style>
     <!-- سمات الوضع الفاتح/الداكن -->
@@ -780,7 +757,7 @@
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a id="sidebarToggleBtn" class="nav-link" href="#" role="button"><i class="fas fa-bars"></i></a>
+                    <a id="sidebarToggleBtn" class="nav-link" href="#" role="button" data-widget="pushmenu"><i class="fas fa-bars"></i></a>
                 </li>
             </ul>
 
@@ -1163,53 +1140,16 @@
     <!-- Notifications System -->
     <script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
     <!-- Sidebar Fix Script -->
-    <!-- تنفيذ مباشر للقائمة الجانبية بدون ملفات خارجية -->
+    <!-- كود بسيط لتفعيل زر تبديل القائمة في AdminLTE -->
     <script>
-        // عندما تتحمل الصفحة
         document.addEventListener('DOMContentLoaded', function() {
-            // الحصول على زر القائمة
-            const menuButton = document.getElementById('sidebarToggleBtn');
-            if (menuButton) {
-                console.log('تم العثور على زر القائمة');
-                
-                // إضافة معالج النقر
-                menuButton.addEventListener('click', function(e) {
+            // إعداد زر تبديل القائمة
+            const toggleBtn = document.getElementById('sidebarToggleBtn');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    console.log('تم النقر على زر القائمة');
-                    
-                    // تبديل حالة القائمة
-                    document.body.classList.toggle('sidebar-collapse');
-                    
-                    // تحديث الهوامش والعرض يدويًا
-                    const isCollapsed = document.body.classList.contains('sidebar-collapse');
-                    
-                    // تحديث عرض القائمة الجانبية
-                    const sidebar = document.querySelector('.main-sidebar');
-                    if (sidebar) {
-                        sidebar.style.width = isCollapsed ? '4.6rem' : '250px';
-                    }
-                    
-                    // تحديث هوامش المحتوى
-                    const margin = isCollapsed ? '4.6rem' : '250px';
-                    document.querySelectorAll('.content-wrapper, .main-header, .main-footer').forEach(function(el) {
-                        el.style.marginRight = margin;
-                    });
-                    
-                    // تطبيق تأثيرات إضافية على القائمة
-                    if (isCollapsed) {
-                        // إخفاء النص
-                        document.querySelectorAll('.nav-sidebar .nav-link p').forEach(function(el) {
-                            el.style.display = 'none';
-                        });
-                    } else {
-                        // إظهار النص
-                        document.querySelectorAll('.nav-sidebar .nav-link p').forEach(function(el) {
-                            el.style.display = '';
-                        });
-                    }
+                    $('body').toggleClass('sidebar-collapse');
                 });
-            } else {
-                console.error('لم يتم العثور على زر القائمة!');
             }
         });
     </script>
