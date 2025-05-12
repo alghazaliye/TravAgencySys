@@ -96,29 +96,96 @@ function setupSidebarToggle() {
     // البحث عن كافة أزرار تبديل القائمة في الصفحة
     const toggleButtons = document.querySelectorAll('[data-widget="pushmenu"], .sidebar-toggle, #sidebarToggleBtn, #mainMenuToggleBtn');
     
+    console.log('تم العثور على', toggleButtons.length, 'زر تبديل');
+    
+    // إضافة مستمع حدث لزر تبديل القائمة الرئيسي مباشرة
+    const mainToggleBtn = document.getElementById('sidebarToggleBtn');
+    if (mainToggleBtn) {
+        console.log('إضافة مستمع أحداث لزر التبديل الرئيسي');
+        
+        // إزالة أي مستمعات أحداث سابقة
+        const newBtn = mainToggleBtn.cloneNode(true);
+        mainToggleBtn.parentNode.replaceChild(newBtn, mainToggleBtn);
+        
+        // إضافة مستمع أحداث جديد
+        newBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation(); // منع انتشار الحدث
+            console.log('تم النقر على زر تبديل القائمة');
+            toggleSidebar();
+        });
+    }
+    
+    // إضافة مستمعات أحداث لجميع الأزرار الأخرى
     toggleButtons.forEach(button => {
+        // تجاهل الزر الرئيسي لأننا تعاملنا معه بالفعل
+        if (button.id === 'sidebarToggleBtn') {
+            return;
+        }
+        
         // التحقق مما إذا كان الزر قد تم معالجته مسبقًا
         if (button.hasAttribute('data-toggle-listener-added')) {
             return;
         }
         
+        console.log('إضافة مستمع أحداث لزر تبديل إضافي');
+        
+        // إزالة أي مستمعات أحداث سابقة
+        const newBtn = button.cloneNode(true);
+        button.parentNode.replaceChild(newBtn, button);
+        
         // إضافة مستمع للنقر على الزر
-        button.addEventListener('click', function(e) {
+        newBtn.addEventListener('click', function(e) {
             e.preventDefault();
+            e.stopPropagation(); // منع انتشار الحدث
+            console.log('تم النقر على زر تبديل إضافي');
             toggleSidebar();
         });
         
         // وضع علامة على الزر للإشارة إلى أنه تم معالجته
-        button.setAttribute('data-toggle-listener-added', 'true');
+        newBtn.setAttribute('data-toggle-listener-added', 'true');
     });
+    
+    // إزالة كلاس sidebar-closed عند بدء التشغيل إذا لم تكن مطوية
+    if (!document.body.classList.contains('sidebar-collapse')) {
+        document.body.classList.remove('sidebar-closed');
+    }
 }
 
 /**
  * تبديل حالة القائمة الجانبية
  */
 function toggleSidebar() {
-    // تبديل فئة sidebar-collapse
-    document.body.classList.toggle('sidebar-collapse');
+    console.log('تبديل القائمة الجانبية');
+    
+    // حل مشكلة الهاتف المحمول - إضافة فئة sidebar-open للأجهزة الصغيرة
+    const windowWidth = window.innerWidth;
+    
+    if (windowWidth < 768) {
+        // للأجهزة المحمولة، نتبدل بين فتح وإغلاق القائمة
+        if (document.body.classList.contains('sidebar-open')) {
+            // إغلاق القائمة
+            document.body.classList.remove('sidebar-open');
+            document.body.classList.add('sidebar-collapse', 'sidebar-closed');
+            console.log('إغلاق القائمة على الجوال');
+        } else {
+            // فتح القائمة
+            document.body.classList.add('sidebar-open');
+            document.body.classList.remove('sidebar-collapse', 'sidebar-closed');
+            console.log('فتح القائمة على الجوال');
+        }
+    } else {
+        // للأجهزة الكبيرة، نتبدل بين فتح وطي القائمة
+        document.body.classList.toggle('sidebar-collapse');
+        
+        if (document.body.classList.contains('sidebar-collapse')) {
+            document.body.classList.add('sidebar-closed');
+            console.log('طي القائمة على الشاشة الكبيرة');
+        } else {
+            document.body.classList.remove('sidebar-closed');
+            console.log('فتح القائمة على الشاشة الكبيرة');
+        }
+    }
     
     // تحديد حالة القائمة الحالية
     const isCollapsed = document.body.classList.contains('sidebar-collapse');
@@ -134,59 +201,86 @@ function toggleSidebar() {
  * تحديث عناصر القائمة الجانبية بناءً على حالة التصغير
  */
 function updateSidebarElements(isCollapsed) {
+    console.log('تحديث عناصر القائمة الجانبية', isCollapsed ? 'مطوية' : 'مفتوحة');
+    
     const windowWidth = window.innerWidth;
     const sidebar = document.querySelector('.main-sidebar');
     const contentWrapper = document.querySelector('.content-wrapper');
     const mainHeader = document.querySelector('.main-header');
     const mainFooter = document.querySelector('.main-footer');
     
-    // تغيير عرض القائمة الجانبية
-    if (sidebar) {
-        sidebar.style.transition = 'width 0.3s ease-in-out, margin 0.3s ease-in-out';
-        sidebar.style.width = isCollapsed ? '4.6rem' : '250px';
-    }
+    // لا نقوم بتعيين أنماط CSS مباشرة على العناصر
+    // بدلاً من ذلك، نستخدم فئات CSS ونترك AdminLTE
+    // يتعامل مع الأنماط
     
-    // تغيير هوامش المحتوى على الشاشات الكبيرة
-    if (windowWidth >= 768) {
-        const margin = isCollapsed ? '4.6rem' : '250px';
-        if (contentWrapper) contentWrapper.style.marginRight = margin;
-        if (mainHeader) mainHeader.style.marginRight = margin;
-        if (mainFooter) mainFooter.style.marginRight = margin;
-    }
-    
-    // إذا كانت القائمة مصغرة
-    if (document.body.classList.contains('sidebar-mini')) {
+    // إذا كان على الهاتف المحمول، لا نقوم بتغيير الهوامش
+    if (windowWidth < 768) {
+        if (sidebar) {
+            // تنظيف الأنماط المضافة سابقاً
+            sidebar.style.width = '';
+            sidebar.style.transform = '';
+            sidebar.style.marginRight = '';
+            sidebar.style.transition = '';
+        }
+        
+        if (contentWrapper) contentWrapper.style.marginRight = '';
+        if (mainHeader) mainHeader.style.marginRight = '';
+        if (mainFooter) mainFooter.style.marginRight = '';
+        
+        console.log('تمت معالجة القائمة للهاتف المحمول');
+    } else {
+        // على الشاشات الكبيرة
         if (isCollapsed) {
-            // إخفاء النص في القائمة المطوية
+            // القائمة مطوية
+            console.log('تطبيق أنماط القائمة المطوية للشاشات الكبيرة');
+            
+            // تنظيف أنماط CSS المضافة مباشرة
+            if (sidebar) {
+                sidebar.removeAttribute('style');
+            }
+            
+            // إخفاء النص على الفور لتحسين الأداء الظاهري
             const navTexts = document.querySelectorAll('.nav-sidebar .nav-link p');
             navTexts.forEach(text => {
                 text.style.display = 'none';
-                text.style.opacity = '0';
                 text.style.visibility = 'hidden';
             });
-            
-            // تعديل مظهر الروابط
-            const navLinks = document.querySelectorAll('.nav-sidebar .nav-link');
-            navLinks.forEach(link => {
-                link.style.textAlign = 'center';
-                link.style.padding = '0.75rem 0.5rem';
-            });
         } else {
-            // إظهار النص في القائمة المفتوحة
+            // القائمة مفتوحة
+            console.log('تطبيق أنماط القائمة المفتوحة للشاشات الكبيرة');
+            
+            // تنظيف أنماط CSS المضافة مباشرة
+            if (sidebar) {
+                sidebar.removeAttribute('style');
+            }
+            
+            // إظهار النص
             const navTexts = document.querySelectorAll('.nav-sidebar .nav-link p');
             navTexts.forEach(text => {
                 text.style.display = '';
-                text.style.opacity = '1';
-                text.style.visibility = 'visible';
-            });
-            
-            // إعادة مظهر الروابط
-            const navLinks = document.querySelectorAll('.nav-sidebar .nav-link');
-            navLinks.forEach(link => {
-                link.style.textAlign = '';
-                link.style.padding = '';
+                text.style.visibility = '';
             });
         }
+    }
+    
+    // تنظيف دالي الحالة والأنماط المضافة
+    setTimeout(() => {
+        cleanupStyles();
+    }, 500);
+}
+
+/**
+ * تنظيف الأنماط المضافة مباشرة للعناصر
+ */
+function cleanupStyles() {
+    // إزالة أي أنماط قد تكون تسببت في مشاكل
+    const sidebar = document.querySelector('.main-sidebar');
+    if (sidebar) {
+        // إعادة الأنماط الافتراضية فقط
+        sidebar.style.position = 'fixed';
+        sidebar.style.top = '0';
+        sidebar.style.bottom = '0';
+        sidebar.style.overflowY = 'hidden';
     }
 }
 
