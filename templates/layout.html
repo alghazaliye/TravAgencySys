@@ -11,11 +11,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- Ensuring Font Awesome loads properly -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
-    <!-- AdminLTE RTL -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1.0/dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1.0/dist/css/alt/adminlte.components.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1.0/dist/css/alt/adminlte.core.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1.0/dist/css/alt/adminlte.extra-components.min.css">
+    <!-- AdminLTE RTL - استخدام الملف المحلي بدلاً من CDN للتحكم أفضل -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/adminlte/adminlte.min.css') }}">
     <link rel="stylesheet" href="https://cdn.rtlcss.com/bootstrap/v4.5.3/css/bootstrap.min.css">
     <!-- DataTables -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables.net-bs4@1.10.24/css/dataTables.bootstrap4.min.css">
@@ -28,62 +25,41 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom-rtl.css') }}">
     <!-- CSS مستجيب للشاشات المختلفة -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive-fixes.css') }}">
-    <!-- أنماط ثابتة للقائمة الجانبية RTL -->
+    <!-- أنماط RTL للقائمة الجانبية - الحد الأدنى فقط -->
     <style>
-        /* أنماط RTL أساسية للقائمة الجانبية */
-        html[dir="rtl"] .main-sidebar {
-            right: 0 !important;
-            left: auto !important;
-        }
-        
-        html[dir="rtl"] .content-wrapper,
-        html[dir="rtl"] .main-header,
-        html[dir="rtl"] .main-footer {
-            margin-right: 250px !important;
-            margin-left: 0 !important;
-            transition: margin-right 0.3s ease-in-out !important;
-        }
-        
-        html[dir="rtl"] .sidebar-collapse .content-wrapper,
-        html[dir="rtl"] .sidebar-collapse .main-header,
-        html[dir="rtl"] .sidebar-collapse .main-footer {
-            margin-right: 4.6rem !important;
-        }
-        
-        /* تأكيد عرض القائمة وتنسيقها */
+        /* أنماط أساسية للقائمة الجانبية RTL */
         .main-sidebar {
-            width: 250px !important;
-            background-color: var(--sidebar-bg) !important;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1) !important;
-            position: fixed !important;
-            height: 100% !important;
-            z-index: 1038 !important;
-            display: block !important;
-            visibility: visible !important;
+            right: 0;
+            left: auto;
+            width: 250px;
+        }
+        
+        .sidebar-mini .main-sidebar, .sidebar-mini-md .main-sidebar, .sidebar-mini-xs .main-sidebar {
+            width: 250px;
+            z-index: 1100;
         }
         
         .sidebar-collapse .main-sidebar {
             width: 4.6rem !important;
         }
         
-        /* تحسين أيقونات القائمة */
-        .nav-sidebar .nav-link .nav-icon {
-            margin-left: 0.5rem !important;
-            margin-right: 0 !important;
+        /* هوامش المحتوى لـ RTL */
+        .content-wrapper, .main-header, .main-footer {
+            margin-right: 250px !important;
+            margin-left: 0 !important;
+            transition: margin-right 0.3s ease-in-out;
         }
         
-        /* تأكيد إخفاء النص عند طي القائمة */
+        /* هوامش عند طي القائمة */
+        .sidebar-collapse .content-wrapper,
+        .sidebar-collapse .main-header,
+        .sidebar-collapse .main-footer {
+            margin-right: 4.6rem !important;
+        }
+        
+        /* نص روابط القائمة */
         .sidebar-collapse .nav-sidebar .nav-link p {
-            display: none !important;
-        }
-        
-        /* تحسين على الهواتف المحمولة */
-        @media (max-width: 767.98px) {
-            html[dir="rtl"] .content-wrapper,
-            html[dir="rtl"] .main-header,
-            html[dir="rtl"] .main-footer {
-                margin-right: 0 !important;
-            }
+            display: none;
         }
     </style>
     <!-- سمات الوضع الفاتح/الداكن -->
@@ -1179,30 +1155,8 @@
     <!-- Notifications System -->
     <script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
     <!-- Sidebar Fix Script -->
-    <!-- كود بسيط جدًا للقائمة الجانبية -->
-    <script>
-    $(document).ready(function() {
-        // معالج بسيط لزر القائمة
-        $('#sidebarToggleBtn').on('click', function(e) {
-            e.preventDefault();
-            console.log('تم النقر على زر القائمة');
-            
-            // تبديل فئة الطي
-            $('body').toggleClass('sidebar-collapse');
-            
-            // تحديد الحالة
-            var isCollapsed = $('body').hasClass('sidebar-collapse');
-            console.log('حالة القائمة:', isCollapsed ? 'مطوية' : 'مفتوحة');
-            
-            // معالجة مرئيات القائمة
-            if (isCollapsed) {
-                $('.nav-sidebar .nav-link p').hide();
-            } else {
-                $('.nav-sidebar .nav-link p').show();
-            }
-        });
-    });
-    </script>
+    <!-- استخدام AdminLTE مع تحسينات RTL مخصصة -->
+    <script src="{{ url_for('static', filename='js/adminlte-custom.js') }}"></script>
     <!-- Notification Integration -->
     <script>
         // إضافة مستمعي أحداث للإشعارات - سيتم استدعاؤهم عند إضافة أي بيانات
