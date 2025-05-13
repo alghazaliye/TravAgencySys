@@ -64,12 +64,33 @@
         top: 0;
         right: -250px;
         width: 250px;
-        transition: right 0.3s ease-in-out;
+        height: 100%;
+        transition: all 0.3s ease-in-out;
         z-index: 1100;
+        overflow-y: auto;
+        box-shadow: none;
     }
     
     body.sidebar-open .main-sidebar {
         right: 0;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* تحسين زر تبديل القائمة على الأجهزة الصغيرة */
+    [data-widget="pushmenu"] {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 5px;
+        background: rgba(0, 0, 0, 0.1);
+        color: var(--header-text);
+        transition: all 0.2s ease;
+    }
+    
+    [data-widget="pushmenu"]:hover {
+        background: rgba(0, 0, 0, 0.2);
     }
     
     /* إضافة خلفية عتامة عند فتح القائمة الجانبية */
@@ -89,33 +110,7 @@
     /* تعديلات الشاشات المتوسطة (تابلت) */
     .content-wrapper, .main-header, .main-footer {
         margin-right: 250px;
-        transition: margin-right 0.3s ease-in-out;
-    }
-    
-    body.sidebar-collapse .content-wrapper,
-    body.sidebar-collapse .main-header,
-    body.sidebar-collapse .main-footer {
-        margin-right: 0;
-    }
-    
-    /* تعديلات القائمة الجانبية */
-    .main-sidebar {
-        position: fixed;
-        width: 250px;
-        transition: width 0.3s ease-in-out;
-    }
-    
-    body.sidebar-collapse .main-sidebar {
-        width: 0;
-        overflow: hidden;
-    }
-}
-
-@media (min-width: 992px) {
-    /* تعديلات الشاشات الكبيرة (سطح المكتب) */
-    .content-wrapper, .main-header, .main-footer {
-        margin-right: 250px;
-        transition: margin-right 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
     }
     
     body.sidebar-collapse .content-wrapper,
@@ -128,11 +123,53 @@
     .main-sidebar {
         position: fixed;
         width: 250px;
-        transition: width 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+        right: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
     }
     
     body.sidebar-collapse .main-sidebar {
         width: 4.6rem;
+    }
+    
+    body.sidebar-collapse .nav-sidebar .nav-link p {
+        display: none;
+        width: 0;
+        opacity: 0;
+    }
+    
+    body.sidebar-collapse .brand-text {
+        display: none;
+    }
+}
+
+@media (min-width: 992px) {
+    /* تعديلات الشاشات الكبيرة (سطح المكتب) */
+    .content-wrapper, .main-header, .main-footer {
+        margin-right: 250px;
+        transition: all 0.3s ease-in-out;
+    }
+    
+    body.sidebar-collapse .content-wrapper,
+    body.sidebar-collapse .main-header,
+    body.sidebar-collapse .main-footer {
+        margin-right: 4.6rem;
+    }
+    
+    /* تعديلات القائمة الجانبية */
+    .main-sidebar {
+        position: fixed;
+        width: 250px;
+        transition: all 0.3s ease-in-out;
+        right: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    
+    body.sidebar-collapse .main-sidebar {
+        width: 4.6rem;
+        overflow-x: visible;
     }
     
     /* تعديلات على الأيقونات عند طي القائمة */
@@ -142,12 +179,38 @@
         display: none;
     }
     
-    body.sidebar-collapse .nav-sidebar .nav-icon {
+    body.sidebar-collapse .nav-sidebar .nav-icon,
+    body.sidebar-collapse .nav-sidebar .fas,
+    body.sidebar-collapse .nav-sidebar .fa {
         margin-right: 0;
+        margin-left: 0;
+        width: 100% !important;
+        font-size: 1.2rem !important;
     }
     
     body.sidebar-collapse .brand-text {
         display: none;
+    }
+    
+    /* تحسين مظهر القوائم الفرعية في حالة الطي */
+    body.sidebar-collapse .nav-sidebar .has-treeview > .nav-link > .right {
+        display: none;
+    }
+    
+    body.sidebar-collapse .nav-sidebar > .nav-item:hover > .nav-treeview {
+        display: block;
+        position: absolute;
+        right: 4.6rem;
+        top: 0;
+        width: 200px;
+        background: var(--sidebar-bg);
+        border-radius: 0 0 0.25rem 0.25rem;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+        padding-right: 0;
+    }
+    
+    body.sidebar-collapse .nav-sidebar > .nav-item:hover > .nav-link {
+        width: 4.6rem;
     }
 }
 

@@ -1,33 +1,38 @@
 
 /**
  * إصلاح محسّن لزر القائمة الجانبية في تطبيق وكالة السفر
- * نسخة 2.0 (تتضمن إصلاح مشكلة "القلب")
+ * نسخة 3.0 (2025) - تحسينات شاملة للقائمة الجانبية
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('تم تحميل ملف sidebar-fix.js - الإصدار المحسن');
+    console.log('تم تحميل ملف sidebar-fix.js - الإصدار المحدث 3.0');
     
     // تعريف متغير للتحكم في حالة القائمة
     let isProcessing = false;
     
-    // إنشاء زر قائمة كبير وواضح تمامًا فقط إذا لم يكن موجوداً بالفعل
-    const existingButton = document.getElementById('mainMenuToggleBtn');
-    
-    // تحقق أولاً مما إذا كانت السمة قد تم تعيينها لإشارة عدم إنشاء الزر
-    if (!document.body.hasAttribute('data-sidebar-toggled') && !existingButton) {
-        const bigVisibleButton = document.createElement('button');
-        bigVisibleButton.id = 'mainMenuToggleBtn';
-        bigVisibleButton.innerHTML = '<i class="fas fa-bars fa-2x"></i>';
-        bigVisibleButton.style.position = 'fixed';
-        bigVisibleButton.style.top = '10px';
-        bigVisibleButton.style.right = '20px';
-        bigVisibleButton.style.zIndex = '9999';
-        bigVisibleButton.style.width = '60px';
-        bigVisibleButton.style.height = '60px';
-        bigVisibleButton.style.borderRadius = '10px';
-        bigVisibleButton.style.backgroundColor = '#d86a1a'; // لون برتقالي مميز
-        bigVisibleButton.style.color = 'white';
-        bigVisibleButton.style.border = '3px solid rgba(255, 255, 255, 0.5)';
+    // إزالة التضارب في عناصر القائمة
+    document.querySelectorAll('.nav-sidebar .nav-link').forEach(link => {
+        // إزالة الأيقونات المتكررة إن وجدت
+        const icons = link.querySelectorAll('i');
+        if (icons.length > 1) {
+            // الاحتفاظ بالأيقونة الأولى فقط
+            for (let i = 1; i < icons.length; i++) {
+                icons[i].remove();
+            }
+        }
+        
+        // تحسين مظهر الأيقونة المتبقية
+        const icon = link.querySelector('i');
+        if (icon) {
+            icon.style.visibility = 'visible';
+            icon.style.display = 'inline-flex';
+            icon.style.alignItems = 'center';
+            icon.style.justifyContent = 'center';
+            icon.style.width = '1.6rem';
+            icon.style.marginLeft = '0.7rem';
+            icon.style.marginRight = '0';
+        }
+    });
         bigVisibleButton.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
         bigVisibleButton.style.cursor = 'pointer';
         bigVisibleButton.style.display = 'flex';

@@ -35,26 +35,131 @@ body {
     right: auto;
 }
 
-/* Sidebar Improvements */
+/* Sidebar Improvements - النسخة المحدثة */
 .main-sidebar {
     right: 0;
     left: auto;
     text-align: right;
     direction: rtl;
+    background-color: var(--sidebar-bg);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    min-height: 100vh;
+    height: 100%;
+    position: fixed;
+    color: #fff;
+    width: 250px;
+    z-index: 1100;
+    transition: all 0.3s ease-in-out;
+    overflow-y: auto;
+}
+
+/* تحسين المسافات والظهور بشكل عام */
+.brand-link {
+    padding: 1rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    background-color: var(--sidebar-dark) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+}
+
+.brand-link .brand-image {
+    max-height: 36px !important;
+    opacity: 0.9 !important;
+    margin-left: 0.5rem !important;
+}
+
+.brand-link i {
+    margin-left: 0.5rem !important; 
+    font-size: 1.4rem !important;
+}
+
+.brand-text {
+    display: inline-block;
+    font-weight: 600 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .nav-sidebar .nav-link {
     display: flex !important;
     align-items: center !important;
     padding: 0.8rem 1rem !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+    margin: 2px 5px;
+    white-space: nowrap;
+    position: relative;
+}
+
+.nav-sidebar .nav-link:hover {
+    color: #fff !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    transform: translateX(-3px);
+}
+
+.nav-sidebar .nav-link.active {
+    background-color: var(--primary-travel) !important;
+    color: #fff !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .nav-sidebar .nav-icon,
-.nav-sidebar .nav-link i {
+.nav-sidebar .nav-link i,
+.nav-sidebar .fas,
+.nav-sidebar .fa {
     margin-left: 0.7rem !important;
     margin-right: 0 !important;
     width: 1.6rem !important;
     text-align: center !important;
+    font-size: 1.1rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: inherit !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* إصلاح أيقونات تفريع القوائم */
+.nav-sidebar .has-treeview > .nav-link > .right,
+.nav-sidebar .has-treeview > .nav-link > .fas.fa-angle-left {
+    position: absolute !important;
+    left: 1rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+}
+
+/* تحسين القوائم الفرعية والتفرعات */
+.nav-sidebar .nav-treeview {
+    padding-right: 1rem !important;
+    padding-left: 0 !important;
+    margin-right: 0 !important;
+    display: block;
+    list-style: none;
+}
+
+.nav-sidebar .nav-treeview .nav-link {
+    padding: 0.5rem 0.8rem !important;
+    font-size: 0.95rem;
+}
+
+.nav-sidebar .nav-treeview .nav-icon, 
+.nav-sidebar .nav-treeview .fas,
+.nav-sidebar .nav-treeview .fa {
+    font-size: 0.9rem !important;
+}
+
+.nav-sidebar .menu-open > .nav-treeview {
+    display: block;
+}
+
+.nav-sidebar .menu-open > .nav-link {
+    background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 /* Content Area */

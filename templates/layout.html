@@ -27,40 +27,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive-fixes.css') }}">
     <!-- أنماط RTL للقائمة الجانبية - الحد الأدنى فقط -->
     <style>
-        /* أنماط أساسية للقائمة الجانبية RTL */
-        .main-sidebar {
-            right: 0;
-            left: auto;
-            width: 250px;
+        /* تنسيقات أساسية للقائمة الجانبية - تم تحسينها */
+        :root {
+            --sidebar-width-full: 250px;
+            --sidebar-width-mini: 4.6rem;
+            --sidebar-transition: all 0.3s ease-in-out;
         }
         
-        .sidebar-mini .main-sidebar, .sidebar-mini-md .main-sidebar, .sidebar-mini-xs .main-sidebar {
-            width: 250px;
-            z-index: 1100;
-        }
-        
-        .sidebar-collapse .main-sidebar {
-            width: 4.6rem !important;
-        }
-        
-        /* هوامش المحتوى لـ RTL */
-        .content-wrapper, .main-header, .main-footer {
-            margin-right: 250px !important;
-            margin-left: 0 !important;
-            transition: margin-right 0.3s ease-in-out;
-        }
-        
-        /* هوامش عند طي القائمة */
-        .sidebar-collapse .content-wrapper,
-        .sidebar-collapse .main-header,
-        .sidebar-collapse .main-footer {
-            margin-right: 4.6rem !important;
-        }
-        
-        /* نص روابط القائمة */
-        .sidebar-collapse .nav-sidebar .nav-link p {
-            display: none;
-        }
+        /* منع التنسيقات المكررة - الآن في ملفات CSS منفصلة */
     </style>
     <!-- سمات الوضع الفاتح/الداكن -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-rtl.css') }}">
@@ -1319,6 +1293,9 @@
     
     <!-- سكربت تبديل الوضع الليلي/النهاري -->
     <script src="{{ url_for('static', filename='js/theme-switcher.js') }}"></script>
+    
+    <!-- إصلاح محسن للقائمة الجانبية في جميع الشاشات -->
+    <script src="{{ url_for('static', filename='js/sidebar-fix-new.js') }}"></script>
     
     <!-- تم دمج وظائف القائمة المصغرة في مدير القائمة الجانبية -->
     
