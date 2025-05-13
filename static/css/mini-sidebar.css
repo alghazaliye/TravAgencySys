@@ -1,5 +1,5 @@
 /**
- * Mini Sidebar CSS for AdminLTE RTL
+ * Mini Sidebar CSS for AdminLTE RTL (محدّث)
  * هذا الملف يتحكم بسلوك القائمة الجانبية المصغرة في وضع RTL
  */
 
@@ -10,75 +10,102 @@
     --transition-speed: 0.3s;
 }
 
-/* القائمة المصغرة في حالة الطي */
+/* ===== القائمة المصغرة في حالة الطي ===== */
+body.sidebar-collapse .main-sidebar,
 body.sidebar-mini.sidebar-collapse .main-sidebar {
     width: var(--sidebar-mini-width) !important;
+    overflow-x: hidden;
 }
 
 /* توسيط الأيقونات في القائمة المصغرة */
+body.sidebar-collapse .nav-sidebar .nav-link .nav-icon,
 body.sidebar-mini.sidebar-collapse .nav-sidebar .nav-link .nav-icon {
-    margin-right: 0;
-    margin-left: 0;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    width: 1.6rem !important;
+    text-align: center !important;
 }
 
-/* إخفاء النص في القائمة المصغرة */
-body.sidebar-mini.sidebar-collapse .nav-sidebar .nav-link p {
-    width: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    visibility: hidden;
-    display: none;
+/* إخفاء النص والعناصر في القائمة المصغرة */
+body.sidebar-collapse .nav-sidebar .nav-link p,
+body.sidebar-mini.sidebar-collapse .nav-sidebar .nav-link p,
+body.sidebar-collapse .brand-text,
+body.sidebar-mini.sidebar-collapse .brand-text {
+    width: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    visibility: hidden !important;
+    display: none !important;
+    opacity: 0 !important;
 }
 
+body.sidebar-collapse .main-sidebar .brand-link,
+body.sidebar-mini.sidebar-collapse .main-sidebar .brand-link {
+    justify-content: center !important;
+}
+
+/* ===== القوائم المنسدلة عند التحويم ===== */
 /* ظهور القوائم الفرعية عند التحويم في الوضع المصغر */
+body.sidebar-collapse .nav-sidebar > .nav-item:hover > .nav-link > p,
 body.sidebar-mini.sidebar-collapse .nav-sidebar > .nav-item:hover > .nav-link > p {
-    width: auto;
     display: block !important;
-    visibility: visible;
-    position: absolute;
-    right: var(--sidebar-mini-width);
-    background-color: var(--sidebar-bg, #343a40);
-    padding: 12px 15px;
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    min-width: 180px;
-    z-index: 1000;
-    top: 0;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: auto !important;
+    position: absolute !important;
+    right: var(--sidebar-mini-width) !important;
+    background-color: var(--sidebar-bg, #343a40) !important;
+    padding: 12px 15px !important;
+    border-top-left-radius: 4px !important;
+    border-bottom-left-radius: 4px !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2) !important;
+    min-width: 180px !important;
+    z-index: 1000 !important;
+    top: 0 !important;
 }
 
 /* ظهور القوائم المنسدلة عند التحويم */
+body.sidebar-collapse .nav-sidebar > .nav-item:hover > .nav-treeview,
 body.sidebar-mini.sidebar-collapse .nav-sidebar > .nav-item:hover > .nav-treeview {
     display: block !important;
-    position: absolute;
-    right: var(--sidebar-mini-width);
-    top: 44px;
-    background-color: var(--sidebar-bg, #343a40);
-    min-width: 180px;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    border-radius: 0 0 4px 4px;
-    padding: 5px 0;
-    z-index: 999;
+    position: absolute !important;
+    right: var(--sidebar-mini-width) !important;
+    top: 44px !important;
+    background-color: var(--sidebar-bg, #343a40) !important;
+    min-width: 180px !important;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2) !important;
+    border-radius: 0 0 4px 4px !important;
+    padding: 5px 0 !important;
+    z-index: 999 !important;
 }
 
 /* تعديل المحتوى الرئيسي مع القائمة المصغرة */
+body.sidebar-collapse .content-wrapper,
+body.sidebar-collapse .main-footer,
+body.sidebar-collapse .main-header,
 body.sidebar-mini.sidebar-collapse .content-wrapper,
 body.sidebar-mini.sidebar-collapse .main-footer,
 body.sidebar-mini.sidebar-collapse .main-header {
     margin-right: var(--sidebar-mini-width) !important;
     margin-left: 0 !important;
-    transition: margin-right var(--transition-speed) ease-in-out;
+    transition: margin-right var(--transition-speed) ease-in-out !important;
 }
 
-/* الإعدادات لأجهزة الجوال */
+/* ===== الإعدادات لأجهزة الجوال ===== */
 @media (max-width: 991.98px) {
-    body.sidebar-mini.sidebar-collapse .main-sidebar {
-        margin-right: -250px !important; /* إخفاء القائمة بالكامل على الموبايل */
+    /* نقل القائمة خارج الشاشة على الموبايل */
+    body:not(.sidebar-open) .main-sidebar {
+        transform: translateX(250px) !important;
     }
-
-    body.sidebar-mini.sidebar-collapse .content-wrapper,
-    body.sidebar-mini.sidebar-collapse .main-footer,
-    body.sidebar-mini.sidebar-collapse .main-header {
+    
+    body.sidebar-open .main-sidebar {
+        transform: translateX(0) !important;
+    }
+    
+    /* تصحيح هوامش المحتوى على الموبايل */
+    .content-wrapper,
+    .main-header,
+    .main-footer {
         margin-right: 0 !important;
     }
 }
