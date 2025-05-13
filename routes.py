@@ -510,47 +510,81 @@ def id_types():
 def get_id_types():
     """الحصول على قائمة أنواع الهوية"""
     try:
-        id_types = IdentityType.query.all()
+        # إضافة خيار الفلترة حسب الحالة (مفعل/غير مفعل)
+        filter_active = request.args.get('active')
+        query = IdentityType.query
+        
+        # إذا تم تحديد فلتر الحالة
+        if filter_active is not None:
+            is_active = filter_active.lower() in ('true', '1', 'yes', 'y')
+            query = query.filter(IdentityType.is_active == is_active)
+        
+        # ترتيب النتائج
+        id_types = query.order_by(IdentityType.name).all()
+        
+        # إعداد البيانات لإرجاعها كJSON
         data = []
         for id_type in id_types:
             data.append({
                 'id': id_type.id,
                 'name': id_type.name,
                 'requires_nationality': id_type.requires_nationality,
-                'description': id_type.description,
-                'is_active': id_type.is_active
+                'description': id_type.description or '',
+                'is_active': id_type.is_active,
+                'customer_count': len(id_type.customers) if hasattr(id_type, 'customers') else 0
             })
+        
+        # تسجيل نجاح العملية
+        logging.debug(f"تم جلب {len(data)} من أنواع الهوية بنجاح")
+        
         return jsonify({'success': True, 'data': data})
     except Exception as e:
         logging.error(f"Error fetching id types: {str(e)}")
-        return jsonify({'success': False, 'message': 'حدث خطأ أثناء جلب بيانات أنواع الهوية'}), 500
+        return jsonify({'success': False, 'message': f'حدث خطأ أثناء جلب بيانات أنواع الهوية: {str(e)}'}), 500
 
 @app.route('/api/id-types', methods=['POST'])
 @login_required
 def add_id_type():
     """إضافة نوع هوية جديد"""
     try:
-        # طباعة البيانات للتصحيح
-        print("Content-Type:", request.content_type)
-        print("Raw Request Data:", request.data)
+        # طباعة بيانات الطلب للتصحيح
+        logging.debug(f"Content-Type: {request.content_type}")
+        logging.debug(f"Raw Request Data: {request.data}")
         
-        data = request.json
-        print("Parsed JSON Data:", data)
+        # التعامل مع البيانات سواء كانت JSON أو FORM
+        if request.is_json:
+            data = request.json
+        else:
+            data = request.form.to_dict()
+            
+        logging.debug(f"Parsed Data: {data}")
         
         # التحقق من البيانات المدخلة
-        name = data.get('name') if data else None
-        print("Name:", name)
-        if not name:
+        name = data.get('name')
+        if not name or name.strip() == '':
             return jsonify({'success': False, 'message': 'يجب تحديد اسم نوع الهوية'}), 400
         
-        id_type = IdentityType()
-        id_type.name = name
-        id_type.requires_nationality = data.get('requires_nationality', True)
-        id_type.description = data.get('description', '')
-        id_type.is_active = data.get('is_active', True)
+        # تنظيف وتحضير البيانات
+        requires_nationality = data.get('requires_nationality')
+        if isinstance(requires_nationality, str):
+            requires_nationality = requires_nationality.lower() in ('true', '1', 'yes', 'y')
         
+        is_active = data.get('is_active')
+        if isinstance(is_active, str):
+            is_active = is_active.lower() in ('true', '1', 'yes', 'y')
+            
+        # إنشاء كائن جديد
+        id_type = IdentityType()
+        id_type.name = name.strip()
+        id_type.requires_nationality = requires_nationality if requires_nationality is not None else True
+        id_type.description = data.get('description', '').strip()
+        id_type.is_active = is_active if is_active is not None else True
+        
+        # حفظ في قاعدة البيانات
         db.session.add(id_type)
         db.session.commit()
+        
+        logging.info(f"تم إنشاء نوع هوية جديد: {id_type.name} (ID: {id_type.id})")
         
         return jsonify({
             'success': True, 
@@ -564,31 +598,65 @@ def add_id_type():
             }
         })
     except Exception as e:
+        db.session.rollback()  # التراجع عن أي تغييرات في حالة حدوث خطأ
         logging.error(f"Error adding id type: {str(e)}")
-        return jsonify({'success': False, 'message': 'حدث خطأ أثناء إضافة نوع الهوية'}), 500
+        return jsonify({'success': False, 'message': f'حدث خطأ أثناء إضافة نوع الهوية: {str(e)}'}), 500
 
 @app.route('/api/id-types/<int:id_type_id>', methods=['PUT'])
 @login_required
 def update_id_type(id_type_id):
     """تحديث نوع هوية"""
     try:
+        # البحث عن نوع الهوية
         id_type = IdentityType.query.get(id_type_id)
         if not id_type:
-            return jsonify({'success': False, 'message': 'نوع الهوية غير موجود'}), 404
+            return jsonify({'success': False, 'message': 'نوع الهوية غير موجود أو تم حذفه'}), 404
         
-        data = request.json
+        # طباعة بيانات الطلب للتصحيح
+        logging.debug(f"Content-Type: {request.content_type}")
+        logging.debug(f"Raw Request Data: {request.data}")
+        
+        # التعامل مع البيانات سواء كانت JSON أو FORM
+        if request.is_json:
+            data = request.json
+        else:
+            data = request.form.to_dict()
+        
+        logging.debug(f"Parsed Data for update: {data}")
         
         # التحقق من البيانات المدخلة
         name = data.get('name')
-        if not name:
+        if not name or name.strip() == '':
             return jsonify({'success': False, 'message': 'يجب تحديد اسم نوع الهوية'}), 400
         
-        id_type.name = name
-        id_type.requires_nationality = data.get('requires_nationality', id_type.requires_nationality)
-        id_type.description = data.get('description', id_type.description)
-        id_type.is_active = data.get('is_active', id_type.is_active)
+        # تنظيف وتحضير البيانات
+        requires_nationality = data.get('requires_nationality')
+        if isinstance(requires_nationality, str):
+            requires_nationality = requires_nationality.lower() in ('true', '1', 'yes', 'y')
+        elif requires_nationality is None:
+            requires_nationality = id_type.requires_nationality
         
+        is_active = data.get('is_active')
+        if isinstance(is_active, str):
+            is_active = is_active.lower() in ('true', '1', 'yes', 'y')
+        elif is_active is None:
+            is_active = id_type.is_active
+        
+        description = data.get('description')
+        if description is None:
+            description = id_type.description or ''
+        
+        # تحديث البيانات
+        old_name = id_type.name  # للتسجيل
+        id_type.name = name.strip()
+        id_type.requires_nationality = requires_nationality
+        id_type.description = description.strip()
+        id_type.is_active = is_active
+        
+        # حفظ التغييرات
         db.session.commit()
+        
+        logging.info(f"تم تحديث نوع الهوية: من '{old_name}' إلى '{id_type.name}' (ID: {id_type.id})")
         
         return jsonify({
             'success': True, 
@@ -602,29 +670,62 @@ def update_id_type(id_type_id):
             }
         })
     except Exception as e:
+        db.session.rollback()  # التراجع عن أي تغييرات في حالة حدوث خطأ
         logging.error(f"Error updating id type: {str(e)}")
-        return jsonify({'success': False, 'message': 'حدث خطأ أثناء تحديث نوع الهوية'}), 500
+        return jsonify({'success': False, 'message': f'حدث خطأ أثناء تحديث نوع الهوية: {str(e)}'}), 500
 
 @app.route('/api/id-types/<int:id_type_id>', methods=['DELETE'])
 @login_required
 def delete_id_type(id_type_id):
     """حذف نوع هوية"""
     try:
+        # البحث عن نوع الهوية
         id_type = IdentityType.query.get(id_type_id)
         if not id_type:
-            return jsonify({'success': False, 'message': 'نوع الهوية غير موجود'}), 404
+            return jsonify({'success': False, 'message': 'نوع الهوية غير موجود أو تم حذفه بالفعل'}), 404
         
         # التحقق من عدم وجود عملاء مرتبطين بنوع الهوية
-        if id_type.customers and len(id_type.customers) > 0:
-            return jsonify({'success': False, 'message': 'لا يمكن حذف نوع الهوية لأنه مرتبط بعملاء'}), 400
+        customers_count = 0
+        if hasattr(id_type, 'customers') and id_type.customers:
+            customers_count = len(id_type.customers)
         
+        if customers_count > 0:
+            return jsonify({
+                'success': False, 
+                'message': f'لا يمكن حذف نوع الهوية لأنه مرتبط بـ {customers_count} عميل. يجب إزالة الارتباط أولاً'
+            }), 400
+        
+        # تسجيل معلومات قبل الحذف
+        id_type_name = id_type.name
+        id_type_id_val = id_type.id
+        
+        # حذف نوع الهوية
         db.session.delete(id_type)
         db.session.commit()
         
-        return jsonify({'success': True, 'message': 'تم حذف نوع الهوية بنجاح'})
+        # تسجيل عملية الحذف
+        logging.info(f"تم حذف نوع الهوية: '{id_type_name}' (ID: {id_type_id_val})")
+        
+        return jsonify({
+            'success': True, 
+            'message': 'تم حذف نوع الهوية بنجاح', 
+            'deleted_id': id_type_id_val
+        })
     except Exception as e:
+        db.session.rollback()  # التراجع عن التغييرات في حالة حدوث خطأ
         logging.error(f"Error deleting id type: {str(e)}")
-        return jsonify({'success': False, 'message': 'حدث خطأ أثناء حذف نوع الهوية'}), 500
+        
+        if "foreign key constraint" in str(e).lower():
+            # حالة خاصة: قيود المفتاح الأجنبي
+            return jsonify({
+                'success': False, 
+                'message': 'لا يمكن حذف نوع الهوية لأنه مرتبط ببيانات أخرى في النظام'
+            }), 400
+        
+        return jsonify({
+            'success': False, 
+            'message': f'حدث خطأ أثناء حذف نوع الهوية: {str(e)}'
+        }), 500
 
 # حجز تذاكر الحافلات
 @app.route('/bus-tickets')
