@@ -735,65 +735,137 @@
     </style>
     
     {% block styles %}{% endblock %}
+
+    <!-- إضافة CSS إضافي للقائمة الجانبية -->
+    <style>
+        /* إصلاح أساسي للقائمة الجانبية - تجاوز كامل لإعدادات AdminLTE */
+        .main-sidebar {
+            right: 0 !important;
+            left: auto !important;
+            width: 250px !important;
+            transform: none !important;
+            display: block !important;
+            visibility: visible !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            transition: width 0.3s ease !important;
+            z-index: 1100 !important;
+        }
+        
+        body.sidebar-collapse .main-sidebar {
+            width: 4.6rem !important;
+        }
+        
+        .content-wrapper, .main-footer, .main-header {
+            margin-right: 250px !important;
+            margin-left: 0 !important;
+            transition: margin-right 0.3s ease !important;
+        }
+        
+        body.sidebar-collapse .content-wrapper,
+        body.sidebar-collapse .main-footer, 
+        body.sidebar-collapse .main-header {
+            margin-right: 4.6rem !important;
+        }
+        
+        /* تحكم في عرض القائمة على الأجهزة المحمولة */
+        @media (max-width: 991.98px) {
+            .main-sidebar {
+                transform: translateX(250px) !important;
+                box-shadow: none !important;
+            }
+            
+            body.sidebar-open .main-sidebar {
+                transform: translateX(0) !important;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.3) !important;
+            }
+            
+            .content-wrapper, .main-footer, .main-header {
+                margin-right: 0 !important;
+            }
+        }
+        
+        /* تحسينات زر التبديل */
+        #sidebarToggleBtn {
+            position: relative;
+            cursor: pointer;
+            padding: 8px 12px;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+            background-color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #sidebarToggleBtn:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+        
+        #sidebarToggleBtn:active {
+            transform: scale(0.95);
+        }
+        
+        #sidebarToggleBtn i {
+            font-size: 1.25rem;
+        }
+        
+        .toggle-icon-tooltip {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: #343a40;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            white-space: nowrap;
+        }
+        
+        #sidebarToggleBtn:hover .toggle-icon-tooltip {
+            opacity: 1;
+            visibility: visible;
+            top: calc(100% + 5px);
+        }
+        
+        /* خلفية معتمة عند فتح القائمة الجانبية على الموبايل */
+        #sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1090;
+            display: none;
+        }
+        
+        body.sidebar-open #sidebar-overlay {
+            display: block;
+        }
+    </style>
 </head>
 <body class="hold-transition {% if settings.sidebar_mini == 'true' %}sidebar-mini{% endif %} {% if settings.layout_boxed == 'true' %}layout-boxed{% endif %} {% if settings.dark_sidebar == 'true' %}dark-sidebar{% endif %}">
     <div class="wrapper">
+        <!-- الطبقة المعتمة للموبايل -->
+        <div id="sidebar-overlay"></div>
+        
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a id="sidebarToggleBtn" class="nav-link sidebar-toggle-btn" href="#" role="button" data-widget="pushmenu" aria-label="تبديل القائمة الجانبية">
+                    <a id="sidebarToggleBtn" class="nav-link sidebar-toggle-btn" href="#" role="button">
                         <i class="fas fa-bars"></i>
                         <span class="toggle-icon-tooltip">تبديل القائمة</span>
                     </a>
                 </li>
             </ul>
-            
-            <!-- إضافة نمط مخصص للزر -->
-            <style>
-                #sidebarToggleBtn {
-                    position: relative;
-                    cursor: pointer;
-                    padding: 8px 12px;
-                    transition: all 0.3s ease;
-                    border-radius: 4px;
-                }
-                
-                #sidebarToggleBtn:hover {
-                    background-color: rgba(0,0,0,0.1);
-                }
-                
-                #sidebarToggleBtn:active {
-                    transform: scale(0.95);
-                }
-                
-                #sidebarToggleBtn i {
-                    font-size: 1.25rem;
-                }
-                
-                .toggle-icon-tooltip {
-                    position: absolute;
-                    top: 100%;
-                    right: 0;
-                    background: #343a40;
-                    color: white;
-                    padding: 4px 8px;
-                    border-radius: 4px;
-                    font-size: 12px;
-                    opacity: 0;
-                    visibility: hidden;
-                    transition: all 0.3s ease;
-                    z-index: 1000;
-                    white-space: nowrap;
-                }
-                
-                #sidebarToggleBtn:hover .toggle-icon-tooltip {
-                    opacity: 1;
-                    visibility: visible;
-                    top: calc(100% + 5px);
-                }
-            </style>
 
             <!-- Right navbar links -->
             <ul class="navbar-nav mr-auto-navbav">

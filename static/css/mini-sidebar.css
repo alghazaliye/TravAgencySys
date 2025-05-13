@@ -1,173 +1,79 @@
 /**
- * Mini Sidebar CSS for AdminLTE RTL (محدّث)
- * هذا الملف يتحكم بسلوك القائمة الجانبية المصغرة في وضع RTL
+ * ملف إضافي للقائمة الجانبية المصغرة
+ * يحتوي على تعديلات إضافية لوضع القائمة المصغرة فقط
  */
 
-/* تعريف المتغيرات */
-:root {
-    --sidebar-mini-width: 4.6rem;
-    --sidebar-full-width: 250px;
-    --transition-speed: 0.3s;
-}
-
-/* ===== تحسين انتقالات وتأثيرات القائمة الجانبية ===== */
-/* تأكيد التحولات السلسة للقائمة الجانبية */
-.main-sidebar {
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.2) !important;
-}
-
-/* ضمان عرض المحتوى بشكل صحيح مع القائمة */
-.content-wrapper, 
-.main-header, 
-.main-footer {
-    transition: margin-right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
-}
-
-/* ===== القائمة المصغرة في حالة الطي ===== */
-body.sidebar-collapse .main-sidebar,
-body.sidebar-mini.sidebar-collapse .main-sidebar {
-    width: var(--sidebar-mini-width) !important;
+/* ===== القائمة المصغرة (حالة الطي) ===== */
+/* معالجة القائمة المصغرة بشكل عام */
+body.sidebar-collapse .main-sidebar {
+    width: 4.6rem !important;
     overflow-x: hidden !important;
-    background-color: var(--sidebar-bg, #343a40) !important;
-    border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
 /* توسيط الأيقونات في القائمة المصغرة */
-body.sidebar-collapse .nav-sidebar .nav-link .nav-icon,
-body.sidebar-mini.sidebar-collapse .nav-sidebar .nav-link .nav-icon {
-    margin-right: 0 !important;
-    margin-left: 0 !important;
-    width: 1.6rem !important;
+body.sidebar-collapse .nav-sidebar .nav-link .nav-icon {
+    margin: 0 auto !important;
+    width: 2rem !important;
     text-align: center !important;
-    font-size: 1.1rem !important;
+    font-size: 1.2rem !important;
 }
 
-/* تأثيرات انتقالية أفضل للأيقونات */
-.nav-sidebar .nav-link .nav-icon {
-    transition: margin 0.3s ease, font-size 0.3s ease !important;
-}
-
-/* إخفاء النص والعناصر في القائمة المصغرة مع انتقال سلس */
-.nav-sidebar .nav-link p,
-.brand-text {
-    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, width 0.3s ease-in-out !important;
-}
-
+/* إخفاء النص في القائمة المصغرة */
 body.sidebar-collapse .nav-sidebar .nav-link p,
-body.sidebar-mini.sidebar-collapse .nav-sidebar .nav-link p,
-body.sidebar-collapse .brand-text,
-body.sidebar-mini.sidebar-collapse .brand-text {
-    width: 0 !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    visibility: hidden !important;
+body.sidebar-collapse .brand-text {
     display: none !important;
-    opacity: 0 !important;
 }
 
-body.sidebar-collapse .main-sidebar .brand-link,
-body.sidebar-mini.sidebar-collapse .main-sidebar .brand-link {
+/* محاذاة الشعار في الوضع المصغر */
+body.sidebar-collapse .brand-link {
     justify-content: center !important;
-    padding: 0.8rem 0.5rem !important;
+    padding: 0.8rem 0 !important;
 }
 
-/* ===== القوائم المنسدلة عند التحويم ===== */
-/* ظهور القوائم الفرعية عند التحويم في الوضع المصغر */
-body.sidebar-collapse .nav-sidebar > .nav-item:hover > .nav-link > p,
-body.sidebar-mini.sidebar-collapse .nav-sidebar > .nav-item:hover > .nav-link > p {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    width: auto !important;
-    position: absolute !important;
-    right: var(--sidebar-mini-width) !important;
-    background-color: var(--sidebar-bg, #343a40) !important;
-    padding: 12px 15px !important;
-    border-top-left-radius: 4px !important;
-    border-bottom-left-radius: 4px !important;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3) !important;
-    min-width: 180px !important;
-    z-index: 1000 !important;
-    top: 0 !important;
-    animation: fadeIn 0.2s ease-in !important;
-}
-
-/* ظهور القوائم المنسدلة عند التحويم مع تأثير سلس */
-body.sidebar-collapse .nav-sidebar > .nav-item:hover > .nav-treeview,
-body.sidebar-mini.sidebar-collapse .nav-sidebar > .nav-item:hover > .nav-treeview {
+/* ===== عرض القوائم الفرعية عند التحويم في الوضع المصغر ===== */
+/* القائمة الفرعية عند التحويم */
+body.sidebar-collapse .nav-sidebar > .nav-item:hover > .nav-treeview {
     display: block !important;
     position: absolute !important;
-    right: var(--sidebar-mini-width) !important;
+    right: 4.6rem !important;
     top: 44px !important;
-    background-color: var(--sidebar-bg, #343a40) !important;
+    background-color: #343a40 !important;
     min-width: 180px !important;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3) !important;
-    border-radius: 0 0 4px 4px !important;
+    border-radius: 4px !important;
     padding: 5px 0 !important;
-    z-index: 999 !important;
-    animation: fadeIn 0.3s ease-in-out !important;
+    z-index: 1050 !important;
 }
 
-/* تأثير ظهور تدريجي */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateX(20px); }
-    to { opacity: 1; transform: translateX(0); }
+/* نص الرابط عند التحويم */
+body.sidebar-collapse .nav-sidebar > .nav-item:hover > .nav-link > p {
+    display: block !important;
+    position: absolute !important;
+    right: 4.6rem !important;
+    background-color: #343a40 !important;
+    padding: 8px 10px !important;
+    border-radius: 4px !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) !important;
+    min-width: 180px !important;
+    z-index: 1050 !important;
+    top: 0 !important;
+    color: #fff !important;
 }
 
-/* تأكيد محاذاة المحتوى مع تبديل القائمة الجانبية */
+/* تعديل هوامش المحتوى في حالة الطي */
 body.sidebar-collapse .content-wrapper,
-body.sidebar-collapse .main-footer,
 body.sidebar-collapse .main-header,
-body.sidebar-mini.sidebar-collapse .content-wrapper,
-body.sidebar-mini.sidebar-collapse .main-footer,
-body.sidebar-mini.sidebar-collapse .main-header {
-    margin-right: var(--sidebar-mini-width) !important;
+body.sidebar-collapse .main-footer {
+    margin-right: 4.6rem !important;
     margin-left: 0 !important;
 }
 
-/* زيادة تباين القائمة الجانبية عند الطي لتحسين وضوحها */
-body.sidebar-collapse .main-sidebar {
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3) !important;
-}
-
-/* ===== إصلاح تبديل القائمة على الأجهزة المحمولة ===== */
+/* ===== ضبط القائمة على الأجهزة المحمولة ===== */
 @media (max-width: 991.98px) {
-    /* تأثير انتقالي أفضل للقائمة الجانبية */
-    .main-sidebar {
-        transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
-    }
-    
-    /* ضمان إخفاء القائمة خارج الشاشة على الهواتف المحمولة */
-    body:not(.sidebar-open) .main-sidebar {
-        transform: translateX(250px) !important;
-        box-shadow: none !important;
-    }
-    
-    /* ضمان ظهور القائمة بمؤثر انتقالي جيد عند فتحها */
-    body.sidebar-open .main-sidebar {
-        transform: translateX(0) !important;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.4) !important;
-    }
-    
-    /* تصحيح هوامش المحتوى على الموبايل */
-    .content-wrapper,
-    .main-header,
-    .main-footer {
+    /* مع تفعيل حالة الطي على الأجهزة المحمولة */
+    body.sidebar-collapse .content-wrapper,
+    body.sidebar-collapse .main-header,
+    body.sidebar-collapse .main-footer {
         margin-right: 0 !important;
-    }
-    
-    /* إضافة طبقة داكنة خلف القائمة المفتوحة على الموبايل */
-    body.sidebar-open:before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 1037;
-        pointer-events: none;
-        animation: fadeIn 0.3s ease-in-out;
     }
 }

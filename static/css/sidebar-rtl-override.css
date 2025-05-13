@@ -1,107 +1,142 @@
 /**
- * Sidebar RTL Override
- * مجموعة من التعديلات لضمان عمل القائمة الجانبية بشكل صحيح في وضع RTL
+ * قائمة جانبية محسّنة لتطبيقات AdminLTE بنمط RTL
+ * تعريف مبسط ومباشر للقائمة الجانبية لضمان عملها بشكل صحيح في كل الظروف
  */
 
-/* حل جذري للقائمة الجانبية - إعادة تعريف كاملة */
+/* ===== التعريفات الأساسية للقائمة الجانبية ===== */
 .main-sidebar {
+    /* موضع ثابت على الجانب الأيمن */
     position: fixed !important;
     top: 0 !important;
     bottom: 0 !important;
     right: 0 !important;
     left: auto !important;
+    
+    /* أبعاد وخصائص عرض */
     width: 250px !important;
+    height: 100vh !important;
     min-height: 100vh !important;
+    
+    /* ضمان الرؤية */
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
-    z-index: 1038 !important;
+    
+    /* خصائص الظهور */
+    z-index: 1100 !important;
     direction: rtl !important;
-    height: 100vh !important;
     background-color: var(--sidebar-bg, #343a40) !important;
-    transition: width 0.3s ease-in-out, transform 0.3s ease-in-out !important;
+    
+    /* انتقالات سلسة */
+    transition: width 0.3s ease, transform 0.3s ease !important;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1) !important;
+    
+    /* منع تجاوز المحتوى */
     overflow-y: auto !important;
+    
+    /* تصحيح التحول للقائمة الجانبية */
     transform: translateX(0) !important;
 }
 
-/* نمط المنطقة الداخلية للقائمة الجانبية */
-.sidebar {
-    direction: rtl !important;
-    padding-right: 0.5rem !important;
-    padding-left: 0.5rem !important;
-    height: calc(100% - 57px);
-    overflow-y: auto;
-}
-
-/* ضمان ظهور الشعار */
-.brand-link {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    padding: 0.8rem 0.5rem !important;
-    height: 57px !important;
-    background-color: rgba(0, 0, 0, 0.2) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-/* تعديل موضع عناصر القائمة */
-.nav-sidebar {
-    margin-top: 10px !important;
-}
-
-.nav-sidebar > .nav-item .nav-icon {
-    margin-left: 0.5rem !important;
-    margin-right: 0 !important;
-}
-
-.nav-sidebar .nav-link p {
-    margin-right: 0 !important;
-}
-
-/* تعديل محاذاة أيقونة السهم */
-.nav-sidebar .nav-link > .right, 
-.nav-sidebar .nav-link > p > .right {
-    position: absolute;
-    left: 1rem !important;
-    right: auto !important;
-}
-
-/* تعديل عرض القائمة الفرعية */
-.nav-sidebar .nav-treeview > .nav-item > .nav-link {
-    padding-right: 2rem !important;
-}
-
-/* تعديل محاذاة العناصر وضمان عرضها */
-.nav-sidebar .nav-link {
-    text-align: right !important;
-    display: flex !important;
-    align-items: center !important;
-    padding: 0.75rem 1rem !important;
-    color: rgba(255, 255, 255, 0.8) !important;
-}
-
-.nav-sidebar .nav-link:hover {
-    color: #fff !important;
-    background-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-/* إعادة محاذاة محتوى الصفحة مع القائمة */
+/* ===== منطقة المحتوى الرئيسية ===== */
 .content-wrapper, 
 .main-header, 
 .main-footer {
     margin-right: 250px !important;
     margin-left: 0 !important;
-    transition: margin-right 0.3s ease-in-out !important;
+    transition: margin-right 0.3s ease !important;
 }
 
-.main-header {
-    z-index: 1037 !important;
+/* ===== محتويات القائمة الجانبية ===== */
+/* منطقة القائمة الداخلية */
+.sidebar {
+    direction: rtl !important;
+    padding: 0.5rem !important;
+    height: calc(100% - 57px) !important;
+    overflow-y: auto !important;
 }
 
-/* وضع الطي للقائمة الجانبية */
+/* ضبط الشعار والعنوان */
+.brand-link {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 0.8rem 1rem !important;
+    height: 57px !important;
+    background-color: rgba(0, 0, 0, 0.2) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+}
+
+.brand-text {
+    font-weight: 400 !important;
+    margin-right: 0.5rem !important;
+    transition: opacity 0.3s ease, visibility 0.3s ease !important;
+}
+
+/* ===== عناصر القائمة ===== */
+/* قائمة التنقل */
+.nav-sidebar {
+    margin-top: 10px !important;
+    width: 100% !important;
+}
+
+/* روابط القائمة */
+.nav-sidebar .nav-link {
+    display: flex !important;
+    align-items: center !important;
+    padding: 0.75rem 1rem !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    text-align: right !important;
+    white-space: nowrap !important;
+    border-radius: 0.25rem !important;
+    transition: background-color 0.2s ease, color 0.2s ease !important;
+}
+
+.nav-sidebar .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+}
+
+/* أيقونات القائمة */
+.nav-sidebar .nav-icon {
+    margin-left: 0.75rem !important;
+    margin-right: 0 !important;
+    font-size: 1.1rem !important;
+    text-align: center !important;
+    width: 1.6rem !important;
+}
+
+/* أيقونة السهم */
+.nav-sidebar .nav-link > .right, 
+.nav-sidebar .nav-link > p > .right {
+    position: absolute !important;
+    left: 1rem !important;
+    right: auto !important;
+}
+
+/* القوائم الفرعية */
+.nav-sidebar .nav-treeview {
+    display: none !important;
+    margin-right: 1rem !important;
+    padding-right: 0.5rem !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.nav-sidebar .nav-treeview > .nav-item > .nav-link {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.95rem !important;
+}
+
+.nav-sidebar .nav-item.menu-open > .nav-treeview {
+    display: block !important;
+}
+
+/* ===== وضع الطي للقائمة ===== */
 body.sidebar-collapse .main-sidebar {
     width: 4.6rem !important;
+    overflow-x: hidden !important;
 }
 
 body.sidebar-collapse .content-wrapper,
@@ -111,28 +146,43 @@ body.sidebar-collapse .main-footer {
     margin-left: 0 !important;
 }
 
+body.sidebar-collapse .brand-text,
 body.sidebar-collapse .nav-sidebar .nav-link p {
-    width: 0 !important;
-    visibility: hidden !important;
     display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    width: 0 !important;
 }
 
+body.sidebar-collapse .nav-sidebar > .nav-item > .nav-link > .nav-icon {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 2.2rem !important;
+}
+
+/* ===== القائمة على الأجهزة المحمولة ===== */
 @media (max-width: 991.98px) {
     .main-sidebar {
-        box-shadow: none;
+        transform: translateX(250px) !important;
+        z-index: 1100 !important;
+        box-shadow: none !important;
     }
     
-    body:not(.sidebar-open) .main-sidebar {
-        transform: translateX(250px) !important;
+    body.sidebar-open .main-sidebar {
+        transform: translateX(0) !important;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3) !important;
     }
     
     .content-wrapper,
     .main-header,
     .main-footer {
         margin-right: 0 !important;
+        width: 100% !important;
     }
     
-    .sidebar-open .main-sidebar {
-        transform: translateX(0) !important;
+    body.sidebar-collapse .content-wrapper,
+    body.sidebar-collapse .main-header,
+    body.sidebar-collapse .main-footer {
+        margin-right: 0 !important;
     }
 }
