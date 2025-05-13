@@ -1,6 +1,6 @@
 from datetime import datetime, date
 import logging
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
 from app import db
 
 # علاقة العديد-إلى-العديد بين المستخدمين والأدوار
@@ -751,6 +751,25 @@ class TaxSettings(db.Model):
     reporting_frequency = db.Column(db.String(20), default='quarterly')  # monthly, quarterly, yearly
     description = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+# نموذج سجل استيراد قاعدة البيانات
+class DatabaseImportLog(db.Model):
+    __tablename__ = 'database_import_log'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    import_type = db.Column(db.String(50), nullable=False)  # نوع الاستيراد (ملف نسخة احتياطية، اتصال مباشر)
+    filename = db.Column(db.String(255), nullable=False)  # اسم الملف أو مصدر الاستيراد
+    success = db.Column(db.Boolean, default=False)  # هل نجح الاستيراد
+    error_message = db.Column(db.Text)  # رسالة الخطأ في حالة الفشل
+    imported_by = db.Column(db.Integer, db.ForeignKey('user.id'))  # المستخدم الذي قام بالاستيراد
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # العلاقات
+    user = db.relationship('User', foreign_keys=[imported_by])
+    
+    def __repr__(self):
+        return f"<DatabaseImportLog {self.id}: {self.import_type} - {self.date}>"
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     @classmethod

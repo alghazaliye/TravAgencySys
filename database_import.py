@@ -5,9 +5,12 @@ import os
 import logging
 import tempfile
 from datetime import datetime
+from flask_login import current_user
 from werkzeug.utils import secure_filename
 from mssql_connector import get_mssql_connection, execute_query, import_mssql_database
 from import_mssql_data import import_all_data
+from app import db
+from models import DatabaseImportLog
 
 # تكوين سجل الأحداث
 logging.basicConfig(level=logging.INFO)
@@ -15,19 +18,6 @@ logger = logging.getLogger(__name__)
 
 # الدليل المؤقت لتخزين ملفات النسخ الاحتياطية
 TEMP_UPLOAD_FOLDER = tempfile.gettempdir()
-
-class ImportLog:
-    """
-    فئة لتمثيل سجل عملية استيراد
-    """
-    def __init__(self, date, type, filename, success):
-        self.date = date
-        self.type = type
-        self.filename = filename
-        self.success = success
-
-# قائمة لتخزين سجلات الاستيراد السابقة
-import_logs = []
 
 def allowed_file(filename):
     """
@@ -81,32 +71,48 @@ def import_from_backup_file(file, is_path=False):
                 # استيراد البيانات من SQL Server إلى PostgreSQL
                 data_import_success = import_all_data()
                 
-                # إضافة سجل الاستيراد
-                import_logs.append(ImportLog(
-                    date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    type="ملف نسخة احتياطية (مسار)",
+                # إضافة سجل الاستيراد إلى قاعدة البيانات
+                import_log = DatabaseImportLog(
+                    date=datetime.now(),
+                    import_type="ملف نسخة احتياطية (مسار)",
                     filename=filename,
-                    success=data_import_success
-                ))
+                    success=data_import_success,
+                    imported_by=current_user.id if current_user.is_authenticated else None
+                )
+                db.session.add(import_log)
+                db.session.commit()
                 
                 return True, "تم استيراد البيانات بنجاح"
             else:
-                import_logs.append(ImportLog(
-                    date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    type="ملف نسخة احتياطية (مسار)",
+                # إضافة سجل الاستيراد الفاشل
+                import_log = DatabaseImportLog(
+                    date=datetime.now(),
+                    import_type="ملف نسخة احتياطية (مسار)",
                     filename=filename,
-                    success=False
-                ))
+                    success=False,
+                    error_message="فشل في استيراد البيانات من ملف النسخة الاحتياطية",
+                    imported_by=current_user.id if current_user.is_authenticated else None
+                )
+                db.session.add(import_log)
+                db.session.commit()
+                
                 return False, "فشل في استيراد البيانات من ملف النسخة الاحتياطية"
                 
         except Exception as e:
             logger.error(f"خطأ في استيراد البيانات من المسار: {str(e)}")
-            import_logs.append(ImportLog(
-                date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                type="ملف نسخة احتياطية (مسار)",
+            
+            # إضافة سجل الخطأ
+            import_log = DatabaseImportLog(
+                date=datetime.now(),
+                import_type="ملف نسخة احتياطية (مسار)",
                 filename=filename,
-                success=False
-            ))
+                success=False,
+                error_message=str(e),
+                imported_by=current_user.id if current_user.is_authenticated else None
+            )
+            db.session.add(import_log)
+            db.session.commit()
+            
             return False, f"حدث خطأ أثناء استيراد البيانات: {str(e)}"
     
     # التعامل مع حالة كائن الملف المرفوع
@@ -126,32 +132,48 @@ def import_from_backup_file(file, is_path=False):
                 # استيراد البيانات من SQL Server إلى PostgreSQL
                 data_import_success = import_all_data()
                 
-                # إضافة سجل الاستيراد
-                import_logs.append(ImportLog(
-                    date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    type="ملف نسخة احتياطية",
+                # إضافة سجل الاستيراد إلى قاعدة البيانات
+                import_log = DatabaseImportLog(
+                    date=datetime.now(),
+                    import_type="ملف نسخة احتياطية",
                     filename=filename,
-                    success=data_import_success
-                ))
+                    success=data_import_success,
+                    imported_by=current_user.id if current_user.is_authenticated else None
+                )
+                db.session.add(import_log)
+                db.session.commit()
                 
                 return True, "تم استيراد البيانات بنجاح"
             else:
-                import_logs.append(ImportLog(
-                    date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    type="ملف نسخة احتياطية",
+                # إضافة سجل الاستيراد الفاشل
+                import_log = DatabaseImportLog(
+                    date=datetime.now(),
+                    import_type="ملف نسخة احتياطية",
                     filename=filename,
-                    success=False
-                ))
+                    success=False,
+                    error_message="فشل في استيراد البيانات من ملف النسخة الاحتياطية",
+                    imported_by=current_user.id if current_user.is_authenticated else None
+                )
+                db.session.add(import_log)
+                db.session.commit()
+                
                 return False, "فشل في استيراد البيانات من ملف النسخة الاحتياطية"
                 
         except Exception as e:
             logger.error(f"خطأ في استيراد البيانات: {str(e)}")
-            import_logs.append(ImportLog(
-                date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                type="ملف نسخة احتياطية",
+            
+            # إضافة سجل الخطأ
+            import_log = DatabaseImportLog(
+                date=datetime.now(),
+                import_type="ملف نسخة احتياطية",
                 filename=filename,
-                success=False
-            ))
+                success=False,
+                error_message=str(e),
+                imported_by=current_user.id if current_user.is_authenticated else None
+            )
+            db.session.add(import_log)
+            db.session.commit()
+            
             return False, f"حدث خطأ أثناء استيراد البيانات: {str(e)}"
         finally:
             # حذف الملف المؤقت
@@ -173,12 +195,19 @@ def import_from_database(server, database, username, password):
         connection = get_mssql_connection()
         if not connection:
             logger.error("فشل الاتصال بقاعدة بيانات SQL Server")
-            import_logs.append(ImportLog(
-                date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                type="اتصال مباشر",
+            
+            # إضافة سجل فشل الاتصال
+            import_log = DatabaseImportLog(
+                date=datetime.now(),
+                import_type="اتصال مباشر",
                 filename=f"{server}/{database}",
-                success=False
-            ))
+                success=False,
+                error_message="فشل الاتصال بقاعدة بيانات SQL Server",
+                imported_by=current_user.id if current_user.is_authenticated else None
+            )
+            db.session.add(import_log)
+            db.session.commit()
+            
             return False, "فشل الاتصال بقاعدة بيانات SQL Server"
         
         connection.close()
@@ -186,12 +215,17 @@ def import_from_database(server, database, username, password):
         # استيراد البيانات
         success = import_all_data()
         
-        import_logs.append(ImportLog(
-            date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            type="اتصال مباشر",
+        # إضافة سجل الاستيراد
+        import_log = DatabaseImportLog(
+            date=datetime.now(),
+            import_type="اتصال مباشر",
             filename=f"{server}/{database}",
-            success=success
-        ))
+            success=success,
+            error_message=None if success else "فشل في استيراد البيانات من الاتصال المباشر",
+            imported_by=current_user.id if current_user.is_authenticated else None
+        )
+        db.session.add(import_log)
+        db.session.commit()
         
         if success:
             return True, "تم استيراد البيانات بنجاح"
@@ -200,16 +234,23 @@ def import_from_database(server, database, username, password):
     
     except Exception as e:
         logger.error(f"خطأ في استيراد البيانات: {str(e)}")
-        import_logs.append(ImportLog(
-            date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            type="اتصال مباشر",
+        
+        # إضافة سجل الخطأ
+        import_log = DatabaseImportLog(
+            date=datetime.now(),
+            import_type="اتصال مباشر",
             filename=f"{server}/{database}",
-            success=False
-        ))
+            success=False,
+            error_message=str(e),
+            imported_by=current_user.id if current_user.is_authenticated else None
+        )
+        db.session.add(import_log)
+        db.session.commit()
+        
         return False, f"حدث خطأ أثناء استيراد البيانات: {str(e)}"
     
 def get_import_logs():
     """
-    الحصول على سجلات الاستيراد السابقة
+    الحصول على سجلات الاستيراد السابقة من قاعدة البيانات
     """
-    return import_logs
+    return DatabaseImportLog.query.order_by(DatabaseImportLog.date.desc()).all()
