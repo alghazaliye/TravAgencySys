@@ -2,6 +2,7 @@ from datetime import datetime, date, time, timedelta
 from werkzeug.security import generate_password_hash
 from app import app, db
 from app import User, Customer, TransportCompany, City, BusRoute, BusType, BusSchedule
+from seed_id_types import seed_identity_types
 
 def seed_database():
     """Populate the database with initial data for testing and demo purposes."""

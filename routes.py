@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 from models import User, Customer, TransportCompany, Country, City, BusRoute, BusType
 from models import BusSchedule, BusTrip, BusBooking, BookingPayment, SystemSettings
-from models import Currency, CashRegister, BankAccount, Role, Permission
+from models import Currency, CashRegister, BankAccount, Role, Permission, IdentityType
 from app import app, db
 
 # قاموس عام لتخزين الإعدادات
@@ -436,8 +436,15 @@ def update_user(user_id):
 def customers():
     """صفحة إدارة العملاء"""
     customer_list = Customer.query.all()
+    # إضافة قوائم أنواع الهوية والبلدان للاختيار منها
+    id_types = IdentityType.query.filter_by(is_active=True).all()
+    countries = Country.query.filter_by(is_active=True).all()
     settings = get_settings()
-    return render_template('customers.html', customers=customer_list, settings=settings)
+    return render_template('customers.html', 
+                          customers=customer_list, 
+                          id_types=id_types,
+                          countries=countries,
+                          settings=settings)
 
 @app.route('/api/customers', methods=['POST'])
 @login_required
@@ -488,6 +495,130 @@ def cities():
     countries = Country.query.all()
     settings = get_settings()
     return render_template('cities.html', cities=city_list, countries=countries, settings=settings)
+
+@app.route('/id-types')
+@login_required
+def id_types():
+    """صفحة إدارة أنواع الهوية"""
+    id_type_list = IdentityType.query.all()
+    settings = get_settings()
+    return render_template('id-types.html', id_types=id_type_list, settings=settings)
+
+# واجهة برمجة التطبيقات لأنواع الهوية
+@app.route('/api/id-types', methods=['GET'])
+@login_required
+def get_id_types():
+    """الحصول على قائمة أنواع الهوية"""
+    try:
+        id_types = IdentityType.query.all()
+        data = []
+        for id_type in id_types:
+            data.append({
+                'id': id_type.id,
+                'name': id_type.name,
+                'requires_nationality': id_type.requires_nationality,
+                'description': id_type.description,
+                'is_active': id_type.is_active
+            })
+        return jsonify({'success': True, 'data': data})
+    except Exception as e:
+        logging.error(f"Error fetching id types: {str(e)}")
+        return jsonify({'success': False, 'message': 'حدث خطأ أثناء جلب بيانات أنواع الهوية'}), 500
+
+@app.route('/api/id-types', methods=['POST'])
+@login_required
+def add_id_type():
+    """إضافة نوع هوية جديد"""
+    try:
+        data = request.json
+        
+        # التحقق من البيانات المدخلة
+        name = data.get('name')
+        if not name:
+            return jsonify({'success': False, 'message': 'يجب تحديد اسم نوع الهوية'}), 400
+        
+        id_type = IdentityType()
+        id_type.name = name
+        id_type.requires_nationality = data.get('requires_nationality', True)
+        id_type.description = data.get('description', '')
+        id_type.is_active = data.get('is_active', True)
+        
+        db.session.add(id_type)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True, 
+            'message': 'تم إضافة نوع الهوية بنجاح',
+            'id_type': {
+                'id': id_type.id,
+                'name': id_type.name,
+                'requires_nationality': id_type.requires_nationality,
+                'description': id_type.description,
+                'is_active': id_type.is_active
+            }
+        })
+    except Exception as e:
+        logging.error(f"Error adding id type: {str(e)}")
+        return jsonify({'success': False, 'message': 'حدث خطأ أثناء إضافة نوع الهوية'}), 500
+
+@app.route('/api/id-types/<int:id_type_id>', methods=['PUT'])
+@login_required
+def update_id_type(id_type_id):
+    """تحديث نوع هوية"""
+    try:
+        id_type = IdentityType.query.get(id_type_id)
+        if not id_type:
+            return jsonify({'success': False, 'message': 'نوع الهوية غير موجود'}), 404
+        
+        data = request.json
+        
+        # التحقق من البيانات المدخلة
+        name = data.get('name')
+        if not name:
+            return jsonify({'success': False, 'message': 'يجب تحديد اسم نوع الهوية'}), 400
+        
+        id_type.name = name
+        id_type.requires_nationality = data.get('requires_nationality', id_type.requires_nationality)
+        id_type.description = data.get('description', id_type.description)
+        id_type.is_active = data.get('is_active', id_type.is_active)
+        
+        db.session.commit()
+        
+        return jsonify({
+            'success': True, 
+            'message': 'تم تحديث نوع الهوية بنجاح',
+            'id_type': {
+                'id': id_type.id,
+                'name': id_type.name,
+                'requires_nationality': id_type.requires_nationality,
+                'description': id_type.description,
+                'is_active': id_type.is_active
+            }
+        })
+    except Exception as e:
+        logging.error(f"Error updating id type: {str(e)}")
+        return jsonify({'success': False, 'message': 'حدث خطأ أثناء تحديث نوع الهوية'}), 500
+
+@app.route('/api/id-types/<int:id_type_id>', methods=['DELETE'])
+@login_required
+def delete_id_type(id_type_id):
+    """حذف نوع هوية"""
+    try:
+        id_type = IdentityType.query.get(id_type_id)
+        if not id_type:
+            return jsonify({'success': False, 'message': 'نوع الهوية غير موجود'}), 404
+        
+        # التحقق من عدم وجود عملاء مرتبطين بنوع الهوية
+        if id_type.customers and len(id_type.customers) > 0:
+            return jsonify({'success': False, 'message': 'لا يمكن حذف نوع الهوية لأنه مرتبط بعملاء'}), 400
+        
+        db.session.delete(id_type)
+        db.session.commit()
+        
+        return jsonify({'success': True, 'message': 'تم حذف نوع الهوية بنجاح'})
+    except Exception as e:
+        logging.error(f"Error deleting id type: {str(e)}")
+        return jsonify({'success': False, 'message': 'حدث خطأ أثناء حذف نوع الهوية'}), 500
 
 # حجز تذاكر الحافلات
 @app.route('/bus-tickets')
@@ -703,12 +834,7 @@ def reports():
     settings = get_settings()
     return render_template('reports.html', settings=settings)
 
-@app.route('/id-types')
-@login_required
-def id_types():
-    """صفحة أنواع الهوية"""
-    settings = get_settings()
-    return render_template('id-types.html', settings=settings)
+# تم نقل مسار id-types إلى موقع آخر
 
 # إعدادات النظام
 @app.route('/system-settings', methods=['GET', 'POST'])

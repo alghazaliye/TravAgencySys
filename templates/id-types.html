@@ -119,9 +119,7 @@
                     <thead>
                         <tr>
                             <th>الرقم</th>
-                            <th>الاسم (عربي)</th>
-                            <th>الاسم (إنجليزي)</th>
-                            <th>الرمز</th>
+                            <th>الاسم</th>
                             <th>إلزامية تاريخ الميلاد</th>
                             <th>إلزامية تاريخ الإصدار</th>
                             <th>إلزامية تاريخ الانتهاء</th>
@@ -133,8 +131,6 @@
                         <tr>
                             <td>1</td>
                             <td>بطاقة هوية وطنية</td>
-                            <td>National ID Card</td>
-                            <td>NID</td>
                             <td><i class="fas fa-check text-success"></i></td>
                             <td><i class="fas fa-check text-success"></i></td>
                             <td><i class="fas fa-check text-success"></i></td>
@@ -151,8 +147,6 @@
                         <tr>
                             <td>2</td>
                             <td>جواز سفر</td>
-                            <td>Passport</td>
-                            <td>PASS</td>
                             <td><i class="fas fa-check text-success"></i></td>
                             <td><i class="fas fa-check text-success"></i></td>
                             <td><i class="fas fa-check text-success"></i></td>
@@ -169,8 +163,6 @@
                         <tr>
                             <td>3</td>
                             <td>إقامة</td>
-                            <td>Residence Permit</td>
-                            <td>IQAMA</td>
                             <td><i class="fas fa-check text-success"></i></td>
                             <td><i class="fas fa-check text-success"></i></td>
                             <td><i class="fas fa-check text-success"></i></td>
@@ -187,8 +179,6 @@
                         <tr>
                             <td>4</td>
                             <td>رخصة قيادة</td>
-                            <td>Driver's License</td>
-                            <td>DL</td>
                             <td><i class="fas fa-check text-success"></i></td>
                             <td><i class="fas fa-check text-success"></i></td>
                             <td><i class="fas fa-check text-success"></i></td>
@@ -224,57 +214,30 @@
             </div>
             <div class="modal-body">
                 <form id="idTypeForm">
+                    <!-- حقل مخفي لمعرف نوع الهوية (يستخدم في حالة التعديل) -->
+                    <input type="hidden" id="idTypeId">
+                    
                     <div class="form-group">
-                        <label for="idTypeNameAr">الاسم (عربي)</label>
-                        <input type="text" class="form-control" id="idTypeNameAr" placeholder="أدخل اسم نوع الهوية بالعربية" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="idTypeNameEn">الاسم (إنجليزي)</label>
-                        <input type="text" class="form-control" id="idTypeNameEn" placeholder="Enter ID Type name in English" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="idTypeCode">الرمز</label>
-                        <input type="text" class="form-control" id="idTypeCode" placeholder="مثال: NID" maxlength="10" required>
-                        <small class="form-text text-muted">رمز مختصر للاستخدام في النظام</small>
+                        <label for="idTypeNameAr">الاسم</label>
+                        <input type="text" class="form-control" id="idTypeNameAr" placeholder="أدخل اسم نوع الهوية" required>
                     </div>
                     
                     <div class="form-group">
-                        <label>إلزامية تاريخ الميلاد</label>
-                        <div class="switch-field">
-                            <input type="radio" id="birthDateRequiredYes" name="birthDateRequired" value="yes" checked>
-                            <label for="birthDateRequiredYes">نعم</label>
-                            <input type="radio" id="birthDateRequiredNo" name="birthDateRequired" value="no">
-                            <label for="birthDateRequiredNo">لا</label>
+                        <label for="idTypeDescription">الوصف</label>
+                        <textarea class="form-control" id="idTypeDescription" placeholder="أدخل وصف نوع الهوية" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="idTypeRequiresNationality" checked>
+                            <label class="custom-control-label" for="idTypeRequiresNationality">إلزامية الجنسية</label>
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label>إلزامية تاريخ الإصدار</label>
-                        <div class="switch-field">
-                            <input type="radio" id="issueDateRequiredYes" name="issueDateRequired" value="yes" checked>
-                            <label for="issueDateRequiredYes">نعم</label>
-                            <input type="radio" id="issueDateRequiredNo" name="issueDateRequired" value="no">
-                            <label for="issueDateRequiredNo">لا</label>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>إلزامية تاريخ الانتهاء</label>
-                        <div class="switch-field">
-                            <input type="radio" id="expiryDateRequiredYes" name="expiryDateRequired" value="yes" checked>
-                            <label for="expiryDateRequiredYes">نعم</label>
-                            <input type="radio" id="expiryDateRequiredNo" name="expiryDateRequired" value="no">
-                            <label for="expiryDateRequiredNo">لا</label>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>مفعل</label>
-                        <div class="switch-field">
-                            <input type="radio" id="idTypeActiveYes" name="idTypeActive" value="yes" checked>
-                            <label for="idTypeActiveYes">نعم</label>
-                            <input type="radio" id="idTypeActiveNo" name="idTypeActive" value="no">
-                            <label for="idTypeActiveNo">لا</label>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="idTypeIsActive" checked>
+                            <label class="custom-control-label" for="idTypeIsActive">مفعل</label>
                         </div>
                     </div>
                 </form>
@@ -324,18 +287,69 @@ $(function() {
             return;
         }
         
-        // محاكاة حفظ البيانات (في التطبيق الحقيقي سيتم استبدالها بطلب AJAX)
-        Swal.fire({
-            title: 'تم الحفظ!',
-            text: 'تم حفظ بيانات نوع الهوية بنجاح',
-            icon: 'success',
-            confirmButtonText: 'تم'
-        }).then((result) => {
-            // إغلاق النافذة المنبثقة
-            $('#modal-add-id-type').modal('hide');
-            
-            // إعادة تحميل الصفحة (في التطبيق الحقيقي يتم تحديث الجدول فقط)
-            // location.reload();
+        // جمع البيانات من النموذج
+        var formData = {
+            name: $('#idTypeNameAr').val(),
+            requires_nationality: $('#idTypeRequiresNationality').is(':checked'),
+            description: $('#idTypeDescription').val() || '',
+            is_active: $('#idTypeIsActive').is(':checked')
+        };
+        
+        // تحديد URL ونوع الطلب (POST للإضافة، PUT للتحديث)
+        var url = '/api/id-types';
+        var method = 'POST';
+        
+        // في حالة التعديل وليس الإضافة
+        if ($('#idTypeId').val()) {
+            url += '/' + $('#idTypeId').val();
+            method = 'PUT';
+        }
+        
+        // إرسال طلب AJAX
+        $.ajax({
+            url: url,
+            type: method,
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function(response) {
+                if (response.success) {
+                    // إظهار رسالة نجاح
+                    Swal.fire({
+                        title: 'تم بنجاح!',
+                        text: response.message,
+                        icon: 'success',
+                        confirmButtonText: 'تم'
+                    }).then((result) => {
+                        // إغلاق النافذة المنبثقة
+                        $('#modal-add-id-type').modal('hide');
+                        
+                        // إعادة تحميل الصفحة
+                        location.reload();
+                    });
+                } else {
+                    // إظهار رسالة خطأ
+                    Swal.fire({
+                        title: 'خطأ!',
+                        text: response.message,
+                        icon: 'error',
+                        confirmButtonText: 'حسناً'
+                    });
+                }
+            },
+            error: function(xhr) {
+                // إظهار رسالة خطأ
+                var message = 'حدث خطأ أثناء حفظ البيانات';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    message = xhr.responseJSON.message;
+                }
+                
+                Swal.fire({
+                    title: 'خطأ!',
+                    text: message,
+                    icon: 'error',
+                    confirmButtonText: 'حسناً'
+                });
+            }
         });
     });
     
@@ -355,12 +369,46 @@ $(function() {
             cancelButtonText: 'إلغاء'
         }).then((result) => {
             if (result.isConfirmed) {
-                // محاكاة حذف البيانات (في التطبيق الحقيقي سيتم استبدالها بطلب AJAX)
-                Swal.fire({
-                    title: 'تم الحذف!',
-                    text: 'تم حذف نوع الهوية بنجاح',
-                    icon: 'success',
-                    confirmButtonText: 'تم'
+                // إرسال طلب حذف AJAX
+                $.ajax({
+                    url: '/api/id-types/' + idTypeId,
+                    type: 'DELETE',
+                    success: function(response) {
+                        if (response.success) {
+                            // إظهار رسالة نجاح
+                            Swal.fire({
+                                title: 'تم الحذف!',
+                                text: response.message,
+                                icon: 'success',
+                                confirmButtonText: 'تم'
+                            }).then(() => {
+                                // إعادة تحميل الصفحة
+                                location.reload();
+                            });
+                        } else {
+                            // إظهار رسالة خطأ
+                            Swal.fire({
+                                title: 'خطأ!',
+                                text: response.message,
+                                icon: 'error',
+                                confirmButtonText: 'حسناً'
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        // إظهار رسالة خطأ
+                        var message = 'حدث خطأ أثناء حذف البيانات';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            message = xhr.responseJSON.message;
+                        }
+                        
+                        Swal.fire({
+                            title: 'خطأ!',
+                            text: message,
+                            icon: 'error',
+                            confirmButtonText: 'حسناً'
+                        });
+                    }
                 });
             }
         });
@@ -370,47 +418,65 @@ $(function() {
     $(document).on('click', '.edit-id-type', function() {
         var idTypeId = $(this).data('id');
         
-        // محاكاة جلب بيانات نوع الهوية (في التطبيق الحقيقي سيتم استبدالها بطلب AJAX)
-        if (idTypeId == 1) {
-            $('#idTypeNameAr').val('بطاقة هوية وطنية');
-            $('#idTypeNameEn').val('National ID Card');
-            $('#idTypeCode').val('NID');
-            $('input[name="birthDateRequired"][value="yes"]').prop('checked', true);
-            $('input[name="issueDateRequired"][value="yes"]').prop('checked', true);
-            $('input[name="expiryDateRequired"][value="yes"]').prop('checked', true);
-            $('input[name="idTypeActive"][value="yes"]').prop('checked', true);
-        } else if (idTypeId == 2) {
-            $('#idTypeNameAr').val('جواز سفر');
-            $('#idTypeNameEn').val('Passport');
-            $('#idTypeCode').val('PASS');
-            $('input[name="birthDateRequired"][value="yes"]').prop('checked', true);
-            $('input[name="issueDateRequired"][value="yes"]').prop('checked', true);
-            $('input[name="expiryDateRequired"][value="yes"]').prop('checked', true);
-            $('input[name="idTypeActive"][value="yes"]').prop('checked', true);
-        } else if (idTypeId == 3) {
-            $('#idTypeNameAr').val('إقامة');
-            $('#idTypeNameEn').val('Residence Permit');
-            $('#idTypeCode').val('IQAMA');
-            $('input[name="birthDateRequired"][value="yes"]').prop('checked', true);
-            $('input[name="issueDateRequired"][value="yes"]').prop('checked', true);
-            $('input[name="expiryDateRequired"][value="yes"]').prop('checked', true);
-            $('input[name="idTypeActive"][value="yes"]').prop('checked', true);
-        } else if (idTypeId == 4) {
-            $('#idTypeNameAr').val('رخصة قيادة');
-            $('#idTypeNameEn').val('Driver\'s License');
-            $('#idTypeCode').val('DL');
-            $('input[name="birthDateRequired"][value="yes"]').prop('checked', true);
-            $('input[name="issueDateRequired"][value="yes"]').prop('checked', true);
-            $('input[name="expiryDateRequired"][value="yes"]').prop('checked', true);
-            $('input[name="idTypeActive"][value="no"]').prop('checked', true);
-        }
-        
-        // تغيير عنوان النافذة
-        $('#modal-add-id-type .modal-title').text('تعديل نوع الهوية');
-        $('#saveIdType').text('تحديث');
-        
-        // فتح النافذة
-        $('#modal-add-id-type').modal('show');
+        // استرجاع بيانات نوع الهوية من السيرفر
+        $.ajax({
+            url: '/api/id-types',
+            type: 'GET',
+            success: function(response) {
+                if (response.success && response.data) {
+                    // البحث عن نوع الهوية المطلوب
+                    var idType = response.data.find(function(item) {
+                        return item.id === idTypeId;
+                    });
+                    
+                    if (idType) {
+                        // تعبئة نموذج التعديل
+                        $('#idTypeId').val(idType.id);
+                        $('#idTypeNameAr').val(idType.name);
+                        $('#idTypeRequiresNationality').prop('checked', idType.requires_nationality);
+                        $('#idTypeDescription').val(idType.description || '');
+                        $('#idTypeIsActive').prop('checked', idType.is_active);
+                        
+                        // تغيير عنوان النافذة
+                        $('#modal-add-id-type .modal-title').text('تعديل نوع الهوية');
+                        $('#saveIdType').text('تحديث');
+                        
+                        // فتح النافذة
+                        $('#modal-add-id-type').modal('show');
+                    } else {
+                        // نوع الهوية غير موجود
+                        Swal.fire({
+                            title: 'خطأ!',
+                            text: 'لم يتم العثور على نوع الهوية المطلوب',
+                            icon: 'error',
+                            confirmButtonText: 'حسناً'
+                        });
+                    }
+                } else {
+                    // حدث خطأ
+                    Swal.fire({
+                        title: 'خطأ!',
+                        text: response.message || 'حدث خطأ أثناء جلب بيانات نوع الهوية',
+                        icon: 'error',
+                        confirmButtonText: 'حسناً'
+                    });
+                }
+            },
+            error: function(xhr) {
+                // إظهار رسالة خطأ
+                var message = 'حدث خطأ أثناء جلب بيانات نوع الهوية';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    message = xhr.responseJSON.message;
+                }
+                
+                Swal.fire({
+                    title: 'خطأ!',
+                    text: message,
+                    icon: 'error',
+                    confirmButtonText: 'حسناً'
+                });
+            }
+        });
     });
     
     // إعادة ضبط حالة النافذة عند إغلاقها

@@ -106,15 +106,35 @@ class Permission(db.Model):
     module = db.Column(db.String(50))  # المودول أو القسم (مثل: مستخدمين، حجوزات، إلخ)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+# نموذج أنواع الهوية
+class IdentityType(db.Model):
+    __tablename__ = 'identity_type'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)  # اسم نوع الهوية (جواز سفر، هوية وطنية، إلخ)
+    requires_nationality = db.Column(db.Boolean, default=True)  # هل هذا النوع من الهوية يتطلب جنسية
+    description = db.Column(db.Text)  # وصف نوع الهوية
+    is_active = db.Column(db.Boolean, default=True)  # هل نوع الهوية مفعل
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # العلاقة مع العملاء
+    customers = db.relationship('Customer', backref='identity_type_rel', lazy=True)
+    
+    def __repr__(self):
+        return f'<IdentityType {self.name}>'
+
 # نموذج العملاء
 class Customer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     full_name = db.Column(db.String(150), nullable=False)
     mobile = db.Column(db.String(20))
     email = db.Column(db.String(120))
-    id_type = db.Column(db.String(20))
+    id_type_id = db.Column(db.Integer, db.ForeignKey('identity_type.id'))  # رابط مع جدول أنواع الهوية
+    id_type = db.Column(db.String(20))  # للتوافق مع البيانات القديمة
     id_number = db.Column(db.String(30))
-    nationality = db.Column(db.String(50))
+    nationality_id = db.Column(db.Integer, db.ForeignKey('country.id'))  # رابط مع جدول البلدان
+    nationality = db.Column(db.String(50))  # للتوافق مع البيانات القديمة
     birth_date = db.Column(db.Date)
     gender = db.Column(db.String(10))
     address = db.Column(db.String(200))
@@ -124,6 +144,9 @@ class Customer(db.Model):
     notes = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # العلاقات
+    country = db.relationship('Country', foreign_keys=[nationality_id], backref='nationals', lazy=True)
 
 # نموذج شركات النقل
 class TransportCompany(db.Model):
