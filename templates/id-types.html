@@ -120,78 +120,14 @@
                         <tr>
                             <th>الرقم</th>
                             <th>الاسم</th>
-                            <th>إلزامية تاريخ الميلاد</th>
-                            <th>إلزامية تاريخ الإصدار</th>
-                            <th>إلزامية تاريخ الانتهاء</th>
+                            <th>إلزامية الجنسية</th>
+                            <th>الوصف</th>
                             <th>مفعل</th>
                             <th>الإجراءات</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>بطاقة هوية وطنية</td>
-                            <td><i class="fas fa-check text-success"></i></td>
-                            <td><i class="fas fa-check text-success"></i></td>
-                            <td><i class="fas fa-check text-success"></i></td>
-                            <td><i class="fas fa-check text-success"></i></td>
-                            <td class="action-buttons">
-                                <button type="button" class="btn btn-info btn-sm edit-id-type" data-id="1">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button type="button" class="btn btn-danger btn-sm delete-id-type" data-id="1">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>جواز سفر</td>
-                            <td><i class="fas fa-check text-success"></i></td>
-                            <td><i class="fas fa-check text-success"></i></td>
-                            <td><i class="fas fa-check text-success"></i></td>
-                            <td><i class="fas fa-check text-success"></i></td>
-                            <td class="action-buttons">
-                                <button type="button" class="btn btn-info btn-sm edit-id-type" data-id="2">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button type="button" class="btn btn-danger btn-sm delete-id-type" data-id="2">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>إقامة</td>
-                            <td><i class="fas fa-check text-success"></i></td>
-                            <td><i class="fas fa-check text-success"></i></td>
-                            <td><i class="fas fa-check text-success"></i></td>
-                            <td><i class="fas fa-check text-success"></i></td>
-                            <td class="action-buttons">
-                                <button type="button" class="btn btn-info btn-sm edit-id-type" data-id="3">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button type="button" class="btn btn-danger btn-sm delete-id-type" data-id="3">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>رخصة قيادة</td>
-                            <td><i class="fas fa-check text-success"></i></td>
-                            <td><i class="fas fa-check text-success"></i></td>
-                            <td><i class="fas fa-check text-success"></i></td>
-                            <td><i class="fas fa-times text-danger"></i></td>
-                            <td class="action-buttons">
-                                <button type="button" class="btn btn-info btn-sm edit-id-type" data-id="4">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button type="button" class="btn btn-danger btn-sm delete-id-type" data-id="4">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
+<!-- بيانات الجدول ستتم تعبئتها من خلال واجهة API -->
                     </tbody>
                 </table>
             </div>
@@ -265,19 +201,95 @@
 $(function() {
     'use strict';
     
-    // تهيئة DataTables
-    $('#idTypesTable').DataTable({
-        "paging": true,
-        "lengthChange": true,
-        "searching": true,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
-        "language": {
-            "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/ar.json"
-        }
-    });
+    // تعريف جدول DataTable
+    var idTypesTable;
+    
+    // وظيفة لتحميل بيانات أنواع الهوية من واجهة API
+    function loadIdTypes() {
+        $.ajax({
+            url: '/api/id-types',
+            type: 'GET',
+            success: function(response) {
+                if (response.success && response.data) {
+                    // إذا كان الجدول موجودًا بالفعل، قم بتدميره أولًا
+                    if ($.fn.DataTable.isDataTable('#idTypesTable')) {
+                        $('#idTypesTable').DataTable().destroy();
+                    }
+                    
+                    // تنظيف جسم الجدول
+                    $('#idTypesTable tbody').empty();
+                    
+                    // إضافة الصفوف
+                    $.each(response.data, function(index, idType) {
+                        var requiresNationality = idType.requires_nationality ? 
+                            '<i class="fas fa-check text-success"></i>' : 
+                            '<i class="fas fa-times text-danger"></i>';
+                        
+                        var isActive = idType.is_active ? 
+                            '<i class="fas fa-check text-success"></i>' : 
+                            '<i class="fas fa-times text-danger"></i>';
+                        
+                        var row = '<tr>' +
+                            '<td>' + idType.id + '</td>' +
+                            '<td>' + idType.name + '</td>' +
+                            '<td>' + requiresNationality + '</td>' +
+                            '<td>' + (idType.description || '') + '</td>' +
+                            '<td>' + isActive + '</td>' +
+                            '<td class="action-buttons">' +
+                                '<button type="button" class="btn btn-info btn-sm edit-id-type" data-id="' + idType.id + '">' +
+                                    '<i class="fas fa-edit"></i>' +
+                                '</button> ' +
+                                '<button type="button" class="btn btn-danger btn-sm delete-id-type" data-id="' + idType.id + '">' +
+                                    '<i class="fas fa-trash"></i>' +
+                                '</button>' +
+                            '</td>' +
+                        '</tr>';
+                        
+                        $('#idTypesTable tbody').append(row);
+                    });
+                    
+                    // إعادة تهيئة جدول البيانات
+                    idTypesTable = $('#idTypesTable').DataTable({
+                        "paging": true,
+                        "lengthChange": true,
+                        "searching": true,
+                        "ordering": true,
+                        "info": true,
+                        "autoWidth": false,
+                        "responsive": true,
+                        "language": {
+                            "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/ar.json"
+                        }
+                    });
+                } else {
+                    // إظهار رسالة خطأ
+                    Swal.fire({
+                        title: 'خطأ!',
+                        text: response.message || 'حدث خطأ أثناء تحميل بيانات أنواع الهوية',
+                        icon: 'error',
+                        confirmButtonText: 'حسناً'
+                    });
+                }
+            },
+            error: function(xhr) {
+                // إظهار رسالة خطأ
+                var message = 'حدث خطأ أثناء تحميل بيانات أنواع الهوية';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    message = xhr.responseJSON.message;
+                }
+                
+                Swal.fire({
+                    title: 'خطأ!',
+                    text: message,
+                    icon: 'error',
+                    confirmButtonText: 'حسناً'
+                });
+            }
+        });
+    }
+    
+    // تحميل بيانات أنواع الهوية عند تحميل الصفحة
+    loadIdTypes();
     
     // حفظ نوع الهوية
     $('#saveIdType').on('click', function() {
@@ -329,8 +341,8 @@ $(function() {
                         // إغلاق النافذة المنبثقة
                         $('#modal-add-id-type').modal('hide');
                         
-                        // إعادة تحميل الصفحة
-                        location.reload();
+                        // إعادة تحميل بيانات الجدول بدلاً من إعادة تحميل الصفحة
+                        loadIdTypes();
                     });
                 } else {
                     // إظهار رسالة خطأ
@@ -391,8 +403,8 @@ $(function() {
                                 icon: 'success',
                                 confirmButtonText: 'تم'
                             }).then(() => {
-                                // إعادة تحميل الصفحة
-                                location.reload();
+                                // إعادة تحميل بيانات الجدول بدلاً من إعادة تحميل الصفحة
+                                loadIdTypes();
                             });
                         } else {
                             // إظهار رسالة خطأ
