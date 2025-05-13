@@ -1,0 +1,243 @@
+{% extends 'layout.html' %}
+
+{% block title %}استيراد قاعدة البيانات | نظام التأشيرات وإدارة السياحة{% endblock %}
+
+{% block styles %}
+<style>
+    .import-section {
+        background-color: var(--bg-card);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .import-section:hover {
+        box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    }
+    
+    .import-history {
+        max-height: 500px;
+        overflow-y: auto;
+    }
+    
+    .success-badge {
+        background-color: var(--success);
+    }
+    
+    .failure-badge {
+        background-color: var(--danger);
+    }
+    
+    .file-upload-wrapper {
+        position: relative;
+        margin-bottom: 1rem;
+    }
+    
+    .custom-file-upload {
+        display: block;
+        padding: 10px;
+        cursor: pointer;
+        background-color: var(--primary);
+        color: white;
+        border-radius: 5px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .custom-file-upload:hover {
+        background-color: var(--primary-dark);
+    }
+    
+    #file-name {
+        margin-top: 10px;
+        font-size: 0.85rem;
+    }
+    
+    .info-box {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        background-color: rgba(var(--info-rgb), 0.1);
+        border-right: 4px solid var(--info);
+    }
+    
+    .warning-box {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        background-color: rgba(var(--warning-rgb), 0.1);
+        border-right: 4px solid var(--warning);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper" style="min-height: 1604.44px;">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>استيراد قاعدة البيانات</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-left">
+                        <li class="breadcrumb-item"><a href="{{ url_for('index') }}">الرئيسية</a></li>
+                        <li class="breadcrumb-item active">استيراد قاعدة البيانات</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title">استيراد البيانات من SQL Server</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-box">
+                                <h5><i class="fas fa-info-circle ml-2"></i>معلومات عن استيراد البيانات</h5>
+                                <p>يتيح لك هذا الخيار استيراد بيانات النظام من نسخة احتياطية لقاعدة بيانات SQL Server أو الاتصال المباشر بقاعدة البيانات.</p>
+                                <p>يمكنك اختيار طريقة الاستيراد المناسبة لاحتياجاتك:</p>
+                                <ul>
+                                    <li><strong>استيراد من نسخة احتياطية:</strong> قم برفع ملف نسخة احتياطية (بصيغة .bak) للاستيراد منه.</li>
+                                    <li><strong>استيراد من قاعدة بيانات مباشرة:</strong> قم بإدخال معلومات الاتصال بقاعدة بيانات SQL Server للاستيراد منها مباشرة.</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="warning-box">
+                                <h5><i class="fas fa-exclamation-triangle ml-2"></i>تحذير هام</h5>
+                                <p>سيتم استبدال بعض البيانات الحالية في النظام بالبيانات المستوردة. يرجى التأكد من إنشاء نسخة احتياطية من قاعدة البيانات الحالية قبل المتابعة.</p>
+                            </div>
+                            
+                            <!-- استيراد من ملف النسخة الاحتياطية -->
+                            <div class="import-section">
+                                <h4><i class="fas fa-file-import ml-2"></i>استيراد من ملف نسخة احتياطية</h4>
+                                <form action="{{ url_for('upload_backup_file') }}" method="POST" enctype="multipart/form-data">
+                                    <div class="file-upload-wrapper">
+                                        <input type="file" name="backup_file" id="backup_file" accept=".bak" style="display: none;" required>
+                                        <label for="backup_file" class="custom-file-upload">
+                                            <i class="fas fa-upload ml-2"></i>اختيار ملف النسخة الاحتياطية (.bak)
+                                        </label>
+                                        <div id="file-name"></div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-database ml-2"></i>استيراد البيانات
+                                    </button>
+                                </form>
+                            </div>
+                            
+                            <!-- استيراد من قاعدة بيانات مباشرة -->
+                            <div class="import-section">
+                                <h4><i class="fas fa-server ml-2"></i>استيراد من قاعدة بيانات مباشرة</h4>
+                                <form action="{{ url_for('import_from_database') }}" method="POST">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="server">عنوان الخادم</label>
+                                                <input type="text" class="form-control" id="server" name="server" 
+                                                       value="{{ server }}" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="database">اسم قاعدة البيانات</label>
+                                                <input type="text" class="form-control" id="database" name="database" 
+                                                       value="{{ database }}" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="username">اسم المستخدم</label>
+                                                <input type="text" class="form-control" id="username" name="username" 
+                                                       value="{{ username }}" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="password">كلمة المرور</label>
+                                                <input type="password" class="form-control" id="password" name="password" 
+                                                       value="{{ password }}" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-sync ml-2"></i>اختبار الاتصال واستيراد البيانات
+                                    </button>
+                                </form>
+                            </div>
+                            
+                            <!-- سجل عمليات الاستيراد -->
+                            <div class="card card-primary card-outline mt-4">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-history ml-2"></i>
+                                        سجل عمليات الاستيراد
+                                    </h3>
+                                </div>
+                                <div class="card-body import-history">
+                                    {% if import_logs %}
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>التاريخ</th>
+                                                    <th>نوع الاستيراد</th>
+                                                    <th>اسم الملف/المصدر</th>
+                                                    <th>الحالة</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for log in import_logs %}
+                                                <tr>
+                                                    <td>{{ log.date }}</td>
+                                                    <td>{{ log.type }}</td>
+                                                    <td>{{ log.filename }}</td>
+                                                    <td>
+                                                        {% if log.success %}
+                                                        <span class="badge success-badge">ناجح</span>
+                                                        {% else %}
+                                                        <span class="badge failure-badge">فاشل</span>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    {% else %}
+                                    <div class="alert alert-info">
+                                        لا توجد عمليات استيراد سابقة.
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // عرض اسم الملف المحدد
+        $('#backup_file').change(function() {
+            var fileName = $(this).val().split('\\').pop();
+            $('#file-name').text(fileName ? 'الملف المحدد: ' + fileName : '');
+        });
+    });
+</script>
+{% endblock %}

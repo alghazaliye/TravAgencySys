@@ -23,6 +23,34 @@ def import_mssql_page():
     
     return render_template('import-mssql.html')
 
+
+@app.route('/database-import', methods=['GET'])
+@login_required
+def database_import_page():
+    """صفحة استيراد قاعدة بيانات - الواجهة الجديدة"""
+    # التحقق من وجود صلاحيات المسؤول
+    if not current_user.is_admin:
+        flash('ليس لديك صلاحيات كافية للوصول إلى هذه الصفحة', 'danger')
+        return redirect(url_for('index'))
+    
+    from database_import import get_import_logs
+    
+    # الحصول على سجلات الاستيراد السابقة
+    import_logs = get_import_logs()
+    
+    # استرجاع معلومات الاتصال المحفوظة (إن وجدت)
+    server = os.environ.get('MSSQL_SERVER', 'localhost')
+    database = os.environ.get('MSSQL_DATABASE', 'travelagency')
+    username = os.environ.get('MSSQL_USERNAME', 'sa')
+    password = os.environ.get('MSSQL_PASSWORD', '')
+    
+    return render_template('import_database.html', 
+                          import_logs=import_logs,
+                          server=server,
+                          database=database,
+                          username=username,
+                          password=password)
+
 @app.route('/test-mssql-connection', methods=['POST'])
 @login_required
 def test_mssql_connection():
@@ -115,10 +143,93 @@ def upload_mssql_backup():
         
         return jsonify({'success': False, 'error': str(e)})
 
+@app.route('/upload-backup-file', methods=['POST'])
+@login_required
+def upload_backup_file():
+    """
+    استيراد البيانات من ملف النسخة الاحتياطية المرفوع
+    """
+    # التحقق من وجود صلاحيات المسؤول
+    if not current_user.is_admin:
+        flash('ليس لديك صلاحيات كافية للوصول إلى هذه الوظيفة', 'danger')
+        return redirect(url_for('database_import_page'))
+    
+    # التحقق من وجود ملف النسخة الاحتياطية في الطلب
+    if 'backup_file' not in request.files:
+        # محاولة استخدام الملف المرفق مسبقًا
+        import os
+        attached_bak_file = os.path.join('attached_assets', 'BackupDBTAMPA_01-08-2024 04-08-22 م.bak')
+        
+        if os.path.exists(attached_bak_file):
+            from database_import import import_from_backup_file
+            
+            logging.info(f"استخدام ملف النسخة الاحتياطية المرفق: {attached_bak_file}")
+            success, message = import_from_backup_file(attached_bak_file, is_path=True)
+            
+            if success:
+                flash(f"تم استيراد البيانات بنجاح من الملف المرفق: {os.path.basename(attached_bak_file)}", 'success')
+            else:
+                flash(f"فشل استيراد البيانات من الملف المرفق: {message}", 'danger')
+            
+            return redirect(url_for('database_import_page'))
+        else:
+            flash('لم يتم اختيار ملف ولا يوجد ملف مرفق مسبقًا', 'danger')
+            return redirect(url_for('database_import_page'))
+    
+    # التعامل مع الملف المرفوع
+    backup_file = request.files['backup_file']
+    
+    if backup_file.filename == '':
+        flash('لم يتم اختيار ملف', 'danger')
+        return redirect(url_for('database_import_page'))
+    
+    # استيراد البيانات من الملف
+    from database_import import import_from_backup_file
+    
+    success, message = import_from_backup_file(backup_file)
+    
+    if success:
+        flash(message, 'success')
+    else:
+        flash(message, 'danger')
+    
+    return redirect(url_for('database_import_page'))
+
+
+@app.route('/import-from-database', methods=['POST'])
+@login_required
+def import_from_database():
+    """
+    استيراد البيانات مباشرة من قاعدة بيانات SQL Server
+    """
+    # التحقق من وجود صلاحيات المسؤول
+    if not current_user.is_admin:
+        flash('ليس لديك صلاحيات كافية للوصول إلى هذه الوظيفة', 'danger')
+        return redirect(url_for('database_import_page'))
+    
+    # الحصول على بيانات النموذج
+    server = request.form.get('server')
+    database = request.form.get('database')
+    username = request.form.get('username')
+    password = request.form.get('password')
+    
+    # استيراد البيانات من قاعدة البيانات
+    from database_import import import_from_database
+    
+    success, message = import_from_database(server, database, username, password)
+    
+    if success:
+        flash(message, 'success')
+    else:
+        flash(message, 'danger')
+    
+    return redirect(url_for('database_import_page'))
+
+
 @app.route('/import-mssql-data', methods=['POST'])
 @login_required
 def import_mssql_data():
-    """استيراد البيانات من قاعدة بيانات SQL Server إلى النظام"""
+    """استيراد البيانات من قاعدة بيانات SQL Server إلى النظام (الطريقة القديمة)"""
     # التحقق من وجود صلاحيات المسؤول
     if not current_user.is_admin:
         return jsonify({'success': False, 'error': 'ليس لديك صلاحيات كافية'})
