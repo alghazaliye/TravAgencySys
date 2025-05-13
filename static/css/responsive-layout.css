@@ -1,0 +1,264 @@
+/**
+ * التنسيق المتجاوب للصفحة
+ * تنسيقات متوافقة مع جميع أحجام الشاشات وتدعم واجهة RTL
+ */
+
+/* ===== التنسيقات العامة للصفحة ===== */
+html, body {
+    height: 100%;
+    direction: rtl;
+    text-align: right;
+    font-family: var(--font-family, 'Tajawal', sans-serif);
+}
+
+body {
+    overflow-x: hidden;
+    background-color: #f4f6f9;
+}
+
+/* الحاوية الرئيسية */
+.wrapper {
+    min-height: 100%;
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+/* منطقة المحتوى الرئيسية */
+.content-wrapper {
+    background-color: #f4f6f9;
+    padding: 15px 20px 25px 20px !important;
+    min-height: calc(100vh - 57px) !important;
+    transition: all 0.3s ease !important;
+    overflow-x: hidden !important;
+    width: auto !important;
+}
+
+/* صندوق شريط العنوان والتنقل */
+.content-header {
+    padding: 15px 0;
+    margin-bottom: 15px;
+}
+
+.content-header h1 {
+    font-size: 1.8rem;
+    margin: 0;
+    font-weight: 600;
+}
+
+/* ===== القائمة الجانبية وتفاعلها مع منطقة المحتوى ===== */
+/* توافق منطقة المحتوى مع القائمة الجانبية */
+@media (min-width: 992px) {
+    .content-wrapper,
+    .main-header,
+    .main-footer {
+        margin-right: 250px !important;
+        margin-left: 0 !important;
+        width: calc(100% - 250px) !important;
+        transition: margin-right 0.3s ease, width 0.3s ease !important;
+    }
+    
+    /* عند طي القائمة الجانبية */
+    body.sidebar-collapse .content-wrapper,
+    body.sidebar-collapse .main-header,
+    body.sidebar-collapse .main-footer {
+        margin-right: 4.6rem !important;
+        width: calc(100% - 4.6rem) !important;
+    }
+}
+
+/* الأجهزة المتوسطة والصغيرة */
+@media (max-width: 991.98px) {
+    .content-wrapper,
+    .main-header,
+    .main-footer {
+        margin-right: 0 !important;
+        width: 100% !important;
+    }
+    
+    /* ضمان عدم تأثير طي القائمة على الاجهزة الصغيرة */
+    body.sidebar-collapse .content-wrapper,
+    body.sidebar-collapse .main-header,
+    body.sidebar-collapse .main-footer {
+        margin-right: 0 !important;
+        width: 100% !important;
+    }
+}
+
+/* ===== بطاقات البيانات والمحتوى ===== */
+/* تنسيق البطاقات الأساسية */
+.card {
+    border-radius: 0.5rem !important;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1) !important;
+    margin-bottom: 1.5rem !important;
+    border: none !important;
+    background-color: #fff !important;
+    overflow: hidden !important;
+}
+
+.card-header {
+    background-color: rgba(0, 0, 0, 0.03) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125) !important;
+    padding: 1rem 1.25rem !important;
+    border-radius: 0.5rem 0.5rem 0 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+.card-title {
+    margin-bottom: 0 !important;
+    font-weight: 600 !important;
+    font-size: 1.25rem !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.card-title i, 
+.card-title .fa, 
+.card-title .fas {
+    margin-left: 0.5rem !important;
+    color: var(--primary-color, #007bff) !important;
+}
+
+.card-body {
+    padding: 1.25rem !important;
+}
+
+.card-footer {
+    background-color: rgba(0, 0, 0, 0.03) !important;
+    padding: 0.75rem 1.25rem !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.125) !important;
+    border-radius: 0 0 0.5rem 0.5rem !important;
+}
+
+/* ===== بطاقات الإحصائيات ===== */
+.small-box {
+    position: relative !important;
+    display: block !important;
+    border-radius: 0.5rem !important;
+    margin-bottom: 20px !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.125) !important;
+    overflow: hidden !important;
+    color: #fff !important;
+    transition: all 0.3s ease !important;
+}
+
+.small-box:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+.small-box > .inner {
+    padding: 20px 15px !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+.small-box h3 {
+    font-size: 2.2rem !important;
+    font-weight: 700 !important;
+    margin: 0 0 10px 0 !important;
+    white-space: nowrap !important;
+}
+
+.small-box p {
+    margin-bottom: 0 !important;
+    font-size: 1rem !important;
+}
+
+.small-box .icon {
+    position: absolute !important;
+    top: auto !important;
+    bottom: 5px !important;
+    left: 5px !important;
+    right: auto !important;
+    z-index: 0 !important;
+    font-size: 70px !important;
+    color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* ===== الجداول ===== */
+.table-responsive {
+    overflow-x: auto !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05) !important;
+    border-radius: 0.5rem !important;
+    background-color: #fff !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.table {
+    width: 100% !important;
+    margin-bottom: 0 !important;
+}
+
+.table th {
+    background-color: rgba(0, 0, 0, 0.03) !important;
+    border-top: none !important;
+    font-weight: 600 !important;
+}
+
+.table td, .table th {
+    padding: 0.75rem !important;
+    vertical-align: middle !important;
+    border-top: 1px solid #dee2e6 !important;
+}
+
+/* ===== الأزرار والنماذج ===== */
+.btn {
+    border-radius: 0.25rem !important;
+    padding: 0.375rem 0.75rem !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+}
+
+.form-control {
+    border-radius: 0.25rem !important;
+    direction: rtl !important;
+    text-align: right !important;
+    padding: 0.375rem 0.75rem !important;
+}
+
+.form-group {
+    margin-bottom: 1rem !important;
+}
+
+.input-group-text {
+    border-radius: 0.25rem !important;
+}
+
+/* ===== توافق الهواتف المحمولة ===== */
+@media (max-width: 767.98px) {
+    .content-wrapper {
+        padding: 10px 15px !important;
+    }
+    
+    .content-header h1 {
+        font-size: 1.5rem !important;
+    }
+    
+    .small-box {
+        text-align: center !important;
+    }
+    
+    .small-box h3 {
+        font-size: 1.5rem !important;
+    }
+    
+    .small-box .icon {
+        display: none !important;
+    }
+    
+    .card-title {
+        font-size: 1.1rem !important;
+    }
+    
+    .table-responsive {
+        border-radius: 0.25rem !important;
+    }
+    
+    .btn {
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.875rem !important;
+    }
+}

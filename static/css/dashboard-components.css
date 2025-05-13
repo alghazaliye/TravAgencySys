@@ -1,0 +1,244 @@
+/**
+ * تنسيقات مكونات لوحة التحكم
+ * تنسيقات خاصة للإحصائيات والمخططات والرسوم البيانية
+ */
+
+/* ===== بطاقات الإحصائيات المحسنة ===== */
+/* إصلاح عرض البطاقات الإحصائية */
+.stats-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px;
+}
+
+.stats-col {
+    flex: 0 0 25%;
+    max-width: 25%;
+    padding: 0 10px;
+}
+
+/* بطاقة الإحصائيات المحسنة */
+.info-box {
+    display: flex;
+    min-height: 100px;
+    background-color: #fff;
+    width: 100%;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.info-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.info-box-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    font-size: 2rem;
+    background-color: rgba(0, 123, 255, 0.1);
+    color: #007bff;
+}
+
+.info-box-content {
+    flex: 1;
+    padding: 15px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.info-box-text {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.info-box-number {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.info-box-progress {
+    height: 4px;
+    background-color: #f4f6f9;
+    margin-bottom: 5px;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.info-box-progress-bar {
+    height: 100%;
+    background-color: #007bff;
+}
+
+.info-box-percent {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+/* توازن الألوان بين البطاقات */
+.info-box-primary .info-box-icon {
+    color: #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.info-box-success .info-box-icon {
+    color: #28a745;
+    background-color: rgba(40, 167, 69, 0.1);
+}
+
+.info-box-warning .info-box-icon {
+    color: #ffc107;
+    background-color: rgba(255, 193, 7, 0.1);
+}
+
+.info-box-danger .info-box-icon {
+    color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+.info-box-primary .info-box-progress-bar {
+    background-color: #007bff;
+}
+
+.info-box-success .info-box-progress-bar {
+    background-color: #28a745;
+}
+
+.info-box-warning .info-box-progress-bar {
+    background-color: #ffc107;
+}
+
+.info-box-danger .info-box-progress-bar {
+    background-color: #dc3545;
+}
+
+/* ===== الرسوم البيانية والمخططات ===== */
+.chart-box {
+    border-radius: 0.5rem;
+    background: #fff;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-align: right;
+    display: flex;
+    align-items: center;
+}
+
+.chart-title i {
+    margin-left: 8px;
+    color: #007bff;
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    min-height: 300px;
+}
+
+.chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin: 0 10px 5px 0;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-left: 5px;
+}
+
+.legend-text {
+    font-size: 0.85rem;
+}
+
+/* بطاقات الإحصائيات التفاعلية */
+.counter-card {
+    border-radius: 0.5rem;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    padding: 25px 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    background: #fff;
+    transition: all 0.3s ease;
+}
+
+.counter-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.counter-icon {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    color: #007bff;
+}
+
+.counter-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 10px;
+    color: #212529;
+}
+
+.counter-title {
+    font-size: 1rem;
+    color: #6c757d;
+    margin-bottom: 0;
+}
+
+/* توافقية مع مختلف أحجام الشاشات */
+@media (max-width: 1199.98px) {
+    .stats-col {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .stats-col {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+    
+    .info-box {
+        min-height: 80px;
+    }
+    
+    .info-box-number {
+        font-size: 1.5rem;
+    }
+    
+    .chart-container {
+        min-height: 250px;
+    }
+    
+    .counter-value {
+        font-size: 2rem;
+    }
+}
