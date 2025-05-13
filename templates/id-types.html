@@ -206,20 +206,23 @@ $(function() {
     
     // وظيفة لتحميل بيانات أنواع الهوية من واجهة API
     function loadIdTypes() {
+        // عرض مؤشر التحميل
+        var loadingHtml = '<tr><td colspan="6" class="text-center"><i class="fas fa-spinner fa-spin"></i> جارٍ التحميل...</td></tr>';
+        if ($.fn.DataTable.isDataTable('#idTypesTable')) {
+            $('#idTypesTable').DataTable().destroy();
+        }
+        $('#idTypesTable tbody').html(loadingHtml);
+        
         $.ajax({
             url: '/api/id-types',
             type: 'GET',
+            cache: false, // تعطيل التخزين المؤقت
             success: function(response) {
                 if (response.success && response.data) {
-                    // إذا كان الجدول موجودًا بالفعل، قم بتدميره أولًا
-                    if ($.fn.DataTable.isDataTable('#idTypesTable')) {
-                        $('#idTypesTable').DataTable().destroy();
-                    }
-                    
                     // تنظيف جسم الجدول
-                    $('#idTypesTable tbody').empty();
+                    var tableRows = '';
                     
-                    // إضافة الصفوف
+                    // إضافة الصفوف - استخدام السلسلة النصية مرة واحدة لتحسين الأداء
                     $.each(response.data, function(index, idType) {
                         var requiresNationality = idType.requires_nationality ? 
                             '<i class="fas fa-check text-success"></i>' : 
@@ -229,7 +232,7 @@ $(function() {
                             '<i class="fas fa-check text-success"></i>' : 
                             '<i class="fas fa-times text-danger"></i>';
                         
-                        var row = '<tr>' +
+                        tableRows += '<tr>' +
                             '<td>' + idType.id + '</td>' +
                             '<td>' + idType.name + '</td>' +
                             '<td>' + requiresNationality + '</td>' +
@@ -244,11 +247,12 @@ $(function() {
                                 '</button>' +
                             '</td>' +
                         '</tr>';
-                        
-                        $('#idTypesTable tbody').append(row);
                     });
                     
-                    // إعادة تهيئة جدول البيانات
+                    // تحديث جسم الجدول دفعة واحدة
+                    $('#idTypesTable tbody').html(tableRows);
+                    
+                    // إعادة تهيئة جدول البيانات بإعدادات مبسطة لتحسين الأداء
                     idTypesTable = $('#idTypesTable').DataTable({
                         "paging": true,
                         "lengthChange": true,
@@ -259,6 +263,10 @@ $(function() {
                         "responsive": true,
                         "language": {
                             "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/ar.json"
+                        },
+                        "initComplete": function() {
+                            // إخفاء مؤشر التحميل بعد اكتمال التهيئة
+                            $('.loading-indicator').hide();
                         }
                     });
                 } else {
@@ -331,18 +339,20 @@ $(function() {
             success: function(response) {
                 console.log("Success Response:", response);
                 if (response.success) {
+                    // إغلاق النافذة المنبثقة فوراً
+                    $('#modal-add-id-type').modal('hide');
+                    
+                    // إعادة تحميل بيانات الجدول فوراً
+                    loadIdTypes();
+                    
                     // إظهار رسالة نجاح
                     Swal.fire({
                         title: 'تم بنجاح!',
                         text: response.message,
                         icon: 'success',
-                        confirmButtonText: 'تم'
-                    }).then((result) => {
-                        // إغلاق النافذة المنبثقة
-                        $('#modal-add-id-type').modal('hide');
-                        
-                        // إعادة تحميل بيانات الجدول بدلاً من إعادة تحميل الصفحة
-                        loadIdTypes();
+                        confirmButtonText: 'تم',
+                        timer: 1500,
+                        showConfirmButton: false
                     });
                 } else {
                     // إظهار رسالة خطأ
@@ -396,15 +406,16 @@ $(function() {
                     type: 'DELETE',
                     success: function(response) {
                         if (response.success) {
-                            // إظهار رسالة نجاح
+                            // إعادة تحميل بيانات الجدول فوراً
+                            loadIdTypes();
+                            
+                            // إظهار رسالة نجاح لفترة قصيرة
                             Swal.fire({
                                 title: 'تم الحذف!',
                                 text: response.message,
                                 icon: 'success',
-                                confirmButtonText: 'تم'
-                            }).then(() => {
-                                // إعادة تحميل بيانات الجدول بدلاً من إعادة تحميل الصفحة
-                                loadIdTypes();
+                                timer: 1500,
+                                showConfirmButton: false
                             });
                         } else {
                             // إظهار رسالة خطأ
