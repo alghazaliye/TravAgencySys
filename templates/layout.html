@@ -743,9 +743,57 @@
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a id="sidebarToggleBtn" class="nav-link sidebar-toggle-btn" href="#" role="button" data-widget="pushmenu" aria-label="تبديل القائمة الجانبية"><i class="fas fa-bars"></i></a>
+                    <a id="sidebarToggleBtn" class="nav-link sidebar-toggle-btn" href="#" role="button" data-widget="pushmenu" aria-label="تبديل القائمة الجانبية">
+                        <i class="fas fa-bars"></i>
+                        <span class="toggle-icon-tooltip">تبديل القائمة</span>
+                    </a>
                 </li>
             </ul>
+            
+            <!-- إضافة نمط مخصص للزر -->
+            <style>
+                #sidebarToggleBtn {
+                    position: relative;
+                    cursor: pointer;
+                    padding: 8px 12px;
+                    transition: all 0.3s ease;
+                    border-radius: 4px;
+                }
+                
+                #sidebarToggleBtn:hover {
+                    background-color: rgba(0,0,0,0.1);
+                }
+                
+                #sidebarToggleBtn:active {
+                    transform: scale(0.95);
+                }
+                
+                #sidebarToggleBtn i {
+                    font-size: 1.25rem;
+                }
+                
+                .toggle-icon-tooltip {
+                    position: absolute;
+                    top: 100%;
+                    right: 0;
+                    background: #343a40;
+                    color: white;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    font-size: 12px;
+                    opacity: 0;
+                    visibility: hidden;
+                    transition: all 0.3s ease;
+                    z-index: 1000;
+                    white-space: nowrap;
+                }
+                
+                #sidebarToggleBtn:hover .toggle-icon-tooltip {
+                    opacity: 1;
+                    visibility: visible;
+                    top: calc(100% + 5px);
+                }
+            </style>
 
             <!-- Right navbar links -->
             <ul class="navbar-nav mr-auto-navbav">

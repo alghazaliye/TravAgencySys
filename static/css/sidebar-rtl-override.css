@@ -3,11 +3,11 @@
  * مجموعة من التعديلات لضمان عمل القائمة الجانبية بشكل صحيح في وضع RTL
  */
 
-/* تعديلات أساسية للقائمة الجانبية */
+/* حل جذري للقائمة الجانبية - إعادة تعريف كاملة */
 .main-sidebar {
     position: fixed !important;
-    top: 0;
-    bottom: 0;
+    top: 0 !important;
+    bottom: 0 !important;
     right: 0 !important;
     left: auto !important;
     width: 250px !important;
@@ -17,10 +17,12 @@
     opacity: 1 !important;
     z-index: 1038 !important;
     direction: rtl !important;
+    height: 100vh !important;
     background-color: var(--sidebar-bg, #343a40) !important;
     transition: width 0.3s ease-in-out, transform 0.3s ease-in-out !important;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1) !important;
-    overflow-y: auto;
+    overflow-y: auto !important;
+    transform: translateX(0) !important;
 }
 
 /* نمط المنطقة الداخلية للقائمة الجانبية */

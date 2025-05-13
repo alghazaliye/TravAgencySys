@@ -10,11 +10,27 @@
     --transition-speed: 0.3s;
 }
 
+/* ===== تحسين انتقالات وتأثيرات القائمة الجانبية ===== */
+/* تأكيد التحولات السلسة للقائمة الجانبية */
+.main-sidebar {
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* ضمان عرض المحتوى بشكل صحيح مع القائمة */
+.content-wrapper, 
+.main-header, 
+.main-footer {
+    transition: margin-right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
 /* ===== القائمة المصغرة في حالة الطي ===== */
 body.sidebar-collapse .main-sidebar,
 body.sidebar-mini.sidebar-collapse .main-sidebar {
     width: var(--sidebar-mini-width) !important;
-    overflow-x: hidden;
+    overflow-x: hidden !important;
+    background-color: var(--sidebar-bg, #343a40) !important;
+    border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
 /* توسيط الأيقونات في القائمة المصغرة */
@@ -24,9 +40,20 @@ body.sidebar-mini.sidebar-collapse .nav-sidebar .nav-link .nav-icon {
     margin-left: 0 !important;
     width: 1.6rem !important;
     text-align: center !important;
+    font-size: 1.1rem !important;
 }
 
-/* إخفاء النص والعناصر في القائمة المصغرة */
+/* تأثيرات انتقالية أفضل للأيقونات */
+.nav-sidebar .nav-link .nav-icon {
+    transition: margin 0.3s ease, font-size 0.3s ease !important;
+}
+
+/* إخفاء النص والعناصر في القائمة المصغرة مع انتقال سلس */
+.nav-sidebar .nav-link p,
+.brand-text {
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, width 0.3s ease-in-out !important;
+}
+
 body.sidebar-collapse .nav-sidebar .nav-link p,
 body.sidebar-mini.sidebar-collapse .nav-sidebar .nav-link p,
 body.sidebar-collapse .brand-text,
@@ -42,6 +69,7 @@ body.sidebar-mini.sidebar-collapse .brand-text {
 body.sidebar-collapse .main-sidebar .brand-link,
 body.sidebar-mini.sidebar-collapse .main-sidebar .brand-link {
     justify-content: center !important;
+    padding: 0.8rem 0.5rem !important;
 }
 
 /* ===== القوائم المنسدلة عند التحويم ===== */
@@ -58,13 +86,14 @@ body.sidebar-mini.sidebar-collapse .nav-sidebar > .nav-item:hover > .nav-link > 
     padding: 12px 15px !important;
     border-top-left-radius: 4px !important;
     border-bottom-left-radius: 4px !important;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2) !important;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3) !important;
     min-width: 180px !important;
     z-index: 1000 !important;
     top: 0 !important;
+    animation: fadeIn 0.2s ease-in !important;
 }
 
-/* ظهور القوائم المنسدلة عند التحويم */
+/* ظهور القوائم المنسدلة عند التحويم مع تأثير سلس */
 body.sidebar-collapse .nav-sidebar > .nav-item:hover > .nav-treeview,
 body.sidebar-mini.sidebar-collapse .nav-sidebar > .nav-item:hover > .nav-treeview {
     display: block !important;
@@ -73,13 +102,20 @@ body.sidebar-mini.sidebar-collapse .nav-sidebar > .nav-item:hover > .nav-treevie
     top: 44px !important;
     background-color: var(--sidebar-bg, #343a40) !important;
     min-width: 180px !important;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2) !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3) !important;
     border-radius: 0 0 4px 4px !important;
     padding: 5px 0 !important;
     z-index: 999 !important;
+    animation: fadeIn 0.3s ease-in-out !important;
 }
 
-/* تعديل المحتوى الرئيسي مع القائمة المصغرة */
+/* تأثير ظهور تدريجي */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* تأكيد محاذاة المحتوى مع تبديل القائمة الجانبية */
 body.sidebar-collapse .content-wrapper,
 body.sidebar-collapse .main-footer,
 body.sidebar-collapse .main-header,
@@ -88,18 +124,30 @@ body.sidebar-mini.sidebar-collapse .main-footer,
 body.sidebar-mini.sidebar-collapse .main-header {
     margin-right: var(--sidebar-mini-width) !important;
     margin-left: 0 !important;
-    transition: margin-right var(--transition-speed) ease-in-out !important;
 }
 
-/* ===== الإعدادات لأجهزة الجوال ===== */
+/* زيادة تباين القائمة الجانبية عند الطي لتحسين وضوحها */
+body.sidebar-collapse .main-sidebar {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ===== إصلاح تبديل القائمة على الأجهزة المحمولة ===== */
 @media (max-width: 991.98px) {
-    /* نقل القائمة خارج الشاشة على الموبايل */
-    body:not(.sidebar-open) .main-sidebar {
-        transform: translateX(250px) !important;
+    /* تأثير انتقالي أفضل للقائمة الجانبية */
+    .main-sidebar {
+        transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
     }
     
+    /* ضمان إخفاء القائمة خارج الشاشة على الهواتف المحمولة */
+    body:not(.sidebar-open) .main-sidebar {
+        transform: translateX(250px) !important;
+        box-shadow: none !important;
+    }
+    
+    /* ضمان ظهور القائمة بمؤثر انتقالي جيد عند فتحها */
     body.sidebar-open .main-sidebar {
         transform: translateX(0) !important;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.4) !important;
     }
     
     /* تصحيح هوامش المحتوى على الموبايل */
@@ -107,5 +155,19 @@ body.sidebar-mini.sidebar-collapse .main-header {
     .main-header,
     .main-footer {
         margin-right: 0 !important;
+    }
+    
+    /* إضافة طبقة داكنة خلف القائمة المفتوحة على الموبايل */
+    body.sidebar-open:before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1037;
+        pointer-events: none;
+        animation: fadeIn 0.3s ease-in-out;
     }
 }
