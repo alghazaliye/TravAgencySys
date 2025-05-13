@@ -30,7 +30,7 @@
                             <span class="info-box-icon"><i class="fas fa-cash-register"></i></span>
                             <div class="info-box-content">
                                 <span class="info-box-text">رصيد الصندوق</span>
-                                <span class="info-box-number">{{ "{:,.2f}".format(data.cash) }} {{ data.symbol }}</span>
+                                <span class="info-box-number">{{ "{:,.2f}".format(data.cash|default(0)) }} {{ data.symbol|default('') }}</span>
                             </div>
                         </div>
                         
@@ -38,7 +38,7 @@
                             <span class="info-box-icon"><i class="fas fa-university"></i></span>
                             <div class="info-box-content">
                                 <span class="info-box-text">رصيد البنوك</span>
-                                <span class="info-box-number">{{ "{:,.2f}".format(data.bank) }} {{ data.symbol }}</span>
+                                <span class="info-box-number">{{ "{:,.2f}".format(data.bank|default(0)) }} {{ data.symbol|default('') }}</span>
                             </div>
                         </div>
                         
@@ -46,7 +46,7 @@
                             <span class="info-box-icon"><i class="fas fa-money-bill-wave"></i></span>
                             <div class="info-box-content">
                                 <span class="info-box-text">إجمالي الأرصدة</span>
-                                <span class="info-box-number">{{ "{:,.2f}".format(data.total) }} {{ data.symbol }}</span>
+                                <span class="info-box-number">{{ "{:,.2f}".format(data.total|default(0)) }} {{ data.symbol|default('') }}</span>
                             </div>
                         </div>
                     </div>
@@ -59,7 +59,7 @@
                     <span class="info-box-icon"><i class="fas fa-calculator"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text">إجمالي الأرصدة ({{ base_currency.name }})</span>
-                        <span class="info-box-number">{{ "{:,.2f}".format(total_in_base_currency) }} {{ base_currency.symbol }}</span>
+                        <span class="info-box-number">{{ "{:,.2f}".format(total_in_base_currency|default(0)) }} {{ base_currency.symbol|default('') }}</span>
                     </div>
                 </div>
                 {% endif %}
@@ -107,7 +107,7 @@
                                 <td>{{ register.name }}</td>
                                 <td>صندوق</td>
                                 <td>-</td>
-                                <td>{{ "{:,.2f}".format(register.balance if register.balance else 0) }} {{ register.currency.symbol if register.currency else 'ر.س' }}</td>
+                                <td>{{ "{:,.2f}".format((register.balance if register.balance is not none else 0)|float) }} {{ register.currency.symbol if register.currency else 'ر.س' }}</td>
                                 <td>{{ register.updated_at|date if register.updated_at else '' }}</td>
                                 <td>
                                     <span class="badge badge-{{ 'success' if register.is_active else 'warning' }}">
@@ -134,7 +134,7 @@
                                 <td>{{ account.name }}</td>
                                 <td>بنك</td>
                                 <td>{{ account.account_number }}</td>
-                                <td>{{ "{:,.2f}".format(account.current_balance if account.current_balance else 0) }} {{ account.currency.symbol if account.currency else 'ر.س' }}</td>
+                                <td>{{ "{:,.2f}".format((account.current_balance if account.current_balance is not none else 0)|float) }} {{ account.currency.symbol if account.currency else 'ر.س' }}</td>
                                 <td>{{ account.updated_at|date if account.updated_at else '' }}</td>
                                 <td>
                                     <span class="badge badge-{{ 'success' if account.is_active else 'warning' }}">
