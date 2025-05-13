@@ -1,81 +1,66 @@
 /**
- * تكميل لإصلاح مشكلة القائمة الجانبية RTL
- * تطبيق محددات CSS قوية لضمان ظهور الأيقونات والعناصر بشكل صحيح
+ * Sidebar RTL Override
+ * مجموعة من التعديلات لضمان عمل القائمة الجانبية بشكل صحيح في وضع RTL
  */
 
-.main-sidebar .nav-sidebar .nav-item {
-    width: 100% !important;
-}
-
-.main-sidebar .nav-sidebar .nav-link {
-    display: flex !important;
-    align-items: center !important;
-    padding: 0.75rem 1rem !important;
-}
-
-.main-sidebar .nav-sidebar .nav-link p {
-    margin: 0 !important;
-    margin-right: 0.5rem !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    max-width: 200px !important;
-}
-
-.main-sidebar .nav-sidebar .nav-treeview {
-    display: block !important;
-    list-style: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    padding-right: 1.5rem !important;
-}
-
+/* تعديلات أساسية للقائمة الجانبية */
 .main-sidebar {
-    z-index: 1100 !important;
+    position: fixed !important;
+    top: 0;
+    bottom: 0;
+    right: 0 !important;
+    left: auto !important;
+    direction: rtl !important;
 }
 
-.sidebar-collapse .main-sidebar:hover {
-    overflow-y: auto !important;
+.sidebar {
+    direction: rtl !important;
+    padding-right: 0.5rem !important;
+    padding-left: 0.5rem !important;
 }
 
-/* إصلاح الأيقونات غير المرئية في القوائم الفرعية */
-.nav-treeview .nav-link .nav-icon,
-.nav-treeview .nav-link .fas,
-.nav-treeview .nav-link .far,
-.nav-treeview .nav-link .fa {
-    display: inline-block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    width: 1.6rem !important;
-    text-align: center !important;
-    font-size: 1rem !important;
-    margin-left: 0.7rem !important;
-    color: inherit !important;
+/* تعديل موضع عناصر القائمة */
+.nav-sidebar > .nav-item .nav-icon {
+    margin-left: 0.5rem !important;
+    margin-right: 0 !important;
 }
 
-/* التأكد من ظهور القوائم الفرعية */
-.sidebar-mini.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-treeview {
-    display: block !important;
-    visibility: visible !important;
-}
-
-/* تعويض مشكلة النصوص المفقودة */
 .nav-sidebar .nav-link p {
-    display: inline-block !important;
+    margin-right: 0 !important;
 }
 
-/* إصلاح مشكلة ظهور القائمة الجانبية على جميع الشاشات */
+/* تعديل محاذاة أيقونة السهم */
+.nav-sidebar .nav-link > .right, 
+.nav-sidebar .nav-link > p > .right {
+    position: absolute;
+    left: 1rem !important;
+    right: auto !important;
+}
+
+/* تعديل عرض القائمة الفرعية */
+.nav-sidebar .nav-treeview > .nav-item > .nav-link {
+    padding-right: 2rem !important;
+}
+
+/* تعديل محاذاة العناصر */
+.nav-sidebar .nav-link {
+    text-align: right !important;
+}
+
+/* إعادة محاذاة محتوى الصفحة مع القائمة */
+.content-wrapper {
+    margin-right: 250px !important;
+    margin-left: 0 !important;
+    transition: margin-right 0.3s ease-in-out;
+}
+
 @media (max-width: 991.98px) {
-    .layout-fixed .main-sidebar {
-        right: -250px !important;
+    .content-wrapper {
+        margin-right: 0 !important;
     }
     
-    .sidebar-open .layout-fixed .main-sidebar {
-        right: 0 !important;
+    .sidebar-open .main-sidebar {
+        transform: translateX(0) !important;
+        display: block !important;
     }
-}
-
-/* تعويض مشكلة تداخل خلفية القائمة مع المحتوى */
-.main-sidebar {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2) !important;
 }

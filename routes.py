@@ -525,13 +525,16 @@ def get_id_types():
         # إعداد البيانات لإرجاعها كJSON
         data = []
         for id_type in id_types:
+            # نستخدم استعلام مباشر بدلاً من علاقة ORM للحصول على عدد العملاء
+            customer_count = Customer.query.filter_by(id_type=id_type.name).count()
+            
             data.append({
                 'id': id_type.id,
                 'name': id_type.name,
                 'requires_nationality': id_type.requires_nationality,
                 'description': id_type.description or '',
                 'is_active': id_type.is_active,
-                'customer_count': 0  # المرجع 'customers' تم إيقافه مؤقتًا
+                'customer_count': customer_count
             })
         
         # تسجيل نجاح العملية
@@ -684,13 +687,15 @@ def delete_id_type(id_type_id):
         if not id_type:
             return jsonify({'success': False, 'message': 'نوع الهوية غير موجود أو تم حذفه بالفعل'}), 404
         
-        # تم إيقاف التحقق من وجود عملاء مرتبطين بنوع الهوية مؤقتًا
-        # نظرًا لأن العلاقة بين الجداول غير مكتملة حاليًا
-        customers_count = 0
+        # التحقق من وجود عملاء مرتبطين بنوع الهوية
+        # نستخدم استعلام مباشر بدلاً من الاعتماد على علاقة ORM
+        customers_count = Customer.query.filter_by(id_type=id_type.name).count()
         
-        # في المستقبل يمكن استبدال هذا بالكود التالي عند إعادة تفعيل العلاقة:
-        # من الممكن إضافة استعلام مباشر للبحث عن العملاء المرتبطين بهذا النوع من الهوية
-        # مثال: customers_count = Customer.query.filter_by(id_type=id_type.name).count()
+        if customers_count > 0:
+            return jsonify({
+                'success': False, 
+                'message': f'لا يمكن حذف نوع الهوية لأنه مرتبط بـ {customers_count} عميل. يجب إزالة الارتباط أولاً'
+            }), 400
         
         # تسجيل معلومات قبل الحذف
         id_type_name = id_type.name

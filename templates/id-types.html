@@ -3,37 +3,91 @@
 {% block title %}إدارة أنواع الهوية{% endblock %}
 
 {% block styles %}
-<!-- DataTables CSS -->
+<!-- DataTables CSS - تحميل واحد فقط في هذه الصفحة -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables.net-bs4@1.10.24/css/dataTables.bootstrap4.min.css">
 <!-- SweetAlert2 CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <style>
+    /* أسلوب الصفحة بشكل عام */
+    .content-header h1 {
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+    
+    /* أنماط العناصر والأقسام */
     .form-section {
-        background-color: #f8f9fa;
-        border-radius: 5px;
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius);
         padding: 15px;
         margin-bottom: 20px;
-        position: relative;
+        border: 1px solid var(--card-border);
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
     }
     
     .section-title {
-        background-color: #007bff;
+        background-color: var(--primary-travel);
         color: white;
-        padding: 5px 15px;
-        border-radius: 3px;
+        padding: 8px 15px;
+        border-radius: calc(var(--border-radius) - 2px);
         margin-bottom: 15px;
-        font-weight: bold;
+        font-weight: 600;
+        display: inline-block;
     }
     
+    /* تنسيق أزرار الإجراءات */
     .action-buttons {
         width: 100px;
+        text-align: center;
     }
     
+    .action-buttons .btn {
+        margin: 0 2px;
+        padding: 5px 10px;
+        border-radius: var(--border-radius);
+    }
+    
+    /* تحسين مظهر الجدول */
+    #idTypesTable {
+        width: 100% !important;
+        border-collapse: collapse;
+    }
+    
+    #idTypesTable th {
+        background-color: var(--primary-light);
+        color: var(--text-primary);
+        border-bottom: 2px solid var(--primary-travel);
+        font-weight: 600;
+    }
+    
+    #idTypesTable td {
+        vertical-align: middle;
+    }
+    
+    /* أسلوب النموذج المنبثق */
+    .modal-content {
+        border-radius: var(--border-radius);
+        box-shadow: var(--card-shadow);
+    }
+    
+    .modal-header {
+        background-color: var(--primary-light);
+        border-radius: calc(var(--border-radius) - 1px) calc(var(--border-radius) - 1px) 0 0;
+    }
+    
+    .modal-footer {
+        background-color: var(--card-bg);
+        border-top: 1px solid var(--card-border);
+    }
+    
+    /* تحسين مظهر حقول خيارات نعم/لا */
     .switch-field {
         display: flex;
         margin-bottom: 1.5rem;
         overflow: hidden;
-        border-radius: 3px;
+        border-radius: var(--border-radius);
+        background-color: #e4e4e4;
+        border: 1px solid var(--card-border);
     }
 
     .switch-field input {
@@ -46,32 +100,35 @@
     }
 
     .switch-field label {
-        background-color: #e4e4e4;
-        color: rgba(0, 0, 0, 0.6);
+        background-color: var(--card-bg);
+        color: var(--text-primary);
         font-size: 14px;
         line-height: 1;
         text-align: center;
         padding: 8px 16px;
         margin-right: -1px;
-        transition: all 0.1s ease-in-out;
+        border-right: 1px solid var(--card-border);
+        transition: all 0.2s ease-in-out;
     }
 
     .switch-field label:hover {
         cursor: pointer;
+        background-color: var(--primary-light);
     }
 
     .switch-field input:checked + label {
-        background-color: #28a745;
+        background-color: var(--primary-travel);
         color: white;
         box-shadow: none;
     }
 
     .switch-field label:first-of-type {
-        border-radius: 0 4px 4px 0;
+        border-radius: 0 var(--border-radius) var(--border-radius) 0;
     }
 
     .switch-field label:last-of-type {
-        border-radius: 4px 0 0 4px;
+        border-radius: var(--border-radius) 0 0 var(--border-radius);
+        border-right: none;
     }
 </style>
 {% endblock %}
@@ -299,6 +356,22 @@ $(function() {
     // تحميل بيانات أنواع الهوية عند تحميل الصفحة
     loadIdTypes();
     
+    // إعادة تعيين النموذج عند إظهار نموذج الإضافة
+    $('#modal-add-id-type').on('show.bs.modal', function (e) {
+        // إذا كان الحدث ناتج عن زر الإضافة (وليس زر التعديل)
+        if ($(e.relatedTarget).hasClass('btn-success')) {
+            // تفريغ النموذج وإعادة تعيين العنوان
+            $('#idTypeForm')[0].reset();
+            $('#idTypeId').val('');
+            $('#modal-add-id-type .modal-title').text('إضافة نوع هوية جديد');
+            $('#saveIdType').text('حفظ');
+            
+            // تعيين القيم الافتراضية
+            $('#idTypeRequiresNationality').prop('checked', true);
+            $('#idTypeIsActive').prop('checked', true);
+        }
+    });
+    
     // حفظ نوع الهوية
     $('#saveIdType').on('click', function() {
         // التحقق من صحة النموذج
@@ -309,9 +382,9 @@ $(function() {
         
         // جمع البيانات من النموذج
         var formData = {
-            name: $('#idTypeNameAr').val(),
+            name: $('#idTypeNameAr').val().trim(),
             requires_nationality: $('#idTypeRequiresNationality').is(':checked'),
-            description: $('#idTypeDescription').val() || '',
+            description: $('#idTypeDescription').val().trim() || '',
             is_active: $('#idTypeIsActive').is(':checked')
         };
         
@@ -330,13 +403,14 @@ $(function() {
         console.log("URL:", url);
         console.log("Method:", method);
         
-        // إرسال طلب AJAX
+        // إرسال طلب AJAX مع التأكد من الإعدادات الصحيحة
         $.ajax({
             url: url,
             type: method,
             contentType: 'application/json',
             data: JSON.stringify(formData),
             dataType: 'json',
+            cache: false,
             success: function(response) {
                 console.log("Success Response:", response);
                 if (response.success) {
