@@ -1,234 +1,188 @@
-/**
- * ملف CSS مخصص لإصلاح مشكلة القائمة الجانبية
- * هذا الملف يتضمن تحسينات لعرض الأيقونات والنصوص في القائمة الجانبية
+/* 
+ * ملف CSS مخصص لإصلاح مشاكل القائمة الجانبية في وضع RTL
+ * هذا الإصدار يعيد تعريف سلوك القائمة بالكامل لضمان تجربة مستخدم متناسقة
  */
 
-/* إصلاح الأيقونات في القائمة الجانبية - محسّن */
-.nav-sidebar .nav-icon, 
-.nav-sidebar .fas, 
-.nav-sidebar .fa,
-.nav-sidebar .far,
-.nav-sidebar .fab {
-    margin-left: 0.7rem !important;
-    margin-right: 0 !important;
-    color: inherit !important;
-    display: inline-block !important;
-    width: 1.6rem !important;
-    text-align: center !important;
-    font-size: 1.1rem !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: relative !important;
-    z-index: 2 !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
+/* ===== تعريفات أساسية ===== */
+:root {
+    --sidebar-width: 250px;
+    --sidebar-mini-width: 4.6rem;
+    --sidebar-bg: #343a40;
+    --sidebar-dark-bg: #2c3e50;
+    --content-transition: margin-right 0.3s ease-in-out, margin-left 0.3s ease-in-out;
+    --sidebar-transition: width 0.3s ease-in-out;
 }
 
-/* تحسين ظهور القائمة الجانبية عند التبديل */
-.sidebar-mini.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-link p {
-    display: inline-block !important;
-    margin: 0 !important;
-    margin-right: 0.3rem !important;
-    color: inherit !important;
+/* ===== إعدادات القائمة الجانبية الأساسية ===== */
+.main-sidebar {
+    position: fixed !important;
+    top: 0;
+    bottom: 0;
+    right: 0 !important;
+    left: auto !important; 
+    width: var(--sidebar-width) !important;
+    height: 100vh !important;
+    min-height: 100% !important;
+    z-index: 1038;
+    transition: var(--sidebar-transition);
+    direction: rtl;
+    overflow-y: hidden;
 }
 
-.sidebar-mini.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-treeview {
-    display: block !important;
+.main-sidebar:hover {
+    overflow-y: auto;
 }
 
-/* تعزيز ظهور الأيقونات في حالة تصغير القائمة */
-.sidebar-mini.sidebar-collapse .main-sidebar:not(:hover) .nav-sidebar .nav-link .nav-icon,
-.sidebar-mini.sidebar-collapse .main-sidebar:not(:hover) .nav-sidebar .nav-link .fas,
-.sidebar-mini.sidebar-collapse .main-sidebar:not(:hover) .nav-sidebar .nav-link .far,
-.sidebar-mini.sidebar-collapse .main-sidebar:not(:hover) .nav-sidebar .nav-link .fa {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    width: 100% !important;
-    text-align: center !important;
-}
-
-/* تحسين عنصر القائمة النشط */
-.nav-sidebar .nav-link.active {
-    background-color: var(--primary-travel) !important;
-    color: white !important;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
-}
-
-.nav-sidebar .nav-link.active .nav-icon,
-.nav-sidebar .nav-link.active .fas,
-.nav-sidebar .nav-link.active .far,
-.nav-sidebar .nav-link.active .fa {
-    color: white !important;
-}
-
-/* معالجة الأيقونات المعدلة عبر fixSidebarIcons() */
-.fixed-sidebar-icon {
-    display: inline-block !important;
-    visibility: visible !important;
-    margin-left: 0.7rem !important;
-    margin-right: 0 !important;
-}
-
-/* إصلاح عام لسلوك الشريط الجانبي */
+/* ===== إعدادات العرض والموقع ===== */
 .main-sidebar, .main-sidebar::before {
-    width: 250px;
-    right: 0;
-    left: auto;
-    transition: margin-right .3s ease-in-out, width .3s ease-in-out;
+    width: var(--sidebar-width) !important;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper, 
-body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer, 
-body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header {
-    margin-right: 250px;
-    margin-left: 0;
-    transition: margin-right .3s ease-in-out;
+.content-wrapper, 
+.main-header, 
+.main-footer {
+    margin-right: var(--sidebar-width) !important;
+    margin-left: 0 !important;
+    transition: var(--content-transition);
 }
 
-.layout-fixed .main-sidebar {
-    right: 0;
-    left: auto;
-}
-
-.layout-fixed .brand-link {
-    width: 250px;
-}
-
-/* حالة طي القائمة */
-body.sidebar-collapse .main-sidebar, 
-body.sidebar-collapse .main-sidebar::before {
-    margin-right: -250px;
-    margin-left: 0;
+/* ===== وضع القائمة المطوية ===== */
+body.sidebar-collapse .main-sidebar {
+    width: var(--sidebar-mini-width) !important;
+    transition: var(--sidebar-transition);
 }
 
 body.sidebar-collapse .content-wrapper, 
-body.sidebar-collapse .main-footer, 
-body.sidebar-collapse .main-header {
+body.sidebar-collapse .main-header, 
+body.sidebar-collapse .main-footer {
+    margin-right: var(--sidebar-mini-width) !important;
+    margin-left: 0 !important;
+    transition: var(--content-transition);
+}
+
+body.sidebar-collapse .main-sidebar .nav-sidebar .nav-link p {
+    width: 0;
+    visibility: hidden;
+    opacity: 0;
+    display: none !important;
+}
+
+body.sidebar-collapse .sidebar .nav-item p,
+body.sidebar-collapse .brand-text {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+body.sidebar-collapse .nav-sidebar .nav-item .nav-icon {
     margin-right: 0;
-    margin-left: 0;
-    width: 100%;
-    transition: margin-right .3s ease-in-out, width .3s ease-in-out;
 }
 
-/* تحسين لمعالجة مشكلة اختفاء النص في حالة طي القائمة في وضع mini */
-.sidebar-mini.sidebar-collapse .main-sidebar:hover {
-    width: 250px !important;
-    overflow: visible !important;
-    z-index: 1040 !important;
+/* ===== تصحيحات التوجيه RTL ===== */
+.nav-sidebar {
+    direction: rtl;
 }
 
-.sidebar-mini.sidebar-collapse .main-sidebar:hover .brand-text,
-.sidebar-mini.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-link p {
-    margin-right: 5px !important;
-    display: inline-block !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    animation: fadeIn 0.1s ease-in-out;
+.nav-sidebar .nav-link {
+    text-align: right;
 }
 
-/* حل مشكلة القوائم الفرعية المختفية */
-.sidebar-mini.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-treeview {
-    display: block !important;
-    visibility: visible !important;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-/* إصلاح سهم القائمة المتفرعة */
-.nav-sidebar .nav-item.has-treeview > .nav-link > .right,
-.nav-sidebar .has-treeview > .nav-link > .fas.fa-angle-left {
-    position: absolute !important;
+.nav-sidebar .nav-link > .right, 
+.nav-sidebar .nav-link > p > .right {
+    position: absolute;
     left: 1rem !important;
     right: auto !important;
 }
 
-/* تحسينات للقائمة في وضع الهاتف المحمول */
-@media (max-width: 767.98px) {
+.nav-sidebar .nav-treeview {
+    padding-right: 0.5rem;
+    padding-left: 0;
+}
+
+/* ===== تصحيح عرض القوائم الفرعية ===== */
+.nav-sidebar .nav-treeview > .nav-item > .nav-link {
+    padding-right: 1rem;
+}
+
+.nav-sidebar .menu-open > .nav-treeview {
+    display: block !important;
+}
+
+.nav-sidebar .has-treeview > .nav-link.active {
+    background-color: rgba(255,255,255,0.1);
+}
+
+/* ===== تصحيح عرض الأيقونات ===== */
+.nav-sidebar .nav-link > .nav-icon {
+    margin-right: 0;
+    margin-left: 0.5rem;
+}
+
+/* ===== إعدادات الشاشات الصغيرة ===== */
+@media (max-width: 991.98px) {
+    /* إعادة تعيين موقع القائمة للهواتف */
     .main-sidebar, .main-sidebar::before {
-        box-shadow: 0 10px 3px rgba(0, 0, 0, 0.1) !important;
-        margin-right: -250px !important; /* مخفية افتراضيًا */
-        margin-left: 0 !important;
+        box-shadow: none;
+        margin-right: 0;
+    }
+    
+    body:not(.sidebar-collapse) .main-sidebar, 
+    body:not(.sidebar-collapse) .main-sidebar::before {
+        margin-right: 0 !important;
+        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+
+    .content-wrapper, .main-header, .main-footer {
+        margin-right: 0 !important;
+    }
+    
+    body.sidebar-collapse .main-sidebar {
+        margin-right: -260px !important;
     }
     
     .sidebar-open .main-sidebar, 
     .sidebar-open .main-sidebar::before {
         margin-right: 0 !important;
-        margin-left: 0 !important;
-    }
-    
-    .content-wrapper, 
-    .main-footer, 
-    .main-header {
-        margin-right: 0 !important;
-        margin-left: 0 !important;
-        width: 100% !important;
-    }
-    
-    /* تحسين الزر البديل للقائمة الجانبية */
-    #quickFixSidebarBtn {
-        display: block !important;
-        animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-        0% {
-            box-shadow: 0 0 0 0 rgba(78, 115, 223, 0.7);
-        }
-        70% {
-            box-shadow: 0 0 0 7px rgba(78, 115, 223, 0);
-        }
-        100% {
-            box-shadow: 0 0 0 0 rgba(78, 115, 223, 0);
-        }
     }
 }
 
-/* زر تبديل القائمة الجانبية - تحسين الظهور (الزر السابق) */
-#sidebarToggleBtn {
-    background-color: var(--primary-travel) !important;
-    color: white !important;
-    width: 50px !important;  /* أكبر من قبل */
-    height: 50px !important; /* أكبر من قبل */
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    border-radius: 8px !important;
-    margin-left: 15px !important;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15) !important;
-    position: relative !important;
-    z-index: 1050 !important;
-    border: 2px solid rgba(255, 255, 255, 0.3) !important;  /* حدود بيضاء شفافة */
-    padding: 0 !important;
-    transition: all 0.2s ease-in-out !important;
+/* ===== تصحيحات القائمة المنسدلة في الوضع المصغر ===== */
+.sidebar-mini.sidebar-collapse .main-sidebar .nav-sidebar .nav-item:hover > .nav-treeview,
+.sidebar-mini.sidebar-collapse .main-sidebar .nav-sidebar .nav-item:hover > .nav-link {
+    overflow: visible;
+    width: auto !important;
 }
 
-#sidebarToggleBtn:hover {
-    transform: scale(1.05) !important;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
+.sidebar-mini.sidebar-collapse .main-sidebar .nav-sidebar > .nav-item:hover > .nav-link > p {
+    display: block !important;
+    margin-right: -25px;
+    margin-left: 0px !important;
+    padding: 10px 20px 10px 20px;
+    text-align: right;
+    background-color: inherit;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
+    right: var(--sidebar-mini-width) !important;
+    top: 0;
+    position: absolute;
+    z-index: 1001;
 }
 
-#sidebarToggleBtn:active {
-    transform: scale(0.95) !important;
+.sidebar-mini.sidebar-collapse .main-sidebar .nav-sidebar > .nav-item:hover > .nav-treeview {
+    display: block !important;
+    position: absolute;
+    width: var(--sidebar-width) !important;
+    right: var(--sidebar-mini-width) !important;
+    top: 44px;
+    background-color: var(--sidebar-bg);
+    padding-top: 0px;
+    padding-bottom: 5px;
+    z-index: 1000;
+    box-shadow: 0px 6px 10px rgba(0,0,0,0.3);
 }
 
-#sidebarToggleBtn i {
-    font-size: 22px !important;  /* أكبر من قبل */
-    visibility: visible !important;
-    display: inline-block !important;
-    color: white !important;
-    transition: all 0.2s ease-in-out !important;
-}
-
-/* تم حذف الزر الثابت للقائمة الجانبية بناءً على طلب المستخدم */
-
-/* إصلاح إضافي لأيقونات القائمة للتأكد من عدم اختفائها */
-.nav-sidebar .nav-link i.nav-icon:before,
-.nav-sidebar .nav-link i.fas:before,
-.nav-sidebar .nav-link i.far:before,
-.nav-sidebar .nav-link i.fa:before {
-    visibility: visible !important;
-    display: inline-block !important;
+/* ===== إصلاح عرض المحتوى الرئيسي ===== */
+.content-wrapper {
+    min-height: calc(100vh - 114px) !important;
 }

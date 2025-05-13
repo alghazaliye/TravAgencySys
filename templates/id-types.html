@@ -336,6 +336,7 @@ $(function() {
             type: method,
             contentType: 'application/json',
             data: JSON.stringify(formData),
+            dataType: 'json',
             success: function(response) {
                 console.log("Success Response:", response);
                 if (response.success) {
@@ -404,6 +405,8 @@ $(function() {
                 $.ajax({
                     url: '/api/id-types/' + idTypeId,
                     type: 'DELETE',
+                    contentType: 'application/json',
+                    dataType: 'json',
                     success: function(response) {
                         if (response.success) {
                             // إعادة تحميل بيانات الجدول فوراً
