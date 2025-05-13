@@ -530,10 +530,16 @@ def get_id_types():
 def add_id_type():
     """إضافة نوع هوية جديد"""
     try:
+        # طباعة البيانات للتصحيح
+        print("Content-Type:", request.content_type)
+        print("Raw Request Data:", request.data)
+        
         data = request.json
+        print("Parsed JSON Data:", data)
         
         # التحقق من البيانات المدخلة
-        name = data.get('name')
+        name = data.get('name') if data else None
+        print("Name:", name)
         if not name:
             return jsonify({'success': False, 'message': 'يجب تحديد اسم نوع الهوية'}), 400
         
