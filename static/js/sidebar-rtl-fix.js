@@ -10,29 +10,29 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // إعداد زر تبديل عرض القائمة الجانبية
     function setupSidebarToggle() {
-        const toggleButtons = document.querySelectorAll('.nav-link[data-widget="pushmenu"]');
-        
-        toggleButtons.forEach(btn => {
-            // إزالة معالج الحدث الافتراضي الذي قد يتسبب في مشاكل
-            const newBtn = btn.cloneNode(true);
-            btn.parentNode.replaceChild(newBtn, btn);
+        // تحديد جميع أزرار تبديل القائمة
+        $('.nav-link[data-widget="pushmenu"]').off('click').on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             
-            // إضافة معالج جديد للنقر
-            newBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const body = document.querySelector('body');
-                console.log("وضع القائمة قبل النقر:", body.classList.contains('sidebar-collapse') ? "مطوية" : "مفتوحة");
-                
-                // تبديل الفئة لتطبيق/إزالة وضع الطي
-                body.classList.toggle('sidebar-collapse');
-                
-                console.log("وضع القائمة بعد النقر:", body.classList.contains('sidebar-collapse') ? "مطوية" : "مفتوحة");
-                
-                // تخزين حالة القائمة في التخزين المحلي
-                localStorage.setItem('sidebar-collapse', body.classList.contains('sidebar-collapse'));
-            });
+            // الحصول على حالة القائمة الحالية
+            const body = $('body');
+            const isSidebarCollapsed = body.hasClass('sidebar-collapse');
+            
+            console.log("وضع القائمة قبل النقر:", isSidebarCollapsed ? "مطوية" : "مفتوحة");
+            
+            // تبديل حالة القائمة
+            body.toggleClass('sidebar-collapse');
+            
+            // سجل الحالة الجديدة
+            console.log("وضع القائمة بعد النقر:", body.hasClass('sidebar-collapse') ? "مطوية" : "مفتوحة");
+            
+            // حفظ حالة القائمة في التخزين المحلي
+            try {
+                localStorage.setItem('sidebar-collapse', body.hasClass('sidebar-collapse'));
+            } catch(e) {
+                console.error("خطأ في حفظ حالة القائمة:", e);
+            }
         });
     }
     

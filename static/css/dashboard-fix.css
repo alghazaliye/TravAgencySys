@@ -1,0 +1,201 @@
+/* 
+ * ملف CSS مخصص لإصلاح تنسيق لوحة التحكم
+ */
+
+/* تحسين ظهور البطاقات الإحصائية */
+.stat-box {
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    position: relative;
+    display: block;
+}
+
+.stat-box .inner {
+    padding: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.stat-box h3 {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.stat-box p {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 0;
+    color: white;
+}
+
+.stat-box .icon {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    font-size: 40px;
+    opacity: 0.3;
+    transition: all 0.3s ease;
+    color: white;
+    z-index: 1;
+}
+
+.stat-box:hover .icon {
+    opacity: 0.5;
+    transform: scale(1.1);
+}
+
+.stat-box .small-box-footer {
+    position: relative;
+    text-align: center;
+    padding: 8px 0;
+    color: rgba(255, 255, 255, 0.8);
+    display: block;
+    background: rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.stat-box .small-box-footer:hover {
+    background: rgba(0, 0, 0, 0.15);
+    color: white;
+}
+
+/* تحسين عرض المخططات والبطاقات */
+.card-travel {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+    border: none !important;
+}
+
+.card-travel .card-header {
+    padding: 1rem 1.25rem;
+    font-weight: 600;
+    color: white;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-travel .card-body {
+    padding: 1.25rem;
+}
+
+.chart-container {
+    position: relative;
+    margin: auto;
+    height: 300px;
+    width: 100%;
+}
+
+/* تحسين عرض الوجهات والقائمة */
+.top-destinations {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -5px;
+    width: 100%;
+}
+
+.destination-item {
+    flex: 0 0 calc(50% - 10px);
+    margin: 5px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.destination-icon {
+    width: 40px;
+    height: 40px;
+    background-color: rgba(44, 123, 229, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    color: #2c7be5;
+    flex-shrink: 0;
+}
+
+/* تصحيح مظهر المهام الأخيرة */
+.task-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+}
+
+.task-item:last-child {
+    border-bottom: none;
+}
+
+.task-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 15px;
+    flex-shrink: 0;
+}
+
+.task-text {
+    flex-grow: 1;
+}
+
+.task-status {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+/* تحسينات لعرض الهاتف المحمول */
+@media (max-width: 767.98px) {
+    .destination-item {
+        flex: 0 0 100%;
+    }
+    
+    .stat-box h3 {
+        font-size: 24px;
+    }
+    
+    .stat-box p {
+        font-size: 14px;
+    }
+    
+    .stat-box .icon {
+        font-size: 30px;
+    }
+    
+    .chart-container {
+        height: 250px;
+    }
+}
+
+/* تحسين إظهار العناصر في الجداول */
+.table-dashboard {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.table-dashboard th,
+.table-dashboard td {
+    padding: 0.75rem;
+    vertical-align: middle;
+}
+
+.badge-travel {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 5px 8px;
+    border-radius: 4px;
+}
