@@ -764,16 +764,10 @@ class DatabaseImportLog(db.Model):
     error_message = db.Column(db.Text)  # رسالة الخطأ في حالة الفشل
     imported_by = db.Column(db.Integer, db.ForeignKey('user.id'))  # المستخدم الذي قام بالاستيراد
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # العلاقات
     user = db.relationship('User', foreign_keys=[imported_by])
     
     def __repr__(self):
         return f"<DatabaseImportLog {self.id}: {self.import_type} - {self.date}>"
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
-    @classmethod
-    def get_vat_rate(cls):
-        """الحصول على معدل ضريبة القيمة المضافة الحالي"""
-        vat_settings = cls.query.filter_by(tax_type='VAT', is_active=True).first()
-        return vat_settings.tax_rate if vat_settings else 15.0  # القيمة الافتراضية هي 15%

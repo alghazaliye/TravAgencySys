@@ -72,13 +72,12 @@ def import_from_backup_file(file, is_path=False):
                 data_import_success = import_all_data()
                 
                 # إضافة سجل الاستيراد إلى قاعدة البيانات
-                import_log = DatabaseImportLog(
-                    date=datetime.now(),
-                    import_type="ملف نسخة احتياطية (مسار)",
-                    filename=filename,
-                    success=data_import_success,
-                    imported_by=current_user.id if current_user.is_authenticated else None
-                )
+                import_log = DatabaseImportLog()
+                import_log.date = datetime.now()
+                import_log.import_type = "ملف نسخة احتياطية (مسار)"
+                import_log.filename = filename
+                import_log.success = data_import_success
+                import_log.imported_by = current_user.id if current_user.is_authenticated else None
                 db.session.add(import_log)
                 db.session.commit()
                 
