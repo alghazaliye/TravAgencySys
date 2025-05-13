@@ -41,16 +41,46 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function(event) {
             if (!isProcessing) {
                 isProcessing = true;
+                console.log('وضع القائمة قبل النقر:', document.body.classList.contains('sidebar-collapse') ? 'مطوية' : 'مفتوحة');
+                
+                // تبديل صريح لفئة الجسم للتحكم في حالة القائمة
+                document.body.classList.toggle('sidebar-collapse');
+                document.body.classList.toggle('sidebar-open');
+                
+                // تنفيذ الوظيفة الرئيسية لتبديل القائمة
                 toggleSidebar();
+                
+                console.log('وضع القائمة بعد النقر:', document.body.classList.contains('sidebar-collapse') ? 'مطوية' : 'مفتوحة');
+                
                 event.preventDefault();
                 
                 // منع التكرار السريع للنقرات
                 setTimeout(() => {
                     isProcessing = false;
+                    
+                    // تطبيق التغييرات على المحتوى والقائمة
+                    applyResponsiveSettings();
                 }, 300);
             }
         });
     });
+    
+    // إضافة معالج نقر إضافي لزر القائمة الرئيسي
+    const mainMenuButton = document.getElementById('sidebarToggleBtn');
+    if (mainMenuButton) {
+        mainMenuButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            
+            // تنفيذ تبديل وضع القائمة
+            document.body.classList.toggle('sidebar-collapse');
+            document.body.classList.toggle('sidebar-open');
+            
+            // تطبيق التغييرات بعد تأخير بسيط
+            setTimeout(() => {
+                applyResponsiveSettings();
+            }, 50);
+        });
+    }
     
     // تطبيق التصحيحات فور تحميل الصفحة
     fixSidebarIcons();
@@ -59,44 +89,58 @@ document.addEventListener('DOMContentLoaded', function() {
     // مراقبة تغييرات حجم النافذة
     window.addEventListener('resize', applyResponsiveSettings);
     
-    // تبديل حالة القائمة الجانبية
+    // تبديل حالة القائمة الجانبية - النسخة المُحسّنة
     function toggleSidebar() {
         const windowWidth = window.innerWidth;
-        document.body.classList.toggle('sidebar-collapse');
+        const sidebar = document.querySelector('.main-sidebar');
+        
+        if (!sidebar) return;
+        
+        // لا حاجة لتبديل الفئات لأننا نقوم بذلك عند معالجة النقر
         
         if (document.body.classList.contains('sidebar-collapse')) {
-            document.body.classList.remove('sidebar-open');
-            
+            // عند طي القائمة
             if (windowWidth >= 768) {
+                // الشاشات المتوسطة والكبيرة
+                sidebar.style.width = '4.6rem';
                 setContentMargins('4.6rem');
             } else {
+                // الشاشات الصغيرة
                 setContentMargins('0');
-                
-                // إغلاق القائمة على الشاشات الصغيرة
-                const sidebar = document.querySelector('.main-sidebar');
-                if (sidebar) {
-                    sidebar.style.right = '-250px';
-                }
+                sidebar.style.right = '-250px';
             }
+            
+            // إخفاء نص عناصر القائمة
+            document.querySelectorAll('.nav-sidebar .nav-link p').forEach(text => {
+                text.style.display = 'none';
+                text.style.opacity = '0';
+                text.style.width = '0';
+            });
         } else {
-            document.body.classList.add('sidebar-open');
+            // عند فتح القائمة
+            sidebar.style.width = '250px';
+            sidebar.style.right = '0';
             
             if (windowWidth >= 768) {
                 setContentMargins('250px');
             }
             
-            // إظهار القائمة على الشاشات الصغيرة
-            const sidebar = document.querySelector('.main-sidebar');
-            if (sidebar) {
-                sidebar.style.right = '0';
-            }
+            // إظهار نص عناصر القائمة
+            document.querySelectorAll('.nav-sidebar .nav-link p').forEach(text => {
+                text.style.display = 'block';
+                text.style.opacity = '1';
+                text.style.width = 'auto';
+            });
         }
         
         // تخزين حالة القائمة
         saveMenuState();
         
         // تطبيق الإصلاحات
-        setTimeout(fixSidebarIcons, 50);
+        setTimeout(() => {
+            fixSidebarIcons();
+            applyResponsiveSettings();
+        }, 50);
     }
     
     // ضبط هوامش المحتوى

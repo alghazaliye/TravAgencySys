@@ -746,7 +746,7 @@
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a id="sidebarToggleBtn" class="nav-link" href="#" role="button" data-widget="pushmenu"><i class="fas fa-bars"></i></a>
+                    <a id="sidebarToggleBtn" class="nav-link sidebar-toggle-btn" href="#" role="button" data-widget="pushmenu" aria-label="تبديل القائمة الجانبية"><i class="fas fa-bars"></i></a>
                 </li>
             </ul>
 
@@ -1294,8 +1294,8 @@
     <!-- سكربت تبديل الوضع الليلي/النهاري -->
     <script src="{{ url_for('static', filename='js/theme-switcher.js') }}"></script>
     
-    <!-- إصلاح محسن للقائمة الجانبية في جميع الشاشات -->
-    <script src="{{ url_for('static', filename='js/sidebar-fix-new.js') }}"></script>
+    <!-- إصلاح مباشر للقائمة الجانبية (النسخة المبسطة) -->
+    <script src="{{ url_for('static', filename='js/direct-sidebar-toggle.js') }}"></script>
     
     <!-- تم دمج وظائف القائمة المصغرة في مدير القائمة الجانبية -->
     
