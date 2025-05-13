@@ -118,9 +118,6 @@ class IdentityType(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    # العلاقة مع العملاء
-    customers = db.relationship('Customer', backref='identity_type_rel', lazy=True)
-    
     def __repr__(self):
         return f'<IdentityType {self.name}>'
 
@@ -130,8 +127,8 @@ class Customer(db.Model):
     full_name = db.Column(db.String(150), nullable=False)
     mobile = db.Column(db.String(20))
     email = db.Column(db.String(120))
-    id_type_id = db.Column(db.Integer, db.ForeignKey('identity_type.id'))  # رابط مع جدول أنواع الهوية
-    id_type = db.Column(db.String(20))  # للتوافق مع البيانات القديمة
+    # تم استبدال id_type_id بـ id_type للتوافق مع قاعدة البيانات الموجودة
+    id_type = db.Column(db.String(20))  # يستخدم كمعرِّف لنوع الهوية (مثلاً: "passport", "id_card")
     id_number = db.Column(db.String(30))
     nationality_id = db.Column(db.Integer, db.ForeignKey('country.id'))  # رابط مع جدول البلدان
     nationality = db.Column(db.String(50))  # للتوافق مع البيانات القديمة
