@@ -26,6 +26,7 @@ import routes_finance  # Import financial routes
 import routes_budget  # Import budget routes
 import routes_booking_finance  # Import booking-finance integration routes
 import routes_tax  # Import tax reports routes
+import routes_db_management  # Import database management routes
 
 # إعداد مفتاح الجلسة إذا لم يكن موجودًا - استخدام مفتاح أكثر قوة
 if not os.environ.get("SESSION_SECRET"):

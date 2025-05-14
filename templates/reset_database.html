@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+
+{% block title %}إعادة تعيين قاعدة البيانات{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">إعادة تعيين قاعدة البيانات</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-left">
+                        <li class="breadcrumb-item"><a href="{{ url_for('index') }}">الرئيسية</a></li>
+                        <li class="breadcrumb-item active">إعادة تعيين قاعدة البيانات</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card card-danger">
+                <div class="card-header">
+                    <h3 class="card-title">تحذير: إعادة تعيين قاعدة البيانات</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <h5><i class="icon fas fa-ban"></i> تحذير هام!</h5>
+                        <p>هذه العملية ستؤدي إلى حذف <strong>جميع البيانات</strong> في قاعدة البيانات وإعادة الهيكل إلى حالته الأصلية.</p>
+                        <p>لن تتمكن من استعادة البيانات بعد إتمام هذه العملية.</p>
+                    </div>
+
+                    <form method="POST" action="{{ url_for('reset_database_action') }}">
+                        <div class="form-group">
+                            <label>لتأكيد العملية، اكتب <strong>RESET</strong> في الحقل أدناه:</label>
+                            <input type="text" name="confirm" class="form-control" placeholder="اكتب RESET هنا" autocomplete="off">
+                        </div>
+                        <button type="submit" class="btn btn-danger">إعادة تعيين قاعدة البيانات</button>
+                        <a href="{{ url_for('index') }}" class="btn btn-secondary">إلغاء</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
