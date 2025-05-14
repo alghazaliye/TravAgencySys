@@ -86,13 +86,17 @@ def create_app():
 app = create_app()
 
 # تضمين إعدادات النظام في كل القوالب
-from routes import load_system_settings
-
 @app.context_processor
 def inject_settings():
     """تضمين إعدادات النظام في سياق القالب"""
-    # الحصول على الإعدادات من الدالة المسؤولة عن تحميلها
-    settings = load_system_settings()
-    
-    # إعادة قاموس settings للتضمين في سياق جميع القوالب
-    return dict(settings=settings)
+    try:
+        # الحصول على الإعدادات من الدالة المسؤولة عن تحميلها
+        # نستخدم استيراد محلي لتجنب الاستيراد الدائري
+        from routes import load_system_settings
+        settings = load_system_settings()
+        return dict(settings=settings)
+    except Exception as e:
+        import logging
+        logging.error(f"خطأ في تحميل الإعدادات للقالب: {str(e)}")
+        # في حالة حدوث خطأ، قم بإرجاع قاموس فارغ لتجنب توقف التطبيق
+        return dict(settings={})

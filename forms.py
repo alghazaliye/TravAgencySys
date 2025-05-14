@@ -196,7 +196,7 @@ class JournalEntryForm(FlaskForm):
 class JournalLineForm(FlaskForm):
     """نموذج بند قيد محاسبي"""
     account_id = SelectField('الحساب', coerce=int, validators=[DataRequired(message='الرجاء اختيار الحساب')])
-    debit_amount = DecimalField('مدين', default=0.0)
-    credit_amount = DecimalField('دائن', default=0.0)
+    debit_amount = DecimalField('مدين', default=Decimal('0.0'))
+    credit_amount = DecimalField('دائن', default=Decimal('0.0'))
     description = TextAreaField('البيان', validators=[Optional()])
     submit = SubmitField('إضافة البند')

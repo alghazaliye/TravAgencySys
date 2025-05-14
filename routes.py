@@ -162,9 +162,14 @@ def load_system_settings():
     global settings_dict
     settings_dict = {}  # إعادة تعيين القاموس
     
-    all_settings = SystemSettings.query.all()
-    for setting in all_settings:
-        settings_dict[setting.setting_key] = setting.setting_value
+    try:
+        # محاولة الحصول على جميع الإعدادات من قاعدة البيانات
+        all_settings = SystemSettings.query.all()
+        for setting in all_settings:
+            settings_dict[setting.setting_key] = setting.setting_value
+    except Exception as e:
+        # في حالة حدوث خطأ، سجل الخطأ واستمر باستخدام الإعدادات الافتراضية فقط
+        logging.error(f"خطأ في تحميل إعدادات النظام: {str(e)}")
     
     # إضافة الإعدادات الافتراضية إذا لم تكن موجودة بالفعل
     for key, data in DEFAULT_SETTINGS.items():
