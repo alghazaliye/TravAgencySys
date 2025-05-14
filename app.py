@@ -20,7 +20,8 @@ db = SQLAlchemy(model_class=Base)
 
 # Initialize LoginManager
 login_manager = LoginManager()
-login_manager.login_view = 'login'  # Default login view route
+# Set login view route and messages
+login_manager.login_view = 'login'  # type: ignore # Default login view route
 login_manager.login_message = 'يرجى تسجيل الدخول للوصول إلى هذه الصفحة'
 login_manager.login_message_category = 'info'
 login_manager.session_protection = 'strong'  # تعزيز حماية الجلسة
@@ -39,13 +40,9 @@ def create_app():
     # تعطيل SECURE لتمكين الكوكيز من العمل مع HTTP في بيئة التطوير
     app.config["SESSION_COOKIE_SECURE"] = False if app.debug else True
     
-    # Configure database
-    db_url = os.environ.get("DATABASE_URL", "postgresql://user:password@localhost/travelagency")
-    # تعديل سلسلة اتصال قاعدة البيانات إذا كانت تبدأ بـ postgres:// لتكون postgresql://
-    if db_url.startswith("postgres://"):
-        db_url = db_url.replace("postgres://", "postgresql://", 1)
-    
-    app.config["SQLALCHEMY_DATABASE_URI"] = db_url
+    # Configure database to use the appropriate database type
+    from db_config import get_connection_string
+    app.config["SQLALCHEMY_DATABASE_URI"] = get_connection_string()
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
         "pool_recycle": 300,

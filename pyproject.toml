@@ -22,4 +22,5 @@ dependencies = [
     "pyjwt>=2.10.1",
     "pyodbc>=5.2.0",
     "reportlab>=4.4.0",
+    "mysql-connector-python>=9.3.0",
 ]
