@@ -4,6 +4,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
 from wtforms import SelectField, DateField, DecimalField, HiddenField, IntegerField, RadioField
+from decimal import Decimal
 from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional, ValidationError
 from wtforms.widgets import DateInput
 from datetime import date
@@ -87,7 +88,7 @@ class CustomerForm(FlaskForm):
     ])
     id_type = SelectField('نوع الهوية', validators=[DataRequired(message='الرجاء اختيار نوع الهوية')])
     id_number = StringField('رقم الهوية', validators=[DataRequired(message='الرجاء إدخال رقم الهوية')])
-    nationality_id = SelectField('الجنسية', coerce=int, validators=[DataRequired(message='الرجاء اختيار الجنسية')])
+    nationality = StringField('الجنسية', validators=[DataRequired(message='الرجاء إدخال الجنسية')])
     birth_date = DateField('تاريخ الميلاد', widget=DateInput(), validators=[Optional()])
     gender = SelectField('الجنس', choices=[('male', 'ذكر'), ('female', 'أنثى')], validators=[Optional()])
     address = TextAreaField('العنوان', validators=[Optional()])
@@ -131,7 +132,7 @@ class BusBookingForm(FlaskForm):
         ('bank_transfer', 'تحويل بنكي')
     ])
     account = SelectField('الحساب', validators=[DataRequired(message='الرجاء اختيار الحساب')])
-    received_amount = DecimalField('المبلغ المستلم', default=0)
+    received_amount = DecimalField('المبلغ المستلم', default=Decimal('0'))
     statement = TextAreaField('البيان', validators=[Optional()])
     
     submit = SubmitField('حفظ الحجز')
@@ -195,7 +196,7 @@ class JournalEntryForm(FlaskForm):
 class JournalLineForm(FlaskForm):
     """نموذج بند قيد محاسبي"""
     account_id = SelectField('الحساب', coerce=int, validators=[DataRequired(message='الرجاء اختيار الحساب')])
-    debit_amount = DecimalField('مدين', default=0)
-    credit_amount = DecimalField('دائن', default=0)
+    debit_amount = DecimalField('مدين', default=0.0)
+    credit_amount = DecimalField('دائن', default=0.0)
     description = TextAreaField('البيان', validators=[Optional()])
     submit = SubmitField('إضافة البند')

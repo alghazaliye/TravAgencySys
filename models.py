@@ -130,8 +130,9 @@ class Customer(db.Model):
     # تم استبدال id_type_id بـ id_type للتوافق مع قاعدة البيانات الموجودة
     id_type = db.Column(db.String(20))  # يستخدم كمعرِّف لنوع الهوية (مثلاً: "passport", "id_card")
     id_number = db.Column(db.String(30))
-    nationality_id = db.Column(db.Integer, db.ForeignKey('country.id'))  # رابط مع جدول البلدان
-    nationality = db.Column(db.String(50))  # للتوافق مع البيانات القديمة
+    # ملاحظة: nationality_id تمت إزالته لأنه غير موجود في قاعدة البيانات الفعلية
+    # nationality_id = db.Column(db.Integer, db.ForeignKey('country.id'))  # رابط مع جدول البلدان
+    nationality = db.Column(db.String(50))  # يستخدم كاسم البلد مباشرة
     birth_date = db.Column(db.Date)
     gender = db.Column(db.String(10))
     address = db.Column(db.String(200))
@@ -142,8 +143,7 @@ class Customer(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    # العلاقات
-    country = db.relationship('Country', foreign_keys=[nationality_id], backref='nationals', lazy=True)
+    # ملاحظة: تم تعطيل العلاقة مع جدول البلدان وتستخدم nationality كحقل نصي بدلاً من ذلك
 
 # نموذج شركات النقل
 class TransportCompany(db.Model):
